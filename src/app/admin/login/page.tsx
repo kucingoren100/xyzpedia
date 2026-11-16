@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ShieldCheck, Lock, User, ArrowRight, Sparkles, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { ShieldCheck, Lock, User, ArrowRight, AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 
@@ -112,12 +112,6 @@ function LoginFormContent() {
           )}
         </button>
       </form>
-
-      {/* Quick Helper Badge */}
-      <div className="p-3 bg-[#dceeff] dark:bg-[#152338] ink-border dark:border-[#2d3f5e] rounded-xl flex items-center gap-2 text-[11px] font-semibold text-[#003a6b] dark:text-[#bae6fd]">
-        <Sparkles className="w-4 h-4 text-[#005ea5] dark:text-[#38bdf8] shrink-0" />
-        <span>Master Default: Username <code className="bg-white/60 dark:bg-black/30 px-1 py-0.5 rounded font-black">admin</code> • Sandi <code className="bg-white/60 dark:bg-black/30 px-1 py-0.5 rounded font-black">admin123</code></span>
-      </div>
     </div>
   );
 }
