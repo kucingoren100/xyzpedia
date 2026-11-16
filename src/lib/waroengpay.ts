@@ -104,22 +104,61 @@ export class WaroengPayClient {
   }
 
   /**
-   * Check status of payment by reference
+   * Check status of payment by reference or WaroengPay payment ID
    */
   async checkStatus(reference: string): Promise<any> {
     if (!this.apiKey) {
       throw new Error("WAROENGPAY_API_KEY belum dikonfigurasi.");
     }
 
-    const response = await fetch(`${this.baseUrl}/api/payments/${encodeURIComponent(reference)}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        Accept: "application/json",
-      },
-    });
+    try {
+      const url = reference.startsWith("WRG-")
+        ? `${this.baseUrl}/api/payments/${encodeURIComponent(reference)}`
+        : `${this.baseUrl}/api/payments?reference=${encodeURIComponent(reference)}`;
 
-    return await response.json();
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          Accept: "application/json",
+        },
+      });
+
+      const json = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: json?.error || `HTTP ${response.status}`,
+          status: "NOT_FOUND",
+        };
+      }
+
+      const payment = Array.isArray(json?.data) ? json.data[0] : (json?.data || json);
+
+      if (!payment) {
+        return {
+          success: false,
+          error: "Tagihan tidak ditemukan.",
+          status: "NOT_FOUND",
+        };
+      }
+
+      return {
+        success: true,
+        data: payment,
+        status: String(payment.status || "").toUpperCase(),
+        id: payment.id,
+        reference: payment.reference,
+        amount: payment.amount,
+        paidAt: payment.paid_at,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message || "Gagal menghubungi WaroengPay.",
+      };
+    }
   }
 
   /**

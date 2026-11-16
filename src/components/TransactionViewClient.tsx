@@ -54,7 +54,14 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
   const [copiedAll, setCopiedAll] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15 * 60);
+  const getRemainingSeconds = () => {
+    if (!initialOrder?.createdAt) return 15 * 60;
+    const createdAtTime = new Date(initialOrder.createdAt).getTime();
+    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - createdAtTime) / 1000));
+    return Math.max(0, 15 * 60 - elapsedSeconds);
+  };
+
+  const [timeLeft, setTimeLeft] = useState(getRemainingSeconds);
 
   // Auto-poll payment status every 4 seconds when order is pending
   useEffect(() => {
@@ -74,21 +81,28 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
     return () => clearInterval(interval);
   }, [order.invoiceNumber, order.status]);
 
+  // Sync remaining countdown timer from actual order.createdAt
   useEffect(() => {
     if (order.status !== "PENDING") return;
 
+    const calculateTime = () => {
+      const createdAtTime = new Date(order.createdAt).getTime();
+      const elapsedSeconds = Math.max(0, Math.floor((Date.now() - createdAtTime) / 1000));
+      return Math.max(0, 15 * 60 - elapsedSeconds);
+    };
+
+    setTimeLeft(calculateTime());
+
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
+      const remaining = calculateTime();
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(timer);
+      }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [order.status]);
+  }, [order.createdAt, order.status]);
 
   const formatTimer = (secs: number) => {
     const m = Math.floor(secs / 60);

@@ -2,7 +2,7 @@ import { WaroengPayClient } from "../src/lib/waroengpay";
 
 async function main() {
   const wp = new WaroengPayClient();
-  const invoice = "INV-XYZ-20261116-7060";
+  const invoice = "INV-XYZ-20261116-5571";
   console.log("Checking status for:", invoice);
   try {
     const res = await wp.checkStatus(invoice);
