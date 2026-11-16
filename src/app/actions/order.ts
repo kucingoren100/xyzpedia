@@ -173,6 +173,94 @@ export async function getOrderDetails(invoiceNumber: string) {
   }
 }
 
+export async function checkPaymentStatus(invoiceNumber: string) {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { invoiceNumber },
+      include: {
+        product: true,
+        productItem: true,
+      },
+    });
+
+    if (!order) {
+      return { success: false, error: "Pesanan tidak ditemukan." };
+    }
+
+    if (order.status === "SUCCESS" || order.status === "PAID") {
+      return { success: true, isPaid: true, order };
+    }
+
+    // Check with WaroengPay API if configured
+    const waroengPayKey = process.env.WAROENGPAY_API_KEY;
+    if (waroengPayKey) {
+      try {
+        const wp = new WaroengPayClient();
+        const wpStatus = await wp.checkStatus(invoiceNumber);
+        const data = wpStatus?.data || wpStatus;
+        const status = String(data?.status || wpStatus?.status || "").toUpperCase();
+
+        const isPaid =
+          status === "PAID" ||
+          status === "SETTLED" ||
+          status === "SUCCESS" ||
+          status === "COMPLETED";
+
+        if (isPaid) {
+          const updated = await prisma.order.update({
+            where: { invoiceNumber },
+            data: {
+              status: "SUCCESS",
+              paidAt: new Date(),
+              fulfilledAt: new Date(),
+              notes: `Pembayaran terverifikasi via WaroengPay API Status: ${status}`,
+            },
+            include: {
+              product: true,
+              productItem: true,
+            },
+          });
+
+          revalidatePath(`/transaksi/${invoiceNumber}`);
+          revalidatePath("/cek-transaksi");
+
+          // Dispatch async notification
+          (async () => {
+            try {
+              const profit = Math.max(
+                0,
+                updated.totalAmount - (updated.productItem.supplierPrice || updated.productItem.price * 0.8)
+              );
+              await dispatchNotificationEvent("notifySuccessOrder", {
+                invoice: updated.invoiceNumber,
+                productName: updated.product.name,
+                variantName: updated.productItem.name,
+                targetUser: updated.targetUserId + (updated.targetZoneId ? ` (${updated.targetZoneId})` : ""),
+                totalAmount: updated.totalAmount,
+                profit: Math.round(profit),
+                paymentMethod: updated.paymentMethod || "QRIS Real-time",
+                deliveryType: (updated.product as any).deliveryType || (updated.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
+                customerPhone: updated.customerPhone || undefined,
+              });
+            } catch (notifErr) {
+              console.error("Gagal dispatch notifikasi checkStatus:", notifErr);
+            }
+          })();
+
+          return { success: true, isPaid: true, order: updated };
+        }
+      } catch (checkErr) {
+        console.warn("WaroengPay checkStatus error:", checkErr);
+      }
+    }
+
+    return { success: true, isPaid: false, order };
+  } catch (error: any) {
+    console.error("Check payment status error:", error);
+    return { success: false, error: "Gagal mengecek status pembayaran." };
+  }
+}
+
 export async function simulatePaymentSuccess(invoiceNumber: string) {
   try {
     const order = await prisma.order.findUnique({

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { simulatePaymentSuccess } from "@/app/actions/order";
+import { checkPaymentStatus, simulatePaymentSuccess } from "@/app/actions/order";
 import {
   CheckCircle2,
   Clock,
@@ -53,7 +53,26 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15 * 60);
+
+  // Auto-poll payment status every 4 seconds when order is pending
+  useEffect(() => {
+    if (order.status === "SUCCESS" || order.status === "PAID") return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await checkPaymentStatus(order.invoiceNumber);
+        if (res.success && res.isPaid && res.order) {
+          setOrder(res.order as any);
+        }
+      } catch {
+        // Silent polling error
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [order.invoiceNumber, order.status]);
 
   useEffect(() => {
     if (order.status !== "PENDING") return;
@@ -113,7 +132,27 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
     }
   };
 
-  const isSuccess = order.status === "SUCCESS";
+  const handleManualCheckStatus = async () => {
+    setIsChecking(true);
+    try {
+      const res = await checkPaymentStatus(order.invoiceNumber);
+      if (res.success) {
+        if (res.isPaid && res.order) {
+          setOrder(res.order as any);
+        } else {
+          alert("Pembayaran belum terdeteksi di mutasi QRIS. Pastikan Anda sudah menyelesaikan transfer sesuai nominal yang tertera.");
+        }
+      } else {
+        alert(res.error || "Gagal memeriksa status pembayaran.");
+      }
+    } catch {
+      alert("Koneksi gagal. Silakan coba beberapa saat lagi.");
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  const isSuccess = order.status === "SUCCESS" || order.status === "PAID";
 
   const isAkunPremium = order.product.categorySlug === "akun-premium";
   const isManualAccount =
@@ -791,32 +830,29 @@ Mohon untuk dikirimkan kredensial akun saya ya min. Terima kasih!`;
               </div>
             </div>
 
-            {/* DEV / SANDBOX SIMULATION BUTTON */}
-            <div className="p-4 bg-[#dceeff] dark:bg-[#152338] dark:border-[#2d3f5e] ink-border rounded-2xl shadow-[3px_3px_0px_0px_#000000] space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-black text-carbon dark:text-white">
-                <Zap className="w-4 h-4 text-[#5c4ade] fill-[#5c4ade]" />
-                <span>Mode Pengujian (Sandbox / Dev)</span>
+            {/* REAL-TIME PAYMENT VERIFICATION & STATUS CHECK */}
+            <div className="p-4 bg-[#f8fafc] dark:bg-[#152338] dark:border-[#2d3f5e] ink-border rounded-2xl shadow-[3px_3px_0px_0px_#000000] space-y-3">
+              <div className="flex items-center justify-between text-xs font-black text-carbon dark:text-white">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#55db9c]" />
+                  <span>Verifikasi Pembayaran Otomatis</span>
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-gray-400 font-bold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  Auto-cek aktif
+                </span>
               </div>
-              <p className="text-[11px] text-gray-700 dark:text-gray-300 font-semibold">
-                Klik tombol di bawah untuk mensimulasikan webhook QRIS pembayaran berhasil secara instan dan melihat tampilan kredensial akun.
+              <p className="text-[11px] text-gray-600 dark:text-gray-300 font-semibold leading-relaxed">
+                Setelah scan dan transfer QRIS berhasil, sistem akan mendeteksi mutasi dan mengubah status pesanan secara instan.
               </p>
               <button
                 type="button"
-                onClick={handleSimulatePayment}
-                disabled={isSimulating}
-                className="w-full py-2.5 bg-[#55db9c] text-black rounded-xl ink-border font-black text-xs uppercase shadow-[2px_2px_0px_0px_#000000] hover:bg-[#48c78c] active:translate-y-0.5 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                onClick={handleManualCheckStatus}
+                disabled={isChecking}
+                className="w-full py-3 bg-[#ffd731] hover:bg-[#ffe05c] text-black rounded-xl ink-border font-black text-xs uppercase shadow-[3px_3px_0px_0px_#000000] active:translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
-                {isSimulating ? (
-                  <>
-                    <RotateCw className="w-3.5 h-3.5 animate-spin text-black" />
-                    <span>Memverifikasi...</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-black" />
-                    <span>Simulasi Bayar Berhasil</span>
-                  </>
-                )}
+                <RotateCw className={`w-4 h-4 text-black ${isChecking ? "animate-spin" : ""}`} />
+                <span>{isChecking ? "Mengecek Pembayaran..." : "Cek Status Pembayaran"}</span>
               </button>
             </div>
           </div>

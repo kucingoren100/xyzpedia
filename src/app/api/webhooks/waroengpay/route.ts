@@ -44,12 +44,13 @@ export async function POST(req: NextRequest) {
       await prisma.order.updateMany({
         where: { invoiceNumber },
         data: {
-          status: "PAID",
+          status: "SUCCESS",
           paidAt: new Date(),
+          fulfilledAt: new Date(),
           notes: `Settled via WaroengPay Webhook at ${new Date().toISOString()}`,
         },
       });
-      console.log(`[WaroengPay Webhook] Order ${invoiceNumber} marked as PAID.`);
+      console.log(`[WaroengPay Webhook] Order ${invoiceNumber} marked as SUCCESS.`);
 
       // Dispatch Telegram / Email notifications asynchronously
       (async () => {
