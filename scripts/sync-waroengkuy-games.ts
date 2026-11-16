@@ -69,8 +69,6 @@ async function main() {
         developer: group.publisher,
         thumbnailUrl: prodThumbnail,
         bannerUrl: prodThumbnail,
-        thumbnailUrl: group.thumbnailUrl,
-        bannerUrl: group.bannerUrl,
         badgeText: "INSTAN",
         badgeColor: "mint-pop",
         requiresServer: group.requiresServer,
