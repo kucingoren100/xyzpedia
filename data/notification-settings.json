@@ -1,0 +1,39 @@
+{
+  "telegram": {
+    "enabled": true,
+    "botToken": "9231648365:AAFant8PWh74A4dxLK7oipb1LEsy70DsEuo",
+    "chatId": "8938214686"
+  },
+  "email": {
+    "enabled": true,
+    "recipient": "ramadhn139@gmail.com",
+    "senderName": "xyzpedia",
+    "smtpHost": "smtp.gmail.com",
+    "smtpPort": 465,
+    "smtpUser": "kucingoren100199@gmail.com",
+    "smtpPass": "kuvp exkv iclu mztx",
+    "smtpSecure": true
+  },
+  "events": {
+    "notifyNewOrder": {
+      "telegram": true,
+      "email": false
+    },
+    "notifySuccessOrder": {
+      "telegram": true,
+      "email": true
+    },
+    "notifyFailedOrder": {
+      "telegram": true,
+      "email": true
+    },
+    "notifyWeeklyReport": {
+      "telegram": true,
+      "email": true
+    },
+    "notifyDailyReport": {
+      "telegram": true,
+      "email": false
+    }
+  }
+}

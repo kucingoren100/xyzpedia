@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Menunggu Pembayaran - XYZPEDIA</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config Injected -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#ffb59f",
+            "electric-blue": "#4DA2FF",
+            "on-tertiary-fixed-variant": "#004881",
+            "lavender": "#E9CCFF",
+            "voltage-violet": "#5C4ADE",
+            "surface-container-highest": "#e2e2e2",
+            "tertiary-container": "#0076cf",
+            "on-surface-variant": "#5c4038",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#5542d7",
+            "on-secondary": "#ffffff",
+            "mint-pop": "#55DB9C",
+            "surface-variant": "#e2e2e2",
+            "error": "#ba1a1a",
+            "paper-white": "#FFFFFF",
+            "on-primary": "#ffffff",
+            "surface-bright": "#f9f9f9",
+            "surface": "#f9f9f9",
+            "secondary-fixed": "#e4dfff",
+            "secondary-container": "#6e5ef1",
+            "primary-container": "#d63c00",
+            "surface-dim": "#dadada",
+            "on-surface": "#1b1b1b",
+            "ember": "#FB4903",
+            "carbon": "#000000",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "primary-fixed": "#ffdbd1",
+            "surface-container-low": "#f3f3f3",
+            "primary": "#ab2e00",
+            "background": "#f9f9f9",
+            "outline": "#916f66",
+            "on-tertiary-container": "#fdfcff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "on-secondary-container": "#fffbff",
+            "on-primary-container": "#fffbff",
+            "surface-container": "#eeeeee",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#160066",
+            "inverse-surface": "#303030",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1b1b1b",
+            "secondary-fixed-dim": "#c6bfff",
+            "on-primary-fixed": "#3a0a00",
+            "concrete-gray": "#CCCCCC",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-high": "#e8e8e8",
+            "tertiary": "#005ea5",
+            "inverse-on-surface": "#f1f1f1",
+            "sunburst": "#FFD731",
+            "outline-variant": "#e6beb2",
+            "tertiary-fixed": "#d3e4ff",
+            "soft-mist": "#E9E9E9",
+            "primary-fixed-dim": "#ffb59f",
+            "on-tertiary-fixed": "#001c38",
+            "sky-wash": "#DCEEFF"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-3xl": "5rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "space-2xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-hero": "11.25rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "subheading": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "caption": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "display-hero": ["Bricolage Grotesque"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-lg-mobile": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "subheading": ["24px", {"lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+            "headline-xl-mobile": ["48px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "caption": ["12px", {"lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+            "display-hero-mobile": ["72px", {"lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+            "label-pill": ["13px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700"}],
+            "headline-md": ["30px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+            "marquee": ["13px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+            "display-hero": ["180px", {"lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+            "headline-lg": ["64px", {"lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-xl": ["96px", {"lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+            "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500"}],
+            "headline-lg-mobile": ["36px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Neo-brutalist Invariant Rules */
+    * {
+      box-shadow: none !important;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee-smooth {
+      display: flex;
+      width: 200%;
+      animation: marquee-scroll 24s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-sky-wash text-carbon font-body-md antialiased selection:bg-sunburst selection:text-carbon min-h-screen flex flex-col justify-between">
+<!-- TOP MARQUEE BAND (Carbon Blackout Strip) -->
+<aside class="w-full bg-carbon text-paper-white h-9 border-b border-carbon overflow-hidden flex items-center select-none z-50">
+<div class="animate-marquee-smooth flex items-center whitespace-nowrap gap-space-lg">
+<div class="flex items-center gap-space-md font-marquee text-marquee uppercase tracking-wider text-paper-white">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-sunburst border border-carbon"></span>
+<span>AUTO-SETTLEMENT ACTIVE 24/7</span>
+<span class="text-ember font-black">/</span>
+<span>SISTEM VERIFIKASI QRIS INSTAN &lt; 5 DETIK</span>
+<span class="text-ember font-black">/</span>
+<span>GUEST-DIRECT DIGITAL DISPATCH</span>
+<span class="text-ember font-black">/</span>
+<span>JANGAN TUTUP HALAMAN INI SEBELUM TRANSFER SELESAI</span>
+<span class="text-ember font-black">/</span>
+<span>LAYANAN BANTUAN AKTIF VIA WHATSAPP RESMI</span>
+<span class="text-ember font-black">/</span>
+</div>
+<div class="flex items-center gap-space-md font-marquee text-marquee uppercase tracking-wider text-paper-white">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-sunburst border border-carbon"></span>
+<span>AUTO-SETTLEMENT ACTIVE 24/7</span>
+<span class="text-ember font-black">/</span>
+<span>SISTEM VERIFIKASI QRIS INSTAN &lt; 5 DETIK</span>
+<span class="text-ember font-black">/</span>
+<span>GUEST-DIRECT DIGITAL DISPATCH</span>
+<span class="text-ember font-black">/</span>
+<span>JANGAN TUTUP HALAMAN INI SEBELUM TRANSFER SELESAI</span>
+<span class="text-ember font-black">/</span>
+<span>LAYANAN BANTUAN AKTIF VIA WHATSAPP RESMI</span>
+<span class="text-ember font-black">/</span>
+</div>
+</div>
+</aside>
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="docked full-width top-0 z-50 bg-paper-white border-b border-carbon shadow-none sticky">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto gap-space-md">
+<!-- Brand Logo + Search Group -->
+<div class="flex items-center gap-space-lg">
+<a class="flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150" href="#">
+<span class="bg-carbon text-paper-white font-display-hero-mobile text-headline-md font-extrabold px-3 py-1 rounded-full border border-carbon tracking-tight inline-block leading-none">XYZ</span>
+<span class="font-display-hero-mobile text-headline-md font-extrabold tracking-tight text-carbon inline-block leading-none">PEDIA</span>
+</a>
+<!-- Search Bar on Left as defined in JSON -->
+<div class="hidden lg:flex items-center bg-soft-mist rounded-full border border-carbon px-3 py-1.5 w-64 gap-2">
+<span class="material-symbols-outlined text-carbon text-[18px]">search</span>
+<input class="bg-transparent border-0 p-0 text-carbon font-body-md text-caption focus:ring-0 placeholder:text-carbon/60 w-full" placeholder="Cari pesanan, game..." readonly="" type="text"/>
+<kbd class="bg-paper-white border border-carbon rounded px-1.5 text-[10px] font-bold text-carbon">⌘K</kbd>
+</div>
+</div>
+<!-- Navigation Links from JSON: Games, Subscriptions, Vouchers, Check Order -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="text-carbon font-label-pill hover:scale-[1.02] transition-transform" href="#">Games</a>
+<a class="text-carbon font-label-pill hover:scale-[1.02] transition-transform" href="#">Subscriptions</a>
+<a class="text-carbon font-label-pill hover:scale-[1.02] transition-transform" href="#">Vouchers</a>
+<!-- Active link logic: Payment Pending falls under Check Order journey -->
+<a class="text-ember font-label-pill underline decoration-2 underline-offset-4" href="#">Check Order</a>
+</nav>
+<!-- Trailing Primary Action & Icon Actions from JSON -->
+<div class="flex items-center gap-space-sm">
+<button class="flex items-center justify-center w-9 h-9 rounded-full bg-paper-white border border-carbon text-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform" title="Bantuan">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+<a class="bg-carbon text-paper-white font-label-pill text-label-pill uppercase rounded-full border border-carbon px-4 py-2 hover:scale-[1.02] active:scale-[0.98] transition-transform inline-flex items-center gap-1.5" href="#">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+<span>Track Order</span>
+</a>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS: TACTILE POP BRUTALIST AWAITING PAYMENT -->
+<main class="w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-xl flex-grow">
+<!-- Top Hero Banner (Status & Live Countdown) -->
+<div class="relative w-full bg-paper-white rounded-3xl border border-carbon p-space-md md:p-space-xl mb-space-xl overflow-hidden">
+<!-- Decorative Neo-Brutalist Sticker Placed Asymmetrically -->
+<div class="absolute -top-3 right-6 rotate-3 hidden sm:flex items-center gap-1.5 bg-mint-pop border border-carbon px-4 py-1.5 rounded-full shadow-none z-10">
+<span class="w-2.5 h-2.5 rounded-full bg-carbon animate-ping"></span>
+<span class="font-label-pill text-label-pill text-carbon tracking-wide uppercase">AUTOSYNC ENGINE ONLINE</span>
+</div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+<div>
+<div class="flex flex-wrap items-center gap-space-sm mb-space-sm">
+<span class="inline-flex items-center gap-2 bg-ember text-paper-white font-label-pill text-label-pill px-3 py-1 rounded-full border border-carbon">
+<span class="w-2 h-2 rounded-full bg-paper-white animate-pulse"></span>
+              MENUNGGU PEMBAYARAN (LIVE POLLING)
+            </span>
+<span class="bg-lavender text-carbon font-label-pill text-label-pill px-3 py-1 rounded-full border border-carbon">
+              ID TRANSAKSI: #XYZ-90821-VP
+            </span>
+</div>
+<h1 class="font-headline-xl-mobile md:font-headline-lg text-headline-xl-mobile md:text-headline-lg text-carbon tracking-tight font-extrabold uppercase mb-2">
+            SELESAIKAN PEMBAYARAN
+          </h1>
+<p class="font-body-lg text-body-lg text-carbon max-w-2xl">
+            Sistem kami memeriksa mutasi rekening &amp; e-wallet secara real-time. Saldo dan voucher instan terkirim begitu dana diverifikasi.
+          </p>
+</div>
+<!-- Live Countdown Widget -->
+<div class="bg-sunburst border border-carbon rounded-2xl p-space-md flex flex-col items-center justify-center min-w-[260px] transform -rotate-1 self-start lg:self-center">
+<span class="font-label-pill text-label-pill text-carbon uppercase flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+            Sisa Waktu Pembayaran
+          </span>
+<div class="font-display-hero-mobile text-headline-xl-mobile font-extrabold text-carbon tracking-tighter tabular-nums" id="timer-display">
+            14:45
+          </div>
+<span class="font-caption text-caption text-carbon/80 mt-1">Kedaluwarsa otomatis pukul 23:59 WIB</span>
+</div>
+</div>
+</div>
+<!-- BENTO GRID WORKSPACE: Payment Matrix -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN: Dynamic QRIS Core & VA Alternatives (7 Cols) -->
+<section class="lg:col-span-7 flex flex-col gap-space-lg">
+<!-- Live Dynamic QRIS Card -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-space-lg md:p-space-xl flex flex-col items-center text-center relative">
+<div class="w-full flex items-center justify-between border-b border-carbon pb-space-sm mb-space-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-carbon text-[24px]">qr_code_scanner</span>
+<span class="font-headline-md text-subheading text-carbon font-bold">QRIS Dynamic Instant</span>
+</div>
+<div class="bg-soft-mist border border-carbon px-3 py-1 rounded-full font-label-pill text-caption text-carbon uppercase">
+              STANDAR BI &amp; ASPI
+            </div>
+</div>
+<!-- Total Amount Notice Banner -->
+<div class="w-full bg-sky-wash border border-carbon rounded-2xl p-space-md mb-space-lg flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+<div>
+<span class="font-caption text-caption text-carbon block">Total Tagihan (Termasuk Kode Unik Verifikasi)</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md font-extrabold text-ember tracking-tight" id="nominal-text">Rp 189.312</span>
+<span class="bg-sunburst border border-carbon text-carbon font-label-pill text-[10px] px-2 py-0.5 rounded-full uppercase font-bold">Wajib Tepat</span>
+</div>
+</div>
+<button class="bg-carbon text-paper-white font-label-pill text-label-pill rounded-full border border-carbon px-4 py-2 hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-1.5 shrink-0" onclick="copyToClipboard('189312', 'Nominal Tagihan Berhasil Disalin!')">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+<span>Salin Nominal</span>
+</button>
+</div>
+<!-- The Physical Die-Cut QR Canvas Box -->
+<div class="relative p-space-md bg-paper-white border-2 border-carbon rounded-3xl inline-block mb-space-md">
+<!-- Floating Sticker Badge -->
+<div class="absolute -top-3.5 -right-3.5 bg-voltage-violet text-paper-white border border-carbon font-label-pill text-[11px] px-3 py-1 rounded-full rotate-6">
+              SCAN TO PAY
+            </div>
+<!-- Simulated SVG Matrix QR Code with Injected Brand Core -->
+<div class="w-64 h-64 sm:w-72 sm:h-72 bg-paper-white p-3 flex flex-col items-center justify-center border border-carbon rounded-2xl relative select-none">
+<svg class="w-full h-full text-carbon fill-current" shape-rendering="crispEdges" viewbox="0 0 100 100">
+<!-- Top-Left Finder -->
+<rect fill="#000" height="28" width="28" x="0" y="0"></rect>
+<rect fill="#fff" height="20" width="20" x="4" y="4"></rect>
+<rect fill="#000" height="12" width="12" x="8" y="8"></rect>
+<!-- Top-Right Finder -->
+<rect fill="#000" height="28" width="28" x="72" y="0"></rect>
+<rect fill="#fff" height="20" width="20" x="76" y="4"></rect>
+<rect fill="#000" height="12" width="12" x="80" y="8"></rect>
+<!-- Bottom-Left Finder -->
+<rect fill="#000" height="28" width="28" x="0" y="72"></rect>
+<rect fill="#fff" height="20" width="20" x="4" y="76"></rect>
+<rect fill="#000" height="12" width="12" x="8" y="80"></rect>
+<!-- High Density Neo QR Data Pattern Grid -->
+<rect height="4" width="4" x="32" y="4"></rect>
+<rect height="4" width="8" x="40" y="4"></rect>
+<rect height="4" width="4" x="52" y="4"></rect>
+<rect height="4" width="8" x="60" y="4"></rect>
+<rect height="8" width="4" x="36" y="12"></rect>
+<rect height="4" width="12" x="44" y="12"></rect>
+<rect height="4" width="8" x="60" y="12"></rect>
+<rect height="4" width="8" x="32" y="24"></rect>
+<rect height="8" width="8" x="44" y="20"></rect>
+<rect height="4" width="12" x="56" y="24"></rect>
+<!-- Middle Data Region -->
+<rect height="4" width="8" x="4" y="32"></rect>
+<rect height="8" width="4" x="16" y="32"></rect>
+<rect height="4" width="4" x="24" y="32"></rect>
+<rect height="4" width="8" x="72" y="32"></rect>
+<rect height="4" width="8" x="84" y="32"></rect>
+<rect height="4" width="12" x="4" y="44"></rect>
+<rect height="8" width="8" x="20" y="40"></rect>
+<rect height="12" width="4" x="72" y="40"></rect>
+<rect height="4" width="16" x="80" y="44"></rect>
+<rect height="12" width="4" x="4" y="56"></rect>
+<rect height="4" width="8" x="12" y="60"></rect>
+<rect height="8" width="4" x="24" y="56"></rect>
+<rect height="4" width="8" x="76" y="60"></rect>
+<rect height="8" width="8" x="88" y="56"></rect>
+<!-- Bottom Pattern Region -->
+<rect height="4" width="12" x="32" y="72"></rect>
+<rect height="12" width="4" x="48" y="72"></rect>
+<rect height="4" width="12" x="56" y="72"></rect>
+<rect height="8" width="8" x="36" y="80"></rect>
+<rect height="8" width="8" x="52" y="84"></rect>
+<rect height="16" width="4" x="64" y="80"></rect>
+<rect height="4" width="4" x="32" y="92"></rect>
+<rect height="4" width="8" x="40" y="92"></rect>
+<rect height="4" width="8" x="52" y="92"></rect>
+<rect height="4" width="12" x="72" y="88"></rect>
+<rect height="8" width="8" x="88" y="88"></rect>
+</svg>
+<!-- Central Mini Emblem Cutout -->
+<div class="absolute inset-0 m-auto w-12 h-12 bg-carbon border-2 border-paper-white rounded-xl flex items-center justify-center">
+<span class="text-sunburst font-black text-xs font-display-hero-mobile">XYZ</span>
+</div>
+</div>
+<!-- Standar QRIS Footer Marks -->
+<div class="mt-2 flex items-center justify-center gap-3 pt-2 border-t border-carbon text-[11px] font-bold text-carbon tracking-tight">
+<span>GOPAY</span> • <span>OVO</span> • <span>DANA</span> • <span>BCA MOBILE</span> • <span>SHOPEEPAY</span>
+</div>
+</div>
+<!-- Instant Instructions Under QR -->
+<p class="font-caption text-caption text-carbon/70 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-ember">bolt</span>
+            Buka aplikasi pembayaran apa pun yang berlogo QRIS, arahkan kamera ke kode di atas.
+          </p>
+</div>
+<!-- Alternative Virtual Account Accordion Panel -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-space-lg">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-carbon text-[22px]">account_balance</span>
+<h2 class="font-headline-md text-subheading text-carbon font-bold">Alternatif Transfer Virtual Account</h2>
+</div>
+<span class="font-caption text-caption text-carbon/70">Pengecekan Otomatis</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- BCA VA Item -->
+<div class="border border-carbon rounded-2xl p-space-md bg-soft-mist flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-10 bg-paper-white border border-carbon rounded-xl flex items-center justify-center font-extrabold text-xs text-carbon">
+                  BCA
+                </div>
+<div>
+<span class="font-caption text-caption text-carbon/80 block">Nomor Virtual Account BCA</span>
+<span class="font-headline-md text-body-lg font-bold text-carbon tracking-wider" id="va-bca">3901 0892 1109 2314</span>
+</div>
+</div>
+<button class="bg-paper-white hover:scale-[1.02] active:scale-[0.98] text-carbon border border-carbon rounded-full px-4 py-2 font-label-pill text-caption flex items-center justify-center gap-1 transition-transform" onclick="copyToClipboard('3901089211092314', 'Nomor VA BCA Berhasil Disalin!')">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+<span>Salin Nomor</span>
+</button>
+</div>
+<!-- Mandiri VA Item -->
+<div class="border border-carbon rounded-2xl p-space-md bg-soft-mist flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-10 bg-paper-white border border-carbon rounded-xl flex items-center justify-center font-extrabold text-xs text-carbon">
+                  MNDR
+                </div>
+<div>
+<span class="font-caption text-caption text-carbon/80 block">Nomor Virtual Account Mandiri</span>
+<span class="font-headline-md text-body-lg font-bold text-carbon tracking-wider" id="va-mandiri">8870 8219 9901 4452</span>
+</div>
+</div>
+<button class="bg-paper-white hover:scale-[1.02] active:scale-[0.98] text-carbon border border-carbon rounded-full px-4 py-2 font-label-pill text-caption flex items-center justify-center gap-1 transition-transform" onclick="copyToClipboard('8870821999014452', 'Nomor VA Mandiri Berhasil Disalin!')">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+<span>Salin Nomor</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT COLUMN: Order Summary, Step-by-Step, Action Trigger Buttons (5 Cols) -->
+<section class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- Order Detail Card (Pop Brutalist Paper Sheet) -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-space-lg md:p-space-xl">
+<div class="flex items-center justify-between border-b border-carbon pb-space-sm mb-space-md">
+<h2 class="font-headline-md text-subheading text-carbon font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+              Rincian Pesanan
+            </h2>
+<span class="bg-sunburst border border-carbon font-label-pill text-[11px] px-2.5 py-0.5 rounded-full text-carbon font-bold">2 Produk</span>
+</div>
+<!-- Items Stack -->
+<div class="flex flex-col gap-space-md border-b border-carbon pb-space-md mb-space-md">
+<!-- Item 1: Valorant -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 bg-ember text-paper-white rounded-xl border border-carbon flex items-center justify-center font-black text-sm">
+                  VAL
+                </div>
+<div>
+<h3 class="font-label-pill text-body-md text-carbon font-bold leading-tight">Valorant Points (2400 VP)</h3>
+<p class="font-caption text-caption text-carbon/70">ID: RiotID#SEA • Server Indo</p>
+</div>
+</div>
+<span class="font-label-pill text-body-md text-carbon font-bold">Rp 140.000</span>
+</div>
+<!-- Item 2: Spotify -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 bg-mint-pop text-carbon rounded-xl border border-carbon flex items-center justify-center font-black text-sm">
+                  SPOT
+                </div>
+<div>
+<h3 class="font-label-pill text-body-md text-carbon font-bold leading-tight">Spotify Premium Individual</h3>
+<p class="font-caption text-caption text-carbon/70">Durasi: 3 Bulan Garansi Full</p>
+</div>
+</div>
+<span class="font-label-pill text-body-md text-carbon font-bold">Rp 49.000</span>
+</div>
+</div>
+<!-- Price Calculation Table -->
+<div class="flex flex-col gap-2 font-caption text-body-md mb-space-md">
+<div class="flex justify-between text-carbon/80">
+<span>Subtotal Produk</span>
+<span class="font-medium text-carbon">Rp 189.000</span>
+</div>
+<div class="flex justify-between text-carbon/80">
+<span>Biaya Layanan Gerbang QRIS</span>
+<span class="text-mint-pop font-bold bg-carbon px-1.5 py-0.5 rounded text-[11px]">GRATIS</span>
+</div>
+<div class="flex justify-between text-carbon/80">
+<span class="flex items-center gap-1">
+                Kode Unik Verifikasi Otomatis
+                <span class="material-symbols-outlined text-[14px] text-ember" title="Untuk sinkronisasi otomatis">info</span>
+</span>
+<span class="font-bold text-ember">+ Rp 312</span>
+</div>
+</div>
+<!-- Grand Total Bar -->
+<div class="bg-soft-mist border border-carbon rounded-2xl p-space-md flex items-center justify-between">
+<span class="font-label-pill text-subheading text-carbon font-bold">TOTAL BAYAR</span>
+<span class="font-headline-md text-headline-md text-carbon font-extrabold">Rp 189.312</span>
+</div>
+</div>
+<!-- 3 Quick Step Guide Card (Lavender Tactile) -->
+<div class="bg-lavender border border-carbon rounded-3xl p-space-lg">
+<div class="flex items-center gap-2 mb-space-md">
+<span class="material-symbols-outlined text-carbon text-[22px]">rocket_launch</span>
+<h2 class="font-headline-md text-subheading text-carbon font-bold">3 Langkah Cepat Bayar</h2>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Step 1 -->
+<div class="flex items-start gap-3 bg-paper-white border border-carbon rounded-2xl p-space-sm">
+<div class="w-7 h-7 rounded-full bg-carbon text-paper-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                1
+              </div>
+<p class="font-body-md text-body-md text-carbon">
+                Buka aplikasi e-wallet pilihanmu (<strong>GoPay, OVO, Dana, ShopeePay</strong>) atau <strong>m-Banking</strong> kesayanganmu.
+              </p>
+</div>
+<!-- Step 2 -->
+<div class="flex items-start gap-3 bg-paper-white border border-carbon rounded-2xl p-space-sm">
+<div class="w-7 h-7 rounded-full bg-carbon text-paper-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                2
+              </div>
+<p class="font-body-md text-body-md text-carbon">
+                Pilih menu <strong>Scan / Bayar</strong>, arahkan ke QRIS di layar. Pastikan nominal tagihan persis <strong>Rp 189.312</strong>.
+              </p>
+</div>
+<!-- Step 3 -->
+<div class="flex items-start gap-3 bg-paper-white border border-carbon rounded-2xl p-space-sm">
+<div class="w-7 h-7 rounded-full bg-carbon text-paper-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                3
+              </div>
+<p class="font-body-md text-body-md text-carbon">
+                Konfirmasi PIN. Saldo VP &amp; akun Spotify langsung <strong>masuk otomatis dalam 5 detik</strong> tanpa verifikasi manual.
+              </p>
+</div>
+</div>
+</div>
+<!-- Action Control Center (Interactive Buttons) -->
+<div class="flex flex-col gap-space-sm">
+<!-- Primary Check Status Button with Interactive Spinner -->
+<button class="w-full bg-carbon text-paper-white font-label-pill text-body-lg uppercase rounded-full border border-carbon py-3.5 px-space-md hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-2 group" id="btn-check-status" onclick="simulateCheckPayment()">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-180" id="spinner-icon">sync</span>
+<span id="check-btn-text">Cek Status Pembayaran Sekarang</span>
+</button>
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Change Method -->
+<button class="bg-paper-white text-carbon font-label-pill text-caption uppercase rounded-full border border-carbon py-3 px-space-sm hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-1.5" onclick="triggerAlert('Membuka modal pemilihan metode pembayaran...')">
+<span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+<span>Ganti Metode</span>
+</button>
+<!-- Cancel Order -->
+<button class="bg-paper-white text-error font-label-pill text-caption uppercase rounded-full border border-carbon py-3 px-space-sm hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-1.5 hover:bg-error-container" onclick="triggerAlert('Apakah Anda yakin ingin membatalkan pesanan #XYZ-90821-VP?')">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+<span>Batalkan Pesanan</span>
+</button>
+</div>
+<!-- Customer Support WhatsApp Help Capsule -->
+<div class="mt-2 bg-paper-white border border-carbon rounded-2xl p-space-md flex items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-mint-pop border border-carbon flex items-center justify-center text-carbon shrink-0">
+<span class="material-symbols-outlined text-[22px]">support_agent</span>
+</div>
+<div>
+<span class="font-label-pill text-body-md text-carbon font-bold block">Kendala Transfer?</span>
+<span class="font-caption text-caption text-carbon/70">Customer Care WhatsApp Siaga 24 Jam</span>
+</div>
+</div>
+<a class="bg-mint-pop text-carbon border border-carbon font-label-pill text-caption uppercase px-3 py-2 rounded-full hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-1 shrink-0 font-bold" href="https://wa.me/" rel="noopener noreferrer" target="_blank">
+<span>Chat CS</span>
+<span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+</a>
+</div>
+</div>
+</section>
+</div>
+<!-- Notification Toast Popup -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-carbon text-paper-white border-2 border-sunburst px-6 py-3 rounded-full font-label-pill text-body-md hidden items-center gap-2 z-50 transition-all duration-200" id="toast-pill">
+<span class="material-symbols-outlined text-sunburst text-[20px]">check_circle</span>
+<span id="toast-message">Teks tersalin!</span>
+</div>
+</main>
+<!-- SHARED COMPONENT: Footer -->
+<footer class="full-width bg-carbon text-paper-white border-t border-carbon shadow-none mt-space-3xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Top Row: Logo & Mission -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md border-b border-paper-white/20 pb-space-lg">
+<div>
+<span class="font-display-hero-mobile text-headline-md font-black text-paper-white tracking-tight inline-block">
+            XYZPEDIA
+          </span>
+<p class="font-body-md text-body-md text-soft-mist mt-1 max-w-md">
+            Pusat voucher game, akun premium, &amp; top-up otomatis instan dengan standar keamanan settlement mutasi bank resmi.
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="border border-paper-white/40 rounded-full px-3 py-1 font-caption text-caption text-paper-white">QRIS 2.0</span>
+<span class="border border-paper-white/40 rounded-full px-3 py-1 font-caption text-caption text-paper-white">BCA VA</span>
+<span class="border border-paper-white/40 rounded-full px-3 py-1 font-caption text-caption text-paper-white">Mandiri API</span>
+<span class="border border-paper-white/40 rounded-full px-3 py-1 font-caption text-caption text-paper-white">256-Bit SSL</span>
+</div>
+</div>
+<!-- Links Array from JSON: Payment Gateways, QRIS Instant, Order Status Policy, Privacy Policy, Terms of Service, Customer Care WhatsApp -->
+<div class="flex flex-wrap items-center gap-x-6 gap-y-3 font-caption text-caption">
+<a class="text-soft-mist hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-sunburst font-label-pill hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-soft-mist hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist hover:text-sunburst transition-colors duration-150" href="#">Customer Care WhatsApp</a>
+</div>
+<!-- Copyright text from JSON -->
+<div class="pt-space-sm border-t border-paper-white/10 flex flex-col sm:flex-row justify-between items-center gap-2 font-caption text-caption text-soft-mist">
+<p>© 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.</p>
+<span class="text-sunburst font-bold">Node #JKT-EDGE-09 / Live State</span>
+</div>
+</div>
+</footer>
+<!-- Vanilla Interaction Micro-Scripts -->
+<script>
+    // Live Countdown Timer (14:45 -> 00:00)
+    let totalSeconds = 14 * 60 + 45;
+    const timerElement = document.getElementById('timer-display');
+
+    const countdownInterval = setInterval(() => {
+      if (totalSeconds <= 0) {
+        clearInterval(countdownInterval);
+        timerElement.innerText = "00:00";
+        timerElement.classList.add("text-error");
+        return;
+      }
+      totalSeconds--;
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      timerElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+
+    // Copy to Clipboard Feedback
+    function copyToClipboard(text, customMessage) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+      }
+      showToast(customMessage || 'Berhasil disalin ke papan klip!');
+    }
+
+    // Generic Toast Notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast-pill');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.innerText = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.remove('flex');
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Simulate Live Polling / Status Check
+    function simulateCheckPayment() {
+      const btnText = document.getElementById('check-btn-text');
+      const spinner = document.getElementById('spinner-icon');
+      
+      btnText.innerText = "Memeriksa Mutasi QRIS...";
+      spinner.classList.add('animate-spin');
+
+      setTimeout(() => {
+        spinner.classList.remove('animate-spin');
+        btnText.innerText = "Cek Status Pembayaran Sekarang";
+        showToast("Mutasi belum terdeteksi. Silakan selesaikan scan QRIS!");
+      }, 1500);
+    }
+
+    function triggerAlert(msg) {
+      alert(msg);
+    }
+  </script>
+</body></html>

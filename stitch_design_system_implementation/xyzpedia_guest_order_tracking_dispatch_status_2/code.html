@@ -1,0 +1,738 @@
+<!DOCTYPE html><html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>XYZPEDIA — Guest Order Tracking &amp; Live Transaction Status Hub</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=Plus+Jakarta+Sans:wght@400..800&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#fdfcff",
+            "on-tertiary-fixed": "#001c38",
+            "secondary-container": "#6e5ef1",
+            "inverse-on-surface": "#f1f1f1",
+            "secondary": "#5542d7",
+            "tertiary-container": "#0076cf",
+            "error": "#ba1a1a",
+            "primary-fixed": "#ffdbd1",
+            "primary-fixed-dim": "#ffb59f",
+            "tertiary": "#005ea5",
+            "on-secondary-container": "#fffbff",
+            "tertiary-fixed": "#d3e4ff",
+            "on-tertiary-fixed-variant": "#004881",
+            "lavender": "#E9CCFF",
+            "primary-container": "#d63c00",
+            "inverse-primary": "#ffb59f",
+            "mint-pop": "#55DB9C",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#e8e8e8",
+            "on-background": "#1b1b1b",
+            "voltage-violet": "#5C4ADE",
+            "surface-container": "#eeeeee",
+            "secondary-fixed-dim": "#c6bfff",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#e4dfff",
+            "paper-white": "#FFFFFF",
+            "outline": "#916f66",
+            "inverse-surface": "#303030",
+            "surface-variant": "#e2e2e2",
+            "on-surface": "#1b1b1b",
+            "sunburst": "#FFD731",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "on-secondary-fixed": "#160066",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "background": "#f9f9f9",
+            "surface-container-highest": "#e2e2e2",
+            "on-error-container": "#93000a",
+            "electric-blue": "#4DA2FF",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-lowest": "#ffffff",
+            "concrete-gray": "#CCCCCC",
+            "soft-mist": "#E9E9E9",
+            "surface-container-low": "#f3f3f3",
+            "surface": "#f9f9f9",
+            "primary": "#ab2e00",
+            "ember": "#FB4903",
+            "on-primary-container": "#fffbff",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#5c4038",
+            "carbon": "#000000",
+            "outline-variant": "#e6beb2",
+            "on-primary-fixed": "#3a0a00",
+            "sky-wash": "#DCEEFF",
+            "surface-bright": "#f9f9f9",
+            "tertiary-fixed-dim": "#a2c9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-3xl": "5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-hero": "11.25rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "subheading": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "display-hero": ["Bricolage Grotesque"],
+            "body-lg": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Neo-brutalist Invariant Rules */
+    * {
+      box-shadow: none !important;
+    }
+    .sticker-border {
+      border: 1px solid #000000;
+    }
+    .stepper-line {
+      background-image: repeating-linear-gradient(to bottom, #000000 0, #000000 4px, transparent 4px, transparent 8px);
+    }
+    @keyframes marqueeTicker {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-ticker {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marqueeTicker 24s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
+  </style>
+<style>.pop-card-hover { transition: all 150ms ease-out; } .pop-card-hover:hover { transform: translateY(-4px) !important; box-shadow: 4px 4px 0px #000000 !important; } .pop-btn-hover { transition: transform 150ms ease-out, box-shadow 150ms ease-out; } .pop-btn-hover:hover { transform: translateY(-2px) !important; box-shadow: 3px 3px 0px #000000 !important; } .pop-btn-hover:active { transform: translateY(0px) !important; box-shadow: 0px 0px 0px #000000 !important; }</style></head>
+<body class="bg-background text-carbon antialiased selection:bg-sunburst selection:text-carbon min-h-screen flex flex-col"><style id="font-override-rules">
+  body, p, span, input, button, label, td, th, a, div {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6, .font-display, [class*="headline"], [class*="display"], .font-display-hero, .font-display-hero-mobile, .font-headline-xl, .font-headline-xl-mobile, .font-headline-md, .font-headline-lg {
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif !important;
+  }
+</style>
+<!-- TOP RUNNING MARQUEE STRIP -->
+<aside class="bg-carbon text-paper-white h-9 flex items-center overflow-hidden border-b border-carbon select-none z-50">
+<div class="animate-ticker flex items-center gap-space-xl">
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-mint-pop text-sm" data-icon="bolt">bolt</span>
+        MOONTON API INJECTION: 0.4S OPERATIONAL
+      </span>
+<span class="text-sunburst font-black">✦</span>
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-electric-blue text-sm" data-icon="verified_user">verified_user</span>
+        100% GUEST DISPATCH — NO PASSWORD REQUIRED
+      </span>
+<span class="text-sunburst font-black">✦</span>
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-ember text-sm" data-icon="qr_code_2">qr_code_2</span>
+        QRIS INSTANT PAYMENT AUTO-VERIFIED
+      </span>
+<span class="text-sunburst font-black">✦</span>
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-mint-pop text-sm" data-icon="dns">dns</span>
+        SERVER CLUSTER 24/7 AUTOMATED
+      </span>
+<span class="text-sunburst font-black">✦</span>
+<!-- Duplicate set for seamless continuous ticker -->
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-mint-pop text-sm" data-icon="bolt">bolt</span>
+        MOONTON API INJECTION: 0.4S OPERATIONAL
+      </span>
+<span class="text-sunburst font-black">✦</span>
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-electric-blue text-sm" data-icon="verified_user">verified_user</span>
+        100% GUEST DISPATCH — NO PASSWORD REQUIRED
+      </span>
+<span class="text-sunburst font-black">✦</span>
+<span class="font-marquee text-marquee tracking-wider flex items-center gap-space-sm uppercase">
+<span class="material-symbols-outlined text-ember text-sm" data-icon="qr_code_2">qr_code_2</span>
+        QRIS INSTANT PAYMENT AUTO-VERIFIED
+      </span>
+<span class="text-sunburst font-black">✦</span>
+</div>
+</aside>
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="bg-paper-white dark:bg-inverse-surface text-carbon dark:text-paper-white docked full-width top-0 z-50 border-b border-carbon dark:border-outline shadow-none"><div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto gap-space-md">
+<div class="flex items-center gap-space-md">
+<a href="#" class="flex items-center gap-1.5 font-black text-2xl tracking-tight cursor-pointer">
+  <span class="bg-black text-white px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span>
+  <span class="text-black">PEDIA</span>
+</a>
+</div>
+<div class="hidden md:flex flex-1 max-w-md mx-space-md">
+<div class="relative w-full flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-carbon text-lg pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-paper-white border border-carbon rounded-full pl-10 pr-12 py-2 font-body-md text-body-md text-carbon placeholder:text-concrete-gray focus:border-2 focus:border-carbon focus:ring-0 transition-all" placeholder="Cari game, diamond, voucher, stream..." type="text">
+<span class="absolute right-3 bg-soft-mist border border-carbon rounded px-1.5 py-0.5 text-caption font-mono text-carbon font-bold text-xs select-none pointer-events-none">⌘K</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg">
+<nav class="hidden lg:flex items-center gap-space-lg">
+<a class="text-carbon dark:text-paper-white font-label-pill text-label-pill hover:scale-[1.02] transition-transform" href="#">Games</a>
+<a class="text-carbon dark:text-paper-white font-label-pill text-label-pill hover:scale-[1.02] transition-transform" href="#">Subscriptions</a>
+<a class="text-carbon dark:text-paper-white font-label-pill text-label-pill hover:scale-[1.02] transition-transform" href="#">Vouchers</a>
+</nav>
+<div class="flex items-center gap-space-sm">
+<a class="bg-carbon text-paper-white font-label-pill text-label-pill uppercase px-4 py-2 border border-carbon rounded-full hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-2" href="#tracking-section">
+<span class="material-symbols-outlined text-mint-pop text-base" data-icon="radar">radar</span>
+<span class="font-bold">TRACK ORDER</span>
+</a>
+<button aria-label="Customer Care Help" class="w-9 h-9 border border-carbon rounded-full bg-soft-mist flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-carbon text-lg" data-icon="help">help</span>
+</button>
+</div>
+</div>
+</div></header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-xl flex flex-col gap-space-2xl">
+<!-- HERO SECTION WITH TACTILE POP COLLAGE -->
+<section class="relative bg-sky-wash border border-carbon rounded-2xl p-space-lg md:p-space-2xl overflow-hidden">
+<!-- Inflatable 3D-Look Background Sticker / Accents -->
+<div class="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-lavender border border-carbon -rotate-6 pointer-events-none hidden md:flex items-center justify-center">
+<span class="font-display-hero-mobile text-headline-md text-voltage-violet opacity-40 font-black">24/7 API</span>
+</div>
+<div class="absolute right-12 bottom-6 transform rotate-3 hidden lg:block pointer-events-none">
+<div class="bg-sunburst border border-carbon px-space-md py-1.5 rounded-2xl flex items-center gap-2">
+<span class="material-symbols-outlined text-carbon text-base" data-icon="verified">verified</span>
+<span class="font-label-pill text-label-pill text-carbon uppercase">Instant Direct Dispatch</span>
+</div>
+</div>
+<div class="max-w-3xl relative z-10 flex flex-col gap-space-md">
+<!-- Badge Sticker -->
+<div class="inline-flex self-start items-center gap-2 bg-paper-white border border-carbon px-3 py-1 rounded-full -rotate-1">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop border border-carbon"></span>
+<span class="font-label-pill text-caption text-carbon uppercase tracking-wider">Public Guest Portal • No Login Required</span>
+</div>
+<h1 class="font-display-hero md:text-headline-xl text-headline-xl-mobile uppercase tracking-tight text-carbon" style="font-weight: 800; letter-spacing: -0.03em; font-family: &quot;Bricolage Grotesque&quot;, ui-sans-serif, sans-serif !important;">
+          TRACK YOUR ORDER
+        </h1>
+<p class="font-subheading text-body-lg text-carbon max-w-2xl leading-relaxed">
+          Guest-direct automated dispatch monitoring. Enter your invoice number to see real-time Moonton/Publisher API injection and subscription credentials.
+        </p>
+<!-- Quick Status Metrics Bar -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-space-sm pt-space-sm max-w-xl">
+<div class="bg-paper-white border border-carbon p-3 rounded-xl flex flex-col">
+<span class="font-caption text-caption text-concrete-gray uppercase">Avg Injection</span>
+<span class="font-headline-md text-subheading text-carbon font-extrabold">0.42 Sec</span>
+</div>
+<div class="bg-paper-white border border-carbon p-3 rounded-xl flex flex-col">
+<span class="font-caption text-caption text-concrete-gray uppercase">Server Sync</span>
+<span class="font-headline-md text-subheading text-mint-pop font-extrabold">100% ONLINE</span>
+</div>
+<div class="bg-paper-white border border-carbon p-3 rounded-xl flex flex-col col-span-2 sm:col-span-1">
+<span class="font-caption text-caption text-concrete-gray uppercase">Direct Invoices</span>
+<span class="font-headline-md text-subheading text-carbon font-extrabold">Auto-Signed</span>
+</div>
+</div>
+</div>
+</section>
+<!-- INTERACTIVE GUEST LOOKUP FORM CARD -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl" id="tracking-section">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg border-b border-carbon">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-ember border border-carbon rounded-full"></span>
+<h2 class="font-headline-md text-headline-md text-carbon">Cek Status Pesanan Guest</h2>
+</div>
+<p class="font-body-md text-body-md text-concrete-gray mt-1">
+            Pantau status transaksi kamu tanpa perlu daftar akun. Masukkan nomor pesanan dan WhatsApp/Email saat checkout.
+          </p>
+</div>
+<div class="flex items-center gap-2 self-start md:self-auto">
+<span class="inline-block bg-soft-mist border border-carbon text-carbon px-3 py-1 rounded-full font-label-pill text-caption">
+            Example: <strong class="text-carbon font-bold">XYZ-90821-MLBB</strong>
+</span>
+</div>
+</div>
+<!-- Search Input Grid -->
+<form class="pt-space-lg grid grid-cols-1 md:grid-cols-12 gap-space-md items-end" onsubmit="event.preventDefault();">
+<div class="md:col-span-5 flex flex-col gap-2">
+<label class="font-label-pill text-caption uppercase tracking-wider text-carbon flex items-center justify-between">
+<span>Invoice / Order ID <span class="text-ember">*</span></span>
+<span class="text-concrete-gray normal-case">Lihat di WhatsApp/Email</span>
+</label>
+<div class="relative">
+<input class="w-full bg-paper-white border border-carbon rounded-2xl px-4 py-3.5 font-body-md text-body-md text-carbon focus:border-2 focus:border-carbon focus:ring-0" placeholder="Contoh: XYZ-90821-MLBB" type="text" value="XYZ-90821-MLBB">
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-concrete-gray" data-icon="receipt_long">receipt_long</span>
+</div>
+</div>
+<div class="md:col-span-4 flex flex-col gap-2">
+<label class="font-label-pill text-caption uppercase tracking-wider text-carbon flex items-center justify-between">
+<span>WhatsApp / Email Tujuan <span class="text-ember">*</span></span>
+<span class="text-concrete-gray normal-case">Nomor saat order</span>
+</label>
+<div class="relative">
+<input class="w-full bg-paper-white border border-carbon rounded-2xl px-4 py-3.5 font-body-md text-body-md text-carbon focus:border-2 focus:border-carbon focus:ring-0" placeholder="Contoh: 0812xxx atau email@anda.com" type="text" value="081298450123">
+<span class="material-symbols-outlined absolute right-4 top-3.5 text-concrete-gray" data-icon="phonelink_ring">phonelink_ring</span>
+</div>
+</div>
+<div class="md:col-span-3">
+<button class="w-full bg-carbon text-paper-white font-label-pill text-label-pill uppercase py-4 px-6 border border-carbon rounded-full hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-2 pop-btn-hover" type="submit">
+<span>Check Status</span>
+<span class="material-symbols-outlined text-sunburst" data-icon="bolt">bolt</span>
+</button>
+</div>
+</form>
+<div class="mt-space-md pt-space-sm flex flex-wrap items-center gap-space-md text-caption font-caption text-concrete-gray">
+<span class="flex items-center gap-1.5 text-carbon">
+<span class="material-symbols-outlined text-sm text-mint-pop" data-icon="check_circle">check_circle</span>
+          Tidak perlu password atau login
+        </span>
+<span class="flex items-center gap-1.5 text-carbon">
+<span class="material-symbols-outlined text-sm text-mint-pop" data-icon="shield">shield</span>
+          Sistem enkripsi direct publisher
+        </span>
+<span class="flex items-center gap-1.5 text-carbon">
+<span class="material-symbols-outlined text-sm text-mint-pop" data-icon="refresh">refresh</span>
+          Auto-refresh status setiap 5 detik
+        </span>
+</div>
+</section>
+<!-- LIVE ORDER STATUS TRACKER DEMONSTRATION (MOBILE LEGENDS ORDER) -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl flex flex-col gap-space-lg">
+<!-- Top Order Bar With Mint Pop Sticker Badge -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-lg border-b border-carbon">
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="bg-mint-pop border border-carbon px-4 py-1.5 rounded-2xl rotate-[-1deg]">
+<span class="font-label-pill text-label-pill text-carbon uppercase font-extrabold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base" data-icon="check_circle">check_circle</span>
+              FULFILLED &amp; DISPATCHED ✓
+            </span>
+</div>
+<div class="bg-soft-mist border border-carbon px-3 py-1 rounded-full font-label-pill text-caption text-carbon">
+            Invoice: <span class="font-mono font-bold">#XYZ-90821-MLBB</span>
+</div>
+<div class="bg-soft-mist border border-carbon px-3 py-1 rounded-full font-label-pill text-caption text-carbon">
+            Metode: <span class="font-bold">QRIS Instant</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop animate-ping"></span>
+<span class="font-caption text-caption text-carbon font-semibold uppercase">API Gateway: Moonton Server ID-JKT-09</span>
+</div>
+</div>
+<!-- Main Result Bento Layout: Left Stepper & Right Order Summary -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<!-- Left Column: Visual 4-Stage Stepper -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<h3 class="font-headline-md text-subheading text-carbon">4-Stage Automated Dispatch Stepper</h3>
+<p class="font-body-md text-caption text-concrete-gray">
+            Status alur otomatis pemrosesan server tanpa intervensi manual manusia:
+          </p>
+<div class="relative pl-6 sm:pl-8 space-y-6 pt-2 pop-card-hover">
+<!-- Continuous Connecting Line -->
+<div class="absolute left-3.5 sm:left-4.5 top-3 bottom-4 w-0.5 stepper-line"></div>
+<!-- Step 1 -->
+<div class="relative flex items-start gap-space-md">
+<div class="absolute -left-6 sm:-left-8 top-0.5 w-7 h-7 rounded-full bg-mint-pop border border-carbon flex items-center justify-center">
+<span class="material-symbols-outlined text-carbon text-sm font-bold" data-icon="done">done</span>
+</div>
+<div class="bg-soft-mist border border-carbon p-3.5 rounded-xl w-full">
+<div class="flex items-center justify-between">
+<h4 class="font-label-pill text-body-md text-carbon font-bold">1. Order Created &amp; Direct Guest Token Assigned</h4>
+<span class="font-caption text-caption text-concrete-gray bg-paper-white px-2 py-0.5 rounded border border-carbon">14:32:01 WIB</span>
+</div>
+<p class="font-body-md text-caption text-carbon mt-1">
+                  Pesanan direct guest dibuat tanpa password. Token lookup terenkripsi diterbitkan.
+                </p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative flex items-start gap-space-md">
+<div class="absolute -left-6 sm:-left-8 top-0.5 w-7 h-7 rounded-full bg-mint-pop border border-carbon flex items-center justify-center">
+<span class="material-symbols-outlined text-carbon text-sm font-bold" data-icon="done">done</span>
+</div>
+<div class="bg-soft-mist border border-carbon p-3.5 rounded-xl w-full">
+<div class="flex items-center justify-between">
+<h4 class="font-label-pill text-body-md text-carbon font-bold">2. QRIS Payment Confirmed &amp; Validated</h4>
+<span class="font-caption text-caption text-concrete-gray bg-paper-white px-2 py-0.5 rounded border border-carbon">14:32:18 WIB</span>
+</div>
+<p class="font-body-md text-caption text-carbon mt-1">
+                  Settlement Rp 175.400 diterima via Bank Indonesia QRIS Hub. Status callback 200 OK.
+                </p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative flex items-start gap-space-md">
+<div class="absolute -left-6 sm:-left-8 top-0.5 w-7 h-7 rounded-full bg-mint-pop border border-carbon flex items-center justify-center">
+<span class="material-symbols-outlined text-carbon text-sm font-bold" data-icon="done">done</span>
+</div>
+<div class="bg-soft-mist border border-carbon p-3.5 rounded-xl w-full">
+<div class="flex items-center justify-between">
+<h4 class="font-label-pill text-body-md text-carbon font-bold">3. Moonton API Dispatch (Direct Server Injection)</h4>
+<span class="font-caption text-caption text-ember bg-paper-white px-2 py-0.5 rounded border border-carbon font-bold">14:32:20 WIB (0.4s)</span>
+</div>
+<p class="font-body-md text-caption text-carbon mt-1">
+                  Publisher endpoint: <code class="bg-paper-white px-1 border border-carbon rounded text-xs">api.mobilelegends.com/topup/v2</code> response <code>{ code: 200, status: "SUCCESS" }</code>.
+                </p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="relative flex items-start gap-space-md">
+<div class="absolute -left-6 sm:-left-8 top-0.5 w-7 h-7 rounded-full bg-mint-pop border border-carbon flex items-center justify-center">
+<span class="material-symbols-outlined text-carbon text-sm font-bold" data-icon="done">done</span>
+</div>
+<div class="bg-mint-pop border border-carbon p-3.5 rounded-xl w-full">
+<div class="flex items-center justify-between">
+<h4 class="font-label-pill text-body-md text-carbon font-bold">4. Credentials / Diamonds Delivered ✓</h4>
+<span class="font-caption text-caption text-carbon bg-paper-white px-2 py-0.5 rounded border border-carbon">14:32:22 WIB</span>
+</div>
+<p class="font-body-md text-caption text-carbon mt-1">
+                  706 Diamonds berhasil mendarat langsung ke ID player. In-game mailbox update terverifikasi.
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Item Details & Publisher Server Receipt -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="bg-soft-mist border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-md pop-card-hover">
+<div class="flex items-center justify-between border-b border-carbon pb-3">
+<span class="font-label-pill text-caption uppercase text-concrete-gray">Detail Produk</span>
+<span class="font-label-pill text-caption text-voltage-violet font-bold uppercase">Official Top Up</span>
+</div>
+<!-- Game & Target ID Info -->
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-2xl bg-paper-white border border-carbon flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-ember text-3xl" data-icon="sports_esports">sports_esports</span>
+</div>
+<div>
+<h4 class="font-headline-md text-subheading text-carbon font-bold">Mobile Legends: Bang Bang</h4>
+<p class="font-body-md text-caption text-concrete-gray">706 Diamonds (625 + 81 Bonus)</p>
+</div>
+</div>
+<!-- Table of Parameters -->
+<div class="bg-paper-white border border-carbon rounded-xl p-3 flex flex-col gap-2 font-body-md text-caption">
+<div class="flex justify-between">
+<span class="text-concrete-gray">User / Player ID:</span>
+<span class="font-bold text-carbon">kyroslayer99 (Zone 2140)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-concrete-gray">Nickname Server:</span>
+<span class="font-bold text-carbon">✦KYRO•ESP✦</span>
+</div>
+<div class="flex justify-between">
+<span class="text-concrete-gray">Total Bayar (QRIS):</span>
+<span class="font-bold text-carbon">Rp 175.400 (Lunas)</span>
+</div>
+<div class="flex justify-between items-center border-t border-carbon pt-2 mt-1">
+<span class="text-concrete-gray">Publisher Hash:</span>
+<span class="font-mono text-xs text-ember font-bold bg-soft-mist px-1.5 py-0.5 rounded border border-carbon">0x892a77fbc014c014</span>
+</div>
+</div>
+<!-- Direct Guest Actions -->
+<div class="flex flex-col gap-2 pt-2">
+<button class="w-full bg-paper-white text-carbon font-label-pill text-label-pill uppercase py-2.5 px-4 border border-carbon rounded-full hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-2 pop-btn-hover">
+<span class="material-symbols-outlined text-base" data-icon="download">download</span>
+<span>Download PDF Invoice</span>
+</button>
+<button class="w-full bg-paper-white text-carbon font-label-pill text-label-pill uppercase py-2.5 px-4 border border-carbon rounded-full hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-2 pop-btn-hover">
+<span class="material-symbols-outlined text-base text-mint-pop" data-icon="send">send</span>
+<span>Send Again to WhatsApp</span>
+</button>
+<button class="w-full bg-soft-mist text-carbon font-label-pill text-caption uppercase py-2 px-4 border border-carbon rounded-full hover:bg-concrete-gray transition-colors flex items-center justify-center gap-1.5 pop-btn-hover">
+<span class="material-symbols-outlined text-sm" data-icon="flag">flag</span>
+<span>Report Issue with Order</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SUBSCRIPTION ORDER TRACKER DEMONSTRATION (NETFLIX & CANVA GUEST DELIVERY) -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg border-b border-carbon">
+<div>
+<div class="inline-flex items-center gap-2 bg-lavender border border-carbon px-3 py-1 rounded-full mb-2">
+<span class="material-symbols-outlined text-voltage-violet text-sm" data-icon="key">key</span>
+<span class="font-label-pill text-caption text-carbon uppercase font-bold">Secure Guest Voucher Vault</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-carbon" style="font-weight: 800; font-family: &quot;Bricolage Grotesque&quot;, ui-sans-serif, sans-serif !important;">Subscription Order Tracker Demonstration</h3>
+<p class="font-body-md text-body-md text-concrete-gray mt-1">
+            Untuk pembelian akun premium (Netflix, Canva, YouTube), kredensial login dan PIN profil langsung ditampilkan di halaman invoice tanpa perlu login.
+          </p>
+</div>
+<div class="bg-soft-mist border border-carbon px-4 py-2 rounded-xl text-right">
+<span class="font-caption text-caption text-concrete-gray block">Status Dispatch Akun</span>
+<span class="font-label-pill text-label-pill text-mint-pop font-extrabold uppercase">ACTIVE &amp; READY ✓</span>
+</div>
+</div>
+<!-- Bento Cards for Subscription Credentials -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg pt-space-lg">
+<!-- Subscription Item 1: Netflix 1 Bulan 4K Ultra HD -->
+<div class="bg-soft-mist border border-carbon rounded-2xl p-space-lg flex flex-col justify-between gap-space-md relative overflow-hidden pop-card-hover">
+<div class="absolute -right-4 -top-4 w-20 h-20 bg-sunburst border border-carbon rounded-full flex items-center justify-center rotate-12 pointer-events-none">
+<span class="font-label-pill text-caption text-carbon font-extrabold">1P 1U</span>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-carbon text-paper-white flex items-center justify-center font-bold text-lg border border-carbon">
+                N
+              </div>
+<div>
+<h4 class="font-headline-md text-subheading text-carbon font-bold">Netflix Premium 4K UHD</h4>
+<span class="font-caption text-caption text-concrete-gray">Invoice: XYZ-88301-NTFX • Durasi: 30 Hari</span>
+</div>
+</div>
+<!-- Credentials Box -->
+<div class="mt-space-md bg-paper-white border border-carbon rounded-xl p-space-md flex flex-col gap-2.5">
+<div>
+<span class="font-caption text-caption text-concrete-gray block">Akun Email:</span>
+<div class="flex items-center justify-between mt-0.5">
+<span class="font-mono font-bold text-body-md text-carbon select-all">guest-user89@pediaprime.com</span>
+<button class="text-caption font-label-pill border border-carbon rounded px-2 py-0.5 hover:bg-sunburst transition-colors" onclick="navigator.clipboard.writeText('guest-user89@pediaprime.com')">Copy</button>
+</div>
+</div>
+<div class="border-t border-carbon pt-2">
+<span class="font-caption text-caption text-concrete-gray block">Password Rahasia:</span>
+<div class="flex items-center justify-between mt-0.5">
+<span class="font-mono font-bold text-body-md text-ember select-all">XyzPass#2025!</span>
+<button class="text-caption font-label-pill border border-carbon rounded px-2 py-0.5 hover:bg-sunburst transition-colors" onclick="navigator.clipboard.writeText('XyzPass#2025!')">Copy</button>
+</div>
+</div>
+<div class="border-t border-carbon pt-2 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-concrete-gray block">Profil &amp; PIN Khusus:</span>
+<span class="font-bold text-carbon">Profil 4 (Nama: Guest-Pedia)</span>
+</div>
+<span class="font-mono font-bold text-body-md bg-lavender border border-carbon px-2.5 py-1 rounded-lg text-carbon">PIN: 7721</span>
+</div>
+</div>
+</div>
+<div class="bg-paper-white border border-carbon rounded-xl p-3 flex items-start gap-2">
+<span class="material-symbols-outlined text-ember text-base mt-0.5" data-icon="info">info</span>
+<p class="font-caption text-caption text-carbon">
+              Garansi full 30 hari anti on-hold. Dilarang mengubah password atau nama profil lain. Hubungi WhatsApp admin jika mengalami limit screen.
+            </p>
+</div>
+</div>
+<!-- Subscription Item 2: Canva Pro Invite / Direct License -->
+<div class="bg-soft-mist border border-carbon rounded-2xl p-space-lg flex flex-col justify-between gap-space-md relative overflow-hidden pop-card-hover">
+<div class="absolute -right-4 -top-4 w-20 h-20 bg-mint-pop border border-carbon rounded-full flex items-center justify-center -rotate-6 pointer-events-none">
+<span class="font-label-pill text-caption text-carbon font-extrabold">INVITE</span>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-electric-blue text-paper-white flex items-center justify-center font-bold text-lg border border-carbon">
+                C
+              </div>
+<div>
+<h4 class="font-headline-md text-subheading text-carbon font-bold">Canva Pro Lifetime / 1 Tahun</h4>
+<span class="font-caption text-caption text-concrete-gray">Invoice: XYZ-77192-CNVA • Email Pribadi</span>
+</div>
+</div>
+<!-- Credentials Box -->
+<div class="mt-space-md bg-paper-white border border-carbon rounded-xl p-space-md flex flex-col gap-2.5">
+<div>
+<span class="font-caption text-caption text-concrete-gray block">Email Penerima Undangan:</span>
+<span class="font-mono font-bold text-body-md text-carbon">customer.design@gmail.com</span>
+</div>
+<div class="border-t border-carbon pt-2">
+<span class="font-caption text-caption text-concrete-gray block">Link Direct Join Team:</span>
+<div class="flex items-center justify-between mt-0.5 gap-2">
+<span class="font-mono text-xs text-tertiary truncate">https://www.canva.com/brand/join?token=XYZ-TEAM-99214a...</span>
+<a class="text-caption font-label-pill border border-carbon rounded px-2.5 py-0.5 bg-paper-white hover:bg-sunburst transition-colors flex-shrink-0" href="#">Open Link</a>
+</div>
+</div>
+<div class="border-t border-carbon pt-2 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-concrete-gray block">Status Dispatch Admin:</span>
+<span class="font-bold text-mint-pop flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+                    Undangan Telah Terkirim ke Email
+                  </span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-paper-white border border-carbon rounded-xl p-3 flex items-start gap-2">
+<span class="material-symbols-outlined text-voltage-violet text-base mt-0.5" data-icon="verified_user">verified_user</span>
+<p class="font-caption text-caption text-carbon">
+              Akses premium langsung aktif di akun pribadi Anda tanpa kehilangan template lama. Cek kotak masuk atau folder spam email Anda.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ & GUEST CUSTOMER SUPPORT -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+<!-- Left: FAQ Header & WhatsApp Concierge Card -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="inline-flex items-center gap-2 bg-sunburst border border-carbon px-3 py-1 rounded-full self-start">
+<span class="material-symbols-outlined text-carbon text-sm" data-icon="support_agent">support_agent</span>
+<span class="font-label-pill text-caption text-carbon uppercase font-bold">24/7 Human Backup</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-carbon" style="font-weight: 800; font-family: &quot;Bricolage Grotesque&quot;, ui-sans-serif, sans-serif !important;">
+            Pertanyaan Umum &amp; Kendala Pesanan
+          </h3>
+<p class="font-body-md text-body-md text-concrete-gray">
+            Semua transaksi diproses otomatis 24 jam. Jika terjadi kendala pada server publisher game atau kendala pembayaran, CS kami siap membantu langsung via WhatsApp.
+          </p>
+<!-- WhatsApp Direct Action Pill Box -->
+<div class="bg-mint-pop border border-carbon rounded-2xl p-space-lg flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-paper-white border border-carbon flex items-center justify-center">
+<span class="material-symbols-outlined text-carbon text-2xl" data-icon="chat">chat</span>
+</div>
+<div>
+<span class="font-caption text-caption text-carbon uppercase font-bold block">Guest Concierge 24 Jam</span>
+<span class="font-headline-md text-subheading text-carbon font-extrabold">+62 812-XYZ-PEDIA</span>
+</div>
+</div>
+<p class="font-caption text-caption text-carbon">
+              Sebutkan Invoice ID Anda (misal: XYZ-90821-MLBB) saat chat agar admin dapat mengecek status server secara instan.
+            </p>
+<a class="w-full bg-carbon text-paper-white font-label-pill text-label-pill uppercase py-3 px-4 border border-carbon rounded-full hover:scale-[1.02] active:scale-[0.98] transition-transform text-center flex items-center justify-center gap-2 pop-btn-hover" href="https://wa.me/6281299999999" target="_blank">
+<span class="material-symbols-outlined text-mint-pop text-base" data-icon="forum">forum</span>
+<span>Hubungi CS WhatsApp Sekarang</span>
+</a>
+</div>
+</div>
+<!-- Right: Accordion FAQ List -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- FAQ 1 -->
+<div class="border border-carbon rounded-2xl p-space-md bg-paper-white pop-card-hover">
+<h4 class="font-label-pill text-subheading text-carbon font-bold flex items-center justify-between">
+<span>Item / Diamonds belum masuk setelah 5 menit?</span>
+<span class="material-symbols-outlined text-carbon" data-icon="expand_more">expand_more</span>
+</h4>
+<p class="font-body-md text-caption text-carbon mt-2 leading-relaxed">
+              Sebagian besar transaksi selesai dalam 3–15 detik. Jika server game sedang dalam pemeliharaan (maintenance) atau antrean padat, proses dapat memakan waktu hingga 15 menit. Coba restart game Mobile Legends atau Free Fire Anda. Jika status di halaman ini telah <strong>FULFILLED</strong> tetapi belum masuk di in-game, silakan laporkan dengan hash publisher.
+            </p>
+</div>
+<!-- FAQ 2 -->
+<div class="border border-carbon rounded-2xl p-space-md bg-paper-white pop-card-hover">
+<h4 class="font-label-pill text-subheading text-carbon font-bold flex items-center justify-between">
+<span>Salah memasukkan User ID atau Zone ID?</span>
+<span class="material-symbols-outlined text-carbon" data-icon="expand_more">expand_more</span>
+</h4>
+<p class="font-body-md text-caption text-carbon mt-2 leading-relaxed">
+              Karena sistem XYZPEDIA terhubung langsung ke API resmi Moonton/Publisher secara otomatis, jika ID yang dimasukkan valid milik akun orang lain dan sudah terinjeksi, transaksi tidak dapat dibatalkan. Namun jika ID tidak ditemukan, sistem akan menolak otomatis dan dana Anda dapat di-refund 100%.
+            </p>
+</div>
+<!-- FAQ 3 -->
+<div class="border border-carbon rounded-2xl p-space-md bg-paper-white pop-card-hover">
+<h4 class="font-label-pill text-subheading text-carbon font-bold flex items-center justify-between">
+<span>Apakah bisa mengajukan refund jika order gagal?</span>
+<span class="material-symbols-outlined text-carbon" data-icon="expand_more">expand_more</span>
+</h4>
+<p class="font-body-md text-caption text-carbon mt-2 leading-relaxed">
+              Tentu. Jika sistem pembayaran QRIS atau Virtual Account sudah memotong saldo namun server game mengalami kegagalan teknis, admin XYZPEDIA akan mengembalikan saldo Anda secara utuh melalui QRIS atau transfer bank dalam kurun waktu 1x24 jam.
+            </p>
+</div>
+<!-- FAQ 4 -->
+<div class="border border-carbon rounded-2xl p-space-md bg-paper-white pop-card-hover">
+<h4 class="font-label-pill text-subheading text-carbon font-bold flex items-center justify-between">
+<span>Apakah perlu login atau verifikasi OTP?</span>
+<span class="material-symbols-outlined text-carbon" data-icon="expand_more">expand_more</span>
+</h4>
+<p class="font-body-md text-caption text-carbon mt-2 leading-relaxed">
+              Tidak sama sekali! XYZPEDIA 100% bebas akun. Cukup simpan nomor Invoice dan WhatsApp/Email yang Anda daftarkan saat melakukan pembelian untuk mengecek status kapan pun.
+            </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- SHARED COMPONENT: Footer -->
+<footer class="bg-carbon dark:bg-inverse-surface text-paper-white dark:text-inverse-on-surface full-width border-t border-carbon dark:border-outline shadow-none mt-space-3xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Top Row: Brand & Quick Links -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md border-b border-inverse-surface pb-space-lg">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 font-black text-2xl tracking-tight mb-3">
+  <span class="bg-white text-black px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span>
+  <span class="text-white">PEDIA</span>
+</div>
+<p class="font-body-md text-caption text-soft-mist">Guest-direct digital fulfillment hub. Fast, automated, without account registration.</p>
+</div>
+<!-- Links from Shared Components JSON -->
+<div class="flex flex-wrap gap-x-space-md gap-y-2">
+<a class="text-soft-mist dark:text-concrete-gray font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-sunburst font-label-pill text-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Customer Care WhatsApp</a>
+</div>
+</div>
+<!-- Bottom Row: Copyright text & server status indicator -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-space-sm">
+<p class="font-caption text-caption text-soft-mist dark:text-concrete-gray">
+          © 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.
+        </p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-mint-pop"></span>
+<span class="font-caption text-caption text-soft-mist">Gateway Dispatch Nodes: Normal</span>
+</div>
+</div>
+</div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>

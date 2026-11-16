@@ -1,0 +1,761 @@
+<!DOCTYPE html><html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>XYZPEDIA — Live Instant Payment Settlement &amp; QRIS Gateway</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration Verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#fdfcff",
+            "on-tertiary-fixed": "#001c38",
+            "secondary-container": "#6e5ef1",
+            "inverse-on-surface": "#f1f1f1",
+            "secondary": "#5542d7",
+            "tertiary-container": "#0076cf",
+            "error": "#ba1a1a",
+            "primary-fixed": "#ffdbd1",
+            "primary-fixed-dim": "#ffb59f",
+            "tertiary": "#005ea5",
+            "on-secondary-container": "#fffbff",
+            "tertiary-fixed": "#d3e4ff",
+            "on-tertiary-fixed-variant": "#004881",
+            "lavender": "#E9CCFF",
+            "primary-container": "#d63c00",
+            "inverse-primary": "#ffb59f",
+            "mint-pop": "#55DB9C",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#e8e8e8",
+            "on-background": "#1b1b1b",
+            "voltage-violet": "#5C4ADE",
+            "surface-container": "#eeeeee",
+            "secondary-fixed-dim": "#c6bfff",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#e4dfff",
+            "paper-white": "#FFFFFF",
+            "outline": "#916f66",
+            "inverse-surface": "#303030",
+            "surface-variant": "#e2e2e2",
+            "on-surface": "#1b1b1b",
+            "sunburst": "#FFD731",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "on-secondary-fixed": "#160066",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "background": "#f9f9f9",
+            "surface-container-highest": "#e2e2e2",
+            "on-error-container": "#93000a",
+            "electric-blue": "#4DA2FF",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-lowest": "#ffffff",
+            "concrete-gray": "#CCCCCC",
+            "soft-mist": "#E9E9E9",
+            "surface-container-low": "#f3f3f3",
+            "surface": "#f9f9f9",
+            "primary": "#ab2e00",
+            "ember": "#FB4903",
+            "on-primary-container": "#fffbff",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#5c4038",
+            "carbon": "#000000",
+            "outline-variant": "#e6beb2",
+            "on-primary-fixed": "#3a0a00",
+            "sky-wash": "#DCEEFF",
+            "surface-bright": "#f9f9f9",
+            "tertiary-fixed-dim": "#a2c9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-3xl": "5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-hero": "11.25rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "subheading": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "display-hero": ["Bricolage Grotesque"],
+            "body-lg": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Invariant physical depth: NO drop shadows, strict ink border */
+    * {
+      box-shadow: none !important;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    @keyframes marqueeMove {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marqueeMove 22s linear infinite;
+    }
+    @keyframes radarPulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .radar-pulse {
+      animation: radarPulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-sky-wash text-carbon antialiased min-h-screen flex flex-col selection:bg-sunburst selection:text-carbon"><style id="custom-typography-override">body, p, span, input, button, label, td, th, a, div { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; } h1, h2, h3, h4, h5, h6, .font-display, [class*="headline"], [class*="display"], .font-display-hero, .font-headline-xl, .font-headline-md, .font-headline-lg, #orderTelemetry h2, #vaNumber { font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif !important; } .font-bricolage { font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif !important; }</style>
+<!-- TOP RUNNING TICKER MARQUEE -->
+<div class="w-full bg-carbon text-paper-white h-[36px] flex items-center overflow-hidden border-b border-carbon z-50">
+<div class="animate-marquee flex items-center gap-space-lg text-paper-white font-marquee text-marquee uppercase tracking-wider"><span class="inline-flex items-center gap-1.5 text-sunburst">★ LIVE SETTLEMENT ENGINE ACTIVE</span><span>•</span><span>ZERO MANUAL VERIFICATION</span><span>•</span><span>MOONTON DIRECT SERVER DISPATCH 0.4S</span><span>•</span><span>BANK INDONESIA QRIS STANDARD COMPLIANT</span><span>•</span><span>BCA, MANDIRI, BRI, BNI, DANA, GOPAY, SHOPEEPAY, OVO</span><span>•</span><span class="inline-flex items-center gap-1.5 text-sunburst">★ LIVE SETTLEMENT ENGINE ACTIVE</span><span>•</span><span>ZERO MANUAL VERIFICATION</span><span>•</span><span>MOONTON DIRECT SERVER DISPATCH 0.4S</span><span>•</span><span>BANK INDONESIA QRIS STANDARD COMPLIANT</span><span>•</span><span>BCA, MANDIRI, BRI, BNI, DANA, GOPAY, SHOPEEPAY, OVO</span></div>
+</div>
+<!-- TopNavBar (Shared Component JSON Blueprint) -->
+<header class="bg-paper-white dark:bg-inverse-surface border-b border-carbon dark:border-outline shadow-none docked full-width top-0 z-40 sticky">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto"><!-- Brand Logo with star circle icon -->
+<div class="flex items-center gap-space-md">
+<a href="#" class="flex items-center gap-1.5 font-black text-2xl tracking-tight cursor-pointer">
+  <span class="bg-black text-white px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span>
+  <span class="text-black">PEDIA</span>
+</a>
+</div>
+<!-- Ergonomic Search Bar -->
+<div class="hidden md:flex flex-1 max-w-md mx-6">
+<div class="relative w-full flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-carbon/60 text-[20px] pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-soft-mist/50 hover:bg-soft-mist focus:bg-paper-white border border-carbon rounded-full py-2 pl-10 pr-12 text-body-md font-body-md placeholder:text-carbon/60 text-carbon outline-none transition-colors duration-150" placeholder="Cari game, diamond, voucher, stream..." type="text">
+<span class="absolute right-3 bg-paper-white border border-carbon px-1.5 py-0.5 rounded text-[10px] font-mono font-bold text-carbon/70 shadow-none pointer-events-none">⌘K</span>
+</div>
+</div>
+<!-- Navigation Links: Exactly Games, Subscriptions, Vouchers -->
+<nav class="hidden lg:flex items-center gap-space-lg">
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Games</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Subscriptions</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Vouchers</a>
+</nav>
+<!-- Trailing Action CTA: Solid black pill Track Order button -->
+<div class="flex items-center gap-space-sm">
+<a class="bg-carbon text-paper-white font-label-pill text-label-pill px-4 py-2 rounded-full border border-carbon uppercase hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 flex items-center gap-1.5" href="#orderTelemetry">
+<span class="material-symbols-outlined text-[16px]" data-icon="local_shipping">local_shipping</span>
+    TRACK ORDER
+  </a>
+</div></div>
+</header>
+<!-- MAIN CANVAS: TACTILE POP BRUTALISM SETTLEMENT SCREEN -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-xl">
+<!-- 1. Header Banner & Dynamic Pill Status Area -->
+<div class="mb-space-xl flex flex-col md:flex-row md:items-end justify-between gap-space-lg border-b border-carbon pb-space-lg">
+<div class="space-y-space-xs">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="bg-voltage-violet text-paper-white border border-carbon px-3 py-1 rounded-full font-label-pill text-caption uppercase rotate-1">
+            Guest Checkout Direct
+          </span>
+<span class="text-carbon font-caption font-bold tracking-wider">
+            INV: #XYZ-90821-MLBB
+          </span>
+<span class="text-concrete-gray">•</span>
+<span class="text-carbon font-caption font-medium">
+            Realtime Socket: <strong class="text-primary-container">CONNECTED</strong>
+</span>
+</div>
+<h1 class="font-display-hero-mobile text-headline-xl-mobile md:font-display-hero md:text-headline-lg font-extrabold tracking-tight text-carbon" style="font-weight: 800; letter-spacing: -0.03em; font-family: &quot;Bricolage Grotesque&quot;, sans-serif !important;">
+          Complete Payment
+        </h1>
+<p class="font-body-md text-body-md text-carbon max-w-xl">
+          Scan QRIS with any e-wallet or banking app. Once settled, 706 Mobile Legends Diamonds will dispatch automatically within 0.4 seconds.
+        </p>
+</div>
+<!-- Dynamic Pill Pulsating Status & Timer Block -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-md">
+<!-- Live Status Pill -->
+<div class="bg-sunburst text-carbon border border-carbon px-4 py-2.5 rounded-full flex items-center justify-center gap-2 font-label-pill text-label-pill uppercase -rotate-1 radar-pulse" id="statusBadge">
+<span class="w-2.5 h-2.5 rounded-full bg-carbon"></span>
+<span id="statusText">WAITING FOR PAYMENT</span>
+</div>
+<!-- Expiry Countdown Pill -->
+<div class="bg-paper-white text-carbon border border-carbon px-5 py-2.5 rounded-full flex items-center justify-center gap-2 font-label-pill text-body-md">
+<span class="material-symbols-outlined text-ember text-[20px]" data-icon="timer">timer</span>
+<span class="text-caption uppercase text-carbon font-bold">Expires in:</span>
+<span class="font-bold text-ember font-mono text-[16px]" id="countdown">14:47</span>
+</div>
+</div>
+</div>
+<!-- 2. PRIMARY TWO-COLUMN SETTLEMENT GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN: QRIS Interactive Card & Fallback VA (7 cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<!-- QRIS Main Panel -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-md relative overflow-hidden brutal-card-hover">
+<!-- Tactile Sticker Accent -->
+<div class="absolute -top-1 -right-1 bg-ember text-paper-white font-label-pill text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-full border border-carbon rotate-3 z-10">
+            Automated Webhook
+          </div>
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm border-b border-carbon pb-space-md">
+<div>
+<span class="font-caption uppercase text-concrete-gray font-bold tracking-wider">Gateway Method</span>
+<h2 class="font-headline-md text-headline-md text-carbon flex items-center gap-2">
+                QRIS Real-Time
+                <span class="text-caption font-label-pill bg-mint-pop text-carbon border border-carbon px-2 py-0.5 rounded-full">0% Fee</span>
+</h2>
+</div>
+<div class="text-left sm:text-right">
+<span class="font-caption uppercase text-concrete-gray font-bold tracking-wider">Total Settlement</span>
+<div class="font-display-hero-mobile text-headline-lg-mobile sm:text-headline-md text-carbon font-extrabold" style="font-family: &quot;Bricolage Grotesque&quot;, sans-serif !important; font-weight: 800;">
+                Rp 148.000
+              </div>
+</div>
+</div>
+<!-- QR Container & Instructions -->
+<div class="flex flex-col md:flex-row items-center gap-space-lg py-space-sm">
+<!-- The QR Box -->
+<div class="flex-shrink-0 bg-paper-white p-3 border border-carbon rounded-2xl flex flex-col items-center justify-center relative bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:12px_12px]">
+<!-- Clean High-Contrast Geometric QR SVG (Accurate to Indonesian QRIS standard layout) -->
+<div class="w-56 h-56 bg-paper-white border border-carbon rounded-xl p-3 flex flex-col items-center justify-between">
+<div class="w-full flex items-center justify-between border-b border-carbon/20 pb-1">
+<span class="font-display-hero-mobile text-[12px] font-black tracking-tight text-carbon">QRIS</span>
+<span class="text-[9px] font-mono font-bold text-carbon">XYZPEDIA DIRECT</span>
+</div>
+<div class="w-44 h-44 relative bg-paper-white flex items-center justify-center p-1">
+<!-- Custom sharp SVG QR pattern -->
+<svg class="w-full h-full text-carbon" fill="currentColor" viewBox="0 0 100 100">
+<!-- Top-Left Finder -->
+<rect fill="currentColor" height="28" rx="2" width="28" x="0" y="0"></rect>
+<rect fill="#FFFFFF" height="20" rx="1" width="20" x="4" y="4"></rect>
+<rect fill="currentColor" height="12" rx="1" width="12" x="8" y="8"></rect>
+<!-- Top-Right Finder -->
+<rect fill="currentColor" height="28" rx="2" width="28" x="72" y="0"></rect>
+<rect fill="#FFFFFF" height="20" rx="1" width="20" x="76" y="4"></rect>
+<rect fill="currentColor" height="12" rx="1" width="12" x="80" y="8"></rect>
+<!-- Bottom-Left Finder -->
+<rect fill="currentColor" height="28" rx="2" width="28" x="0" y="72"></rect>
+<rect fill="#FFFFFF" height="20" rx="1" width="20" x="4" y="76"></rect>
+<rect fill="currentColor" height="12" rx="1" width="12" x="8" y="80"></rect>
+<!-- Dense QR Bits & Timing Tracks -->
+<rect height="4" width="4" x="32" y="4"></rect>
+<rect height="4" width="4" x="40" y="4"></rect>
+<rect height="4" width="8" x="48" y="4"></rect>
+<rect height="4" width="4" x="60" y="4"></rect>
+<rect height="4" width="8" x="32" y="12"></rect>
+<rect height="4" width="4" x="44" y="12"></rect>
+<rect height="4" width="4" x="52" y="12"></rect>
+<rect height="4" width="4" x="64" y="12"></rect>
+<rect height="8" width="4" x="4" y="32"></rect>
+<rect height="4" width="4" x="12" y="32"></rect>
+<rect height="4" width="4" x="20" y="36"></rect>
+<!-- Center Clustered Data Matrix -->
+<rect height="4" width="4" x="32" y="24"></rect>
+<rect height="4" width="8" x="40" y="24"></rect>
+<rect height="8" width="4" x="52" y="24"></rect>
+<rect height="4" width="4" x="60" y="24"></rect>
+<rect height="8" width="8" x="32" y="32"></rect>
+<rect height="4" width="4" x="44" y="36"></rect>
+<rect height="4" width="8" x="56" y="32"></rect>
+<rect height="8" width="4" x="68" y="36"></rect>
+<rect height="8" width="4" x="32" y="44"></rect>
+<rect height="4" width="4" x="40" y="44"></rect>
+<rect height="4" width="8" x="48" y="44"></rect>
+<rect height="8" width="4" x="60" y="44"></rect>
+<rect height="4" width="8" x="36" y="56"></rect>
+<rect height="8" width="4" x="48" y="52"></rect>
+<rect height="4" width="4" x="56" y="56"></rect>
+<rect height="4" width="8" x="64" y="52"></rect>
+<!-- Bottom Right Data Payload -->
+<rect height="4" width="4" x="72" y="32"></rect>
+<rect height="4" width="8" x="80" y="32"></rect>
+<rect height="4" width="4" x="92" y="36"></rect>
+<rect height="8" width="8" x="76" y="40"></rect>
+<rect height="4" width="8" x="88" y="44"></rect>
+<rect height="4" width="4" x="32" y="68"></rect>
+<rect height="8" width="4" x="40" y="68"></rect>
+<rect height="4" width="8" x="48" y="72"></rect>
+<rect height="4" width="4" x="60" y="68"></rect>
+<rect height="4" width="8" x="32" y="80"></rect>
+<rect height="8" width="4" x="44" y="84"></rect>
+<rect height="4" width="4" x="52" y="80"></rect>
+<rect height="4" width="8" x="60" y="84"></rect>
+<rect height="4" width="8" x="72" y="72"></rect>
+<rect height="8" width="4" x="84" y="72"></rect>
+<rect height="4" width="4" x="92" y="72"></rect>
+<rect height="4" width="4" x="76" y="84"></rect>
+<rect height="8" width="8" x="84" y="84"></rect>
+<rect height="4" width="4" x="96" y="80"></rect>
+<!-- Center Emblem Badge -->
+<rect fill="#000000" height="16" rx="3" width="16" x="42" y="42"></rect>
+<rect fill="#FB4903" height="12" rx="2" width="12" x="44" y="44"></rect>
+<path d="M47 50 L53 50 M50 47 L50 53" stroke="#FFFFFF" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="text-[9px] font-caption text-carbon font-semibold uppercase tracking-tight">
+                  NMID: ID1020084920194
+                </div>
+</div>
+<div class="text-caption text-concrete-gray font-bold uppercase mt-2">
+                Static Lock: Exact Rp 148.000
+              </div>
+</div>
+<!-- Quick Instructions & Compatible E-Wallets -->
+<div class="flex flex-col justify-between h-full gap-space-sm">
+<div class="space-y-space-xs">
+<h3 class="font-headline-md text-body-lg font-bold text-carbon">
+                  Scan With Any Indonesian App
+                </h3>
+<p class="font-body-md text-caption text-carbon">
+                  Open GoPay, OVO, DANA, ShopeePay, BCA Mobile, Livin' Mandiri, BRImo, or BNI Mobile. Point your camera at the QR code.
+                </p>
+<!-- Supported Badges Pill Cloud -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">BCA Mobile</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">GoPay</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">DANA</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">OVO</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">ShopeePay</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">Livin' Mandiri</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">BRImo</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full text-[11px] font-label-pill text-carbon">BNI Mobile</span>
+</div>
+</div>
+<!-- Interactive Actions for QR -->
+<div class="flex flex-col sm:flex-row gap-2 pt-space-xs">
+<button class="bg-paper-white hover:bg-soft-mist text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-caption flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" onclick="downloadMockQR()">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                  Download QR Code
+                </button>
+<button class="bg-carbon text-paper-white border border-carbon px-4 py-2 rounded-full font-label-pill text-caption flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" onclick="triggerPaymentSettled()">
+<span class="material-symbols-outlined text-[16px] text-mint-pop" data-icon="sync">sync</span>
+                  Check Payment Status Now
+                </button>
+</div>
+</div>
+</div>
+<!-- Live Webhook Telemetry Bar -->
+<div class="bg-soft-mist border border-carbon rounded-xl p-3 flex items-center justify-between text-caption font-mono">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-ember animate-ping"></span>
+<span class="text-carbon font-semibold">Listening for payment webhook in background...</span>
+</div>
+<span class="text-carbon/60 hidden sm:inline">Port 443 TLS 1.3</span>
+</div>
+</div>
+<!-- 3. Virtual Account Fallback Option Card -->
+<div class="bg-lavender border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-sm relative brutal-card-hover">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-voltage-violet text-[22px]" data-icon="account_balance">account_balance</span>
+<h3 class="font-headline-md text-body-lg font-bold text-carbon">
+                Alternative: Bank Virtual Account (BCA)
+              </h3>
+</div>
+<span class="bg-paper-white border border-carbon text-carbon font-label-pill text-[11px] px-2.5 py-0.5 rounded-full">
+              Automated Check
+            </span>
+</div>
+<p class="font-body-md text-caption text-carbon">
+            Prefer mobile banking transfer without camera? Transfer the exact amount directly to your dedicated guest settlement VA number:
+          </p>
+<div class="bg-paper-white border border-carbon rounded-xl p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+<div>
+<span class="font-caption text-concrete-gray uppercase font-bold text-[11px] block">BCA Virtual Account Number</span>
+<span class="font-display-hero-mobile text-subheading font-bold tracking-wider text-carbon" id="vaNumber">
+                8271 0812 9841 2891
+              </span>
+</div>
+<button class="bg-carbon hover:bg-carbon/90 text-paper-white border border-carbon px-4 py-2 rounded-full font-label-pill text-caption flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" id="copyBtn" onclick="copyVANumber()">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+<span>Copy VA Number</span>
+</button>
+</div>
+<div class="flex items-center gap-1 text-[11px] font-caption text-carbon">
+<span class="material-symbols-outlined text-[14px] text-mint-pop" data-icon="check_circle">check_circle</span>
+            Virtual account expires concurrently with QRIS timer. No admin confirmation slip upload required.
+          </div>
+</div>
+<!-- 4. Interactive Simulation & Status Controls -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-pill text-caption uppercase text-carbon font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-voltage-violet text-[18px]" data-icon="developer_mode">developer_mode</span>
+              Gateway State Simulator
+            </span>
+<span class="text-caption text-concrete-gray">Click to preview live outcomes</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+<button class="bg-mint-pop hover:opacity-90 text-carbon border border-carbon py-2 px-3 rounded-full font-label-pill text-caption text-center hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" onclick="triggerPaymentSettled()">
+              Simulate Success ✓
+            </button>
+<button class="bg-soft-mist hover:bg-concrete-gray text-carbon border border-carbon py-2 px-3 rounded-full font-label-pill text-caption text-center hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" onclick="triggerTimeout()">
+              Simulate Expiry ⏱
+            </button>
+<button class="col-span-2 sm:col-span-1 bg-paper-white hover:bg-soft-mist text-carbon border border-carbon py-2 px-3 rounded-full font-label-pill text-caption text-center hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" onclick="resetGateway()">
+              Reset Gateway ↺
+            </button>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Order & Delivery Telemetry + Success Card (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- Order Specification Card -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-md" id="orderTelemetry">
+<div class="flex items-center justify-between border-b border-carbon pb-space-sm">
+<h2 class="font-headline-md text-subheading font-bold text-carbon" style="font-family: &quot;Bricolage Grotesque&quot;, sans-serif !important; font-weight: 700;">
+              Order Specification
+            </h2>
+<span class="bg-mint-pop text-carbon border border-carbon px-2.5 py-0.5 rounded-full font-label-pill text-[11px] uppercase">
+              Server Verified ✓
+            </span>
+</div>
+<!-- Product Item Breakdown -->
+<div class="flex items-start gap-space-sm bg-sky-wash/50 border border-carbon rounded-xl p-3">
+<div class="w-12 h-12 rounded-xl bg-voltage-violet border border-carbon flex items-center justify-center text-paper-white flex-shrink-0">
+<span class="material-symbols-outlined text-[28px]" data-icon="sports_esports">sports_esports</span>
+</div>
+<div class="flex-grow">
+<span class="text-[11px] font-caption uppercase tracking-wider text-concrete-gray font-bold">Game Item</span>
+<h4 class="font-headline-md text-body-lg font-bold text-carbon leading-tight">
+                Mobile Legends: Bang Bang
+              </h4>
+<p class="font-body-md text-caption text-ember font-bold">
+                706 Diamonds (625 + 81 Bonus)
+              </p>
+</div>
+</div>
+<!-- Destination Account Details -->
+<div class="space-y-space-xs font-body-md text-caption">
+<div class="flex justify-between py-1.5 border-b border-carbon/10">
+<span class="text-carbon/70">Game Recipient ID:</span>
+<span class="font-bold text-carbon">kyroslayer99 (Zone: 2140)</span>
+</div>
+<div class="flex justify-between py-1.5 border-b border-carbon/10">
+<span class="text-carbon/70">Target Server:</span>
+<span class="font-bold text-carbon">ID-Server-Asia 04</span>
+</div>
+<div class="flex justify-between py-1.5 border-b border-carbon/10">
+<span class="text-carbon/70">WhatsApp Dispatch:</span>
+<span class="font-bold text-carbon">0812 9841 2891</span>
+</div>
+<div class="flex justify-between py-1.5 border-b border-carbon/10">
+<span class="text-carbon/70">Email Invoice Delivery:</span>
+<span class="font-bold text-carbon">kyroslayer@gmail.com</span>
+</div>
+<div class="flex justify-between py-1.5 border-b border-carbon/10">
+<span class="text-carbon/70">Dispatch Guarantee:</span>
+<span class="font-bold text-mint-pop bg-carbon px-2 py-0.5 rounded">0.4 - 5.0 seconds</span>
+</div>
+<div class="flex justify-between py-1.5">
+<span class="text-carbon/70">Service Fee:</span>
+<span class="font-bold text-carbon">Rp 0 (Complimentary)</span>
+</div>
+</div>
+<!-- Total Calculation Callout -->
+<div class="bg-carbon text-paper-white p-3 rounded-xl flex items-center justify-between font-label-pill">
+<span class="text-caption uppercase tracking-wider">Total Payable</span>
+<span class="font-headline-md text-subheading text-sunburst font-black" style="font-family: &quot;Bricolage Grotesque&quot;, sans-serif !important; font-weight: 800;">Rp 148.000</span>
+</div>
+</div>
+<!-- DYNAMIC DISPATCH SUCCESS STATE PANEL (Hidden until settled or simulated) -->
+<div class="hidden bg-mint-pop border border-carbon rounded-2xl p-space-lg flex-col gap-space-sm relative" id="successPanel">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[32px] text-carbon" data-icon="task_alt">task_alt</span>
+<div>
+<h3 class="font-display-hero-mobile text-subheading font-extrabold text-carbon">
+                Payment Settled ✓
+              </h3>
+<p class="font-body-md text-caption text-carbon font-semibold">
+                Diamonds successfully dispatched to kyroslayer99!
+              </p>
+</div>
+</div>
+<div class="bg-paper-white border border-carbon rounded-xl p-3 space-y-1.5 font-mono text-[11px] text-carbon mt-1">
+<div class="flex justify-between">
+<span class="text-carbon/60">Moonton TxHash:</span>
+<span class="font-bold truncate max-w-[180px]">0x992b8d20384aa921f92</span>
+</div>
+<div class="flex justify-between">
+<span class="text-carbon/60">Settlement Time:</span>
+<span class="font-bold">14:22:09 WIB (0.38s)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-carbon/60">Receipt Status:</span>
+<span class="font-bold text-mint-pop bg-carbon px-1.5 rounded">Delivered via WhatsApp</span>
+</div>
+</div>
+<div class="flex gap-2 pt-2">
+<a class="flex-1 bg-carbon text-paper-white border border-carbon py-2 rounded-full font-label-pill text-caption text-center flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-transform" href="javascript:void(0)" onclick="alert('Downloading official XYZPEDIA e-receipt PDF...')">
+<span class="material-symbols-outlined text-[16px]" data-icon="receipt_long">receipt_long</span>
+              Download PDF Invoice
+            </a>
+<button class="bg-paper-white text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-caption hover:scale-[1.02] active:scale-[0.98] transition-transform" onclick="window.location.reload()">
+              New Top Up
+            </button>
+</div>
+</div>
+<!-- Recovery Guide Card (Self-Service & Admin WhatsApp) -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ember text-[22px]" data-icon="support_agent">support_agent</span>
+<h3 class="font-headline-md text-body-lg font-bold text-carbon">
+              Payment Settlement Assurance
+            </h3>
+</div>
+<p class="font-body-md text-caption text-carbon">
+            Did your balance get deducted while the screen didn't update within 60 seconds? Our autonomous reconciliation listener will still fulfill the order or auto-refund.
+          </p>
+<div class="pt-1 flex flex-col sm:flex-row gap-2">
+<a class="bg-mint-pop hover:opacity-90 text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-caption flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" href="https://wa.me/6281298412891?text=Halo%20XYZPEDIA,%20saya%20sudah%20transfer%20Order%20XYZ-90821-MLBB%20Rp148.000" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat">chat</span>
+              WhatsApp CS Priority (24/7)
+            </a>
+<button class="bg-soft-mist hover:bg-concrete-gray text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-caption flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] transition-transform brutal-btn" onclick="checkManualReconciliation()">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+              Force Check
+            </button>
+</div>
+</div>
+<!-- Trust & Security Stamp Cluster -->
+<div class="flex items-center justify-around p-3 border border-carbon rounded-2xl bg-paper-white text-carbon">
+<div class="flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-[24px] text-voltage-violet" data-icon="verified_user">verified_user</span>
+<span class="text-[10px] font-caption font-bold uppercase mt-1">Official Moonton</span>
+</div>
+<div class="h-6 w-[1px] bg-carbon"></div>
+<div class="flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-[24px] text-ember" data-icon="lock">lock</span>
+<span class="text-[10px] font-caption font-bold uppercase mt-1">256-Bit Escrow</span>
+</div>
+<div class="h-6 w-[1px] bg-carbon"></div>
+<div class="flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-[24px] text-mint-pop" data-icon="bolt">bolt</span>
+<span class="text-[10px] font-caption font-bold uppercase mt-1">0.4s Automated</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. TACTILE FAQ & REASSURANCE STRIP -->
+<div class="mt-space-2xl border-t border-carbon pt-space-xl">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<span class="text-caption font-label-pill text-voltage-violet uppercase tracking-wider font-bold">Self Service FAQs</span>
+<h2 class="font-headline-md text-headline-md text-carbon" style="font-weight: 800; letter-spacing: -0.02em; font-family: &quot;Bricolage Grotesque&quot;, sans-serif !important;">
+            Frequent Questions About Instant Settlement
+          </h2>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="bg-paper-white border border-carbon p-space-md rounded-2xl space-y-space-xs brutal-faq-hover">
+<h4 class="font-label-pill text-body-lg text-carbon font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-ember text-[18px]" data-icon="help_center">help_center</span>
+            Apakah perlu upload bukti transfer?
+          </h4>
+<p class="font-body-md text-caption text-carbon">
+            Tidak perlu. Sistem QRIS XYZPEDIA terhubung langsung ke switch payment gateway Bank Indonesia. Begitu dana Anda masuk, mutasi terdeteksi otomatis dalam 0.4 detik tanpa verifikasi manual staf.
+          </p>
+</div>
+<div class="bg-paper-white border border-carbon p-space-md rounded-2xl space-y-space-xs brutal-faq-hover">
+<h4 class="font-label-pill text-body-lg text-carbon font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-voltage-violet text-[18px]" data-icon="timer_off">timer_off</span>
+            Bagaimana jika waktu pembayaran habis?
+          </h4>
+<p class="font-body-md text-caption text-carbon">
+            Jika timer 15 menit berakhir sebelum transfer, QRIS kedaluwarsa demi keamanan nominal. Anda cukup membuat pesanan ulang untuk mendapatkan kode bayar baru yang aktif.
+          </p>
+</div>
+<div class="bg-paper-white border border-carbon p-space-md rounded-2xl space-y-space-xs brutal-faq-hover">
+<h4 class="font-label-pill text-body-lg text-carbon font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-mint-pop text-[18px]" data-icon="policy">policy</span>
+            Garansi uang kembali 100%?
+          </h4>
+<p class="font-body-md text-caption text-carbon">
+            Pasti. Jika server game mengalami gangguan pemeliharaan (maintenance) dan item gagal masuk, saldo Anda dikembalikan penuh ke rekening asal via CS WhatsApp 24/7.
+          </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Global Footer (Shared Component JSON Blueprint) -->
+<footer class="bg-carbon dark:bg-inverse-surface border-t border-carbon dark:border-outline text-paper-white dark:text-inverse-on-surface full-width shadow-none mt-space-3xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md border-b border-paper-white/20 pb-space-lg">
+<div>
+<div class="flex items-center gap-1.5 font-black text-2xl tracking-tight mb-3">
+  <span class="bg-white text-black px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span>
+  <span class="text-white">PEDIA</span>
+</div>
+<p class="font-body-md text-caption text-soft-mist max-w-md mt-1">
+            Official instant top up settlement terminal. 24-hour non-stop automated dispatch for games, vouchers, and premium subscriptions.
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-md">
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-sunburst font-label-pill" href="#">QRIS Instant</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="https://wa.me/6281298412891" rel="noopener noreferrer" target="_blank">Customer Care WhatsApp</a>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row justify-between items-center gap-space-sm text-caption font-caption text-soft-mist/70">
+<div>
+          © 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.
+        </div>
+<div class="flex items-center gap-4">
+<span class="inline-flex items-center gap-1.5 text-mint-pop">
+<span class="w-2 h-2 rounded-full bg-mint-pop animate-ping"></span>
+            All API Gateways Operational
+          </span>
+<span class="text-concrete-gray">•</span>
+<span>Latency: 42ms</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- JAVASCRIPT: Realtime Timer, Simulation Toggles & Clipboard Handling -->
+<script>
+    // 1. Realistic 15-Minute Expiry Countdown
+    let timeRemaining = 14 * 60 + 52; // 14 mins 52 seconds
+    const countdownEl = document.getElementById('countdown');
+    const statusBadge = document.getElementById('statusBadge');
+    const statusText = document.getElementById('statusText');
+
+    const timerInterval = setInterval(() => {
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        triggerTimeout();
+        return;
+      }
+      timeRemaining--;
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+
+    // 2. VA Number Copy Micro-interaction
+    function copyVANumber() {
+      const va = '8271081298412891';
+      navigator.clipboard.writeText(va).then(() => {
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.innerHTML = `<span class="material-symbols-outlined text-[16px] text-mint-pop">check</span> Copied!`;
+        copyBtn.classList.remove('bg-carbon');
+        copyBtn.classList.add('bg-voltage-violet');
+        setTimeout(() => {
+          copyBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">content_copy</span> Copy VA Number`;
+          copyBtn.classList.add('bg-carbon');
+          copyBtn.classList.remove('bg-voltage-violet');
+        }, 2200);
+      });
+    }
+
+    // 3. Mock Download QR Code
+    function downloadMockQR() {
+      alert("QR Code Saved! You can now upload this image into GoPay, OVO, DANA, or any m-Banking app's 'Scan from Gallery' feature.");
+    }
+
+    // 4. Force Check Reconciliation
+    function checkManualReconciliation() {
+      const btn = event.currentTarget;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Checking Bank Switch...`;
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        alert("Telemetry Webhook check: No pending uncredited mutasi found for Rp 148.000. Please complete transfer or contact WhatsApp CS.");
+      }, 1200);
+    }
+
+    // 5. Simulation States
+    function triggerPaymentSettled() {
+      // Update status badge
+      statusBadge.classList.remove('bg-sunburst', 'radar-pulse');
+      statusBadge.classList.add('bg-mint-pop');
+      statusText.textContent = "PAYMENT SUCCESSFUL";
+
+      // Show success panel & scroll into view smoothly
+      const successPanel = document.getElementById('successPanel');
+      successPanel.classList.remove('hidden');
+      successPanel.classList.add('flex');
+      successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Telemetry sound or visual confirmation
+      console.log("[XYZPEDIA GATEWAY]: Moonton Dispatch Executed: 706 Diamonds assigned to ID 2140/kyroslayer99.");
+    }
+
+    function triggerTimeout() {
+      statusBadge.classList.remove('bg-sunburst', 'radar-pulse', 'bg-mint-pop');
+      statusBadge.classList.add('bg-error', 'text-paper-white');
+      statusText.textContent = "PAYMENT TIMED OUT";
+      countdownEl.textContent = "00:00";
+      countdownEl.classList.add('line-through');
+      alert("This QRIS settlement window has expired. Please refresh the page to spawn a fresh real-time transaction token.");
+    }
+
+    function resetGateway() {
+      window.location.reload();
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>

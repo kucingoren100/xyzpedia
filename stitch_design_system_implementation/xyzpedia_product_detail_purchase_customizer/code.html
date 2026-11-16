@@ -1,0 +1,747 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>XYZPEDIA — Mobile Legends Customizer &amp; Direct Top-Up</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS with Forms & Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#ffdad6",
+            "surface": "#f9f9f9",
+            "surface-tint": "#af3000",
+            "tertiary": "#005ea5",
+            "on-primary-fixed": "#3a0a00",
+            "secondary-container": "#6e5ef1",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "concrete-gray": "#CCCCCC",
+            "carbon": "#000000",
+            "tertiary-fixed": "#d3e4ff",
+            "primary": "#ab2e00",
+            "secondary-fixed": "#e4dfff",
+            "mint-pop": "#55DB9C",
+            "paper-white": "#FFFFFF",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-fixed-variant": "#004881",
+            "primary-fixed-dim": "#ffb59f",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#fdfcff",
+            "primary-fixed": "#ffdbd1",
+            "on-surface": "#1b1b1b",
+            "lavender": "#E9CCFF",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "on-background": "#1b1b1b",
+            "secondary": "#5542d7",
+            "surface-container-high": "#e8e8e8",
+            "inverse-on-surface": "#f1f1f1",
+            "outline-variant": "#e6beb2",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#f3f3f3",
+            "secondary-fixed-dim": "#c6bfff",
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "sky-wash": "#DCEEFF",
+            "inverse-primary": "#ffb59f",
+            "surface-bright": "#f9f9f9",
+            "electric-blue": "#4DA2FF",
+            "surface-variant": "#e2e2e2",
+            "ember": "#FB4903",
+            "surface-container-highest": "#e2e2e2",
+            "voltage-violet": "#5C4ADE",
+            "on-surface-variant": "#5c4038",
+            "on-tertiary-fixed": "#001c38",
+            "sunburst": "#FFD731",
+            "on-secondary-container": "#fffbff",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container": "#eeeeee",
+            "background": "#f9f9f9",
+            "on-secondary-fixed": "#160066",
+            "inverse-surface": "#303030",
+            "tertiary-container": "#0076cf",
+            "outline": "#916f66",
+            "on-primary": "#ffffff",
+            "surface-dim": "#dadada",
+            "soft-mist": "#E9E9E9",
+            "primary-container": "#d63c00"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.5rem",
+            "space-hero": "11.25rem",
+            "margin": "1rem",
+            "margin-desktop": "3rem",
+            "gutter": "1rem",
+            "space-3xl": "5rem",
+            "space-2xl": "3rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "2rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-pill": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "display-hero": ["Bricolage Grotesque"],
+            "body-lg": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "subheading": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Invariant: Neo-brutalist zero-elevation rule */
+    * {
+      box-shadow: none !important;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined[data-weight="fill"] {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marqueeScroll 24s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+<body class="bg-surface text-carbon font-body-md text-body-md selection:bg-sunburst selection:text-carbon min-h-screen pb-32">
+<!-- ========================================================================= -->
+<!-- 1. TOP TICKER MARQUEE STRIP -->
+<!-- ========================================================================= -->
+<style id="font-override-rules">
+  body, p, span, input, button, label, td, th, a, div {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6, .font-display, [class*="headline"], [class*="display"], .font-display-hero, .font-headline-xl, .font-headline-md, .font-headline-lg, .font-black, .font-extrabold, [class*="price"], span.font-extrabold, span.font-black {
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif !important;
+  }
+
+  /* Pop Brutalism Micro-interactions & Tactile Hover States */
+  .nominal-card, .payment-option, .sub-card {
+    transition: transform 150ms cubic-bezier(0.2, 0, 0, 1), box-shadow 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms ease !important;
+    cursor: pointer !important;
+  }
+  .nominal-card:hover, .payment-option:hover, .sub-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+  }
+  .nominal-card:active, .payment-option:active, .sub-card:active {
+    transform: translateY(0px) !important;
+    box-shadow: 1px 1px 0px #000000 !important;
+  }
+  .nominal-card.active-card, .active-card {
+    box-shadow: 3px 3px 0px #000000 !important;
+  }
+  .nominal-card.active-card:hover {
+    transform: translateY(-4px) rotate(-1deg) !important;
+    box-shadow: 5px 5px 0px #000000 !important;
+  }
+  .payment-option:has(input:checked) {
+    box-shadow: 3px 3px 0px #000000 !important;
+  }
+  .btn-tactile {
+    transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease !important;
+  }
+  .btn-tactile:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 3px 3px 0px #000000 !important;
+  }
+  .btn-tactile:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0px 0px 0px #000000 !important;
+  }
+</style><header class="w-full bg-carbon text-paper-white h-9 flex items-center overflow-hidden border-b border-carbon select-none z-50 relative"><div class="animate-marquee whitespace-nowrap flex items-center"><div class="flex items-center space-x-8 px-4 font-marquee text-marquee uppercase tracking-wider"><span>⚡ 100% GUEST-DIRECT DISPATCH</span><span>•</span><span>AUTOMATED API INJECTION IN 0.4S</span><span>•</span><span>NO REGISTRATION / NO LOGIN REQUIRED</span><span>•</span><span>QRIS 0% ADMIN FEE</span><span>•</span><span>100% REFUND GUARANTEE</span><span>•</span><span>OVER 500,000 VERIFIED TRANSACTIONS</span><span>★</span></div><div aria-hidden="true" class="flex items-center space-x-8 px-4 font-marquee text-marquee uppercase tracking-wider"><span>⚡ 100% GUEST-DIRECT DISPATCH</span><span>•</span><span>AUTOMATED API INJECTION IN 0.4S</span><span>•</span><span>NO REGISTRATION / NO LOGIN REQUIRED</span><span>•</span><span>QRIS 0% ADMIN FEE</span><span>•</span><span>100% REFUND GUARANTEE</span><span>•</span><span>OVER 500,000 VERIFIED TRANSACTIONS</span><span>★</span></div></div></header>
+<!-- ========================================================================= -->
+<!-- SHARED COMPONENT: FLOATING PILL TOP NAV BAR -->
+<!-- ========================================================================= -->
+<nav class="fixed top-12 left-1/2 -translate-x-1/2 w-[94%] max-w-6xl z-40 flex items-center justify-between px-6 py-3 bg-paper-white rounded-full border border-carbon"><div class="flex items-center gap-6"><a href="#" class="flex items-center gap-1.5 font-black text-2xl tracking-tight cursor-pointer"><span class="bg-black text-white px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span><span class="text-black">PEDIA</span></a><div class="hidden md:flex items-center space-x-1"><a class="px-3.5 py-1.5 rounded-full text-carbon font-label-pill text-label-pill bg-soft-mist border border-carbon transition-colors" href="#">Games</a><a class="px-3.5 py-1.5 rounded-full text-carbon font-label-pill text-label-pill hover:bg-soft-mist transition-colors" href="#">Subscriptions</a><a class="px-3.5 py-1.5 rounded-full text-carbon font-label-pill text-label-pill hover:bg-soft-mist transition-colors" href="#">Vouchers</a></div></div><div class="flex items-center gap-3"><div class="hidden lg:flex items-center relative w-72 lg:w-80"><span class="material-symbols-outlined text-sm absolute left-3.5 text-carbon/60 pointer-events-none">search</span><input class="w-full bg-soft-mist hover:bg-concrete-gray/30 focus:bg-paper-white border border-carbon rounded-full pl-9 pr-12 py-2 text-xs focus:ring-0 focus:border-carbon placeholder:text-carbon/60 font-body-md transition-colors text-carbon" placeholder="Cari game, diamond, voucher, stream..." type="text"><span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] bg-paper-white px-1.5 py-0.5 rounded border border-carbon font-bold text-carbon pointer-events-none select-none">⌘K</span></div><a class="bg-carbon text-paper-white border border-carbon rounded-full px-4 py-1.5 font-label-pill text-label-pill hover:scale-102 transition-transform flex items-center gap-1.5" href="#"><span class="material-symbols-outlined text-sm text-sunburst">local_shipping</span><span>TRACK ORDER</span></a></div></nav>
+<!-- ========================================================================= -->
+<!-- MAIN CONTAINER -->
+<!-- ========================================================================= -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-16">
+<!-- BREADCRUMB & LIVE STATUS BAR -->
+<div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+<div class="inline-flex items-center gap-2 bg-paper-white border border-carbon rounded-full px-4 py-1.5 text-xs font-label-pill text-label-pill">
+<a class="text-carbon/70 hover:text-carbon" href="#">Home</a>
+<span class="text-carbon/40">/</span>
+<a class="text-carbon/70 hover:text-carbon" href="#">Game Top-Up</a>
+<span class="text-carbon/40">/</span>
+<span class="text-carbon font-bold">Mobile Legends: Bang Bang (Global &amp; Indo)</span>
+</div>
+<!-- Live API Status sticker badge -->
+<div class="inline-flex items-center gap-2 bg-mint-pop border border-carbon rounded-full px-3.5 py-1 text-xs font-label-pill text-label-pill -rotate-1"><span class="w-2 h-2 rounded-full bg-carbon animate-pulse"></span><span class="uppercase tracking-wider font-bold">MOONTON API: 100% OPERATIONAL (Latency 0.4s)</span></div>
+</div>
+<!-- DUAL PRODUCT MODE SWITCHER (Tactile Pill Segment) -->
+<section class="mb-10 bg-soft-mist border border-carbon rounded-3xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3"><div class="flex items-center gap-2 px-2"><span class="material-symbols-outlined text-ember text-xl">tune</span><span class="font-label-pill text-label-pill uppercase text-carbon font-bold">Customizer Mode:</span></div><div class="grid grid-cols-2 gap-2 w-full sm:w-auto"><button class="bg-carbon text-paper-white border border-carbon rounded-full px-5 py-2 font-label-pill text-label-pill uppercase flex items-center justify-center gap-2 transition-transform" id="btn-mode-game"><span class="material-symbols-outlined text-base text-sunburst">sports_esports</span><span>🎮 GAME TOP-UP (MLBB)</span></button><button class="bg-paper-white text-carbon hover:bg-lavender border border-carbon rounded-full px-5 py-2 font-label-pill text-label-pill uppercase flex items-center justify-center gap-2 transition-transform" id="btn-mode-sub"><span class="material-symbols-outlined text-base">live_tv</span><span>🎬 SUBSCRIPTION (NETFLIX)</span></button></div><div class="hidden lg:flex items-center gap-2 text-xs font-body-md text-carbon/80 pr-3 font-medium"><span class="w-1.5 h-1.5 bg-ember rounded-full animate-pulse"></span><span>⚡ Instant Voucher &amp; Direct Server Injection</span></div></section>
+<!-- ======================================================================= -->
+<!-- MAIN PRODUCT CUSTOMIZER TWO-COLUMN BENTO -->
+<!-- ======================================================================= -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- ===================================================================== -->
+<!-- LEFT COLUMN: PRODUCT IDENTITY, ID GUIDE & SECURITY GUARANTEES -->
+<!-- ===================================================================== -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- Product Identity Hero Card -->
+<article class="bg-sky-wash border border-carbon rounded-3xl p-6 relative overflow-hidden"><div class="absolute -top-3 -right-3 bg-sunburst text-carbon font-label-pill text-[11px] uppercase tracking-wider px-4 py-1.5 rounded-full border border-carbon rotate-6 font-bold">Official Moonton Partner</div><div class="flex flex-col items-center sm:items-start text-center sm:text-left gap-4"><div class="relative w-28 h-28 rounded-2xl border border-carbon bg-paper-white p-1.5 shrink-0"><img class="w-full h-full object-cover rounded-xl border border-carbon" data-alt="Mobile Legends Bang Bang official game icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6-0uxk-VASDuRmTD9RZ-cl3d1H4U9oS4OQbh9D9npxHzIe0u6mykJ8aRqt5rvCvQHzymv47FOaRveaSthMx_-1mptwSxn2KgCWw43D2LXRkS_eATUUBmR7OFHbFtBNsK2UPyzHQw8x2KLgWhFpS1DZNswWt4kL-WuCyYwUYA4V3HC66vBhJvFU2Fd9BDF5OWGMU-pLi9EkrDyY798_cpTceHAbZjEldOgRMTMlb0"><span class="absolute -bottom-2 -right-2 bg-ember text-paper-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-carbon">MLBB</span></div><div><span class="text-xs uppercase tracking-widest font-label-pill text-carbon/70 block mb-1 font-bold">Moonton Games Official</span><h1 class="font-headline-md text-headline-md text-carbon leading-tight">Mobile Legends: Bang Bang</h1><p class="text-xs text-carbon/80 mt-1 font-body-md">Diamonds &amp; Weekly Diamond Pass Direct Top-Up</p></div></div><div class="grid grid-cols-2 gap-2 mt-5"><div class="bg-paper-white border border-carbon rounded-2xl p-2.5 flex items-center gap-2"><span class="material-symbols-outlined text-ember text-lg">bolt</span><div><p class="text-[11px] font-bold text-carbon">0.4s Dispatch</p><p class="text-[10px] text-carbon/70">Automated Direct API</p></div></div><div class="bg-paper-white border border-carbon rounded-2xl p-2.5 flex items-center gap-2"><span class="material-symbols-outlined text-sunburst text-lg" data-weight="fill">star</span><div><p class="text-[11px] font-bold text-carbon">4.9 / 5.0 Rating</p><p class="text-[10px] text-carbon/70">142k+ Top-Ups</p></div></div></div><div class="mt-4 pt-4 border-t border-carbon/20 flex items-center justify-between text-xs font-body-md"><span class="text-carbon/70">Platform Availability:</span><span class="font-bold bg-paper-white px-2 py-0.5 rounded-full border border-carbon">Android / iOS / PC</span></div></article>
+<!-- Visual "How to Top-Up" Guide Card -->
+<article class="bg-paper-white border border-carbon rounded-3xl p-6">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md text-lg text-carbon">How to Top-Up Fast</h2>
+<span class="bg-lavender text-carbon text-xs font-label-pill px-2.5 py-0.5 rounded-full border border-carbon">3 STEPS</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-ember text-paper-white flex items-center justify-center font-bold text-xs shrink-0 border border-carbon">1</span>
+<div>
+<p class="text-xs font-bold text-carbon">Input User ID &amp; Zone ID</p>
+<p class="text-[11px] text-carbon/70 font-body-md">Locate your numerical identifier in your game profile.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-sunburst text-carbon flex items-center justify-center font-bold text-xs shrink-0 border border-carbon">2</span>
+<div>
+<p class="text-xs font-bold text-carbon">Choose Diamonds Nominal</p>
+<p class="text-[11px] text-carbon/70 font-body-md">Select from 86 Diamonds up to Whale Tier bundles or Pass.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-mint-pop text-carbon flex items-center justify-center font-bold text-xs shrink-0 border border-carbon">3</span>
+<div>
+<p class="text-xs font-bold text-carbon">Scan QRIS or Pay VA</p>
+<p class="text-[11px] text-carbon/70 font-body-md">Diamonds appear in-game within 5 to 10 seconds.</p>
+</div>
+</div>
+</div>
+<!-- Interactive ID Finder Helper Pop-sheet Card -->
+<div class="mt-5 p-3.5 bg-soft-mist border border-carbon rounded-2xl flex items-center gap-3">
+<span class="material-symbols-outlined text-voltage-violet text-2xl shrink-0" data-icon="help_center">help_center</span>
+<div class="grow">
+<p class="text-xs font-bold text-carbon">Where is my User ID?</p>
+<p class="text-[11px] text-carbon/70">Click avatar in-game. E.g. <span class="font-mono bg-paper-white px-1 border border-carbon/40 rounded">12345678 (2140)</span></p>
+</div>
+<button class="px-2 py-1 bg-paper-white hover:bg-concrete-gray border border-carbon rounded-full text-[10px] font-label-pill uppercase">
+              Show Pic
+            </button>
+</div>
+</article>
+<!-- Security & Anti-Ban Guarantees Card -->
+<article class="bg-paper-white border border-carbon rounded-3xl p-6"><h3 class="font-headline-md text-base text-carbon mb-3 flex items-center gap-2 font-bold"><span class="material-symbols-outlined text-mint-pop" data-weight="fill">verified_user</span>XYZPEDIA Guest Guarantee</h3><ul class="space-y-2.5 text-xs font-body-md"><li class="flex items-center gap-2 text-carbon"><span class="material-symbols-outlined text-sm text-ember">check_circle</span><span>100% Anti-Ban Moonton Official Server Protocol</span></li><li class="flex items-center gap-2 text-carbon"><span class="material-symbols-outlined text-sm text-ember">check_circle</span><span>Instant Automatic Full Refund for Failed Dispatch</span></li><li class="flex items-center gap-2 text-carbon"><span class="material-symbols-outlined text-sm text-ember">check_circle</span><span>100% Guest Flow — Zero Password / Login Required</span></li><li class="flex items-center gap-2 text-carbon"><span class="material-symbols-outlined text-sm text-ember">check_circle</span><span>Tax &amp; VAT 11% Fully Inclusive in Displayed Price</span></li></ul></article>
+</aside>
+<!-- ===================================================================== -->
+<!-- RIGHT COLUMN: 4-STEP PURCHASE CUSTOMIZER FLOW -->
+<!-- ===================================================================== -->
+<section class="lg:col-span-8 space-y-6">
+<!-- =================================================================== -->
+<!-- STEP 1: ACCOUNT IDENTIFICATION -->
+<!-- =================================================================== -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-6 relative"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-2.5"><span class="w-8 h-8 rounded-full bg-ember text-paper-white flex items-center justify-center font-bold text-sm border border-carbon">01</span><div><h3 class="font-headline-md text-xl text-carbon leading-none">Enter Account Identification</h3><p class="text-xs text-carbon/70 font-body-md mt-0.5">Please double-check your User ID and Zone ID.</p></div></div><span class="hidden sm:inline-flex bg-soft-mist text-carbon text-xs font-label-pill px-3 py-1 rounded-full border border-carbon font-bold">Indonesia / Global Server</span></div><div class="grid grid-cols-1 sm:grid-cols-12 gap-3 mt-4"><div class="sm:col-span-5"><label class="block text-xs font-label-pill uppercase text-carbon mb-1.5" for="input-userid">User ID</label><div class="relative"><input class="w-full bg-paper-white border border-carbon rounded-full px-4 py-2.5 text-sm font-mono focus:border-2 focus:border-carbon focus:ring-0" id="input-userid" placeholder="e.g. 84920194" type="text" value="84920194"><span class="material-symbols-outlined absolute right-3 top-2.5 text-carbon/40 text-lg">badge</span></div></div><div class="sm:col-span-3"><label class="block text-xs font-label-pill uppercase text-carbon mb-1.5" for="input-zoneid">Zone ID</label><div class="relative"><input class="w-full bg-paper-white border border-carbon rounded-full px-4 py-2.5 text-sm font-mono focus:border-2 focus:border-carbon focus:ring-0" id="input-zoneid" placeholder="e.g. 2140" type="text" value="2140"><span class="material-symbols-outlined absolute right-3 top-2.5 text-carbon/40 text-lg">language</span></div></div><div class="sm:col-span-4 flex items-end"><button class="w-full bg-soft-mist hover:bg-concrete-gray text-carbon border border-carbon rounded-full py-2.5 px-4 font-label-pill text-label-pill uppercase transition-colors flex items-center justify-center gap-1.5 font-bold"><span class="material-symbols-outlined text-sm">sync</span><span>Re-Verify ID</span></button></div></div><div class="mt-4 p-3 bg-mint-pop/30 border border-carbon rounded-2xl flex items-center justify-between text-xs"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-mint-pop text-lg" data-weight="fill">check_circle</span><span class="font-body-md text-carbon">Player Verified: <strong class="font-bold text-carbon">kyroslayer99</strong> (Rank: Mythical Glory)</span></div><span class="text-[11px] font-label-pill bg-paper-white px-2.5 py-0.5 rounded-full border border-carbon uppercase font-bold text-carbon">Player Verified ✓</span></div></div>
+<!-- =================================================================== -->
+<!-- STEP 2: CHOOSE NOMINAL / DIAMONDS PACKAGE GRID -->
+<!-- =================================================================== -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-sunburst text-carbon flex items-center justify-center font-bold text-sm border border-carbon">
+                02
+              </span>
+<div>
+<h3 class="font-headline-md text-xl text-carbon leading-none">Select Diamonds or Pass</h3>
+<p class="text-xs text-carbon/70 font-body-md mt-0.5">Bonus diamonds are automatically credited via API.</p>
+</div>
+</div>
+<!-- Filter Pills -->
+<div class="flex flex-wrap gap-1">
+<button class="px-2.5 py-1 rounded-full bg-carbon text-paper-white text-xs font-label-pill uppercase border border-carbon">All</button>
+<button class="px-2.5 py-1 rounded-full bg-paper-white hover:bg-soft-mist text-carbon text-xs font-label-pill uppercase border border-carbon">Popular</button>
+<button class="px-2.5 py-1 rounded-full bg-paper-white hover:bg-soft-mist text-carbon text-xs font-label-pill uppercase border border-carbon">Passes</button>
+<button class="px-2.5 py-1 rounded-full bg-paper-white hover:bg-soft-mist text-carbon text-xs font-label-pill uppercase border border-carbon">VIP Bulk</button>
+</div>
+</div>
+<!-- Tactile Nominal Cards Grid (3 Columns) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+<!-- Nominal Card 1: 86 Diamonds -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<span class="absolute top-2 right-2 bg-sunburst text-carbon font-label-pill text-[10px] px-2 py-0.5 rounded-full border border-carbon uppercase">
+                Popular
+              </span>
+<div>
+<div class="flex items-center gap-1.5 text-tertiary mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-lg text-carbon font-bold">86</span>
+</div>
+<p class="text-xs font-bold text-carbon">78 + 8 Bonus</p>
+<p class="text-[11px] text-carbon/70">Fast In-Game Starlight</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 21.000</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 2: 172 Diamonds -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1.5 text-tertiary mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-lg text-carbon font-bold">172</span>
+</div>
+<p class="text-xs font-bold text-carbon">156 + 16 Bonus</p>
+<p class="text-[11px] text-carbon/70">Standard Battle Pack</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 42.000</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 3: 257 Diamonds (Best Value sticker) -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<span class="absolute top-2 right-2 bg-mint-pop text-carbon font-label-pill text-[10px] px-2 py-0.5 rounded-full border border-carbon uppercase">
+                Best Value
+              </span>
+<div>
+<div class="flex items-center gap-1.5 text-tertiary mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-lg text-carbon font-bold">257</span>
+</div>
+<p class="text-xs font-bold text-carbon">234 + 23 Bonus</p>
+<p class="text-[11px] text-carbon/70">Elite Skin Bundle</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 62.500</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 4: Weekly Diamond Pass (Special Hot Seller in Ember) -->
+<button class="nominal-card text-left p-4 rounded-2xl border-2 border-carbon bg-sunburst/20 hover:bg-sunburst/30 transition-all relative flex flex-col justify-between">
+<span class="absolute top-2 right-2 bg-ember text-paper-white font-label-pill text-[10px] px-2 py-0.5 rounded-full border border-carbon uppercase">
+                Hot Seller 🔥
+              </span>
+<div>
+<div class="flex items-center gap-1.5 text-ember mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="card_membership">card_membership</span>
+<span class="font-headline-md text-base text-carbon font-bold">Weekly Pass</span>
+</div>
+<p class="text-xs font-bold text-carbon">210 Dm + 70 COA</p>
+<p class="text-[11px] text-carbon/70">Daily 30 Diamonds Claims</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/20 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 27.500</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 5: 344 Diamonds -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1.5 text-tertiary mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-lg text-carbon font-bold">344</span>
+</div>
+<p class="text-xs font-bold text-carbon">312 + 32 Bonus</p>
+<p class="text-[11px] text-carbon/70">Epic Skin Ready</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 83.000</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 6: 706 Diamonds (ACTIVE SELECTED CARD) -->
+<button class="nominal-card active-card text-left p-4 rounded-2xl border-2 border-carbon bg-lavender transition-all relative flex flex-col justify-between -rotate-1">
+<span class="absolute top-2 right-2 bg-voltage-violet text-paper-white font-label-pill text-[10px] px-2 py-0.5 rounded-full border border-carbon uppercase">
+                Selected
+              </span>
+<div>
+<div class="flex items-center gap-1.5 text-voltage-violet mb-2">
+<span class="material-symbols-outlined text-xl" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-xl text-carbon font-black">706</span>
+</div>
+<p class="text-xs font-bold text-carbon">625 + 81 Bonus</p>
+<p class="text-[11px] text-carbon/80">Collector Event Ready</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/30 flex items-center justify-between">
+<span class="text-sm font-black text-carbon">Rp 168.000</span>
+<span class="w-5 h-5 rounded-full bg-carbon text-paper-white border border-carbon flex items-center justify-center text-[10px]">
+                  ✓
+                </span>
+</div>
+</button>
+<!-- Nominal Card 7: 2,195 Diamonds -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1.5 text-tertiary mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-lg text-carbon font-bold">2,195</span>
+</div>
+<p class="text-xs font-bold text-carbon">1,860 + 335 Bonus</p>
+<p class="text-[11px] text-carbon/70">Legendary Chests Tier</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 510.000</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 8: Twilight Pass -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<span class="absolute top-2 right-2 bg-electric-blue text-paper-white font-label-pill text-[10px] px-2 py-0.5 rounded-full border border-carbon uppercase">
+                Skin Unlock
+              </span>
+<div>
+<div class="flex items-center gap-1.5 text-electric-blue mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="shield">shield</span>
+<span class="font-headline-md text-base text-carbon font-bold">Twilight Pass</span>
+</div>
+<p class="text-xs font-bold text-carbon">Miya "Suzuhime" Skin</p>
+<p class="text-[11px] text-carbon/70">Levels &amp; Twilight Tokens</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 145.000</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+<!-- Nominal Card 9: 5,532 Diamonds (VIP Whale Tier) -->
+<button class="nominal-card text-left p-4 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist transition-all relative flex flex-col justify-between">
+<span class="absolute top-2 right-2 bg-carbon text-paper-white font-label-pill text-[10px] px-2 py-0.5 rounded-full border border-carbon uppercase">
+                VIP Tier 🐋
+              </span>
+<div>
+<div class="flex items-center gap-1.5 text-tertiary mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="diamond" data-weight="fill">diamond</span>
+<span class="font-headline-md text-lg text-carbon font-bold">5,532</span>
+</div>
+<p class="text-xs font-bold text-carbon">4,675 + 857 Bonus</p>
+<p class="text-[11px] text-carbon/70">Full Squad Gacha Spin</p>
+</div>
+<div class="mt-4 pt-2 border-t border-carbon/15 flex items-center justify-between">
+<span class="text-xs font-extrabold text-carbon">Rp 1.250.000</span>
+<span class="w-4 h-4 rounded-full border border-carbon flex items-center justify-center"></span>
+</div>
+</button>
+</div>
+</div>
+<!-- =================================================================== -->
+<!-- STEP 3: PAYMENT METHOD SELECTOR -->
+<!-- =================================================================== -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-mint-pop text-carbon flex items-center justify-center font-bold text-sm border border-carbon">
+                03
+              </span>
+<div>
+<h3 class="font-headline-md text-xl text-carbon leading-none">Choose Payment Rail</h3>
+<p class="text-xs text-carbon/70 font-body-md mt-0.5">Zero payment admin fees on select instant rails.</p>
+</div>
+</div>
+<!-- Category Pills -->
+<div class="flex flex-wrap gap-1">
+<button class="px-2.5 py-1 rounded-full bg-carbon text-paper-white text-xs font-label-pill uppercase border border-carbon">QRIS &amp; Wallets</button>
+<button class="px-2.5 py-1 rounded-full bg-paper-white hover:bg-soft-mist text-carbon text-xs font-label-pill uppercase border border-carbon">Virtual Account</button>
+<button class="px-2.5 py-1 rounded-full bg-paper-white hover:bg-soft-mist text-carbon text-xs font-label-pill uppercase border border-carbon">Convenience Store</button>
+</div>
+</div>
+<!-- Payment Options Grid -->
+<div class="space-y-2.5">
+<!-- Payment 1: QRIS (Selected) -->
+<label class="payment-option flex items-center justify-between p-3.5 rounded-2xl border-2 border-carbon bg-mint-pop/20 cursor-pointer">
+<div class="flex items-center gap-3">
+<input checked="" class="w-4 h-4 text-carbon focus:ring-0 border-carbon" name="payment_rail" type="radio">
+<div class="w-10 h-10 rounded-xl bg-paper-white border border-carbon flex items-center justify-center font-black text-xs text-carbon">
+                  QRIS
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-carbon">QRIS Instant (All E-Wallets &amp; Mobile Banking)</span>
+<span class="bg-mint-pop text-carbon text-[10px] font-label-pill uppercase px-2 py-0.5 rounded-full border border-carbon">
+                      Rp 0 Admin
+                    </span>
+</div>
+<p class="text-[11px] text-carbon/70 font-body-md">BCA Mobile, Livin, GoPay, OVO, ShopeePay, DANA (0.5s auto-detect)</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-extrabold text-carbon">Rp 168.000</span>
+<p class="text-[10px] text-mint-pop-dark font-bold text-carbon">Instant 24/7</p>
+</div>
+</label>
+<!-- Payment 2: BCA Virtual Account -->
+<label class="payment-option flex items-center justify-between p-3.5 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist cursor-pointer">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-carbon focus:ring-0 border-carbon" name="payment_rail" type="radio">
+<div class="w-10 h-10 rounded-xl bg-paper-white border border-carbon flex items-center justify-center font-black text-[11px] text-tertiary">
+                  BCA
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-carbon">BCA Virtual Account</span>
+</div>
+<p class="text-[11px] text-carbon/70 font-body-md">Automated 24/7 Verification via myBCA / KlikBCA</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-extrabold text-carbon">Rp 169.000</span>
+<p class="text-[10px] text-carbon/60">+Rp 1.000 Fee</p>
+</div>
+</label>
+<!-- Payment 3: Mandiri Virtual Account -->
+<label class="payment-option flex items-center justify-between p-3.5 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist cursor-pointer">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-carbon focus:ring-0 border-carbon" name="payment_rail" type="radio">
+<div class="w-10 h-10 rounded-xl bg-paper-white border border-carbon flex items-center justify-center font-black text-[10px] text-carbon">
+                  MANDIRI
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-carbon">Mandiri Livin' Virtual Account</span>
+</div>
+<p class="text-[11px] text-carbon/70 font-body-md">Pay instantly with Livin' Yellow by Mandiri</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-extrabold text-carbon">Rp 169.000</span>
+<p class="text-[10px] text-carbon/60">+Rp 1.000 Fee</p>
+</div>
+</label>
+<!-- Payment 4: E-Wallet Direct -->
+<label class="payment-option flex items-center justify-between p-3.5 rounded-2xl border border-carbon bg-paper-white hover:bg-soft-mist cursor-pointer">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-carbon focus:ring-0 border-carbon" name="payment_rail" type="radio">
+<div class="w-10 h-10 rounded-xl bg-paper-white border border-carbon flex items-center justify-center font-black text-[11px] text-electric-blue">
+                  WALLET
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-carbon">DANA / GoPay / ShopeePay Direct App Redirection</span>
+</div>
+<p class="text-[11px] text-carbon/70 font-body-md">One-tap push payment notification to mobile app</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-sm font-extrabold text-carbon">Rp 170.520</span>
+<p class="text-[10px] text-carbon/60">Fee: 1.5%</p>
+</div>
+</label>
+</div>
+</div>
+<!-- =================================================================== -->
+<!-- STEP 4: WHATSAPP / NOTIFICATION CONTACT -->
+<!-- =================================================================== -->
+<div class="bg-paper-white border border-carbon rounded-3xl p-6"><div class="flex items-center gap-2.5 mb-3"><span class="w-8 h-8 rounded-full bg-voltage-violet text-paper-white flex items-center justify-center font-bold text-sm border border-carbon">04</span><div><h3 class="font-headline-md text-xl text-carbon leading-none">Delivery Receipt &amp; Security Token</h3><p class="text-xs text-carbon/70 font-body-md mt-0.5">We will send your invoice, QR code &amp; top-up status to your WhatsApp &amp; Email.</p></div></div><div class="grid grid-cols-1 sm:grid-cols-12 gap-3 mt-4"><div class="sm:col-span-6"><label class="block text-xs font-label-pill uppercase text-carbon mb-1.5 flex items-center justify-between" for="input-wa"><span>WhatsApp Number *</span><span class="bg-mint-pop text-carbon text-[10px] px-1.5 py-0.2 rounded font-bold border border-carbon">WA AKTIF</span></label><div class="relative"><input class="w-full bg-paper-white border border-carbon rounded-full px-4 py-2.5 text-sm font-mono focus:border-2 focus:border-carbon focus:ring-0" id="input-wa" placeholder="e.g. 081298412891" type="tel" value="081298412891"><span class="material-symbols-outlined absolute right-3 top-2.5 text-carbon/40 text-lg">chat</span></div></div><div class="sm:col-span-6"><label class="block text-xs font-label-pill uppercase text-carbon mb-1.5" for="input-email">Email Address (Invoice)</label><div class="relative"><input class="w-full bg-paper-white border border-carbon rounded-full px-4 py-2.5 text-sm font-mono focus:border-2 focus:border-carbon focus:ring-0" id="input-email" placeholder="e.g. player@gmail.com" type="email" value="kyroslayer99@gmail.com"><span class="material-symbols-outlined absolute right-3 top-2.5 text-carbon/40 text-lg">mail</span></div></div></div><div class="mt-3 text-xs text-carbon/80 bg-soft-mist p-2.5 rounded-2xl border border-carbon flex items-center justify-between"><span>✓ Automated PDF Receipt &amp; Tax Token Attached</span><span class="font-bold font-mono">DISPATCH: BOT #04</span></div></div>
+<!-- =================================================================== -->
+<!-- ORDER SUMMARY & PROMO VOUCHER CARD -->
+<!-- =================================================================== -->
+<div class="bg-concrete-gray/30 border border-carbon rounded-3xl p-6"><h4 class="font-headline-md text-lg text-carbon mb-3 flex items-center gap-2 font-bold"><span class="material-symbols-outlined text-ember">receipt_long</span>Order Summary Breakdown</h4><div class="space-y-2 text-xs font-body-md"><div class="flex justify-between py-1 border-b border-carbon/15"><span class="text-carbon/70">Product Name:</span><span class="font-bold text-carbon">Mobile Legends 706 Diamonds (625 + 81 Bonus)</span></div><div class="flex justify-between py-1 border-b border-carbon/15"><span class="text-carbon/70">Recipient Target:</span><span class="font-bold text-carbon">kyroslayer99 (Zone 2140)</span></div><div class="flex justify-between py-1 border-b border-carbon/15"><span class="text-carbon/70">Payment Rail:</span><span class="font-bold text-carbon">QRIS Instant (Admin Fee Rp 0)</span></div><div class="flex justify-between py-1 border-b border-carbon/15"><span class="text-carbon/70">Standard Price:</span><span class="text-carbon">Rp 168.000</span></div><div class="flex justify-between py-1 border-b border-carbon/15"><span class="text-carbon/70">Promo Voucher (XYZSTICKER):</span><span class="font-bold text-ember">-Rp 20.000</span></div><div class="flex justify-between py-1 border-b border-carbon/15"><span class="text-carbon/70">Platform Fee:</span><span class="font-bold text-mint-pop-dark">Rp 0</span></div><div class="flex justify-between py-1.5 font-bold text-sm text-carbon"><span class="font-bold">Total Settlement:</span><span class="text-base font-black text-carbon">Rp 148.000</span></div></div><div class="mt-4 flex gap-2"><div class="relative grow"><input class="w-full bg-paper-white border border-carbon rounded-full px-4 py-2 text-xs font-mono uppercase focus:ring-0" placeholder="Enter Promo Code" type="text" value="XYZSTICKER"><span class="absolute right-3 top-2 text-[10px] font-bold text-mint-pop-dark bg-mint-pop/30 px-1.5 py-0.5 rounded border border-carbon/40">APPLIED (-Rp 20.000)</span></div><button class="bg-carbon text-paper-white border border-carbon rounded-full px-4 py-2 font-label-pill text-xs uppercase hover:bg-carbon/90 shrink-0 font-bold btn-tactile">Apply</button></div><div class="mt-4"><button class="w-full bg-carbon text-paper-white hover:bg-ember border border-carbon rounded-full py-3.5 px-6 font-label-pill text-label-pill uppercase transition-colors flex items-center justify-center gap-2 font-black text-sm btn-tactile"><span>⚡ PAY NOW — RP 148.000 ⚡</span></button><p class="text-[11px] text-center text-carbon/70 mt-2 font-body-md">🔒 100% Guest Checkout • Direct moonton API injection</p></div></div>
+</section>
+</div>
+<!-- ======================================================================= -->
+<!-- SECONDARY SHOWCASE: SUBSCRIPTION MODE VARIANT PREVIEW (NETFLIX 4K) -->
+<!-- ======================================================================= -->
+<section class="mt-20 border border-carbon rounded-3xl bg-lavender/30 p-8 relative overflow-hidden">
+<!-- Section Tag Sticker -->
+<div class="inline-block bg-voltage-violet text-paper-white font-label-pill text-xs px-3.5 py-1 rounded-full border border-carbon uppercase tracking-wider mb-3">
+        Customizer Variant Preview
+      </div>
+<h2 class="font-headline-md text-2xl text-carbon mb-2">Digital Subscription Mode: Netflix Premium 4K UHD</h2>
+<p class="text-xs text-carbon/80 max-w-2xl font-body-md mb-6">
+        When switching product categories, XYZ Store reconfigures inputs dynamically for Private PINs, device screen limits, and multi-month subscription renewals.
+      </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4"><!-- Sub Card 1 -->
+<div class="sub-card bg-paper-white border border-carbon rounded-2xl p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-headline-md text-lg text-carbon">1 Month Private</span>
+<span class="text-[10px] bg-sunburst px-2 py-0.5 rounded-full border border-carbon font-bold">1 Screen</span>
+</div>
+<p class="text-xs text-carbon/70 font-body-md">Personal Private Profile with 4-Digit Security PIN &amp; 4K Ultra HD streaming.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-carbon/15 flex items-center justify-between">
+<span class="font-extrabold text-sm text-carbon">Rp 38.000 / mo</span>
+<button class="btn-tactile px-3 py-1 bg-soft-mist hover:bg-concrete-gray border border-carbon rounded-full text-xs font-label-pill uppercase">Select</button>
+</div>
+</div>
+<!-- Sub Card 2: Most Popular -->
+<div class="sub-card bg-paper-white border-2 border-carbon rounded-2xl p-5 flex flex-col justify-between relative active-card">
+<span class="absolute -top-2.5 right-4 bg-ember text-paper-white font-label-pill text-[10px] px-2.5 py-0.5 rounded-full border border-carbon uppercase">
+            Best Selling
+          </span>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-headline-md text-lg text-carbon">3 Months Private</span>
+<span class="text-[10px] bg-mint-pop px-2 py-0.5 rounded-full border border-carbon font-bold">Save 25%</span>
+</div>
+<p class="text-xs text-carbon/70 font-body-md">Continuous renewal on same profile. Anti-household lockout guarantee.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-carbon/15 flex items-center justify-between">
+<span class="font-extrabold text-sm text-carbon">Rp 99.000</span>
+<button class="btn-tactile px-3 py-1 bg-carbon text-paper-white border border-carbon rounded-full text-xs font-label-pill uppercase">Select</button>
+</div>
+</div>
+<!-- Sub Card 3: Family 4 Screens -->
+<div class="sub-card bg-paper-white border border-carbon rounded-2xl p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-headline-md text-lg text-carbon">1 Month Full 4-Screen</span>
+<span class="text-[10px] bg-electric-blue text-paper-white px-2 py-0.5 rounded-full border border-carbon font-bold">4 Devices</span>
+</div>
+<p class="text-xs text-carbon/70 font-body-md">Whole account takeover for your household &amp; TV appliances. 100% private email.</p>
+</div>
+<div class="mt-4 pt-3 border-t border-carbon/15 flex items-center justify-between">
+<span class="font-extrabold text-sm text-carbon">Rp 149.000 / mo</span>
+<button class="btn-tactile px-3 py-1 bg-soft-mist hover:bg-concrete-gray border border-carbon rounded-full text-xs font-label-pill uppercase">Select</button>
+</div>
+</div></div>
+</section>
+<!-- ======================================================================= -->
+<!-- FREQUENTLY ASKED QUESTIONS ACCORDION SECTION -->
+<!-- ======================================================================= -->
+<section class="mt-16 bg-paper-white border border-carbon rounded-3xl p-8">
+<div class="flex items-center gap-3 mb-6">
+<span class="w-10 h-10 rounded-full bg-sunburst text-carbon flex items-center justify-center font-bold border border-carbon">
+          ?
+        </span>
+<div>
+<h2 class="font-headline-md text-2xl text-carbon">Frequently Asked Questions</h2>
+<p class="text-xs text-carbon/70 font-body-md">Everything you need to know about automated delivery and account safety.</p>
+</div>
+</div>
+<div class="space-y-3">
+<!-- FAQ 1 -->
+<details class="group border border-carbon rounded-2xl p-4 bg-surface open:bg-paper-white transition-colors cursor-pointer" open="">
+<summary class="flex items-center justify-between font-bold text-sm text-carbon list-none">
+<span>How fast will the diamonds arrive into my Mobile Legends account?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="text-xs text-carbon/80 mt-3 font-body-md leading-relaxed border-t border-carbon/15 pt-3">
+            Our automated Moonton Direct Partner API processes transactions instantly. 99.4% of all orders are credited between 5 to 10 seconds right after your QRIS or Virtual Account payment is detected. You do not need to log out of the game client.
+          </p>
+</details>
+<!-- FAQ 2 -->
+<details class="group border border-carbon rounded-2xl p-4 bg-surface open:bg-paper-white transition-colors cursor-pointer">
+<summary class="flex items-center justify-between font-bold text-sm text-carbon list-none">
+<span>What happens if I accidentally entered the wrong Zone ID?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="text-xs text-carbon/80 mt-3 font-body-md leading-relaxed border-t border-carbon/15 pt-3">
+            Our Step 01 validator checks your username against the official game server before confirming your payment. If an invalid User ID or Zone ID is passed, our dispatch engine halts and alerts you via WhatsApp with a 1-click self-correction form or immediate automatic refund.
+          </p>
+</details>
+<!-- FAQ 3 -->
+<details class="group border border-carbon rounded-2xl p-4 bg-surface open:bg-paper-white transition-colors cursor-pointer">
+<summary class="flex items-center justify-between font-bold text-sm text-carbon list-none">
+<span>Is my game account safe from bans or negative diamond penalties?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="text-xs text-carbon/80 mt-3 font-body-md leading-relaxed border-t border-carbon/15 pt-3">
+            Yes, 100%. We only source diamonds through legitimate direct publisher settlement channels. We never utilize credit card fraud, stolen gift cards, or third-party exploits. Every purchase comes with a genuine Moonton digital tax invoice.
+          </p>
+</details>
+</div>
+</section>
+</main>
+<!-- ========================================================================= -->
+<!-- STICKY FLOATING ORDER SUMMARY & CHECKOUT BAR (Z-50) -->
+<!-- ========================================================================= -->
+<aside class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[94%] max-w-5xl z-40 bg-paper-white border-2 border-carbon rounded-full px-5 py-3.5 flex flex-col md:flex-row items-center justify-between gap-3"><div class="flex items-center gap-3 w-full md:w-auto"><div class="w-10 h-10 rounded-full bg-lavender border border-carbon flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-voltage-violet text-xl" data-weight="fill">diamond</span></div><div class="leading-tight"><div class="flex items-center gap-2"><span class="text-xs font-bold text-carbon">706 Diamonds (625 + 81 Bonus)</span><span class="text-[10px] bg-mint-pop text-carbon px-2 py-0.2 rounded-full border border-carbon font-bold">QRIS Instant</span></div><p class="text-[11px] text-carbon/70 font-mono">Target: kyroslayer99 (Zone 2140)</p></div></div><div class="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto"><div class="text-left md:text-right"><span class="text-[10px] uppercase font-label-pill text-carbon/70 block font-bold">Total Settlement</span><span class="text-lg md:text-xl font-black text-carbon leading-none">Rp 148.000</span></div><button class="bg-carbon text-paper-white border border-carbon rounded-full px-6 py-3 font-label-pill text-label-pill uppercase hover:scale-102 transition-transform flex items-center gap-2 shrink-0 font-bold btn-tactile"><span>BUY NOW — INSTANT DISPATCH ⚡</span></button></div></aside>
+<!-- ========================================================================= -->
+<!-- SHARED COMPONENT: FOOTER -->
+<!-- ========================================================================= -->
+<footer class="w-full bg-carbon text-paper-white border-t border-carbon mt-24"><div class="w-full max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6"><div class="flex flex-col items-center md:items-start gap-1"><div class="flex items-center gap-1.5 font-black text-2xl tracking-tight mb-3"><span class="bg-white text-black px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span><span class="text-white">PEDIA</span></div><p class="text-xs text-soft-mist/70 font-body-md">© 2025 XYZPEDIA Gaming &amp; Digital Hub. All rights reserved. Tactile Pop Brutalism.</p><div class="flex items-center gap-1.5 font-black text-2xl tracking-tight mb-3"><span class="bg-white text-black px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span><span class="text-white">PEDIA</span></div></div><div class="flex flex-wrap justify-center items-center gap-2"><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">QRIS Instant</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">BCA VA</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">Mandiri</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">BRI</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">BNI</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">DANA</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">GoPay</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">ShopeePay</span><span class="px-2 py-1 bg-paper-white text-carbon text-[10px] font-bold rounded border border-carbon">OVO</span></div><div class="flex flex-col items-center md:items-end gap-2"><div class="flex items-center gap-2"><span class="px-2.5 py-1 rounded-full border border-paper-white/30 text-[10px] uppercase font-label-pill">256-Bit SSL</span><span class="px-2.5 py-1 rounded-full border border-paper-white/30 text-[10px] uppercase font-label-pill">ISO 27001 Certified</span></div><a class="bg-mint-pop text-carbon border border-carbon rounded-full px-3.5 py-1 text-xs font-label-pill uppercase flex items-center gap-1.5 font-bold hover:scale-102 transition-transform" href="#"><span class="material-symbols-outlined text-sm">support_agent</span><span>24/7 WA Concierge</span></a></div></div></footer>
+<!-- Micro-interaction script for cards & mode toggle -->
+<script>
+    // Nominal selection interactivity
+    const nominalCards = document.querySelectorAll('.nominal-card');
+    nominalCards.forEach(card => {
+      card.addEventListener('click', () => {
+        nominalCards.forEach(c => {
+          c.classList.remove('bg-lavender', 'border-2', '-rotate-1');
+          c.classList.add('bg-paper-white', 'border');
+        });
+        card.classList.remove('bg-paper-white', 'border');
+        card.classList.add('bg-lavender', 'border-2', '-rotate-1');
+      });
+    });
+
+    // Mode Toggle Simulation
+    const btnGame = document.getElementById('btn-mode-game');
+    const btnSub = document.getElementById('btn-mode-sub');
+
+    btnSub?.addEventListener('click', () => {
+      window.scrollTo({ top: document.body.scrollHeight * 0.45, behavior: 'smooth' });
+    });
+    btnGame?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>

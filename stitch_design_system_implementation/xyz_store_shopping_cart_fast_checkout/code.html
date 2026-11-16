@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>XYZ Store — Shopping Cart &amp; Fast Checkout</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS Play CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration with Theme Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed": "#3a0a00",
+            "surface-bright": "#f9f9f9",
+            "surface-container-highest": "#e2e2e2",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "secondary-fixed": "#e4dfff",
+            "tertiary": "#005ea5",
+            "outline-variant": "#e6beb2",
+            "primary-fixed-dim": "#ffb59f",
+            "background": "#f9f9f9",
+            "on-tertiary-container": "#fdfcff",
+            "inverse-primary": "#ffb59f",
+            "ember": "#FB4903",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "secondary-container": "#6e5ef1",
+            "soft-mist": "#E9E9E9",
+            "on-secondary-container": "#fffbff",
+            "tertiary-container": "#0076cf",
+            "outline": "#916f66",
+            "secondary-fixed-dim": "#c6bfff",
+            "surface-container-high": "#e8e8e8",
+            "on-primary": "#ffffff",
+            "electric-blue": "#4DA2FF",
+            "error": "#ba1a1a",
+            "surface-container-lowest": "#ffffff",
+            "surface": "#f9f9f9",
+            "on-tertiary": "#ffffff",
+            "surface-variant": "#e2e2e2",
+            "inverse-on-surface": "#f1f1f1",
+            "on-surface": "#1b1b1b",
+            "mint-pop": "#55DB9C",
+            "sky-wash": "#DCEEFF",
+            "primary-container": "#d63c00",
+            "secondary": "#5542d7",
+            "sunburst": "#FFD731",
+            "surface-container-low": "#f3f3f3",
+            "carbon": "#000000",
+            "on-primary-fixed-variant": "#862200",
+            "paper-white": "#FFFFFF",
+            "primary": "#ab2e00",
+            "surface-dim": "#dadada",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "surface-container": "#eeeeee",
+            "on-secondary-fixed": "#160066",
+            "on-background": "#1b1b1b",
+            "on-tertiary-fixed": "#001c38",
+            "on-tertiary-fixed-variant": "#004881",
+            "on-error": "#ffffff",
+            "voltage-violet": "#5C4ADE",
+            "lavender": "#E9CCFF",
+            "on-primary-container": "#fffbff",
+            "concrete-gray": "#CCCCCC",
+            "on-surface-variant": "#5c4038",
+            "primary-fixed": "#ffdbd1",
+            "inverse-surface": "#303030",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#d3e4ff"
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-3xl": "5rem",
+            "space-hero": "11.25rem",
+            "space-2xl": "3rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "margin-tablet": "2rem",
+            "margin-desktop": "3rem"
+          },
+          fontFamily: {
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "marquee": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"],
+            "display-hero": ["Bricolage Grotesque"],
+            "subheading": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"]
+          },
+          fontSize: {
+            "headline-lg-mobile": ["36px", { lineHeight: "38px", letterSpacing: "-0.01em", fontWeight: "700" }],
+            "body-md": ["14px", { lineHeight: "20px", letterSpacing: "0em", fontWeight: "500" }],
+            "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "500" }],
+            "display-hero-mobile": ["72px", { lineHeight: "60px", letterSpacing: "-0.03em", fontWeight: "800" }],
+            "headline-xl-mobile": ["48px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "800" }],
+            "marquee": ["13px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "700" }],
+            "headline-md": ["30px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }],
+            "caption": ["12px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "500" }],
+            "display-hero": ["180px", { lineHeight: "144px", letterSpacing: "-0.04em", fontWeight: "800" }],
+            "subheading": ["24px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "500" }],
+            "headline-xl": ["96px", { lineHeight: "84px", letterSpacing: "-0.03em", fontWeight: "800" }],
+            "label-pill": ["13px", { lineHeight: "16px", letterSpacing: "0.03em", fontWeight: "700" }],
+            "headline-lg": ["64px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Strict Inflatable Sticker Universe Rules */
+    * {
+      box-shadow: none !important;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /* Seamless ticker animation */
+    @keyframes marqueeMove {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marqueeMove 22s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body class="bg-background text-carbon font-body-md text-body-md antialiased min-h-screen selection:bg-sunburst selection:text-carbon pb-16">
+<!-- 1. Top Marquee Announcement Bar -->
+<header class="w-full bg-carbon text-paper-white h-9 border-b border-carbon overflow-hidden flex items-center relative z-50">
+<div class="animate-marquee whitespace-nowrap font-marquee text-marquee uppercase tracking-wider flex items-center">
+<span class="px-6 flex items-center gap-4">
+<span>★ 100% SECURE TRANSACTIONS</span>
+<span>★ ZERO ADMIN FEE ON QRIS</span>
+<span>★ INSTANT DIGITAL DISPATCH IN 5-10 SECONDS</span>
+<span>★ 24/7 WHATSAPP CUSTOMER CARE</span>
+<span>★ VERIFIED MOONTON &amp; NETFLIX PARTNER</span>
+</span>
+<span class="px-6 flex items-center gap-4">
+<span>★ 100% SECURE TRANSACTIONS</span>
+<span>★ ZERO ADMIN FEE ON QRIS</span>
+<span>★ INSTANT DIGITAL DISPATCH IN 5-10 SECONDS</span>
+<span>★ 24/7 WHATSAPP CUSTOMER CARE</span>
+<span>★ VERIFIED MOONTON &amp; NETFLIX PARTNER</span>
+</span>
+</div>
+</header>
+<!-- 2. Top Navigation Bar (Shared Floating Pill Shell Anchor) -->
+<div class="w-full max-w-6xl mx-auto px-4 mt-4">
+<nav class="bg-paper-white border border-carbon rounded-full px-5 py-2.5 flex items-center justify-between gap-4 transition-transform duration-150">
+<!-- Brand Logo -->
+<a class="flex items-center gap-2 group flex-shrink-0" href="#">
+<span class="w-7 h-7 rounded-full bg-carbon text-paper-white flex items-center justify-center font-headline-md text-caption font-extrabold transition-transform group-hover:scale-105">
+          ★
+        </span>
+<span class="font-headline-md text-subheading font-extrabold tracking-tight text-carbon">XYZ STORE</span>
+</a>
+<!-- Navigation Links -->
+<div class="hidden lg:flex items-center gap-1">
+<a class="px-3.5 py-1.5 rounded-full font-label-pill text-label-pill text-carbon hover:bg-soft-mist transition-colors" href="#">Home</a>
+<a class="px-3.5 py-1.5 rounded-full font-label-pill text-label-pill text-carbon hover:bg-soft-mist transition-colors" href="#">Subscriptions</a>
+<a class="px-3.5 py-1.5 rounded-full font-label-pill text-label-pill text-carbon hover:bg-soft-mist transition-colors" href="#">Game Top-Up</a>
+<a class="px-3.5 py-1.5 rounded-full font-label-pill text-label-pill text-carbon hover:bg-soft-mist transition-colors" href="#">Vouchers</a>
+<a class="px-3.5 py-1.5 rounded-full font-label-pill text-label-pill text-carbon hover:bg-soft-mist transition-colors" href="#">Promotions</a>
+</div>
+<!-- Search Bar Input -->
+<div class="hidden md:flex items-center flex-1 max-w-xs relative">
+<span class="material-symbols-outlined text-carbon absolute left-3 pointer-events-none text-[18px]">search</span>
+<input class="w-full bg-soft-mist text-carbon placeholder:text-outline font-body-md text-caption pl-9 pr-4 py-1.5 rounded-full border border-carbon focus:border-2 focus:border-carbon" placeholder="Search items, titles, game IDs..." type="text"/>
+</div>
+<!-- Trailing Action: Cart Indicator & Account -->
+<div class="flex items-center gap-2 flex-shrink-0">
+<!-- Active Cart Indicator Pill -->
+<a class="flex items-center gap-1.5 bg-sunburst border border-carbon px-3.5 py-1.5 rounded-full hover:scale-105 transition-transform duration-150" href="#cart">
+<span class="material-symbols-outlined text-[18px] text-carbon">shopping_cart</span>
+<span class="font-label-pill text-label-pill text-carbon uppercase">Cart (2)</span>
+</a>
+<!-- User Profile Pill -->
+<div class="flex items-center gap-2 bg-paper-white border border-carbon px-3 py-1.5 rounded-full hover:bg-soft-mist transition-colors cursor-pointer">
+<div class="relative w-5 h-5 rounded-full bg-lavender border border-carbon flex items-center justify-center font-headline-md text-[10px] font-bold">
+            K
+            <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-mint-pop border border-carbon"></span>
+</div>
+<span class="font-label-pill text-caption text-carbon font-semibold hidden sm:inline">KyroSlayer99</span>
+</div>
+</div>
+</nav>
+</div>
+<!-- Page Content Container -->
+<main class="w-full max-w-6xl mx-auto px-4 mt-6">
+<!-- 3. Checkout Breadcrumb & Progress Stepper -->
+<section class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 font-label-pill text-caption text-outline">
+<a class="hover:text-carbon transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-carbon transition-colors" href="#">Cart</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-carbon font-bold uppercase">Checkout &amp; Payment</span>
+</nav>
+<!-- Multi-step Progress Tracker -->
+<div class="inline-flex items-center gap-2 p-1.5 bg-paper-white border border-carbon rounded-full overflow-x-auto">
+<!-- Step 1 (Active/Completed) -->
+<div class="flex items-center gap-1.5 bg-mint-pop text-carbon px-3 py-1 rounded-full border border-carbon">
+<span class="material-symbols-outlined text-[16px] font-bold">check_circle</span>
+<span class="font-label-pill text-caption font-bold">1. Review Items</span>
+</div>
+<span class="text-carbon font-bold">→</span>
+<!-- Step 2 (Active) -->
+<div class="flex items-center gap-1.5 bg-sky-wash text-carbon px-3 py-1 rounded-full border border-carbon">
+<span class="w-4 h-4 rounded-full bg-carbon text-paper-white text-[10px] font-bold flex items-center justify-center">2</span>
+<span class="font-label-pill text-caption font-bold">Delivery Info</span>
+</div>
+<span class="text-carbon font-bold">→</span>
+<!-- Step 3 (Active) -->
+<div class="flex items-center gap-1.5 bg-sunburst text-carbon px-3 py-1 rounded-full border border-carbon">
+<span class="w-4 h-4 rounded-full bg-carbon text-paper-white text-[10px] font-bold flex items-center justify-center">3</span>
+<span class="font-label-pill text-caption font-bold">Payment Rail</span>
+</div>
+<span class="text-carbon font-bold">→</span>
+<!-- Step 4 (Upcoming) -->
+<div class="flex items-center gap-1.5 bg-soft-mist text-outline px-3 py-1 rounded-full border border-carbon/50">
+<span class="w-4 h-4 rounded-full bg-concrete-gray text-carbon text-[10px] font-bold flex items-center justify-center">4</span>
+<span class="font-label-pill text-caption">Settlement</span>
+</div>
+</div>
+</section>
+<!-- Page Title Header with Pop Brutalist Stamps -->
+<div class="relative mb-8 pb-3 border-b-2 border-carbon flex flex-wrap items-end justify-between gap-4">
+<div>
+<div class="inline-flex items-center gap-2 bg-ember text-paper-white font-label-pill text-caption uppercase px-3 py-0.5 rounded-full border border-carbon rotate-[-1deg] mb-2">
+<span class="material-symbols-outlined text-[14px]">bolt</span> Automated Fast-Track Pipeline
+        </div>
+<h1 class="font-headline-xl text-headline-lg lg:text-headline-xl text-carbon tracking-tight uppercase leading-none">
+          Checkout &amp; Dispatch
+        </h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-lavender border border-carbon px-3 py-1 rounded-full font-label-pill text-caption text-carbon rotate-[2deg]">
+          🔒 256-Bit SSL Enforced
+        </span>
+<span class="bg-mint-pop border border-carbon px-3 py-1 rounded-full font-label-pill text-caption text-carbon rotate-[-2deg]">
+          ⚡ Direct API Injection
+        </span>
+</div>
+</div>
+<!-- 4. Main 2-Column Checkout Layout (65% Left Column, 35% Right Sticky Column) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- ================= LEFT COLUMN (65% = 8 cols out of 12) ================= -->
+<div class="lg:col-span-8 space-y-8">
+<!-- SECTION A: Cart Items Review -->
+<section aria-labelledby="cart-items-heading" class="bg-paper-white border border-carbon rounded-[24px] p-6">
+<div class="flex items-center justify-between border-b border-carbon pb-4 mb-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-carbon text-[22px]">inventory_2</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon" id="cart-items-heading">
+                Itemized Digital Fulfillment (2 Items)
+              </h2>
+</div>
+<span class="bg-sky-wash text-carbon border border-carbon px-3 py-1 rounded-full font-label-pill text-caption">
+              Queue: Sub-Second Dispatch
+            </span>
+</div>
+<!-- Item Cards List -->
+<div class="space-y-4">
+<!-- Card 1: Game Top-Up -->
+<article class="bg-surface-container-low border border-carbon rounded-[20px] p-5 flex flex-col md:flex-row gap-5 items-start justify-between">
+<div class="flex gap-4 items-start flex-1">
+<!-- Visual Icon / Badge Thumbnail -->
+<div class="w-16 h-16 rounded-[16px] bg-sunburst border border-carbon flex-shrink-0 flex flex-col items-center justify-center p-1 text-center rotate-[-2deg]">
+<span class="material-symbols-outlined text-[26px] text-carbon">diamond</span>
+<span class="font-headline-md text-[10px] font-extrabold uppercase leading-none">MLBB</span>
+</div>
+<!-- Item Description & Target Account -->
+<div class="space-y-2 flex-1">
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-headline-md text-body-lg font-bold text-carbon leading-snug">
+                      Mobile Legends: Bang Bang — 706 Diamonds
+                    </h3>
+<span class="bg-sunburst border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] text-carbon uppercase font-bold">
+                      625 + 81 Bonus
+                    </span>
+</div>
+<!-- Target Metadata Strip -->
+<div class="bg-paper-white border border-carbon rounded-[14px] p-3 text-caption space-y-1">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<span class="font-semibold text-carbon">
+                        Account: <span class="font-bold">KyroSlayer99</span> (ID: 84920194 • Zone: 2140)
+                      </span>
+<span class="bg-mint-pop border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] text-carbon inline-flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-[12px]">verified</span> Verified Moonton Server
+                      </span>
+</div>
+</div>
+<!-- Tag: Fulfillment Speed -->
+<div class="inline-flex items-center gap-1.5 text-caption font-semibold text-primary">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+                    Direct API Server Injection (Instant 0.4s)
+                  </div>
+</div>
+</div>
+<!-- Price & Quantity Operations -->
+<div class="flex md:flex-col items-end justify-between w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-carbon/20">
+<div class="text-right">
+<p class="font-headline-md text-subheading font-extrabold text-carbon">Rp 168.000</p>
+<p class="text-caption text-outline line-through">Rp 195.000</p>
+</div>
+<div class="flex items-center gap-3 mt-3">
+<!-- Stepper -->
+<div class="flex items-center bg-paper-white border border-carbon rounded-full px-2 py-0.5">
+<button class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-carbon hover:bg-soft-mist" title="Decrease quantity">-</button>
+<span class="w-8 text-center font-label-pill text-caption font-bold">1</span>
+<button class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-carbon hover:bg-soft-mist" title="Increase quantity">+</button>
+</div>
+<!-- Trash remove -->
+<button class="w-8 h-8 rounded-full border border-carbon bg-paper-white text-carbon hover:bg-error hover:text-paper-white transition-colors flex items-center justify-center" title="Remove item">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2: Digital Subscription -->
+<article class="bg-surface-container-low border border-carbon rounded-[20px] p-5 flex flex-col md:flex-row gap-5 items-start justify-between">
+<div class="flex gap-4 items-start flex-1">
+<!-- Visual Icon / Badge Thumbnail -->
+<div class="w-16 h-16 rounded-[16px] bg-ember border border-carbon flex-shrink-0 flex flex-col items-center justify-center text-paper-white p-1 text-center rotate-[2deg]">
+<span class="material-symbols-outlined text-[26px]">smart_display</span>
+<span class="font-headline-md text-[10px] font-extrabold uppercase leading-none">STREAM</span>
+</div>
+<!-- Item Description & Metadata -->
+<div class="space-y-2 flex-1">
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-headline-md text-body-lg font-bold text-carbon leading-snug">
+                      Netflix Premium 4K UHD — 1 Month Private Profile
+                    </h3>
+<span class="bg-voltage-violet text-paper-white border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] uppercase font-bold">
+                      Anti-Hold PIN
+                    </span>
+</div>
+<div class="bg-paper-white border border-carbon rounded-[14px] p-3 text-caption space-y-1">
+<p class="font-semibold text-carbon">
+                      Specs: 1 Screen Ultra HD (4K) • 100% Private Email Setup • Dedicated Profile Lock
+                    </p>
+</div>
+<!-- Tag: Fulfillment Speed -->
+<div class="inline-flex items-center gap-1.5 text-caption font-semibold text-secondary">
+<span class="material-symbols-outlined text-[16px]">send</span>
+                    Credentials auto-sent to WhatsApp &amp; Email
+                  </div>
+</div>
+</div>
+<!-- Price & Quantity Operations -->
+<div class="flex md:flex-col items-end justify-between w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-carbon/20">
+<div class="text-right">
+<p class="font-headline-md text-subheading font-extrabold text-carbon">Rp 38.000</p>
+<p class="text-caption text-outline line-through">Rp 54.000</p>
+</div>
+<div class="flex items-center gap-3 mt-3">
+<div class="flex items-center bg-paper-white border border-carbon rounded-full px-2 py-0.5">
+<button class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-carbon hover:bg-soft-mist" title="Decrease quantity">-</button>
+<span class="w-8 text-center font-label-pill text-caption font-bold">1</span>
+<button class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-carbon hover:bg-soft-mist" title="Increase quantity">+</button>
+</div>
+<button class="w-8 h-8 rounded-full border border-carbon bg-paper-white text-carbon hover:bg-error hover:text-paper-white transition-colors flex items-center justify-center" title="Remove item">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+<!-- Add More Items Ghost Pill -->
+<div class="mt-5 pt-4 border-t border-carbon flex justify-center">
+<button class="px-6 py-2.5 rounded-full border border-carbon bg-paper-white hover:bg-soft-mist font-label-pill text-label-pill text-carbon uppercase inline-flex items-center gap-2 hover:scale-[1.02] transition-transform">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+              Add More Items from Catalog
+            </button>
+</div>
+</section>
+<!-- SECTION B: Customer Contact & Delivery Destination -->
+<section aria-labelledby="contact-delivery-heading" class="bg-paper-white border border-carbon rounded-[24px] p-6">
+<div class="flex items-center justify-between border-b border-carbon pb-4 mb-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-carbon text-[22px]">contact_mail</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon" id="contact-delivery-heading">
+                Contact &amp; Delivery Destination
+              </h2>
+</div>
+<span class="bg-mint-pop text-carbon border border-carbon px-2.5 py-0.5 rounded-full font-label-pill text-[11px] font-bold">
+              Instant Dispatch Guaranteed
+            </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- WhatsApp Input -->
+<div class="space-y-1.5">
+<label class="block font-label-pill text-caption uppercase text-carbon font-bold" for="wa-input">
+                WhatsApp Phone Number <span class="text-ember">*</span>
+</label>
+<div class="relative">
+<input class="w-full bg-soft-mist border border-carbon rounded-full px-4 py-2.5 font-body-md text-carbon focus:border-2 focus:border-carbon focus:bg-paper-white transition-all text-[15px]" id="wa-input" type="tel" value="081298412891"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 bg-mint-pop text-carbon border border-carbon rounded-full px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">check</span> Verified
+                </span>
+</div>
+<p class="font-caption text-caption text-outline">Used for sub-second bot delivery of credentials &amp; token pin.</p>
+</div>
+<!-- Email Address Input -->
+<div class="space-y-1.5">
+<label class="block font-label-pill text-caption uppercase text-carbon font-bold" for="email-input">
+                Email Address (Tax &amp; PDF Receipt) <span class="text-ember">*</span>
+</label>
+<div class="relative">
+<input class="w-full bg-soft-mist border border-carbon rounded-full px-4 py-2.5 font-body-md text-carbon focus:border-2 focus:border-carbon focus:bg-paper-white transition-all text-[15px]" id="email-input" type="email" value="kyroslayer@gmail.com"/>
+<span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-[18px] text-carbon">mail</span>
+</div>
+<p class="font-caption text-caption text-outline">Official tax invoice &amp; subscription recovery receipt.</p>
+</div>
+<!-- Optional Note -->
+<div class="md:col-span-2 space-y-1.5">
+<label class="block font-label-pill text-caption uppercase text-carbon font-bold" for="note-input">
+                Optional Order Note / Guild Tag
+              </label>
+<input class="w-full bg-soft-mist border border-carbon rounded-full px-4 py-2.5 font-body-md text-carbon placeholder:text-outline focus:border-2 focus:border-carbon focus:bg-paper-white transition-all text-[14px]" id="note-input" placeholder="e.g. Please process before tournament start at 19:00 WIB" type="text"/>
+</div>
+</div>
+<!-- Notification Checkbox -->
+<div class="mt-4 pt-4 border-t border-carbon/20 flex items-start gap-3">
+<input checked="" class="w-5 h-5 rounded-[6px] border border-carbon text-ember focus:ring-0 cursor-pointer mt-0.5" id="wa-notify" type="checkbox"/>
+<label class="font-body-md text-caption text-carbon cursor-pointer select-none" for="wa-notify">
+<strong class="font-bold text-carbon">Send instant status update via WhatsApp</strong> when bot dispatches order credentials and executes top-up API.
+            </label>
+</div>
+</section>
+<!-- SECTION C: Choose Payment Rail -->
+<section aria-labelledby="payment-rails-heading" class="bg-paper-white border border-carbon rounded-[24px] p-6">
+<div class="flex flex-wrap items-center justify-between border-b border-carbon pb-4 mb-5 gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-carbon text-[22px]">account_balance_wallet</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon" id="payment-rails-heading">
+                Choose Payment Rail
+              </h2>
+</div>
+<span class="bg-lavender text-carbon border border-carbon px-3 py-1 rounded-full font-label-pill text-caption">
+              Automated 24/7 Verification
+            </span>
+</div>
+<!-- Category Filter Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+<button class="bg-carbon text-paper-white border border-carbon px-4 py-1.5 rounded-full font-label-pill text-caption uppercase font-bold whitespace-nowrap">
+              All Payment Rails
+            </button>
+<button class="bg-soft-mist text-carbon border border-carbon px-4 py-1.5 rounded-full font-label-pill text-caption uppercase hover:bg-paper-white transition-colors whitespace-nowrap">
+              QRIS &amp; E-Wallets
+            </button>
+<button class="bg-soft-mist text-carbon border border-carbon px-4 py-1.5 rounded-full font-label-pill text-caption uppercase hover:bg-paper-white transition-colors whitespace-nowrap">
+              Virtual Account
+            </button>
+<button class="bg-soft-mist text-carbon border border-carbon px-4 py-1.5 rounded-full font-label-pill text-caption uppercase hover:bg-paper-white transition-colors whitespace-nowrap">
+              Convenience Store
+            </button>
+</div>
+<!-- Payment Methods List -->
+<div class="space-y-3">
+<!-- Method 1: QRIS Instant (Selected) -->
+<label class="block cursor-pointer relative">
+<input checked="" class="peer sr-only" name="payment_rail" type="radio" value="qris"/>
+<div class="bg-paper-white peer-checked:bg-sky-wash border-2 peer-checked:border-carbon border-carbon rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border border-carbon flex items-center justify-center bg-paper-white">
+<div class="w-3 h-3 rounded-full bg-ember"></div>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-headline-md text-body-lg font-bold text-carbon">QRIS Instant Real-Time</span>
+<span class="bg-mint-pop border border-carbon px-2.5 py-0.5 rounded-full font-label-pill text-[10px] uppercase font-bold">
+                        0% Admin Fee
+                      </span>
+<span class="bg-sunburst border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[10px] uppercase font-bold">
+                        ★ Recommended
+                      </span>
+</div>
+<p class="font-caption text-caption text-carbon/80 mt-0.5">
+                      GoPay, OVO, DANA, ShopeePay, BCA Mobile, Livin, BRImo, and all Indonesian m-banking.
+                    </p>
+</div>
+</div>
+<div class="text-right sm:flex-shrink-0">
+<span class="font-headline-md text-body-lg font-extrabold text-carbon">Rp 206.000</span>
+<span class="block font-caption text-[11px] text-mint-pop font-bold">Instant 24/7 Scan</span>
+</div>
+</div>
+</label>
+<!-- Method 2: BCA Virtual Account -->
+<label class="block cursor-pointer relative">
+<input class="peer sr-only" name="payment_rail" type="radio" value="bca_va"/>
+<div class="bg-paper-white peer-checked:bg-sky-wash border border-carbon rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-soft-mist/40">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border border-carbon flex items-center justify-center bg-paper-white">
+<div class="w-3 h-3 rounded-full bg-transparent"></div>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-headline-md text-body-lg font-bold text-carbon">BCA Virtual Account</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[10px] uppercase font-bold text-outline">
+                        Auto Check 5s
+                      </span>
+</div>
+<p class="font-caption text-caption text-carbon/80 mt-0.5">
+                      Instant settlement verification from BCA Mobile, KlikBCA, and myBCA.
+                    </p>
+</div>
+</div>
+<div class="text-right sm:flex-shrink-0">
+<span class="font-headline-md text-body-lg font-extrabold text-carbon">Rp 207.000</span>
+<span class="block font-caption text-[11px] text-outline font-semibold">+Rp 1.000 Fee</span>
+</div>
+</div>
+</label>
+<!-- Method 3: Mandiri Virtual Account -->
+<label class="block cursor-pointer relative">
+<input class="peer sr-only" name="payment_rail" type="radio" value="mandiri_va"/>
+<div class="bg-paper-white peer-checked:bg-sky-wash border border-carbon rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-soft-mist/40">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border border-carbon flex items-center justify-center bg-paper-white">
+<div class="w-3 h-3 rounded-full bg-transparent"></div>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-headline-md text-body-lg font-bold text-carbon">Mandiri Virtual Account</span>
+<span class="bg-soft-mist border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[10px] uppercase font-bold text-outline">
+                        Livin Push
+                      </span>
+</div>
+<p class="font-caption text-caption text-carbon/80 mt-0.5">
+                      Direct notification push into Livin' by Mandiri app.
+                    </p>
+</div>
+</div>
+<div class="text-right sm:flex-shrink-0">
+<span class="font-headline-md text-body-lg font-extrabold text-carbon">Rp 207.000</span>
+<span class="block font-caption text-[11px] text-outline font-semibold">+Rp 1.000 Fee</span>
+</div>
+</div>
+</label>
+<!-- Method 4: DANA Direct Redirection -->
+<label class="block cursor-pointer relative">
+<input class="peer sr-only" name="payment_rail" type="radio" value="dana_direct"/>
+<div class="bg-paper-white peer-checked:bg-sky-wash border border-carbon rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-soft-mist/40">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border border-carbon flex items-center justify-center bg-paper-white">
+<div class="w-3 h-3 rounded-full bg-transparent"></div>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-headline-md text-body-lg font-bold text-carbon">DANA Direct Redirection</span>
+<span class="bg-electric-blue text-paper-white border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[10px] uppercase font-bold">
+                        1-Tap App
+                      </span>
+</div>
+<p class="font-caption text-caption text-carbon/80 mt-0.5">
+                      One-tap redirection and authorization via the DANA mobile application.
+                    </p>
+</div>
+</div>
+<div class="text-right sm:flex-shrink-0">
+<span class="font-headline-md text-body-lg font-extrabold text-carbon">Rp 209.090</span>
+<span class="block font-caption text-[11px] text-outline font-semibold">+1.5% Fee</span>
+</div>
+</div>
+</label>
+</div>
+</section>
+</div>
+<!-- ================= RIGHT STICKY COLUMN (35% = 4 cols out of 12) ================= -->
+<aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-6">
+<!-- A. Tactile Order Summary Card -->
+<div class="bg-paper-white border border-carbon rounded-[28px] p-6 relative">
+<!-- Fun sticker pin decoration -->
+<div class="absolute -top-3.5 right-6 bg-sunburst border border-carbon px-3 py-0.5 rounded-full font-label-pill text-[11px] uppercase font-extrabold rotate-[3deg]">
+            ★ Instant Order Lock
+          </div>
+<div class="flex items-center gap-2 border-b border-carbon pb-4 mb-4">
+<span class="material-symbols-outlined text-[20px] text-carbon">receipt_long</span>
+<h2 class="font-headline-md text-body-lg font-bold text-carbon">
+              Order Settlement Summary
+            </h2>
+</div>
+<!-- Price Breakdown Lines -->
+<div class="space-y-3 font-body-md text-caption">
+<div class="flex justify-between items-center text-carbon">
+<span>Subtotal (2 Items)</span>
+<span class="font-bold">Rp 206.000</span>
+</div>
+<div class="flex justify-between items-center text-carbon">
+<span class="flex items-center gap-1">
+                Payment Rail Fee (QRIS)
+                <span class="bg-mint-pop border border-carbon text-[9px] px-1.5 py-0.2 rounded-full font-bold uppercase">0%</span>
+</span>
+<span class="font-bold text-mint-pop">Rp 0 (FREE)</span>
+</div>
+<div class="flex justify-between items-center text-carbon">
+<span>Tax &amp; Service (11% VAT)</span>
+<span class="font-bold text-outline">Included</span>
+</div>
+<!-- Voucher / Promo Code Box -->
+<div class="pt-2">
+<label class="block font-label-pill text-[11px] uppercase font-bold text-carbon mb-1" for="voucher-input">
+                Promo Code / Creator Voucher
+              </label>
+<div class="flex gap-2">
+<input class="flex-1 bg-soft-mist border border-carbon rounded-full px-3.5 py-1.5 font-label-pill text-caption text-carbon uppercase font-bold tracking-wider" id="voucher-input" type="text" value="XYZSTICKER"/>
+<button class="bg-carbon text-paper-white border border-carbon px-4 py-1.5 rounded-full font-label-pill text-caption uppercase font-bold hover:scale-105 transition-transform">
+                  Apply
+                </button>
+</div>
+<!-- Applied Voucher Badge -->
+<div class="mt-2 bg-mint-pop/20 border border-carbon rounded-[14px] p-2 flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-carbon">local_offer</span>
+<span class="font-label-pill text-[11px] text-carbon font-bold">XYZSTICKER applied</span>
+</div>
+<span class="font-headline-md text-caption font-bold text-carbon">-Rp 20.000</span>
+</div>
+</div>
+<!-- Dashed Brutalist Divider -->
+<div class="border-t-2 border-dashed border-carbon my-4 pt-3"></div>
+<!-- Grand Total -->
+<div class="flex flex-col gap-1">
+<span class="font-label-pill text-caption uppercase text-outline font-bold">Total Payment</span>
+<div class="flex items-baseline justify-between">
+<span class="font-headline-xl text-[38px] leading-none font-extrabold text-carbon tracking-tight">
+                  Rp 186.000
+                </span>
+<span class="bg-ember text-paper-white border border-carbon px-2.5 py-0.5 rounded-full font-label-pill text-[11px] font-bold uppercase">
+                  Save 22%
+                </span>
+</div>
+</div>
+<!-- Big Primary Action Button -->
+<div class="pt-4">
+<button class="w-full bg-carbon text-paper-white hover:bg-ember border border-carbon py-4 px-6 rounded-full font-label-pill text-body-lg uppercase font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span>PAY NOW — Rp 186.000</span>
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</button>
+<p class="text-center font-caption text-[11px] text-outline mt-2">
+                Instant Bot Dispatch • 100% Money Back Protection
+              </p>
+</div>
+</div>
+</div>
+<!-- B. Consumer Protection & Safe Purchase Box -->
+<div class="bg-lavender border border-carbon rounded-[24px] p-5 space-y-3">
+<div class="flex items-center gap-2">
+<span class="w-7 h-7 rounded-full bg-carbon text-paper-white flex items-center justify-center text-[14px]">
+              🛡️
+            </span>
+<h3 class="font-headline-md text-body-md font-bold text-carbon">
+              XYZ Safety Lock Guarantee
+            </h3>
+</div>
+<ul class="space-y-2 text-caption text-carbon">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-carbon flex-shrink-0 mt-0.5">check_circle</span>
+<span><strong>100% Official Publisher API:</strong> Direct server top-up with zero risk of account ban or retroactive rollbacks.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-carbon flex-shrink-0 mt-0.5">history</span>
+<span><strong>5-Minute Refund Fallback:</strong> If automated queues fail or publisher times out, full refund is credited immediately.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-carbon flex-shrink-0 mt-0.5">lock</span>
+<span><strong>Encrypted Pipeline:</strong> ISO 27001 compliant gateway with 256-bit automated cryptographic handshake.</span>
+</li>
+</ul>
+<div class="pt-1 flex items-center justify-between text-[11px] font-bold text-carbon/70">
+<span>Audit Ref: XYZ-SEC-2025</span>
+<span class="underline cursor-pointer hover:text-carbon">Read Legal Terms</span>
+</div>
+</div>
+<!-- Payment Badges Sticker Cluster -->
+<div class="bg-sky-wash border border-carbon rounded-[20px] p-4 text-center">
+<p class="font-label-pill text-[11px] uppercase font-bold text-carbon mb-2">Supported Payment Integrations</p>
+<div class="flex flex-wrap items-center justify-center gap-2">
+<span class="bg-paper-white border border-carbon px-2.5 py-1 rounded-full font-label-pill text-[11px] font-bold">QRIS</span>
+<span class="bg-paper-white border border-carbon px-2.5 py-1 rounded-full font-label-pill text-[11px] font-bold">GoPay</span>
+<span class="bg-paper-white border border-carbon px-2.5 py-1 rounded-full font-label-pill text-[11px] font-bold">OVO</span>
+<span class="bg-paper-white border border-carbon px-2.5 py-1 rounded-full font-label-pill text-[11px] font-bold">DANA</span>
+<span class="bg-paper-white border border-carbon px-2.5 py-1 rounded-full font-label-pill text-[11px] font-bold">BCA VA</span>
+<span class="bg-paper-white border border-carbon px-2.5 py-1 rounded-full font-label-pill text-[11px] font-bold">Mandiri</span>
+</div>
+</div>
+</aside>
+</div>
+<!-- 5. Frequently Asked Questions Accordion (Compact bottom section) -->
+<section class="mt-16 bg-paper-white border border-carbon rounded-[28px] p-6 lg:p-8">
+<div class="flex flex-col md:flex-row md:items-center justify-between border-b border-carbon pb-4 mb-6 gap-3">
+<div>
+<div class="inline-flex items-center gap-1.5 bg-sunburst border border-carbon px-3 py-0.5 rounded-full font-label-pill text-caption uppercase font-bold mb-2">
+<span class="material-symbols-outlined text-[14px]">help</span> Instant Answers
+          </div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">
+            Frequently Asked Questions
+          </h2>
+</div>
+<p class="font-caption text-caption text-outline max-w-sm">
+          Everything you need to know about our lightning-fast automated bot dispatch and payment rails.
+        </p>
+</div>
+<div class="space-y-3">
+<!-- FAQ Item 1 -->
+<details class="group bg-surface-container-low border border-carbon rounded-[18px] p-4 cursor-pointer transition-colors" open="">
+<summary class="flex items-center justify-between font-headline-md text-body-lg font-bold text-carbon list-none">
+<span>How soon will my game diamonds / subscription login arrive?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-caption text-carbon/90 border-t border-carbon/20 mt-3">
+            Our automated dispatch bot operates 24/7/365 with zero human intervention required. For Mobile Legends and other game top-ups, server API injection happens within <strong>0.4 to 5 seconds</strong> after payment confirmation. For digital accounts (e.g. Netflix Premium), credentials and custom profile PIN codes are automatically delivered via WhatsApp and registered Email within 10 seconds.
+          </div>
+</details>
+<!-- FAQ Item 2 -->
+<details class="group bg-surface-container-low border border-carbon rounded-[18px] p-4 cursor-pointer transition-colors">
+<summary class="flex items-center justify-between font-headline-md text-body-lg font-bold text-carbon list-none">
+<span>Can I change my Game ID after clicking Pay Now?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-caption text-carbon/90 border-t border-carbon/20 mt-3">
+            Because our systems inject diamonds directly into the official publisher API upon payment authorization, orders cannot be edited or rerouted once settlement occurs. Please verify your User ID and Zone ID in the Review section above before pressing the final checkout button.
+          </div>
+</details>
+<!-- FAQ Item 3 -->
+<details class="group bg-surface-container-low border border-carbon rounded-[18px] p-4 cursor-pointer transition-colors">
+<summary class="flex items-center justify-between font-headline-md text-body-lg font-bold text-carbon list-none">
+<span>What happens if my QRIS transaction times out?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-caption text-carbon/90 border-t border-carbon/20 mt-3">
+            QRIS QR codes remain active for 15 minutes. If your payment bank deducted the funds while our gateway was updating, our background sync bot will detect the national settlement rail within 3 minutes and fulfill the order automatically. If any issue persists, our 24/7 WhatsApp concierge will manually verify and dispatch your items immediately.
+          </div>
+</details>
+</div>
+</section>
+</main>
+<!-- 6. Footer (Docked full-width dark footer matching Shared Component JSON tokens) -->
+<footer class="mt-20 bg-carbon text-paper-white border-t border-carbon">
+<div class="w-full max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
+<!-- Brand & Philosophy Statement -->
+<div class="flex flex-col items-center md:items-start text-center md:text-left space-y-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-sunburst text-carbon flex items-center justify-center font-extrabold text-[12px]">★</span>
+<span class="font-headline-xl text-headline-md font-extrabold text-paper-white tracking-tight">XYZ STORE</span>
+</div>
+<p class="font-body-md text-body-md text-soft-mist max-w-md">
+          © 2025 XYZ Store by Slush Protocol. All rights reserved. Tactile Pop Brutalism &amp; Sub-Second Automated Fulfillment.
+        </p>
+<div class="flex items-center gap-2 pt-1">
+<span class="bg-paper-white/10 text-paper-white border border-paper-white/20 px-2.5 py-0.5 rounded-full font-label-pill text-[10px] uppercase">
+            Moonton Authorized
+          </span>
+<span class="bg-paper-white/10 text-paper-white border border-paper-white/20 px-2.5 py-0.5 rounded-full font-label-pill text-[10px] uppercase">
+            ISO 27001 Secure
+          </span>
+</div>
+</div>
+<!-- Footer Navigation Links (Strictly mapped from JSON Blueprint) -->
+<div class="flex flex-wrap justify-center gap-x-6 gap-y-3 font-body-md text-body-md text-soft-mist">
+<a class="hover:text-sunburst transition-colors duration-150" href="#">Governance</a>
+<a class="hover:text-sunburst transition-colors duration-150" href="#">Security Audit</a>
+<a class="hover:text-sunburst transition-colors duration-150" href="#">Brand Assets</a>
+<a class="hover:text-sunburst transition-colors duration-150" href="#">GitHub</a>
+<a class="hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+</div>
+<!-- Floating Pill Badge & WhatsApp Live Support -->
+<div class="flex items-center gap-3">
+<a class="bg-mint-pop text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-caption uppercase font-extrabold inline-flex items-center gap-2 hover:scale-105 transition-transform" href="https://wa.me/" rel="noopener" target="_blank">
+<span class="material-symbols-outlined text-[16px]">chat</span>
+          WhatsApp 24/7 Care
+        </a>
+</div>
+</div>
+</footer>
+<!-- Inline vanilla script for quantity micro-interactions and payment radio reactivity -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Dynamic payment rail selection highlight
+      const paymentInputs = document.querySelectorAll('input[name="payment_rail"]');
+      paymentInputs.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          paymentInputs.forEach(other => {
+            const container = other.closest('label').querySelector('div');
+            const dot = container.querySelector('.rounded-full > div');
+            if (other.checked) {
+              container.classList.add('bg-sky-wash', 'border-2');
+              container.classList.remove('bg-paper-white');
+              if (dot) dot.classList.add('bg-ember');
+            } else {
+              container.classList.remove('bg-sky-wash', 'border-2');
+              container.classList.add('bg-paper-white');
+              if (dot) dot.classList.remove('bg-ember');
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body></html>

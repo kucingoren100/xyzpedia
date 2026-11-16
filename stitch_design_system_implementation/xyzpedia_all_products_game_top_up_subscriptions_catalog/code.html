@@ -1,0 +1,891 @@
+<!DOCTYPE html><html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>XYZPEDIA — All Products, Game Top-Up &amp; Subscriptions Catalog</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#ffdbd1",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "sky-wash": "#DCEEFF",
+            "on-primary-fixed": "#3a0a00",
+            "tertiary-fixed": "#d3e4ff",
+            "on-tertiary": "#ffffff",
+            "voltage-violet": "#5C4ADE",
+            "on-error-container": "#93000a",
+            "surface-tint": "#af3000",
+            "on-secondary-container": "#fffbff",
+            "background": "#f9f9f9",
+            "inverse-on-surface": "#f1f1f1",
+            "secondary-container": "#6e5ef1",
+            "secondary-fixed": "#e4dfff",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#5c4038",
+            "on-primary-container": "#fffbff",
+            "surface-bright": "#f9f9f9",
+            "sunburst": "#FFD731",
+            "carbon": "#000000",
+            "on-secondary-fixed": "#160066",
+            "concrete-gray": "#CCCCCC",
+            "secondary-fixed-dim": "#c6bfff",
+            "primary-fixed-dim": "#ffb59f",
+            "tertiary": "#005ea5",
+            "outline-variant": "#e6beb2",
+            "surface-container-lowest": "#ffffff",
+            "paper-white": "#FFFFFF",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "surface-variant": "#e2e2e2",
+            "ember": "#FB4903",
+            "surface-container-highest": "#e2e2e2",
+            "surface": "#f9f9f9",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "on-error": "#ffffff",
+            "on-surface": "#1b1b1b",
+            "error-container": "#ffdad6",
+            "primary": "#ab2e00",
+            "on-background": "#1b1b1b",
+            "on-tertiary-container": "#fdfcff",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-low": "#f3f3f3",
+            "tertiary-container": "#0076cf",
+            "surface-container-high": "#e8e8e8",
+            "on-tertiary-fixed": "#001c38",
+            "electric-blue": "#4DA2FF",
+            "lavender": "#E9CCFF",
+            "soft-mist": "#E9E9E9",
+            "inverse-primary": "#ffb59f",
+            "secondary": "#5542d7",
+            "error": "#ba1a1a",
+            "mint-pop": "#55DB9C",
+            "surface-container": "#eeeeee",
+            "inverse-surface": "#303030",
+            "outline": "#916f66",
+            "primary-container": "#d63c00",
+            "on-tertiary-fixed-variant": "#004881"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-3xl": "5rem",
+            "margin": "1rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-2xl": "3rem",
+            "margin-tablet": "2rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-hero": "11.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Hanken Grotesk"],
+            "label-pill": ["Hanken Grotesk"],
+            "subheading": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "headline-lg": ["Hanken Grotesk"],
+            "display-hero": ["Bricolage Grotesque"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "headline-md": ["Hanken Grotesk"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marquee 24s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+    * {
+      box-sizing: border-box;
+      box-shadow: none !important;
+    }
+  </style>
+</head>
+<body class="bg-sky-wash text-carbon antialiased selection:bg-sunburst selection:text-carbon min-h-screen flex flex-col font-body-md text-body-md">
+<!-- Top Marquee Strip -->
+<aside class="w-full bg-carbon text-paper-white h-9 overflow-hidden flex items-center border-b border-carbon select-none z-50">
+<div class="animate-marquee whitespace-nowrap font-marquee text-marquee uppercase tracking-wider flex items-center gap-space-lg text-sunburst">
+<span class="flex items-center gap-2"><span class="text-ember">★</span> 24/7 AUTOMATED INSTANT DISPATCH</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> 100% OFFICIAL PUBLISHER API</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> GUEST-DIRECT CHECKOUT (NO LOGIN NEEDED)</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> QRIS 0% ADMIN FEE</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> INSTANT DELIVERY IN 5 SECONDS</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> 24/7 AUTOMATED INSTANT DISPATCH</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> 100% OFFICIAL PUBLISHER API</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> GUEST-DIRECT CHECKOUT (NO LOGIN NEEDED)</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> QRIS 0% ADMIN FEE</span>
+<span class="flex items-center gap-2"><span class="text-ember">★</span> INSTANT DELIVERY IN 5 SECONDS</span>
+</div>
+</aside>
+<!-- Sticky TopNavBar (Shared Component implementation) -->
+<header class="sticky top-0 z-40 bg-paper-white border-b border-carbon w-full">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto gap-space-md">
+<!-- Brand & Search cluster -->
+<div class="flex items-center gap-space-md flex-1 max-w-xl">
+<a class="font-display-hero-mobile text-headline-md font-extrabold tracking-tight text-carbon flex items-center gap-1.5 shrink-0 group" href="#">
+<span>XYZPEDIA</span>
+<span class="w-3 h-3 rounded-full bg-ember inline-block group-hover:scale-125 transition-transform duration-150"></span>
+</a>
+<!-- Search Bar on Left -->
+<div class="relative w-full max-w-md hidden sm:block">
+<input class="w-full bg-paper-white text-carbon placeholder:text-concrete-gray font-body-md text-body-md pl-10 pr-4 py-2 rounded-full border border-carbon focus:outline-none focus:border-2 focus:border-carbon" placeholder="Search game, diamond, or streaming app..." type="text">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-carbon pointer-events-none text-[20px]">search</span>
+</div>
+</div>
+<!-- Nav Links -->
+<nav class="hidden lg:flex items-center gap-space-md">
+<a class="text-ember font-label-pill text-label-pill underline decoration-2 underline-offset-4 hover:scale-[1.02] active:scale-[0.98] transition-transform" href="#">All Products</a>
+<a class="text-carbon font-label-pill text-label-pill hover:text-ember transition-colors" href="#game-section">Games</a>
+<a class="text-carbon font-label-pill text-label-pill hover:text-ember transition-colors" href="#sub-section">Subscriptions</a>
+<a class="text-carbon font-label-pill text-label-pill hover:text-ember transition-colors" href="#voucher-section">Vouchers</a>
+<a class="text-carbon font-label-pill text-label-pill hover:text-ember transition-colors" href="#">Check Order</a>
+</nav>
+<!-- Trailing Action -->
+<div class="flex items-center gap-space-sm shrink-0">
+<a class="inline-flex items-center gap-2 bg-carbon text-paper-white font-label-pill text-label-pill px-4 py-2.5 rounded-full border border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 uppercase" href="#">
+<span class="material-symbols-outlined text-[18px]">local_shipping</span>
+<span>Track Order</span>
+</a>
+<button aria-label="Customer Help" class="w-10 h-10 rounded-full border border-carbon bg-paper-white flex items-center justify-center hover:bg-soft-mist active:scale-95 transition-all">
+<span class="material-symbols-outlined text-carbon text-[20px]">help</span>
+</button>
+</div>
+</div>
+<!-- Mobile Search Row -->
+<div class="sm:hidden px-space-md pb-space-sm w-full">
+<div class="relative w-full">
+<input class="w-full bg-paper-white text-carbon placeholder:text-concrete-gray font-body-md text-body-md pl-10 pr-4 py-2 rounded-full border border-carbon focus:outline-none focus:border-2 focus:border-carbon" placeholder="Search game, diamond, app..." type="text">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-carbon pointer-events-none text-[20px]">search</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-xl flex flex-col gap-space-2xl">
+<!-- Hero / Catalog Header -->
+<section class="relative bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl overflow-hidden">
+<!-- Decorative Physical Inflatable / Die-cut Stickers -->
+<div class="absolute -top-4 -right-4 bg-sunburst border border-carbon rounded-full px-4 py-1.5 rotate-3 hidden sm:flex items-center gap-1 font-label-pill text-label-pill text-carbon">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+        NO AUTHENTICATION REQUIRED
+      </div>
+<div class="absolute top-24 -right-10 bg-mint-pop border border-carbon rounded-2xl px-5 py-2 -rotate-6 hidden lg:block font-label-pill text-label-pill text-carbon">
+        100% GUEST DISPATCH
+      </div>
+<div class="max-w-3xl flex flex-col gap-space-sm z-10 relative">
+<div class="inline-flex items-center gap-2 self-start bg-lavender border border-carbon rounded-full px-3 py-1 font-label-pill text-label-pill text-carbon -rotate-1">
+<span class="w-2 h-2 rounded-full bg-carbon animate-pulse"></span>
+          OFFICIAL DIRECT WHOLESALE REPOSITORY
+        </div>
+<h1 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl font-extrabold text-carbon tracking-tight uppercase leading-none">
+          Browse Digital Catalog
+        </h1>
+<p class="font-subheading text-body-lg md:text-subheading text-carbon font-medium max-w-2xl">
+          Fast automated game top-ups, digital subscriptions, and vouchers with 100% guest direct checkout.
+        </p>
+</div>
+<!-- Filter Controls & Sort Bar -->
+<div class="mt-space-lg pt-space-lg border-t border-carbon flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<!-- Category Filter Pills with counts -->
+<div class="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+<button class="bg-carbon text-paper-white border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill uppercase whitespace-nowrap hover:scale-[1.02] active:scale-[0.98] transition-transform">
+            All Products (90+)
+          </button>
+<a class="bg-paper-white text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill whitespace-nowrap hover:bg-soft-mist active:scale-[0.98] transition-all" href="#game-section">
+            Game Top-Up (18)
+          </a>
+<a class="bg-paper-white text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill whitespace-nowrap hover:bg-soft-mist active:scale-[0.98] transition-all" href="#sub-section">
+            Subscriptions (21)
+          </a>
+<a class="bg-paper-white text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill whitespace-nowrap hover:bg-soft-mist active:scale-[0.98] transition-all" href="#voucher-section">
+            Vouchers &amp; Gift Cards (12)
+          </a>
+<button class="bg-paper-white text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill whitespace-nowrap hover:bg-soft-mist active:scale-[0.98] transition-all">
+            Software &amp; Keys (8)
+          </button>
+<button class="bg-paper-white text-carbon border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill whitespace-nowrap hover:bg-soft-mist active:scale-[0.98] transition-all">
+            Pulsa &amp; E-Wallet (15)
+          </button>
+</div>
+<!-- Sort Dropdown -->
+<div class="flex items-center gap-2 self-start lg:self-auto shrink-0">
+<label class="font-label-pill text-caption text-carbon uppercase font-bold" for="catalog-sort">Sort By:</label>
+<div class="relative">
+<select class="appearance-none bg-paper-white text-carbon font-label-pill text-label-pill border border-carbon rounded-full pl-4 pr-9 py-2 focus:outline-none focus:border-2 focus:border-carbon cursor-pointer" id="catalog-sort">
+<option>Most Popular</option>
+<option>Lowest Price</option>
+<option>Newest Release</option>
+<option>Fastest Fulfillment</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-carbon pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 1: Game Top-Up Catalog -->
+<section class="flex flex-col gap-space-md" id="game-section">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-carbon pb-space-sm gap-2">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-3 h-3 rounded-full bg-ember inline-block"></span>
+<span class="font-label-pill text-caption uppercase text-carbon tracking-wider">Instant API Ingestion</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Game Top-Up Catalog</h2>
+<p class="font-body-md text-body-md text-carbon mt-0.5">Top-up instantly using ID &amp; Zone. Direct guest checkout with QRIS &amp; Instant VA.</p>
+</div>
+<span class="font-label-pill text-caption text-carbon bg-paper-white border border-carbon px-3 py-1 rounded-full self-start md:self-auto">
+          12 POPULAR TITLES SHOWN
+        </span>
+</div>
+<!-- 12 Game Cards Grid (Bento style, neo-brutalist pop) -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"><!-- Game 1: Mobile Legends -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfFXsPwAtvBIyWJy6w7li_jsv-QIDaOfq-TLdYqU98c2Zgvo9HXnXvXdm6T-CKhDtafLxGUGD7UhW7JhjeJpmroz15FQZg9D7DjfhG6Zbjrf0r9jsIGEVM8E21apy8_XcbZkWa-JqAbfxaEblrn1R4DYTPqj9LBrDQ2Mw5iXPjDbDArCuuT7dcWyqFOSSIBj2xoB683VI-K-zUFrFQJbIH9rb50GgG9wu2f-MzFQ0" alt="Mobile Legends">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-yellow-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Moonton</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Mobile Legends</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 1.700</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 2: Free Fire MAX -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfs7bxA4XtpHrHlKShLYfVaIMkd0qcutdnimFwgskFTc6p-HtszXsJOl9x_ajOST-BOHMfR3j6j_9r169uBTZ52E7mULJCX024tv9TdSzlHRXAr2eriJWplVCF2OGT5ZD2G3WhoJRB1kaebGkuO8CX82oL5anvQVBsPHfTOk7sHUz4eh7O2wh2vNuYwWHVi5KTNwgZtTYOvawpv4zkV6fFMOnCVmtiEhSArUe7z8Q" alt="Free Fire MAX">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Garena</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Free Fire MAX</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 1.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 3: PUBG Mobile -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZFUEU0KZpHZj3JpfP7G_9zAj3gq89jNBN2FBudXFMlt5QIa8zM4qlCGcbiBZg0s72PuRjKXNRmzI8n2YWTrrH53hXkITPH1YunbE3dy0fFPm5ICsf5QcEcfYEAQek2g-CRasEpEje9haNma6369WYExhqzeIVJS0Z7iq4-95AyEzv1337cEKl1EOpEoMioyoyHFT5KisLaQe3w98JansP-7XOzwgxNMx5c9o5bD0" alt="PUBG Mobile">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-indigo-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Level Infinite</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">PUBG Mobile</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 14.500</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 4: Honor of Kings -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs7Sm4Vgh9oC1S6c4aaIssUq5vGeih3B0x2YXYpjX1vKbi4k9vR8xkjjrXAMxGtxFBdTvw1Y9jH71jnVKsvCOB7hv6dQABrqFGc1temGssStN1OMOUWlqxPLc38yKliXin5lS1BLv5KaR9K7v18ws77lZKwk55yAWOQS8pCT15FCJcsWuXo96ZtVJWVVb8KDkqCxin9nFftdR20RYEt-DMi9TbvoOkOn-l6oVvZuw" alt="Honor of Kings">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-blue-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Level Infinite</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Honor of Kings</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 3.500</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 5: Genshin Impact -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtsyEg8pqk3G4DzlGkn_tl-ZWWjaITkuQJGarRhZ27kMnvVk5VmRMN9pCYsLrwO9lX0uGE7EDCM4GhhYDRcLp6UBVwqakmZaRCJHJ1aS359XZdZCvHjwL_rfDvLOMvkA82y_ew12OkOHmkJ541r8vX_NvePtBbHoUyfyR-wb5Q12DG7Mz1Rcx1oecxIZTwgpDR7aceYfTEkZf9bt-IEy17eeS7eS4LaM_AYkoCfRM" alt="Genshin Impact">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-yellow-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">HoYoverse</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Genshin Impact</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 16.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 6: Valorant -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbMJj4nWUqBBBQbJW_OG7DGV1Jnucdw3ZioJhbW7onggkCqYxCoaYNTHpZQ6hZtB8GsCuT0Uk5ZLU3NMQhlrH7Ra59eQ4nX2kPBKcKmvS1EXkhxLfHSUP8WwPmJKl3BbRdGwxqayAWCoF44FV5Lef_zLSyGhuo-wgdfxvpaPhoWOG0snHTq7HuzDCsO0il9qbrh27gaT3zhIib9Vi0HLd4THV8ToKbHLQW-wXYULw" alt="Valorant Points">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-rose-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Riot Games</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Valorant Points</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 14.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 7: Blood Strike -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDleAvdnIKkscJRteY_KljUieYFe4iAlyH9TnD8uEggGBbR3Ztm8-pPJ4wlHkOqyYMCSgFLIxl95slt-tWg-bZycDNqcNya3l68buTGhsrTiIIOr3wRCuQE5M-jqf8q0IoxWlnNZRTlzCjPyIX9ckeY-K0dmuHxCDyLULzCxZpE4rn9_Vv_n8otQDijPr9sSbmvyRkzFyTU4m_zeuZaeD2WbSJqoDvTOp0BnDavx-Y" alt="Blood Strike">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">NetEase</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Blood Strike</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 4.800</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 8: Magic Chess Go Go -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZNTsqHcC-0x6POvqzWdBe6Jcetb9Ms2A6zLB_UyWbb7ZTrIcHXL5WBGxJqi9BtwRD2qn0VZrtASsMFJqRtuUYZA1yGi0msOafufz102tf3BhjK1i8molJJbgaEtdPMRmlL2K7lpF0tndX7EYsjw2M1D7vJRoZFWqAW9zAYUb2fLJXC9LXJ2SJSkpMGgi8sI6nns4x4pJ0PgVJ2GC7sCcgk_mpmZEvxhT4wdVvxfM" alt="Magic Chess Go Go">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-yellow-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Moonton</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Magic Chess Go Go</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 3.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 9: Point Blank ID -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvK_4poylrj_bCtZH5pNpKmZYpP2r6qurzpwkXTEaKjR1qzGrtFNvJCPLUd5S-5RWO1rljezdbQtvidbu5DLGg4eqGx7lQxApv-d7OOaKun7T-3Inv78N_p1oM-J1RD2ANtA-4jnO4FDjkLGEpttv20nS29Zo-TmVohSmP_nLA_lKVN2fj1GnCOhWaQ2fNyvg_phdWkLyxDhvZmavibITQATnGrflJmdT4ks4-w6c" alt="Point Blank ID">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-purple-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Zepetto</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Point Blank ID</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 10.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 10: Delta Force Mobile -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZzWoYDp6ZWD2wsn69zP2c0GdS7DJXLhslDfh3XNnksKhVKVQg3aDyi3fidEC4Tn3Yz9Q86Zk9d_xO5V_dbR9Hna18fGXvDTXlmJAZ23xJ71ZgvQkbw8r8VCJOEiWsViB31ZnWlJ_g2Oz7Qy-REaOCTbggPx_MytrNdBqd0H68lMwo8ek3GRPtsrWVQrmuJ8hTIz2j9RfUTvmKdtoBaFaNHLiNAqnG5LY50E9E4g4" alt="Delta Force Mobile">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-blue-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Level Infinite</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Delta Force Mobile</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 15.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 11: Arena of Valor -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEuO0dXiIzKS7eQ_T5dlOlBCqE_EEHS9au3RW7DJbKhcFAEaFJTkho-0gcvoqIdnUf-tRhifYKTI9_fM_uRe87XmPiRHUqHXBKQwghQy2lHpeoDBL9iD7q-lcVcDMR7jVxM3YElSN5JBGXZA9tCmj2WPx3IqLwMEmIragACvxjJUjLZQgT3HgmOjwPvM4jZfD5CC6rJYI5np83ffjdMoGjvI-HH9-OCVWef2GY9LE" alt="Arena of Valor">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Garena</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Arena of Valor</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 10.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Game 12: Call of Duty Mobile -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-[#1c2230]">
+    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD85-80ESx6hAmNTCmL8T210Q7RyRzGbzwRo6puA2AWMfwQrestQTKLJrYuqOF2lUtsE5F5TEeRCo6oKtJX5LXJFpUIKIvSw-HhdDvkOJa-1UdDm3O9gDmbwH8qz-zBgS8xZvaHnngy3LE5R7Tj2lcYZrHI0ToSAB02mHI6rClEhXJWhku4W2D-FV3ZplzWJuv2cGB2BIcfbKjT-ckKJ_4JEkLm9dmof2GpeoJ0ojM" alt="Call of Duty Mobile">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Garena</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">TOP UP GAMES</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Call of Duty Mobile</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 10.000</span>
+    </div>
+  </div>
+</a></div>
+</section>
+<!-- SECTION 2: Digital Subscriptions & Premium Accounts -->
+<section class="flex flex-col gap-space-md" id="sub-section">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-carbon pb-space-sm gap-2">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-3 h-3 rounded-full bg-voltage-violet inline-block"></span>
+<span class="font-label-pill text-caption uppercase text-carbon tracking-wider">Official Family &amp; Private Licenses</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Digital Subscriptions &amp; Premium Accounts</h2>
+<p class="font-body-md text-body-md text-carbon mt-0.5">Instant activation &amp; official family invites. Full replacement guarantee.</p>
+</div>
+<span class="font-label-pill text-caption text-carbon bg-paper-white border border-carbon px-3 py-1 rounded-full self-start md:self-auto">
+          GUARANTEED ACTIVE PERIOD
+        </span>
+</div>
+<!-- Subscriptions Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"><!-- Sub 1: Netflix Premium -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#E50914]/20 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-[#E50914] text-white font-black text-4xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">N</div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-yellow-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">4K UHD</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Netflix Premium</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 25.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 2: Spotify Premium -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#1DB954]/25 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-[#1DB954] text-black flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-4xl">graphic_eq</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Individual</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Spotify Premium</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 14.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 3: YouTube Premium -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#FF0000]/25 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-[#FF0000] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-4xl">smart_display</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-rose-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">No Ads</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">YouTube Premium</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 9.500</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 4: Canva Pro -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#00C4CC]/25 via-[#7D2AE8]/20 to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00C4CC] to-[#7D2AE8] text-white font-serif font-black text-4xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">C</div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-cyan-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Lifetime</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Canva Pro</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 10.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 5: CapCut Pro -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#242b3d] via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-white text-black flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-4xl">movie_filter</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-gray-200 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">4K 60fps</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">CapCut Pro</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 18.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 6: ChatGPT Plus -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#10A37F]/25 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-[#10A37F] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-4xl">psychology</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">GPT-4o</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">ChatGPT Plus</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 45.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 7: Adobe Creative Cloud -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#FA0F00]/25 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-[#FA0F00] text-white font-black text-3xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">Ai</div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-rose-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">100GB Cloud</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Adobe All Apps</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 65.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 8: Zoom Pro -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#2D8CFF]/25 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-[#2D8CFF] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-4xl">videocam</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-blue-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">No Limit</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Zoom Pro Meeting</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 15.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Sub 9: Gemini Advanced -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#8E75FF]/25 via-[#121620] to-[#121620] flex items-center justify-center p-6">
+    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#1B73E8] to-[#9B51E0] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-4xl">auto_awesome</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-purple-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">2TB Cloud</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">AKUN PREMIUM</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Gemini Advanced</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 38.000</span>
+    </div>
+  </div>
+</a></div>
+</section>
+<!-- SECTION 3: Vouchers, Gift Cards & Pulsa -->
+<section class="flex flex-col gap-space-md" id="voucher-section">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-carbon pb-space-sm gap-2">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-3 h-3 rounded-full bg-mint-pop inline-block"></span>
+<span class="font-label-pill text-caption uppercase text-carbon tracking-wider">Direct Digital Codes &amp; Utilities</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Vouchers, Gift Cards &amp; Pulsa</h2>
+<p class="font-body-md text-body-md text-carbon mt-0.5">Automated redeem pin display on payment confirmation screen &amp; WhatsApp copy.</p>
+</div>
+<span class="font-label-pill text-caption text-carbon bg-paper-white border border-carbon px-3 py-1 rounded-full self-start md:self-auto">
+          ZERO CODE DEFECT RATE
+        </span>
+</div>
+<!-- Voucher Cards Bento Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"><!-- Voucher 1: Google Play -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#01875F]/25 via-[#121620] to-[#121620] flex items-center justify-center p-5">
+    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00E676] via-[#FFD600] to-[#FF1744] p-0.5 shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <div class="w-full h-full bg-[#121620] rounded-[14px] flex items-center justify-center text-white">
+        <span class="material-symbols-outlined text-3xl text-emerald-400">play_arrow</span>
+      </div>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-emerald-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Indonesia</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">VOUCHER RESMI</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Google Play IDR</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 5.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Voucher 2: Steam Wallet -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#1b2838]/80 via-[#121620] to-[#121620] flex items-center justify-center p-5">
+    <div class="w-14 h-14 rounded-2xl bg-[#171a21] border border-[#2a475e] flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-3xl text-sky-400">sports_esports</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-sky-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Instant</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">VOUCHER RESMI</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Steam Wallet IDR</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 12.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Voucher 3: PlayStation Store -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#003791]/30 via-[#121620] to-[#121620] flex items-center justify-center p-5">
+    <div class="w-14 h-14 rounded-2xl bg-[#00439C] flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+      PS
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-blue-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">PSN</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">VOUCHER RESMI</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">PlayStation Store</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 100.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Voucher 4: Apple Gift Card -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#242b3d] via-[#121620] to-[#121620] flex items-center justify-center p-5">
+    <div class="w-14 h-14 rounded-2xl bg-white text-black flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-3xl">phone_iphone</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-gray-200 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">App Store</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">VOUCHER RESMI</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Apple Gift Card</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 50.000</span>
+    </div>
+  </div>
+</a>
+
+<!-- Voucher 5: Token Listrik PLN -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#FFD731]/20 via-[#121620] to-[#121620] flex items-center justify-center p-5">
+    <div class="w-14 h-14 rounded-2xl bg-yellow-400 text-black flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-3xl">bolt</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-yellow-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">PLN</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">VOUCHER RESMI</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Token Listrik PLN</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 20.500</span>
+    </div>
+  </div>
+</a>
+
+<!-- Voucher 6: Pulsa & Data Paket -->
+<a href="#" class="group flex flex-col justify-between bg-[#121620] border border-white/10 rounded-[20px] overflow-hidden hover:scale-[1.03] hover:border-yellow-400/50 transition-all cursor-pointer shadow-md text-left">
+  <div class="relative w-full h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[#FB4903]/25 via-[#121620] to-[#121620] flex items-center justify-center p-5">
+    <div class="w-14 h-14 rounded-2xl bg-[#FB4903] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-3xl">signal_cellular_alt</span>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#121620] via-transparent to-transparent pointer-events-none"></div>
+    <span class="absolute top-2.5 right-2.5 bg-orange-400 text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">All Operator</span>
+  </div>
+  <div class="p-3.5 flex flex-col justify-between flex-grow">
+    <div>
+      <span class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase block">VOUCHER RESMI</span>
+      <h3 class="text-sm md:text-base font-bold text-white leading-tight group-hover:text-yellow-400 transition-colors mt-0.5 line-clamp-1">Pulsa &amp; Data Paket</h3>
+    </div>
+    <div class="mt-3 pt-2 border-t border-white/10 text-xs text-gray-400">
+      Mulai <span class="text-yellow-400 font-extrabold text-sm">Rp 5.200</span>
+    </div>
+  </div>
+</a></div>
+</section>
+</main>
+<!-- Footer (Shared Component implementation) -->
+<footer class="w-full bg-carbon text-paper-white border-t border-carbon mt-space-2xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Footer Top Row -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md pb-space-lg border-b border-inverse-surface">
+<div class="flex items-center gap-2">
+<span class="font-display-hero-mobile text-headline-md font-black text-paper-white">XYZPEDIA</span>
+<span class="bg-ember text-paper-white text-caption font-bold px-2 py-0.5 rounded-full border border-paper-white">AUTOMATED DIRECT</span>
+</div>
+<!-- Live Node Status Indicator -->
+<div class="flex items-center gap-3 bg-inverse-surface px-4 py-2 rounded-full border border-outline">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop animate-ping"></span>
+<span class="font-caption text-caption text-paper-white font-bold">Node Cluster: Jakarta-1 [Status: Healthy • 99.98% Latency 42ms]</span>
+</div>
+</div>
+<!-- Payment Rails Grid -->
+<div class="flex flex-col gap-space-sm">
+<span class="font-caption text-caption text-soft-mist uppercase tracking-widest font-bold">Supported Instant Payment Channels (Guest direct without account)</span>
+<div class="flex flex-wrap gap-2 items-center">
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">QRIS Instant</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">BCA VA</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">Mandiri Livin</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">BRImo</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">BNI Mobile</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">DANA</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">GoPay</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">ShopeePay</span>
+<span class="bg-paper-white text-carbon font-label-pill text-caption px-3 py-1.5 rounded-lg border border-carbon font-black">OVO</span>
+</div>
+</div>
+<!-- Footer Policy Links -->
+<div class="flex flex-wrap gap-x-6 gap-y-2 pt-space-sm border-t border-inverse-surface">
+<a class="text-soft-mist font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-soft-mist font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-soft-mist font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist font-caption text-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist font-caption text-caption hover:text-sunburst transition-colors duration-150 flex items-center gap-1 text-mint-pop" href="#">
+<span class="material-symbols-outlined text-[16px]">chat</span>
+          Customer Care WhatsApp
+        </a>
+</div>
+<!-- Copyright text -->
+<div class="pt-space-sm flex flex-col sm:flex-row justify-between items-start sm:items-center text-soft-mist font-caption text-caption gap-2">
+<p>© 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.</p>
+<span class="text-concrete-gray">Build 4.9.2-cat</span>
+</div>
+</div>
+</footer>
+
+
+</body></html>

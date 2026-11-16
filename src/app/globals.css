@@ -1,0 +1,367 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark, .dark *));
+
+@theme {
+  --color-carbon: #000000;
+  --color-paper-white: #ffffff;
+  --color-sky-wash: #dceeff;
+  --color-concrete-gray: #cccccc;
+  --color-soft-mist: #e9e9e9;
+  --color-electric-blue: #4da2ff;
+  --color-mint-pop: #55db9c;
+  --color-lavender: #e9ccff;
+  --color-ember: #fb4903;
+  --color-sunburst: #ffd731;
+  --color-voltage-violet: #5c4ade;
+  --color-background: #f9f9f9;
+
+  --font-display: var(--font-bricolage), sans-serif;
+  --font-body: var(--font-hanken), sans-serif;
+}
+
+:root {
+  --background: #f9f9f9;
+  --foreground: #000000;
+}
+
+html, body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #000000;
+  font-family: var(--font-hanken), sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Neo-Brutalist Stitch Invariants */
+.ink-border {
+  border: 1px solid #000000;
+}
+
+.ink-border-thick {
+  border: 2px solid #000000;
+}
+
+.pop-card {
+  border: 1px solid #000000;
+  border-radius: 1rem;
+  box-shadow: 3px 3px 0px 0px #000000;
+  transition: all 0.15s ease-in-out;
+}
+
+.pop-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px 0px #000000;
+}
+
+.pop-button {
+  border: 1px solid #000000;
+  box-shadow: 3px 3px 0px 0px #000000;
+  transition: all 0.15s ease-in-out;
+}
+
+.pop-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.pop-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+/* Infinite Marquee Animation */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee-scroll 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Custom neo-brutalist scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 9999px;
+  border: 1px solid #000000;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #fb4903;
+}
+
+/* ========================================================
+   POP-BRUTALISM DARK MODE SYSTEM
+   Deep rich dark background with crisp borders & neon accents
+   ======================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0e0e12;
+  color: #f3f4f6;
+}
+
+html.dark header {
+  background-color: #16161e !important;
+  border-bottom-color: #2b2b3a !important;
+}
+
+html.dark .ink-border {
+  border-color: #38384a;
+}
+
+html.dark .ink-border-thick {
+  border-color: #4c4c62;
+}
+
+html.dark .border-carbon {
+  border-color: #38384a;
+}
+
+/* Cards & Surfaces in Dark Mode */
+html.dark .bg-white {
+  background-color: #171722;
+  color: #f3f4f6;
+}
+
+html.dark .bg-\[\#fbfbfd\] {
+  background-color: #121218;
+}
+
+html.dark .bg-\[\#f9f9f9\] {
+  background-color: #0e0e12;
+}
+
+html.dark .bg-\[\#f3f4f6\] {
+  background-color: #1f1f2a;
+  color: #f3f4f6;
+}
+
+html.dark .bg-\[\#e9e9e9\] {
+  background-color: #1a1a24;
+}
+
+html.dark .hover\:bg-gray-50:hover,
+html.dark .hover\:bg-gray-100:hover {
+  background-color: #262636;
+}
+
+/* Text Contrast Rules in Dark Mode */
+html.dark .text-carbon {
+  color: #f3f4f6;
+}
+
+html.dark .text-gray-700 {
+  color: #d1d5db;
+}
+
+html.dark .text-gray-600 {
+  color: #9ca3af;
+}
+
+html.dark .text-gray-500 {
+  color: #9ca3af;
+}
+
+html.dark .text-gray-400 {
+  color: #6b7280;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #1f1f2b !important;
+  color: #ffffff !important;
+  border-color: #38384a !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* ========================================================
+   CRITICAL CONTRAST SAFETY:
+   Any element or badge with a bright yellow or mint green background
+   MUST ALWAYS have 100% black text for perfect readability.
+   ======================================================== */
+html:not(.dark) .bg-\[\#ffd731\]:not([class*="dark:bg-"]),
+html:not(.dark) .bg-\[\#55db9c\]:not([class*="dark:bg-"]),
+html:not(.dark) .bg-\[\#dceeff\]:not([class*="dark:bg-"]),
+html:not(.dark) .bg-\[\#e9ccff\]:not([class*="dark:bg-"]),
+html:not(.dark) .bg-\[\#ffdad6\]:not([class*="dark:bg-"]),
+html.dark .dark\:bg-\[\#ffd731\],
+html.dark .dark\:bg-\[\#55db9c\],
+html.dark button.dark\:bg-\[\#ffd731\],
+html.dark span.dark\:bg-\[\#ffd731\],
+span.bg-\[\#ffd731\],
+button.bg-\[\#ffd731\] {
+  color: #000000 !important;
+}
+
+/* QRIS Safety: Must ALWAYS be pure solid white so camera scanners never fail */
+.qr-canvas,
+.qr-white-bg,
+html.dark .qr-canvas,
+html.dark .qr-white-bg {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* 3D Graphic Mockup Invariant: The illustration elements on the 3D card MUST stay pure white and crisp black */
+.hero-card-white-pill,
+.hero-card-white-circle,
+.hero-card-white-bar {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+.hero-card-white-pill *,
+.hero-card-white-bar * {
+  color: #000000 !important;
+}
+
+/* In dark mode, ensure Hero banner text has rich high contrast */
+html.dark #hero p,
+html.dark .hero-subtext {
+  color: #d1d5db !important;
+}
+
+html.dark #hero .hero-rating-text,
+html.dark .hero-rating-text {
+  color: #f3f4f6 !important;
+}
+
+/* In dark mode, ensure Product Instruction Alerts have perfect contrast */
+html.dark .product-instruction-box {
+  background-color: #152338 !important;
+  border-color: #2d3f5e !important;
+  color: #bae6fd !important;
+}
+html.dark .product-instruction-box * {
+  color: #bae6fd !important;
+}
+
+/* Catalog Banners System */
+.catalog-banner-gametopup {
+  background-color: #dceeff;
+}
+html.dark .catalog-banner-gametopup {
+  background-color: #151926 !important;
+}
+
+html.dark .catalog-banner-gametopup p,
+html.dark .catalog-banner-akunpremium p,
+html.dark .catalog-banner-voucher p,
+html.dark .catalog-banner-pulsa p,
+html.dark .catalog-banner-default p {
+  color: #d1d5db !important;
+}
+
+.catalog-banner-akunpremium {
+  background-color: #e9ccff;
+}
+html.dark .catalog-banner-akunpremium {
+  background-color: #1f162b !important;
+}
+
+.catalog-banner-voucher {
+  background-color: #ffd731;
+}
+html.dark .catalog-banner-voucher {
+  background-color: #1c1824 !important;
+}
+
+.catalog-banner-pulsa {
+  background-color: #ffd731;
+}
+html.dark .catalog-banner-pulsa {
+  background-color: #181a24 !important;
+}
+
+.catalog-banner-default {
+  background-color: #ffffff;
+}
+html.dark .catalog-banner-default {
+  background-color: #161622 !important;
+}
+
+/* Pastel blocks keep crisp black text in LIGHT MODE only */
+html:not(.dark) .bg-\[\#dceeff\] h3,
+html:not(.dark) .bg-\[\#dceeff\] p,
+html:not(.dark) .bg-\[\#e9ccff\] h3,
+html:not(.dark) .bg-\[\#e9ccff\] p,
+html:not(.dark) .bg-\[\#ffdad6\] h3,
+html:not(.dark) .bg-\[\#ffdad6\] p,
+html:not(.dark) .bg-\[\#55db9c\] h1,
+html:not(.dark) .bg-\[\#55db9c\] h2,
+html:not(.dark) .bg-\[\#55db9c\] h3,
+html:not(.dark) .bg-\[\#55db9c\] p,
+html:not(.dark) .bg-\[\#ffd731\] h1,
+html:not(.dark) .bg-\[\#ffd731\] h2,
+html:not(.dark) .bg-\[\#ffd731\] h3,
+html:not(.dark) .bg-\[\#ffd731\] p,
+html:not(.dark) .bg-\[\#ffd731\] .text-carbon {
+  color: #000000 !important;
+}
+
+/* Exceptions: Elements inside yellow that explicitly request white text */
+.bg-\[\#ffd731\] .text-white,
+.bg-\[\#55db9c\] .text-white,
+html.dark .dark\:bg-\[\#ffd731\] .text-white {
+  color: #ffffff !important;
+}
+
+.bg-\[\#ffd731\] .text-red-500,
+.bg-\[\#ffd731\] .text-red-600,
+html.dark .dark\:bg-\[\#ffd731\] .text-red-400 {
+  color: #dc2626 !important;
+}
+
+/* Dark mode scrollbar */
+html.dark .custom-scrollbar {
+  scrollbar-color: #ffd731 #1c1c26;
+}
+
+html.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: #1c1c26;
+}
+
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #38384a;
+  border-color: #ffd731;
+}
+
+/* Dark mode shadow elevation */
+html.dark .shadow-\[3px_3px_0px_0px_\#000000\],
+html.dark .shadow-\[4px_4px_0px_0px_\#000000\],
+html.dark .shadow-\[2px_2px_0px_0px_\#000000\] {
+  box-shadow: 2.5px 2.5px 0px 0px #000000;
+}

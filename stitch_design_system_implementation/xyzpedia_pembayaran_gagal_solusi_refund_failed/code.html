@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pembayaran Tidak Berhasil - XYZPEDIA</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Hanken+Grotesk:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#ffb59f",
+            "electric-blue": "#4DA2FF",
+            "on-tertiary-fixed-variant": "#004881",
+            "lavender": "#E9CCFF",
+            "voltage-violet": "#5C4ADE",
+            "surface-container-highest": "#e2e2e2",
+            "tertiary-container": "#0076cf",
+            "on-surface-variant": "#5c4038",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#5542d7",
+            "on-secondary": "#ffffff",
+            "mint-pop": "#55DB9C",
+            "surface-variant": "#e2e2e2",
+            "error": "#ba1a1a",
+            "paper-white": "#FFFFFF",
+            "on-primary": "#ffffff",
+            "surface-bright": "#f9f9f9",
+            "surface": "#f9f9f9",
+            "secondary-fixed": "#e4dfff",
+            "secondary-container": "#6e5ef1",
+            "primary-container": "#d63c00",
+            "surface-dim": "#dadada",
+            "on-surface": "#1b1b1b",
+            "ember": "#FB4903",
+            "carbon": "#000000",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "primary-fixed": "#ffdbd1",
+            "surface-container-low": "#f3f3f3",
+            "primary": "#ab2e00",
+            "background": "#f9f9f9",
+            "outline": "#916f66",
+            "on-tertiary-container": "#fdfcff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "on-secondary-container": "#fffbff",
+            "on-primary-container": "#fffbff",
+            "surface-container": "#eeeeee",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#160066",
+            "inverse-surface": "#303030",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1b1b1b",
+            "secondary-fixed-dim": "#c6bfff",
+            "on-primary-fixed": "#3a0a00",
+            "concrete-gray": "#CCCCCC",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-high": "#e8e8e8",
+            "tertiary": "#005ea5",
+            "inverse-on-surface": "#f1f1f1",
+            "sunburst": "#FFD731",
+            "outline-variant": "#e6beb2",
+            "tertiary-fixed": "#d3e4ff",
+            "soft-mist": "#E9E9E9",
+            "primary-fixed-dim": "#ffb59f",
+            "on-tertiary-fixed": "#001c38",
+            "sky-wash": "#DCEEFF"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-3xl": "5rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "space-2xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-hero": "11.25rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "subheading": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "caption": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "display-hero": ["Bricolage Grotesque"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-lg-mobile": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Neo-brutalist custom helper tokens */
+    .ink-border {
+      border: 1px solid #000000;
+    }
+    .ink-border-2 {
+      border: 2px solid #000000;
+    }
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee-track {
+      display: flex;
+      width: 200%;
+      animation: marqueeScroll 22s linear infinite;
+    }
+    .animate-marquee-track:hover {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+<body class="bg-sky-wash text-carbon font-body-md antialiased min-h-screen selection:bg-sunburst selection:text-carbon overflow-x-hidden">
+<!-- MARQUEE TICKER (Flush with top edge) -->
+<aside class="w-full bg-carbon text-paper-white h-9 overflow-hidden flex items-center z-50 ink-border">
+<div class="animate-marquee-track whitespace-nowrap">
+<div class="flex items-center space-x-6 text-paper-white font-marquee text-marquee uppercase tracking-wider px-4">
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ember inline-block"></span> STATUS TRANSAKSI: GAGAL / WAKTU HABIS</span>
+<span>•</span>
+<span>JANGAN PANIK: SALDO TERPOTONG DIJAMIN KEMBALI 100% ATAU DIPROSES MANUAL</span>
+<span>•</span>
+<span class="text-sunburst">CS WHATSAPP 24/7 SIAP VERIFIKASI INSTAN</span>
+<span>•</span>
+<span>INVOICE ID: #XYZ-773102-FAILED</span>
+<span>•</span>
+<span>QRIS INSTANT DISPATCH AUTO RE-CHECK AKTIF</span>
+<span>•</span>
+</div>
+<div class="flex items-center space-x-6 text-paper-white font-marquee text-marquee uppercase tracking-wider px-4">
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-ember inline-block"></span> STATUS TRANSAKSI: GAGAL / WAKTU HABIS</span>
+<span>•</span>
+<span>JANGAN PANIK: SALDO TERPOTONG DIJAMIN KEMBALI 100% ATAU DIPROSES MANUAL</span>
+<span>•</span>
+<span class="text-sunburst">CS WHATSAPP 24/7 SIAP VERIFIKASI INSTAN</span>
+<span>•</span>
+<span>INVOICE ID: #XYZ-773102-FAILED</span>
+<span>•</span>
+<span>QRIS INSTANT DISPATCH AUTO RE-CHECK AKTIF</span>
+<span>•</span>
+</div>
+</div>
+</aside>
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="bg-paper-white dark:bg-inverse-surface border-b border-carbon dark:border-outline shadow-none docked full-width top-0 z-40 sticky">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto">
+<!-- Brand & Search Cluster -->
+<div class="flex items-center gap-4 lg:gap-6">
+<!-- Brand Logo Badge -->
+<a class="flex items-center gap-1.5 group" href="#">
+<span class="bg-carbon text-paper-white font-display-hero-mobile text-headline-md font-extrabold px-3 py-1 rounded-full ink-border tracking-tight hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150">XYZ</span>
+<span class="font-display-hero-mobile text-headline-md font-extrabold tracking-tight text-carbon dark:text-paper-white group-hover:text-ember transition-colors">PEDIA</span>
+</a>
+<!-- Search Bar on Left with ⌘K -->
+<div class="hidden sm:flex items-center bg-soft-mist ink-border rounded-full px-3.5 py-1.5 w-64 md:w-80 gap-2">
+<span class="material-symbols-outlined text-carbon text-lg leading-none" data-icon="search">search</span>
+<input class="bg-transparent border-0 p-0 text-carbon font-body-md text-xs focus:ring-0 placeholder:text-neutral-500 w-full" placeholder="Cari item game, voucher, token..." type="text"/>
+<kbd class="bg-paper-white text-carbon font-caption text-caption px-1.5 py-0.5 rounded ink-border text-[10px] font-bold">⌘K</kbd>
+</div>
+</div>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center space-x-6">
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Games</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Subscriptions</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Vouchers</a>
+<a class="text-ember font-label-pill underline decoration-2 underline-offset-4" href="#">Check Order</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-1 text-carbon font-label-pill px-3 py-2 rounded-full hover:bg-soft-mist transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="help">help</span>
+<span class="hidden sm:inline">Bantuan</span>
+</button>
+<a class="bg-carbon text-paper-white font-label-pill text-label-pill ink-border rounded-full px-4 py-2 hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 uppercase tracking-wide" href="#">
+          Track Order
+        </a>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-xl md:py-space-2xl space-y-space-xl">
+<!-- HERO SECTION: Pop Brutalist Failed State -->
+<section class="relative">
+<!-- Tactile Decorative Stickers -->
+<div class="absolute -top-6 right-4 md:right-12 z-30 transform rotate-6 hover:rotate-0 transition-transform">
+<span class="bg-ember text-paper-white font-label-pill text-xs px-4 py-2 rounded-full ink-border shadow-none inline-flex items-center gap-1.5 uppercase font-black">
+<span class="material-symbols-outlined text-sm font-bold" data-icon="timer_off">timer_off</span>
+          Kedaluwarsa (15 Min Expired)
+        </span>
+</div>
+<div class="absolute -bottom-5 left-4 md:left-10 z-30 transform -rotate-3 hover:rotate-0 transition-transform">
+<span class="bg-sunburst text-carbon font-label-pill text-xs px-4 py-2 rounded-2xl ink-border inline-flex items-center gap-1 font-extrabold uppercase">
+<span class="material-symbols-outlined text-base" data-icon="verified_user">verified_user</span>
+          Garansi Proteksi Dana 100%
+        </span>
+</div>
+<!-- Main Failure Card -->
+<div class="bg-paper-white ink-border rounded-2xl p-6 md:p-space-xl relative overflow-hidden">
+<!-- Background Vinyl Tone Accent -->
+<div class="absolute top-0 right-0 w-72 h-72 bg-error-container rounded-full blur-3xl opacity-40 pointer-events-none -mr-20 -mt-20"></div>
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 relative z-20">
+<!-- Left: Big Visual Stamped Badge + Headline -->
+<div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+<!-- Inflatable Vinyl Cross / Exclamation Sticker -->
+<div class="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-ember ink-border flex items-center justify-center text-paper-white shadow-none shrink-0 transform -rotate-2 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-6xl md:text-7xl" data-icon="close" data-weight="fill">close</span>
+</div>
+<!-- Typography Monument -->
+<div>
+<div class="inline-flex items-center gap-2 bg-error-container text-on-error-container font-label-pill text-xs px-3 py-1 rounded-full ink-border mb-3 font-bold">
+<span class="w-2 h-2 rounded-full bg-error inline-block animate-ping"></span>
+                STATUS PEMBAYARAN KEDALUWARSA / GAGAL
+              </div>
+<h1 class="font-headline-xl-mobile md:font-headline-lg text-headline-xl-mobile md:text-headline-lg font-black tracking-tight text-carbon leading-none mb-2">
+                PEMBAYARAN TIDAK BERHASIL
+              </h1>
+<p class="font-subheading text-neutral-600 max-w-2xl text-base md:text-lg">
+                Sesi pembayaran telah berakhir atau proses otorisasi terputus oleh sistem bank. Pesanan Anda saat ini berstatus <span class="text-ember font-bold underline decoration-ember">Batal Otomatis (Voided)</span>.
+              </p>
+</div>
+</div>
+<!-- Right: Snapshot Badge -->
+<div class="bg-soft-mist ink-border rounded-2xl p-4 md:p-5 w-full lg:w-72 shrink-0 flex flex-col justify-between">
+<span class="font-caption text-caption text-neutral-600 uppercase font-bold tracking-wider">KODE INVOICE</span>
+<div class="flex items-center justify-between my-2">
+<span class="font-label-pill text-lg font-black text-carbon tracking-tight">#XYZ-773102-FAILED</span>
+<button class="p-1 rounded hover:bg-concrete-gray transition-colors" title="Salin Invoice ID">
+<span class="material-symbols-outlined text-base" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<div class="flex items-center gap-2 pt-2 border-t border-carbon text-neutral-600 text-xs font-body-md">
+<span class="material-symbols-outlined text-sm text-ember" data-icon="event_busy">event_busy</span>
+<span>18 Feb 2025, 20:41 WIB</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- BENTO GRID: DIAGNOSTICS & ORDER SUMMARY -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- LEFT COLUMN: Detailed Diagnostics & Resolution (7 Cols) -->
+<section class="lg:col-span-7 space-y-6">
+<!-- Diagnostic Breakdown Card -->
+<div class="bg-paper-white ink-border rounded-2xl p-6 md:p-space-lg space-y-5">
+<div class="flex items-center justify-between pb-3 border-b border-carbon">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ember text-2xl font-bold" data-icon="report_problem">report_problem</span>
+<h2 class="font-headline-md text-xl md:text-2xl text-carbon">Diagnostik Pembatalan</h2>
+</div>
+<span class="bg-carbon text-paper-white font-label-pill text-[11px] px-2.5 py-1 rounded-full uppercase">Log Sistem</span>
+</div>
+<div class="space-y-4">
+<!-- Cause 1: Timeout -->
+<div class="p-4 rounded-xl bg-surface-container-low ink-border flex items-start gap-4">
+<div class="w-8 h-8 rounded-full bg-ember text-paper-white flex items-center justify-center ink-border shrink-0 font-bold text-sm">1</div>
+<div>
+<p class="font-label-pill text-carbon font-bold">Waktu Sesi QRIS Habis (15 Menit)</p>
+<p class="font-body-md text-neutral-600 text-sm mt-0.5">Batas bayar dinamis QRIS terlewati sebelum bank partner menerima notifikasi transfer dana dari e-wallet Anda.</p>
+</div>
+</div>
+<!-- Cause 2: Saldo / Jaringan -->
+<div class="p-4 rounded-xl bg-surface-container-low ink-border flex items-start gap-4">
+<div class="w-8 h-8 rounded-full bg-voltage-violet text-paper-white flex items-center justify-center ink-border shrink-0 font-bold text-sm">2</div>
+<div>
+<p class="font-label-pill text-carbon font-bold">Kemungkinan Saldo Terpotong / Gangguan Jaringan Inter-Bank</p>
+<p class="font-body-md text-neutral-600 text-sm mt-0.5">Jika saldo bank/GoPay/OVO/ShopeePay berkurang tetapi status pesanan belum sukses, gateway otomatis memasukkan transaksi ke antrean rekonsiliasi refund.</p>
+</div>
+</div>
+</div>
+<!-- Solution & Guarantee Warning Box (Highlighted Notice) -->
+<div class="bg-lavender ink-border rounded-2xl p-5 relative overflow-hidden">
+<div class="flex items-start gap-3.5">
+<span class="material-symbols-outlined text-voltage-violet text-3xl shrink-0" data-icon="security" data-weight="fill">security</span>
+<div class="space-y-1">
+<h3 class="font-label-pill text-sm font-black text-carbon uppercase tracking-wider">Garansi Saldo &amp; Auto-Refund XYZPEDIA</h3>
+<p class="font-body-md text-carbon text-sm leading-relaxed">
+<strong>Saldo Anda terpotong tapi status gagal?</strong> Tenang, sistem auto-refund kami atau tim admin WhatsApp akan menyelesaikan dalam hitungan menit dengan melampirkan bukti mutasi transfer Anda. Tidak ada dana pengguna yang hangus.
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- ACTION CTAs CLUSTER -->
+<div class="bg-paper-white ink-border rounded-2xl p-6 md:p-space-lg space-y-4">
+<h2 class="font-headline-md text-lg text-carbon">Tindakan Cepat Yang Dapat Dilakukan:</h2>
+<div class="flex flex-col sm:flex-row gap-3 pt-1">
+<!-- Primary Black Action -->
+<button class="flex-1 bg-carbon text-paper-white font-label-pill text-sm uppercase px-5 py-3.5 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="replay">replay</span>
+<span>Coba Bayar Ulang (Buat QRIS Baru)</span>
+</button>
+<!-- Secondary Outline Action -->
+<button class="bg-paper-white text-carbon font-label-pill text-sm uppercase px-5 py-3.5 rounded-full ink-border hover:bg-soft-mist active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="credit_card">credit_card</span>
+<span>Ubah Metode Lain</span>
+</button>
+</div>
+<!-- Yellow Sunburst WhatsApp CTA -->
+<a class="w-full bg-sunburst text-carbon font-label-pill text-sm uppercase px-6 py-4 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 flex items-center justify-center gap-2.5 font-black text-center" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="chat" data-weight="fill">chat</span>
+<span>Hubungi CS WhatsApp 24 Jam (Prioritas Klaim)</span>
+</a>
+</div>
+</section>
+<!-- RIGHT COLUMN: Order Summary & Item Badges (5 Cols) -->
+<section class="lg:col-span-5 space-y-6">
+<!-- Purchased Items Summary Card -->
+<div class="bg-paper-white ink-border rounded-2xl p-6 md:p-space-lg space-y-5">
+<div class="flex items-center justify-between pb-3 border-b border-carbon">
+<h2 class="font-headline-md text-xl text-carbon">Rincian Item Dipesan</h2>
+<span class="bg-soft-mist font-label-pill text-xs px-2.5 py-1 rounded-full ink-border text-carbon">2 Produk</span>
+</div>
+<!-- Product Item 1: Genshin Impact -->
+<div class="p-4 rounded-xl bg-surface-container-low ink-border relative flex gap-3.5 items-center">
+<div class="w-14 h-14 rounded-xl bg-electric-blue text-paper-white ink-border flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-3xl" data-icon="stadia_controller">stadia_controller</span>
+</div>
+<div class="flex-1 min-w-0">
+<span class="text-[10px] font-label-pill uppercase text-secondary font-bold">Games Top-Up</span>
+<h3 class="font-label-pill text-carbon text-sm font-bold truncate">Genshin Impact</h3>
+<p class="font-caption text-neutral-600 text-xs">1980 + 260 Genesis Crystals</p>
+<p class="font-caption text-neutral-500 text-[11px] mt-0.5">UID: 812904812 (Asia Server)</p>
+</div>
+<div class="text-right">
+<span class="font-label-pill text-sm font-bold text-carbon">Rp 435.000</span>
+<span class="block text-[10px] text-ember font-bold uppercase mt-1">Belum Terkirim</span>
+</div>
+</div>
+<!-- Product Item 2: YouTube Premium -->
+<div class="p-4 rounded-xl bg-surface-container-low ink-border relative flex gap-3.5 items-center">
+<div class="w-14 h-14 rounded-xl bg-ember text-paper-white ink-border flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-3xl" data-icon="smart_display">smart_display</span>
+</div>
+<div class="flex-1 min-w-0">
+<span class="text-[10px] font-label-pill uppercase text-primary font-bold">Digital Subscription</span>
+<h3 class="font-label-pill text-carbon text-sm font-bold truncate">YouTube Premium 6 Bulan</h3>
+<p class="font-caption text-neutral-600 text-xs">Family Plan Invitation Link</p>
+<p class="font-caption text-neutral-500 text-[11px] mt-0.5">Email: user.checkout@gmail.com</p>
+</div>
+<div class="text-right">
+<span class="font-label-pill text-sm font-bold text-carbon">Rp 129.000</span>
+<span class="block text-[10px] text-ember font-bold uppercase mt-1">Ditahan</span>
+</div>
+</div>
+<!-- Price Calculation -->
+<div class="pt-4 border-t border-carbon space-y-2 text-sm font-body-md">
+<div class="flex justify-between text-neutral-600">
+<span>Subtotal Item</span>
+<span class="font-medium text-carbon">Rp 564.000</span>
+</div>
+<div class="flex justify-between text-neutral-600">
+<span>Biaya Layanan &amp; Gateways</span>
+<span class="font-medium text-carbon">Rp 1.500</span>
+</div>
+<div class="flex justify-between text-neutral-600">
+<span>Kode Unik QRIS</span>
+<span class="font-medium text-carbon">Rp 219</span>
+</div>
+<div class="flex justify-between pt-2 border-t border-dashed border-neutral-400 font-label-pill text-base text-carbon font-bold">
+<span>Total Tagihan Tertunda</span>
+<span class="text-ember text-lg font-black">Rp 565.719</span>
+</div>
+</div>
+<!-- Payment Channel Tag -->
+<div class="bg-soft-mist ink-border rounded-xl p-3 flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-bold">Kanal Bayar: QRIS Instant (Semua E-Wallet &amp; M-Banking)</span>
+</div>
+<span class="text-ember font-bold">Waktu Habis</span>
+</div>
+</div>
+<!-- Quick Tips Mini Sticker Card -->
+<div class="bg-mint-pop ink-border rounded-2xl p-5 space-y-2">
+<div class="flex items-center gap-2 font-label-pill font-black text-sm uppercase text-carbon">
+<span class="material-symbols-outlined text-lg" data-icon="tips_and_updates">tips_and_updates</span>
+            Tips Transaksi Cepat
+          </div>
+<p class="font-body-md text-xs text-carbon leading-relaxed">
+            Untuk pembayaran berikutnya menggunakan QRIS, pastikan saldo akun e-wallet Anda sudah mencukupi sebelum menekan tombol bayar agar tidak terpotong saat jaringan lambat.
+          </p>
+</div>
+</section>
+</div>
+<!-- FAQ ACCORDION SECTION: Pembayaran Gagal & Kendala -->
+<section class="bg-paper-white ink-border rounded-2xl p-6 md:p-space-xl space-y-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-carbon">
+<div>
+<span class="bg-sunburst text-carbon font-label-pill text-xs px-3 py-1 rounded-full ink-border font-bold uppercase inline-block mb-2">Pusat Resolusi</span>
+<h2 class="font-headline-md text-2xl md:text-3xl text-carbon">Pertanyaan Seputar Transaksi Gagal</h2>
+</div>
+<p class="font-body-md text-neutral-600 text-sm max-w-md">
+          Semua panduan langkah cepat pengembalian dana, pembuatan ulang pesanan, dan verifikasi mutasi bank manual.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- FAQ 1 -->
+<div class="p-5 rounded-2xl bg-surface-container-low ink-border space-y-2">
+<div class="flex items-center gap-2 font-label-pill font-bold text-carbon text-sm">
+<span class="material-symbols-outlined text-ember text-xl" data-icon="help_center">help_center</span>
+            Uang saya terpotong tapi status 'Waktu Habis'?
+          </div>
+<p class="font-body-md text-neutral-700 text-xs leading-relaxed">
+            Ini terjadi karena delay jaringan dari server bank penerbit ke gerbang pembayaran kami. Cukup kirimkan tangkapan layar (screenshot) mutasi rekening ke WhatsApp Admin. Dana akan diproses untuk aktivasi voucher atau dikembalikan 100% tanpa potongan.
+          </p>
+</div>
+<!-- FAQ 2 -->
+<div class="p-5 rounded-2xl bg-surface-container-low ink-border space-y-2">
+<div class="flex items-center gap-2 font-label-pill font-bold text-carbon text-sm">
+<span class="material-symbols-outlined text-ember text-xl" data-icon="autorenew">autorenew</span>
+            Berapa lama proses Auto-Refund dana?
+          </div>
+<p class="font-body-md text-neutral-700 text-xs leading-relaxed">
+            Untuk QRIS via e-wallet (GoPay, OVO, ShopeePay, DANA), sistem gateway otomatis mengembalikan dana dalam waktu 5-30 menit. Untuk transfer virtual account bank, estimasi 1x24 jam kerja sesuai ketentuan Bank Indonesia.
+          </p>
+</div>
+<!-- FAQ 3 -->
+<div class="p-5 rounded-2xl bg-surface-container-low ink-border space-y-2">
+<div class="flex items-center gap-2 font-label-pill font-bold text-carbon text-sm">
+<span class="material-symbols-outlined text-ember text-xl" data-icon="sync_saved_locally">sync_saved_locally</span>
+            Apakah saya harus input UID game ulang jika bayar lagi?
+          </div>
+<p class="font-body-md text-neutral-700 text-xs leading-relaxed">
+            Tidak perlu! Klik tombol <strong>'Coba Bayar Ulang (Buat QRIS Baru)'</strong> di atas, sistem akan otomatis menduplikasi data pesanan Genshin Impact UID dan akun YouTube Anda ke invoice baru secara instan.
+          </p>
+</div>
+<!-- FAQ 4 -->
+<div class="p-5 rounded-2xl bg-surface-container-low ink-border space-y-2">
+<div class="flex items-center gap-2 font-label-pill font-bold text-carbon text-sm">
+<span class="material-symbols-outlined text-ember text-xl" data-icon="support_agent">support_agent</span>
+            Bagaimana format klaim ke CS WhatsApp?
+          </div>
+<p class="font-body-md text-neutral-700 text-xs leading-relaxed">
+            Cukup sebutkan Invoice ID <strong>#XYZ-773102-FAILED</strong>, nominal transfer Rp 565.719, serta unggah bukti mutasi. CS prioritas kami akan langsung memvalidasi tanpa antrean panjang bot.
+          </p>
+</div>
+</div>
+</section>
+<!-- LIVE HELPLINE TACTILE CARD -->
+<section class="bg-carbon text-paper-white ink-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-2xl bg-sunburst text-carbon ink-border flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-4xl" data-icon="headset_mic" data-weight="fill">headset_mic</span>
+</div>
+<div>
+<h3 class="font-headline-md text-xl md:text-2xl text-paper-white font-bold">Butuh Bantuan Mendesak?</h3>
+<p class="font-body-md text-concrete-gray text-xs md:text-sm">Tim live support kami aktif standby 24 jam non-stop untuk menyelesaikan transaksi gagal.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<a class="w-full md:w-auto bg-mint-pop text-carbon font-label-pill text-xs md:text-sm px-6 py-3 rounded-full ink-border hover:scale-105 transition-transform flex items-center justify-center gap-2 uppercase font-black" href="https://wa.me/" target="_blank">
+<span class="material-symbols-outlined text-base" data-icon="send">send</span>
+          Buka WhatsApp Resmi
+        </a>
+</div>
+</section>
+</main>
+<!-- SHARED COMPONENT: Footer -->
+<footer class="bg-carbon dark:bg-inverse-surface border-t border-carbon dark:border-outline text-paper-white dark:text-inverse-on-surface full-width mt-space-xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Top Grid: Brand & Direct Links -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-space-lg border-b border-neutral-800">
+<!-- Brand Info -->
+<div class="md:col-span-5 space-y-4">
+<div class="flex items-center gap-1.5">
+<span class="bg-paper-white text-carbon font-display-hero-mobile text-headline-md font-black px-3 py-0.5 rounded-full ink-border">XYZ</span>
+<span class="font-display-hero-mobile text-headline-md font-black text-paper-white">PEDIA</span>
+</div>
+<p class="font-body-md text-soft-mist text-xs md:text-sm max-w-sm leading-relaxed">
+            Platform top-up games dan langganan digital direct-to-guest nomor #1 di Indonesia. Kecepatan pengiriman otomatis 24 jam dengan integrasi QRIS dan payment gateway berlisensi resmi.
+          </p>
+<div class="flex items-center gap-2 text-xs text-sunburst font-label-pill">
+<span class="w-2 h-2 rounded-full bg-mint-pop inline-block"></span>
+            Server Dispatch Engine: ONLINE 99.98%
+          </div>
+</div>
+<!-- Links Column 1: Ecosystem -->
+<div class="md:col-span-4 space-y-3">
+<h4 class="font-headline-md text-base text-paper-white font-bold uppercase tracking-wider">Tautan Cepat</h4>
+<ul class="space-y-2 text-xs">
+<li><a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 block" href="#">Payment Gateways</a></li>
+<li><a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 block" href="#">QRIS Instant</a></li>
+<li><a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 block" href="#">Order Status Policy</a></li>
+<li><a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 block" href="#">Customer Care WhatsApp</a></li>
+</ul>
+</div>
+<!-- Links Column 2: Legal -->
+<div class="md:col-span-3 space-y-3">
+<h4 class="font-headline-md text-base text-paper-white font-bold uppercase tracking-wider">Kebijakan</h4>
+<ul class="space-y-2 text-xs">
+<li><a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 block" href="#">Privacy Policy</a></li>
+<li><a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 block" href="#">Terms of Service</a></li>
+<li><a class="text-sunburst font-label-pill hover:text-sunburst transition-colors duration-150 block" href="#">SOP Pengembalian Saldo Gagal</a></li>
+</ul>
+</div>
+</div>
+<!-- Bottom Bar: Exact Copyright string from JSON -->
+<div class="flex flex-col sm:flex-row items-center justify-between text-xs text-soft-mist dark:text-concrete-gray font-caption gap-4">
+<p>© 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.</p>
+<div class="flex items-center gap-4">
+<span class="hover:text-paper-white cursor-pointer transition-colors">Keamanan Terenkripsi SSL 256-Bit</span>
+<span>•</span>
+<span class="hover:text-paper-white cursor-pointer transition-colors">Server Cluster Jakarta (ID)</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

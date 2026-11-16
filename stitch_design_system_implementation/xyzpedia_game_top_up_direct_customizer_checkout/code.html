@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>XYZPEDIA — Mobile Legends: Bang Bang Direct Top-Up</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;800&amp;family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration Verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#fdfcff",
+            "on-tertiary-fixed": "#001c38",
+            "secondary-container": "#6e5ef1",
+            "inverse-on-surface": "#f1f1f1",
+            "secondary": "#5542d7",
+            "tertiary-container": "#0076cf",
+            "error": "#ba1a1a",
+            "primary-fixed": "#ffdbd1",
+            "primary-fixed-dim": "#ffb59f",
+            "tertiary": "#005ea5",
+            "on-secondary-container": "#fffbff",
+            "tertiary-fixed": "#d3e4ff",
+            "on-tertiary-fixed-variant": "#004881",
+            "lavender": "#E9CCFF",
+            "primary-container": "#d63c00",
+            "inverse-primary": "#ffb59f",
+            "mint-pop": "#55DB9C",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#e8e8e8",
+            "on-background": "#1b1b1b",
+            "voltage-violet": "#5C4ADE",
+            "surface-container": "#eeeeee",
+            "secondary-fixed-dim": "#c6bfff",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#e4dfff",
+            "paper-white": "#FFFFFF",
+            "outline": "#916f66",
+            "inverse-surface": "#303030",
+            "surface-variant": "#e2e2e2",
+            "on-surface": "#1b1b1b",
+            "sunburst": "#FFD731",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "on-secondary-fixed": "#160066",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "background": "#f9f9f9",
+            "surface-container-highest": "#e2e2e2",
+            "on-error-container": "#93000a",
+            "electric-blue": "#4DA2FF",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-lowest": "#ffffff",
+            "concrete-gray": "#CCCCCC",
+            "soft-mist": "#E9E9E9",
+            "surface-container-low": "#f3f3f3",
+            "surface": "#f9f9f9",
+            "primary": "#ab2e00",
+            "ember": "#FB4903",
+            "on-primary-container": "#fffbff",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#5c4038",
+            "carbon": "#000000",
+            "outline-variant": "#e6beb2",
+            "on-primary-fixed": "#3a0a00",
+            "sky-wash": "#DCEEFF",
+            "surface-bright": "#f9f9f9",
+            "tertiary-fixed-dim": "#a2c9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-3xl": "5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-hero": "11.25rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "subheading": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "display-hero": ["Bricolage Grotesque"],
+            "body-lg": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* System Invariant: Zero drop shadow, hand-cut 1px ink line, stickers */
+    * {
+      box-shadow: none !important;
+      -webkit-font-smoothing: antialiased;
+    }
+    .material-symbols-outlined {
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @keyframes marqueeMove {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marqueeMove 24s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-sky-wash text-carbon antialiased selection:bg-sunburst selection:text-carbon min-h-screen flex flex-col font-body-md text-body-md">
+<!-- 1. TOP MARQUEE BAND (Carbon, Uppercase, Non-stop ticker) -->
+<aside class="bg-carbon text-paper-white h-9 overflow-hidden flex items-center border-b border-carbon select-none z-50">
+<div class="animate-marquee font-marquee text-marquee uppercase tracking-wider flex items-center whitespace-nowrap">
+<span class="mx-space-md flex items-center gap-2">⚡ OFFICIAL MOONTON DIRECT INJECTION • INSTANT DISPATCH 24/7</span>
+<span class="mx-space-md text-sunburst">★</span>
+<span class="mx-space-md">0% ADMIN FEE WITH QRIS INSTANT</span>
+<span class="mx-space-md text-ember">●</span>
+<span class="mx-space-md">NO LOGIN REQUIRED • DIRECT GUEST CHECKOUT</span>
+<span class="mx-space-md text-mint-pop">◆</span>
+<span class="mx-space-md">OVER 142,000+ COMPLETED TRANSACTIONS TODAY</span>
+<span class="mx-space-md text-sunburst">★</span>
+<!-- Duplicate for loop -->
+<span class="mx-space-md flex items-center gap-2">⚡ OFFICIAL MOONTON DIRECT INJECTION • INSTANT DISPATCH 24/7</span>
+<span class="mx-space-md text-sunburst">★</span>
+<span class="mx-space-md">0% ADMIN FEE WITH QRIS INSTANT</span>
+<span class="mx-space-md text-ember">●</span>
+<span class="mx-space-md">NO LOGIN REQUIRED • DIRECT GUEST CHECKOUT</span>
+<span class="mx-space-md text-mint-pop">◆</span>
+<span class="mx-space-md">OVER 142,000+ COMPLETED TRANSACTIONS TODAY</span>
+<span class="mx-space-md text-sunburst">★</span>
+</div>
+</aside>
+<!-- 2. SHARED COMPONENT: TopNavBar (Exact mapping from JSON) -->
+<header class="bg-paper-white dark:bg-inverse-surface border-b border-carbon dark:border-outline docked full-width top-0 z-40">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto">
+<!-- Brand & Search cluster -->
+<div class="flex items-center gap-space-md lg:gap-space-lg">
+<a class="font-display-hero-mobile text-headline-md font-extrabold tracking-tight text-carbon dark:text-paper-white hover:scale-[1.02] transition-transform duration-150" href="#">
+          XYZPEDIA
+        </a>
+<!-- Search Bar (on_left per JSON) -->
+<div class="relative hidden sm:flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-carbon pointer-events-none" data-icon="search">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-soft-mist text-carbon placeholder:text-carbon/60 font-body-md text-body-md rounded-full border border-carbon w-56 lg:w-72 focus:outline-none focus:border-2 focus:border-carbon transition-all" placeholder="Search MLBB, Free Fire, Genshin..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links from JSON: ["Games", "Subscriptions", "Vouchers", "Check Order"] -->
+<!-- Active state determined semantically: Currently on MLBB Game purchase, so "Games" is active -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="text-ember font-label-pill underline decoration-2 underline-offset-4" href="#">Games</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Subscriptions</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Vouchers</a>
+<a class="text-carbon dark:text-paper-white font-label-pill hover:scale-[1.02] transition-transform duration-150" href="#">Check Order</a>
+</nav>
+<!-- Trailing actions: Track Order button & Help icon -->
+<div class="flex items-center gap-space-sm">
+<a class="flex items-center gap-1.5 px-4 py-2 bg-carbon text-paper-white font-label-pill text-label-pill rounded-full border border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
+<span>Track Order</span>
+</a>
+<button aria-label="Help" class="w-9 h-9 rounded-full border border-carbon bg-paper-white flex items-center justify-center text-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+</div>
+</div>
+</header>
+<!-- 3. MAIN HERO & DIRECT PURCHASE CANVAS (Max 1440px) -->
+<main class="w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-md md:py-space-lg flex-1">
+<!-- Hero Product Banner: Tactile Pop Brutalism with Inflatable Badge -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-md md:p-space-lg mb-space-lg relative overflow-hidden">
+<!-- Decorative background paper patch -->
+<div class="absolute -right-12 -top-12 w-64 h-64 bg-lavender border border-carbon rounded-full -rotate-6 pointer-events-none opacity-40"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md relative z-10">
+<div class="flex items-start md:items-center gap-space-md">
+<!-- Game Icon Surface -->
+<div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl border border-carbon bg-voltage-violet flex-shrink-0 overflow-hidden relative rotate-[-2deg]">
+<img class="w-full h-full object-cover" data-alt="A bold 3D stylized game crest icon representing a mobile multiplayer battle arena hero with glowing golden armor and vivid cyan gem runes. The lighting is crisp studio illumination set against an intense purple backdrop adhering to a vibrant sticker-book toy aesthetic with high contrast edges." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGag-JLW0TircLLpWqZ2oOcfz1iqL-iVRNdAexNAbeXFyZ0ttjRm0wGWZ7NGBhnXaROsChhn-I9T_u7YO-JWJYLTbmo8jWzxgzEweWlvXMYvVqlGEN511f6FXFa8Pmz5xCDWYw-w6zQVAvPA_bsKRCLpQAvy8XCO-wz_MR6tm8drUjmnqXimQkDN8FGEFmAKYdG4FIyxOnxXKWSOQ7PXsOimO-jzKL9NdXkaLG7EY"/>
+<div class="absolute bottom-0 inset-x-0 bg-carbon text-paper-white font-caption text-caption text-center py-0.5 font-bold uppercase">
+              MLBB
+            </div>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2 mb-1">
+<span class="px-2.5 py-0.5 rounded-full border border-carbon bg-mint-pop text-carbon font-label-pill text-caption font-bold">
+                Official Moonton Partner
+              </span>
+<span class="px-2.5 py-0.5 rounded-full border border-carbon bg-sunburst text-carbon font-label-pill text-caption font-bold rotate-1">
+                ⭐ 4.9/5 (142k+ Top-Ups)
+              </span>
+</div>
+<h1 class="font-headline-md text-headline-md font-extrabold tracking-tight text-carbon">
+              Mobile Legends: Bang Bang
+            </h1>
+<p class="font-body-md text-body-md text-carbon/80 mt-0.5">
+              Direct Diamonds Injection &amp; Weekly Pass • Instant Dispatch • Guest Direct
+            </p>
+</div>
+</div>
+<!-- Live Server Health Badge (Physical Sticker Metaphor) -->
+<div class="flex items-center gap-3 bg-soft-mist border border-carbon rounded-2xl p-3 md:max-w-xs self-start md:self-center rotate-1">
+<div class="w-3 h-3 rounded-full bg-mint-pop border border-carbon animate-pulse flex-shrink-0"></div>
+<div>
+<p class="font-label-pill text-caption font-bold text-carbon uppercase tracking-wider">Moonton Direct API: 100% Operational</p>
+<p class="font-caption text-caption text-carbon/70">Average injection: <strong class="text-ember">0.4s</strong> to game inbox</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. GRID: 2-COLUMN LAYOUT (Steps 1-4 on Left, Sticky Direct Checkout on Right) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT WORKFLOW: Steps 1 through 4 (8 Cols Desktop) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- STEP 1: Account Information (Guest Input) -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg relative">
+<!-- Step Indicator Badge -->
+<div class="flex items-center justify-between pb-space-md border-b border-carbon mb-space-md">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-carbon text-paper-white font-label-pill flex items-center justify-center font-bold">1</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon">Enter Account ID</h2>
+</div>
+<button class="font-caption text-caption underline decoration-1 text-carbon font-bold flex items-center gap-1 hover:text-ember" onclick="document.getElementById('id-modal').classList.toggle('hidden')">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+              Where to find User &amp; Zone ID?
+            </button>
+</div>
+<!-- Form Fields Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div>
+<label class="block font-label-pill text-label-pill uppercase text-carbon mb-1.5" for="userIdInput">
+                User ID <span class="text-ember">*</span>
+</label>
+<div class="relative">
+<input class="w-full bg-paper-white border border-carbon rounded-xl px-4 py-2.5 font-body-md text-body-md text-carbon placeholder:text-carbon/40 focus:outline-none focus:border-2 focus:border-carbon" id="userIdInput" placeholder="e.g. 12345678" type="number" value="849201842"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-carbon/50" data-icon="tag">tag</span>
+</div>
+</div>
+<div>
+<label class="block font-label-pill text-label-pill uppercase text-carbon mb-1.5" for="zoneIdInput">
+                Zone ID <span class="text-ember">*</span>
+</label>
+<div class="relative">
+<input class="w-full bg-paper-white border border-carbon rounded-xl px-4 py-2.5 font-body-md text-body-md text-carbon placeholder:text-carbon/40 focus:outline-none focus:border-2 focus:border-carbon" id="zoneIdInput" placeholder="e.g. 2140" type="number" value="2140"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-carbon/50" data-icon="public">public</span>
+</div>
+</div>
+</div>
+<!-- Instant Verification Strip -->
+<div class="mt-space-md p-3 bg-mint-pop/20 border border-carbon rounded-xl flex items-center justify-between flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-mint-pop border border-carbon flex items-center justify-center text-carbon">
+<span class="material-symbols-outlined text-sm font-bold" data-icon="check">check</span>
+</span>
+<div class="font-body-md text-body-md">
+                Player Verified: <strong class="text-carbon font-bold" id="verifiedTag">kyroslayer99</strong>
+<span class="text-caption text-carbon/70 ml-1 font-mono">(Rank: Mythical Glory)</span>
+</div>
+</div>
+<button class="px-3 py-1 bg-paper-white border border-carbon rounded-full font-label-pill text-caption hover:bg-carbon hover:text-paper-white transition-colors duration-150" id="verifyBtn">
+              Re-Verify
+            </button>
+</div>
+<!-- Helper Modal Box (Toggled) -->
+<div class="hidden mt-space-md p-space-md bg-lavender border border-carbon rounded-xl text-carbon" id="id-modal">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-label-pill font-bold">Finding your MLBB User ID &amp; Zone ID:</h4>
+<button class="font-bold" onclick="document.getElementById('id-modal').classList.add('hidden')">✕</button>
+</div>
+<p class="font-body-md text-body-md mb-2">
+              Tap your game avatar at the top left of the Mobile Legends main screen. Open the <strong>Basic Info</strong> tab. Your User ID is the long number, and the Zone ID is in parentheses beside it (e.g. 12345678 <strong>(2140)</strong>).
+            </p>
+</div>
+</section>
+<!-- STEP 2: Select Diamond / Pass Nominal (Cards Grid) -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg relative">
+<div class="flex items-center justify-between pb-space-md border-b border-carbon mb-space-md flex-wrap gap-2">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-carbon text-paper-white font-label-pill flex items-center justify-center font-bold">2</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon">Select Nominal / Pass</h2>
+</div>
+<span class="font-caption text-caption px-2.5 py-1 bg-sunburst border border-carbon rounded-full font-bold">
+              Instant 24/7 Automated Dispatch
+            </span>
+</div>
+<!-- Category Pills -->
+<div class="flex items-center gap-2 overflow-x-auto pb-space-sm mb-space-md no-scrollbar">
+<button class="px-3.5 py-1.5 rounded-full border border-carbon bg-carbon text-paper-white font-label-pill text-label-pill whitespace-nowrap">
+              All Packages
+            </button>
+<button class="px-3.5 py-1.5 rounded-full border border-carbon bg-soft-mist text-carbon font-label-pill text-label-pill whitespace-nowrap hover:bg-concrete-gray">
+              Popular
+            </button>
+<button class="px-3.5 py-1.5 rounded-full border border-carbon bg-soft-mist text-carbon font-label-pill text-label-pill whitespace-nowrap hover:bg-concrete-gray">
+              Weekly Pass
+            </button>
+<button class="px-3.5 py-1.5 rounded-full border border-carbon bg-soft-mist text-carbon font-label-pill text-label-pill whitespace-nowrap hover:bg-concrete-gray">
+              Twilight Pass
+            </button>
+<button class="px-3.5 py-1.5 rounded-full border border-carbon bg-soft-mist text-carbon font-label-pill text-label-pill whitespace-nowrap hover:bg-concrete-gray">
+              Bulk Diamonds
+            </button>
+</div>
+<!-- Diamond Cards Bento Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+<!-- Item 1: 86 Diamonds -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-paper-white hover:bg-soft-mist/40 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="86_diamonds"/>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="diamond">diamond</span>
+<span class="font-caption text-caption text-carbon/60">+8 Bonus</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">86 Diamonds</div>
+<div class="font-label-pill text-caption text-carbon/70 mt-1">Rp 21.000</div>
+</div>
+</div>
+</label>
+<!-- Item 2: 172 Diamonds -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-paper-white hover:bg-soft-mist/40 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="172_diamonds"/>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="diamond">diamond</span>
+<span class="font-caption text-caption text-carbon/60">+15 Bonus</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">172 Diamonds</div>
+<div class="font-label-pill text-caption text-carbon/70 mt-1">Rp 42.000</div>
+</div>
+</div>
+</label>
+<!-- Item 3: Weekly Diamond Pass (HOT SELLER STICKER) -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-lavender hover:bg-lavender/80 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="weekly_pass"/>
+<span class="absolute -top-2.5 right-2 px-2 py-0.5 rounded-full border border-carbon bg-ember text-paper-white font-label-pill text-[10px] font-bold uppercase rotate-2">
+                Hot Seller
+              </span>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-voltage-violet" data-icon="loyalty">loyalty</span>
+<span class="font-caption text-caption text-carbon font-bold">220 Total</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">Weekly Pass</div>
+<div class="font-label-pill text-caption text-carbon/80 mt-1">Rp 28.000</div>
+</div>
+</div>
+</label>
+<!-- Item 4: 257 Diamonds (BEST VALUE STICKER) -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-paper-white hover:bg-soft-mist/40 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="257_diamonds"/>
+<span class="absolute -top-2.5 right-2 px-2 py-0.5 rounded-full border border-carbon bg-mint-pop text-carbon font-label-pill text-[10px] font-bold uppercase -rotate-1">
+                Best Value
+              </span>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="diamond">diamond</span>
+<span class="font-caption text-caption text-carbon/60">+23 Bonus</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">257 Diamonds</div>
+<div class="font-label-pill text-caption text-carbon/70 mt-1">Rp 62.500</div>
+</div>
+</div>
+</label>
+<!-- Item 5: 344 Diamonds -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-paper-white hover:bg-soft-mist/40 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="344_diamonds"/>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="diamond">diamond</span>
+<span class="font-caption text-caption text-carbon/60">+32 Bonus</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">344 Diamonds</div>
+<div class="font-label-pill text-caption text-carbon/70 mt-1">Rp 84.000</div>
+</div>
+</div>
+</label>
+<!-- Item 6: 706 Diamonds (DEFAULT SELECTED) -->
+<label class="group relative cursor-pointer block border-2 border-carbon rounded-xl p-3 bg-sunburst/30 hover:bg-sunburst/50 transition-colors">
+<input checked="" class="sr-only peer" name="nominal" type="radio" value="706_diamonds"/>
+<span class="absolute -top-2.5 right-2 px-2 py-0.5 rounded-full border border-carbon bg-carbon text-paper-white font-label-pill text-[10px] font-bold uppercase rotate-1">
+                Selected
+              </span>
+<div class="w-full h-full flex flex-col justify-between">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="diamond" data-weight="fill" style="font-variation-settings: 'FILL' 1;">diamond</span>
+<span class="font-caption text-caption font-bold text-carbon">+64 Bonus</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">706 Diamonds</div>
+<div class="font-label-pill text-caption font-extrabold text-carbon mt-1">Rp 168.000</div>
+</div>
+</div>
+</label>
+<!-- Item 7: 2,195 Diamonds -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-paper-white hover:bg-soft-mist/40 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="2195_diamonds"/>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="diamond">diamond</span>
+<span class="font-caption text-caption text-carbon/60">+205 Bonus</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">2,195 Diamonds</div>
+<div class="font-label-pill text-caption text-carbon/70 mt-1">Rp 499.000</div>
+</div>
+</div>
+</label>
+<!-- Item 8: Twilight Pass -->
+<label class="group relative cursor-pointer block border border-carbon rounded-xl p-3 bg-paper-white hover:bg-soft-mist/40 transition-colors">
+<input class="sr-only peer" name="nominal" type="radio" value="twilight_pass"/>
+<div class="w-full h-full flex flex-col justify-between peer-checked:ring-2 peer-checked:ring-carbon peer-checked:rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-voltage-violet" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-caption text-caption text-carbon/60">Season Skin</span>
+</div>
+<div>
+<div class="font-headline-md text-body-lg font-bold text-carbon">Twilight Pass</div>
+<div class="font-label-pill text-caption text-carbon/70 mt-1">Rp 149.000</div>
+</div>
+</div>
+</label>
+</div>
+</section>
+<!-- STEP 3: Choose Instant Payment Rail -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg relative">
+<div class="flex items-center justify-between pb-space-md border-b border-carbon mb-space-md">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-carbon text-paper-white font-label-pill flex items-center justify-center font-bold">3</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon">Payment Rail</h2>
+</div>
+<span class="font-caption text-caption text-carbon/70 font-mono">Automated 24h verification</span>
+</div>
+<!-- Payment Options Stack -->
+<div class="space-y-3">
+<!-- Option 1: QRIS Instant (Selected) -->
+<label class="relative flex items-center justify-between p-3.5 border-2 border-carbon rounded-xl bg-sunburst/20 cursor-pointer">
+<div class="flex items-center gap-3">
+<input checked="" class="w-4 h-4 text-ember border-carbon focus:ring-0" name="payment_rail" type="radio" value="qris"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-pill text-body-lg font-bold text-carbon">QRIS Instant Real-Time</span>
+<span class="px-2 py-0.5 rounded-full border border-carbon bg-mint-pop text-carbon font-label-pill text-[10px] font-bold">
+                      0% ADMIN FEE
+                    </span>
+</div>
+<p class="font-caption text-caption text-carbon/70">Scan instantly via GoPay, OVO, DANA, BCA Mobile, Livin, ShopeePay</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-pill text-body-md font-bold text-carbon">Rp 168.000</span>
+<span class="block font-caption text-caption text-ember font-bold">Automated 5s</span>
+</div>
+</label>
+<!-- Option 2: BCA Virtual Account -->
+<label class="relative flex items-center justify-between p-3.5 border border-carbon rounded-xl bg-paper-white hover:bg-soft-mist/50 cursor-pointer">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-ember border-carbon focus:ring-0" name="payment_rail" type="radio" value="bca_va"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-pill text-body-lg font-bold text-carbon">BCA Virtual Account</span>
+<span class="px-2 py-0.5 rounded-full border border-carbon bg-soft-mist text-carbon font-label-pill text-[10px]">
+                      Auto Check
+                    </span>
+</div>
+<p class="font-caption text-caption text-carbon/70">Dynamic 16-digit account. Instant confirmation.</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-pill text-body-md font-bold text-carbon">Rp 169.000</span>
+<span class="block font-caption text-caption text-carbon/60">+Rp 1.000 fee</span>
+</div>
+</label>
+<!-- Option 3: Mandiri Virtual Account -->
+<label class="relative flex items-center justify-between p-3.5 border border-carbon rounded-xl bg-paper-white hover:bg-soft-mist/50 cursor-pointer">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-ember border-carbon focus:ring-0" name="payment_rail" type="radio" value="mandiri_va"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-pill text-body-lg font-bold text-carbon">Mandiri Virtual Account</span>
+<span class="px-2 py-0.5 rounded-full border border-carbon bg-soft-mist text-carbon font-label-pill text-[10px]">
+                      Livin Push
+                    </span>
+</div>
+<p class="font-caption text-caption text-carbon/70">Supports ATM, Mobile Banking &amp; Internet Banking</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-pill text-body-md font-bold text-carbon">Rp 169.000</span>
+<span class="block font-caption text-caption text-carbon/60">+Rp 1.000 fee</span>
+</div>
+</label>
+<!-- Option 4: Direct E-Wallets (DANA / GoPay / ShopeePay) -->
+<label class="relative flex items-center justify-between p-3.5 border border-carbon rounded-xl bg-paper-white hover:bg-soft-mist/50 cursor-pointer">
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-ember border-carbon focus:ring-0" name="payment_rail" type="radio" value="ewallet_direct"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-pill text-body-lg font-bold text-carbon">DANA / GoPay / ShopeePay</span>
+<span class="px-2 py-0.5 rounded-full border border-carbon bg-electric-blue text-paper-white font-label-pill text-[10px] font-bold">
+                      1-Tap Redirect
+                    </span>
+</div>
+<p class="font-caption text-caption text-carbon/70">Seamless deep link checkout right in your wallet app</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-pill text-body-md font-bold text-carbon">Rp 169.500</span>
+<span class="block font-caption text-caption text-carbon/60">+Admin Fee</span>
+</div>
+</label>
+</div>
+</section>
+<!-- STEP 4: Contact & Instant Dispatch Destination -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg relative">
+<div class="flex items-center justify-between pb-space-md border-b border-carbon mb-space-md">
+<div class="flex items-center gap-2.5">
+<span class="w-7 h-7 rounded-full bg-carbon text-paper-white font-label-pill flex items-center justify-center font-bold">4</span>
+<h2 class="font-headline-md text-subheading font-bold text-carbon">Delivery Receipt &amp; Security Token</h2>
+</div>
+<span class="font-caption text-caption text-carbon/60">No Account Required</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div>
+<label class="block font-label-pill text-label-pill uppercase text-carbon mb-1.5" for="waInput">
+                WhatsApp Number <span class="text-ember">*</span>
+</label>
+<div class="relative">
+<input class="w-full bg-paper-white border border-carbon rounded-xl px-4 py-2.5 font-body-md text-body-md text-carbon placeholder:text-carbon/40 focus:outline-none focus:border-2 focus:border-carbon" id="waInput" placeholder="08xxxxxxxxxx" type="tel" value="081298765432"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-carbon/50" data-icon="chat">chat</span>
+</div>
+<p class="font-caption text-caption text-carbon/60 mt-1">Receipt &amp; transaction tracking link sent via WhatsApp</p>
+</div>
+<div>
+<label class="block font-label-pill text-label-pill uppercase text-carbon mb-1.5" for="emailInput">
+                Email Address (Invoice)
+              </label>
+<div class="relative">
+<input class="w-full bg-paper-white border border-carbon rounded-xl px-4 py-2.5 font-body-md text-body-md text-carbon placeholder:text-carbon/40 focus:outline-none focus:border-2 focus:border-carbon" id="emailInput" placeholder="name@email.com" type="email" value="guest.gamer@xyzpedia.id"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-carbon/50" data-icon="mail">mail</span>
+</div>
+<p class="font-caption text-caption text-carbon/60 mt-1">Official tax PDF invoice delivered immediately</p>
+</div>
+</div>
+</section>
+</div>
+<!-- RIGHT WORKFLOW: Sticky Direct In-Page Checkout Panel (4 Cols Desktop) -->
+<div class="lg:col-span-4 sticky top-20 flex flex-col gap-space-md">
+<!-- DIRECT CHECKOUT CARD -->
+<div class="bg-paper-white border-2 border-carbon rounded-2xl p-space-lg relative overflow-hidden">
+<!-- Tactile Ribbon Accent -->
+<div class="bg-carbon text-paper-white px-3 py-1 -mx-space-lg -mt-space-lg mb-space-md flex items-center justify-between border-b border-carbon">
+<span class="font-label-pill text-caption uppercase tracking-wider font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-sunburst" data-icon="flash_on">flash_on</span>
+              Direct Order Checkout
+            </span>
+<span class="font-caption text-caption font-mono text-mint-pop">GUEST SESSION</span>
+</div>
+<!-- Order Summary Items -->
+<div class="space-y-3 pb-space-md border-b border-carbon">
+<div>
+<span class="font-caption text-caption text-carbon/60 uppercase block">Selected Product</span>
+<div class="flex items-center justify-between">
+<span class="font-label-pill text-body-lg font-bold text-carbon">MLBB 706 Diamonds</span>
+<span class="font-label-pill text-body-md font-bold text-carbon">Rp 168.000</span>
+</div>
+</div>
+<div>
+<span class="font-caption text-caption text-carbon/60 uppercase block">Target Game Account</span>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-semibold text-carbon">kyroslayer99</span>
+<span class="font-caption text-caption px-2 py-0.5 rounded-full border border-carbon bg-soft-mist font-mono font-bold">Zone 2140</span>
+</div>
+</div>
+<div>
+<span class="font-caption text-caption text-carbon/60 uppercase block">Payment Channel</span>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-carbon">QRIS Instant (Real-time)</span>
+<span class="font-caption text-caption text-mint-pop font-bold bg-carbon px-2 py-0.5 rounded-full">Rp 0 Fee</span>
+</div>
+</div>
+</div>
+<!-- Promo Voucher Code Field -->
+<div class="py-space-md border-b border-carbon">
+<label class="block font-label-pill text-caption uppercase text-carbon mb-1" for="promoInput">
+              Promo Voucher Code
+            </label>
+<div class="flex gap-2">
+<input class="w-full bg-soft-mist border border-carbon rounded-full px-3 py-1.5 font-label-pill text-caption text-carbon font-mono uppercase focus:outline-none focus:border-2 focus:border-carbon" id="promoInput" type="text" value="XYZSTICKER"/>
+<button class="px-4 py-1.5 bg-carbon text-paper-white font-label-pill text-caption rounded-full border border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform">
+                APPLIED
+              </button>
+</div>
+<div class="flex items-center justify-between mt-2 font-caption text-caption text-ember font-bold">
+<span>Sticker Launch Discount</span>
+<span>- Rp 20.000</span>
+</div>
+</div>
+<!-- Total Calculation -->
+<div class="pt-space-md mb-space-md">
+<div class="flex items-center justify-between text-carbon/70 text-body-md mb-1">
+<span>Subtotal</span>
+<span>Rp 168.000</span>
+</div>
+<div class="flex items-center justify-between text-carbon/70 text-body-md mb-2">
+<span>Platform Service Fee</span>
+<span class="text-mint-pop font-bold">Rp 0</span>
+</div>
+<div class="flex items-center justify-between text-carbon pt-2 border-t border-dashed border-carbon">
+<span class="font-label-pill text-body-lg font-bold">Total Payment</span>
+<span class="font-headline-md text-headline-md font-black text-ember">
+                Rp 148.000
+              </span>
+</div>
+</div>
+<!-- Immediate Checkout CTA Button (Tactile Pop Brutalism) -->
+<button class="w-full py-4 px-4 bg-ember text-paper-white font-label-pill text-body-lg font-black uppercase rounded-full border border-carbon flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150">
+<span class="material-symbols-outlined font-bold" data-icon="bolt">bolt</span>
+<span>PAY NOW — RP 148.000 ⚡</span>
+</button>
+<!-- Direct Dispatch Guarantee Notice -->
+<div class="mt-space-md p-2.5 bg-soft-mist rounded-xl border border-carbon text-center">
+<p class="font-caption text-caption text-carbon/80 leading-tight">
+              🔒 <strong>Guest Direct Purchase:</strong> No account needed. Credentials &amp; tracking sent instantly via WhatsApp and Email.
+            </p>
+</div>
+</div>
+<!-- Trust Mini-Card: 100% Moonton Safe -->
+<div class="bg-lavender border border-carbon rounded-2xl p-space-md flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-paper-white border border-carbon flex items-center justify-center flex-shrink-0 text-carbon">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+</div>
+<div>
+<h4 class="font-label-pill text-body-md font-bold text-carbon">100% Ban-Proof Direct API</h4>
+<p class="font-caption text-caption text-carbon/80">Diamonds are officially credited through Moonton server injection. Zero password requirement.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. FAQ SECTION & VALUE PROP (Collage Grid) -->
+<section class="mt-space-2xl pt-space-xl border-t border-carbon">
+<div class="text-center max-w-2xl mx-auto mb-space-xl">
+<span class="px-3 py-1 rounded-full border border-carbon bg-sunburst text-carbon font-label-pill text-caption font-bold uppercase inline-block mb-2">
+          Clear Answers • Zero Friction
+        </span>
+<h3 class="font-headline-md text-headline-md font-black text-carbon">
+          Frequently Asked Questions
+        </h3>
+<p class="font-body-md text-body-md text-carbon/70 mt-1">
+          Everything you need to know about our guest direct top-up system.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- FAQ 1 -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg rotate-[-0.5deg]">
+<div class="w-8 h-8 rounded-full bg-mint-pop border border-carbon flex items-center justify-center font-bold mb-space-sm text-carbon">
+            ?
+          </div>
+<h4 class="font-label-pill text-body-lg font-bold text-carbon mb-2">How fast do diamonds arrive?</h4>
+<p class="font-body-md text-body-md text-carbon/80">
+            Top-up diamonds are dispatched automatically 24/7. Once payment is detected by QRIS or Virtual Account rails (usually 5–15 seconds), diamonds arrive instantly in your Mobile Legends inbox.
+          </p>
+</div>
+<!-- FAQ 2 -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg rotate-[0.5deg]">
+<div class="w-8 h-8 rounded-full bg-sunburst border border-carbon flex items-center justify-center font-bold mb-space-sm text-carbon">
+            !
+          </div>
+<h4 class="font-label-pill text-body-lg font-bold text-carbon mb-2">What if I typed the wrong Zone ID?</h4>
+<p class="font-body-md text-body-md text-carbon/80">
+            Our live verification checker validates your Nickname before the payment is processed. If the ID does not exist in Moonton databases, the transaction will not proceed, protecting your balance.
+          </p>
+</div>
+<!-- FAQ 3 -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg rotate-[-0.5deg]">
+<div class="w-8 h-8 rounded-full bg-lavender border border-carbon flex items-center justify-center font-bold mb-space-sm text-carbon">
+            ★
+          </div>
+<h4 class="font-label-pill text-body-lg font-bold text-carbon mb-2">Do I need to sign up or log in?</h4>
+<p class="font-body-md text-body-md text-carbon/80">
+            Never! XYZPEDIA is built exclusively for instant guest fulfillment. All payment invoices and tracking links are sent straight to your WhatsApp and email.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- 6. SHARED COMPONENT: Footer (Exact mapping from JSON) -->
+<footer class="bg-carbon dark:bg-inverse-surface border-t border-carbon dark:border-outline text-paper-white dark:text-inverse-on-surface full-width mt-space-3xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Top Row: Brand & Quick Channels -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md pb-space-lg border-b border-paper-white/20">
+<div>
+<span class="font-display-hero-mobile text-headline-md font-black text-paper-white block">
+            XYZPEDIA
+          </span>
+<p class="font-caption text-caption text-soft-mist mt-1 max-w-md">
+            Guest-direct digital fulfillment engine. Official game partner injection for MLBB, Free Fire, and cross-platform entertainment.
+          </p>
+</div>
+<!-- Live Server Status Indicator in Footer -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-paper-white/30 bg-paper-white/10 font-label-pill text-caption text-paper-white">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop"></span>
+<span>Dispatch Server 01: ONLINE (99.98% uptime)</span>
+</div>
+</div>
+<!-- Links Grid from JSON: ["Payment Gateways", "QRIS Instant", "Order Status Policy", "Privacy Policy", "Terms of Service", "Customer Care WhatsApp"] -->
+<div class="flex flex-wrap gap-x-space-lg gap-y-2 items-center">
+<a class="text-sunburst font-label-pill hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist dark:text-concrete-gray font-caption hover:text-sunburst transition-colors duration-150 flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="support_agent">support_agent</span>
+<span>Customer Care WhatsApp</span>
+</a>
+</div>
+<!-- Bottom Row: Copyright text from JSON -->
+<div class="pt-space-md border-t border-paper-white/10 flex flex-col sm:flex-row justify-between items-center gap-2">
+<p class="font-caption text-caption text-soft-mist/70">
+          © 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.
+        </p>
+<div class="font-caption text-caption text-soft-mist/50">
+          Moonton Authorized Reseller Node #ML-ID-8820
+        </div>
+</div>
+</div>
+</footer>
+<!-- Light Vanilla Script for Interactive Direct Input Verification -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const verifyBtn = document.getElementById('verifyBtn');
+      const verifiedTag = document.getElementById('verifiedTag');
+      const userIdInput = document.getElementById('userIdInput');
+
+      if (verifyBtn && verifiedTag && userIdInput) {
+        verifyBtn.addEventListener('click', () => {
+          verifiedTag.textContent = 'Checking Moonton API...';
+          verifiedTag.classList.add('text-ember');
+          setTimeout(() => {
+            verifiedTag.textContent = 'kyroslayer99 (Verified ✓)';
+            verifiedTag.classList.remove('text-ember');
+            verifiedTag.classList.add('text-carbon');
+          }, 400);
+        });
+      }
+    });
+  </script>
+</body></html>

@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  icon      String
+  badge     String?
+  order     Int       @default(0)
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id                     String        @id @default(cuid())
+  name                   String
+  slug                   String        @unique
+  tagline                String?
+  description            String?
+  categorySlug           String
+  category               Category      @relation(fields: [categorySlug], references: [slug], onDelete: Cascade)
+  developer              String?
+  thumbnailUrl           String
+  bannerUrl              String?
+  badgeText              String?
+  badgeColor             String?       @default("mint-pop")
+  requiresServer         Boolean       @default(false)
+  targetInputLabel       String        @default("User ID")
+  targetInputPlaceholder String        @default("Masukkan User ID akun")
+  serverInputPlaceholder String?       @default("Zone / Server ID")
+  instructions           String?
+  isPopular              Boolean       @default(false)
+  isActive               Boolean       @default(true)
+  items                  ProductItem[]
+  orders                 Order[]
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+}
+
+model ProductItem {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku             String   @unique
+  name            String
+  price           Int
+  originalPrice   Int?
+  supplierPrice   Int?     @default(0)
+  discountPercent Int?
+  stockStatus     String   @default("AVAILABLE")
+  bonusText       String?
+  order           Int      @default(0)
+  orders          Order[]
+  createdAt       DateTime @default(now())
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  invoiceNumber  String      @unique
+  targetUserId   String
+  targetZoneId   String?
+  customerEmail  String
+  customerPhone  String?
+  productId      String
+  product        Product     @relation(fields: [productId], references: [id])
+  productItemId  String
+  productItem    ProductItem @relation(fields: [productItemId], references: [id])
+  basePrice      Int
+  uniqueCode     Int         @default(0)
+  fee            Int         @default(0)
+  totalAmount    Int
+  status         String      @default("PENDING")
+  qrisString     String?
+  paymentMethod  String      @default("QRIS")
+  paidAt         DateTime?
+  fulfilledAt    DateTime?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String   @default("Super Admin")
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

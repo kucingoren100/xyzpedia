@@ -1,0 +1,726 @@
+<!DOCTYPE html><html class="light" lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>XYZPEDIA — Subscription &amp; Voucher Product Detail &amp; Direct Checkout</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS Play CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#ffdbd1",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "sky-wash": "#DCEEFF",
+            "on-primary-fixed": "#3a0a00",
+            "tertiary-fixed": "#d3e4ff",
+            "on-tertiary": "#ffffff",
+            "voltage-violet": "#5C4ADE",
+            "on-error-container": "#93000a",
+            "surface-tint": "#af3000",
+            "on-secondary-container": "#fffbff",
+            "background": "#f9f9f9",
+            "inverse-on-surface": "#f1f1f1",
+            "secondary-container": "#6e5ef1",
+            "secondary-fixed": "#e4dfff",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#5c4038",
+            "on-primary-container": "#fffbff",
+            "surface-bright": "#f9f9f9",
+            "sunburst": "#FFD731",
+            "carbon": "#000000",
+            "on-secondary-fixed": "#160066",
+            "concrete-gray": "#CCCCCC",
+            "secondary-fixed-dim": "#c6bfff",
+            "primary-fixed-dim": "#ffb59f",
+            "tertiary": "#005ea5",
+            "outline-variant": "#e6beb2",
+            "surface-container-lowest": "#ffffff",
+            "paper-white": "#FFFFFF",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "surface-variant": "#e2e2e2",
+            "ember": "#FB4903",
+            "surface-container-highest": "#e2e2e2",
+            "surface": "#f9f9f9",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "on-error": "#ffffff",
+            "on-surface": "#1b1b1b",
+            "error-container": "#ffdad6",
+            "primary": "#ab2e00",
+            "on-background": "#1b1b1b",
+            "on-tertiary-container": "#fdfcff",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-low": "#f3f3f3",
+            "tertiary-container": "#0076cf",
+            "surface-container-high": "#e8e8e8",
+            "on-tertiary-fixed": "#001c38",
+            "electric-blue": "#4DA2FF",
+            "lavender": "#E9CCFF",
+            "soft-mist": "#E9E9E9",
+            "inverse-primary": "#ffb59f",
+            "secondary": "#5542d7",
+            "error": "#ba1a1a",
+            "mint-pop": "#55DB9C",
+            "surface-container": "#eeeeee",
+            "inverse-surface": "#303030",
+            "outline": "#916f66",
+            "primary-container": "#d63c00",
+            "on-tertiary-fixed-variant": "#004881"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-3xl": "5rem",
+            "margin": "1rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-2xl": "3rem",
+            "margin-tablet": "2rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-hero": "11.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Hanken Grotesk"],
+            "label-pill": ["Hanken Grotesk"],
+            "subheading": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "headline-lg": ["Hanken Grotesk"],
+            "display-hero": ["Bricolage Grotesque"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "headline-md": ["Hanken Grotesk"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    * {
+      box-shadow: none !important;
+    }
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marqueeScroll 22s linear infinite;
+    }
+  </style>
+<style id="pop-brutalism-hover-effects">
+  /* Step 1: Subscription Option Cards */
+  input[name="plan_option"] + *,
+  label:has(input[name="plan_option"]) {
+    transition: transform 150ms ease, box-shadow 150ms ease !important;
+  }
+  label:has(input[name="plan_option"]):hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+    cursor: pointer;
+  }
+  label:has(input[name="plan_option"]):active {
+    transform: translateY(0px) !important;
+    box-shadow: 0px 0px 0px #000000 !important;
+  }
+
+  /* Step 3: Payment Method Cards */
+  label:has(input[name="payment_method"]) {
+    transition: transform 150ms ease, box-shadow 150ms ease !important;
+  }
+  label:has(input[name="payment_method"]):hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 3px 3px 0px #000000 !important;
+    cursor: pointer;
+  }
+  label:has(input[name="payment_method"]):active {
+    transform: translateY(0px) !important;
+    box-shadow: 0px 0px 0px #000000 !important;
+  }
+
+  /* Step 4: Checkout CTA Button & CS Button */
+  aside button.bg-ember,
+  aside a[href="#"]:has-text, 
+  aside a.bg-carbon {
+    transition: transform 150ms ease, box-shadow 150ms ease !important;
+  }
+  aside button.bg-ember:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+  }
+  aside button.bg-ember:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0px 0px 0px #000000 !important;
+  }
+  aside a.bg-carbon:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 3px 3px 0px #000000 !important;
+  }
+  aside a.bg-carbon:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0px 0px 0px #000000 !important;
+  }
+</style></head>
+<body class="bg-sky-wash text-carbon font-body-md antialiased min-h-screen flex flex-col selection:bg-sunburst selection:text-carbon"><style id="custom-typography-rules">
+  body, p, span, input, button, label, td, th, a, div {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6, .font-display, [class*="headline"], [class*="display"], .font-display-hero, .font-headline-xl, .font-headline-md, .font-headline-lg, [class*="price"], .font-black, .font-extrabold {
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif !important;
+  }
+</style>
+<!-- TOP BLACK ANNOUNCEMENT MARQUEE STRIP -->
+<div class="w-full bg-carbon text-paper-white h-[34px] overflow-hidden flex items-center border-b border-carbon z-50 select-none">
+<div class="animate-marquee whitespace-nowrap flex items-center font-marquee text-marquee uppercase tracking-wider">
+<span class="flex items-center gap-space-md mx-space-md">
+<span>⚡ 100% GUEST-DIRECT DISPATCH</span>
+<span>•</span>
+<span class="text-sunburst">AUTOMATED CREDENTIAL INJECTION IN 0.8s</span>
+<span>•</span>
+<span>NO REGISTRATION / NO LOGIN REQUIRED</span>
+<span>•</span>
+<span class="text-mint-pop">QRIS INSTANT 0% ADMIN FEE</span>
+<span>•</span>
+<span>GARANSI RESMI REPLACE 30 HARI</span>
+<span>•</span>
+<span class="text-ember">CS WHATSAPP 24/7 SIAGA</span>
+<span>•</span>
+</span>
+<span class="flex items-center gap-space-md mx-space-md">
+<span>⚡ 100% GUEST-DIRECT DISPATCH</span>
+<span>•</span>
+<span class="text-sunburst">AUTOMATED CREDENTIAL INJECTION IN 0.8s</span>
+<span>•</span>
+<span>NO REGISTRATION / NO LOGIN REQUIRED</span>
+<span>•</span>
+<span class="text-mint-pop">QRIS INSTANT 0% ADMIN FEE</span>
+<span>•</span>
+<span>GARANSI RESMI REPLACE 30 HARI</span>
+<span>•</span>
+<span class="text-ember">CS WHATSAPP 24/7 SIAGA</span>
+<span>•</span>
+</span>
+</div>
+</div>
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="sticky top-0 z-40 bg-paper-white border-b border-carbon">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto">
+<!-- Brand Logo & Search Bar -->
+<div class="flex items-center gap-space-lg flex-1 mr-space-md">
+<a href="#" class="flex items-center gap-1.5 font-black text-2xl tracking-tight cursor-pointer"><span class="bg-black text-white px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span><span class="text-black">PEDIA</span></a>
+<!-- Search bar on left -->
+<div class="hidden sm:flex items-center bg-soft-mist border border-carbon rounded-full px-space-md py-1.5 w-full max-w-xs">
+<span class="material-symbols-outlined text-carbon text-lg mr-space-xs">search</span>
+<input class="bg-transparent border-none text-carbon font-body-md text-sm p-0 focus:ring-0 focus:outline-none w-full placeholder:text-carbon/60" placeholder="Cari Netflix, Spotify, Steam..." type="text">
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="text-carbon font-label-pill hover:scale-[1.02] active:scale-[0.98] transition-transform" href="#">Games</a>
+<a class="text-ember font-label-pill underline decoration-2 underline-offset-4 hover:scale-[1.02] active:scale-[0.98] transition-transform" href="#">Subscriptions</a>
+<a class="text-carbon font-label-pill hover:scale-[1.02] active:scale-[0.98] transition-transform" href="#">Vouchers</a>
+<a class="text-carbon font-label-pill hover:scale-[1.02] active:scale-[0.98] transition-transform" href="#">Check Order</a>
+</nav>
+<!-- Trailing Action -->
+<div class="flex items-center gap-space-sm ml-space-md">
+<a class="bg-carbon text-paper-white font-label-pill text-xs uppercase px-4 py-2.5 rounded-full border border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-1.5" href="#">
+<span class="material-symbols-outlined text-sm">radar</span>
+<span>Track Order</span>
+</a>
+<button aria-label="Bantuan" class="p-2 border border-carbon rounded-full bg-soft-mist text-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-base">help</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-xl flex flex-col gap-space-xl">
+<!-- BREADCRUMB & HERO PRODUCT BANNER -->
+<section class="flex flex-col gap-space-md">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 font-label-pill text-xs text-carbon">
+<a class="hover:underline" href="#">Home</a>
+<span>/</span>
+<a class="hover:underline" href="#">Subscriptions</a>
+<span>/</span>
+<span class="text-ember font-bold">Netflix Premium 4K UHD</span>
+</nav>
+<!-- Asymmetric Product Banner Card -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl relative overflow-hidden">
+<!-- Background Die-Cut Stickers Placed Realistically -->
+<div class="absolute -right-4 -bottom-6 hidden lg:flex items-center justify-center bg-sunburst border border-carbon rounded-2xl px-6 py-4 rotate-3 pointer-events-none z-10">
+<div class="text-center font-display-hero-mobile text-2xl font-extrabold leading-none text-carbon">
+            INSTANT<br><span class="text-ember">0.8 SEC</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-center">
+<!-- Left: Thumbnail & Official Badge Collaged -->
+<div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-space-md items-start">
+<div class="relative w-full aspect-[16/10] sm:w-56 lg:w-full rounded-xl border border-carbon overflow-hidden bg-carbon flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="A vivid modern promotional product artwork for Netflix Premium 4K streaming service against a stark dark studio backdrop with bright red and neon electric blue atmospheric accent lights, ultra crisp clean toy aesthetic and high precision visual clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq_Q7Q0Yw5U_dejkPKrWnhDW_SNMKcvHmxr3UzEFBjXeY_huI1cFNxtO86HKJqc_gJfmvwq8TMU1Fv5zcM-2NR40kXVVg2hKNWL_69HXtH8pnvolKCnjCHrQECbVx-QTWDsXeFQmVO652JTiql4_hk8zwfHHLGZEsnJMNY_V-23yBp2XoPvfj_-mbbT_j005Vc2FKTQOZwbkHhSzufMlrtgf_IxXxDIi4hpVoBVUI">
+<!-- Floating Die-Cut Sticker Overlay -->
+<span class="absolute top-3 left-3 bg-mint-pop text-carbon border border-carbon px-2.5 py-1 rounded-full font-label-pill text-xs uppercase -rotate-2">
+                4K UHD + HDR
+              </span>
+</div>
+<!-- Operational System Injection Status -->
+<div class="bg-lavender border border-carbon rounded-xl p-3 w-full flex items-start gap-2.5">
+<span class="material-symbols-outlined text-voltage-violet mt-0.5" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<div>
+<p class="font-label-pill text-xs text-voltage-violet uppercase leading-tight font-extrabold">AUTOMATED DISPATCH ACTIVE</p>
+<p class="font-caption text-xs text-carbon mt-0.5">Average dispatch: <strong>0.8s</strong> ke WhatsApp &amp; Email Anda.</p>
+</div>
+</div>
+</div>
+<!-- Right: Detailed Product Copy -->
+<div class="lg:col-span-8 flex flex-col gap-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="bg-mint-pop text-carbon border border-carbon px-3 py-1 rounded-full font-label-pill text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                100% Bergaransi Resmi
+              </span>
+<span class="bg-soft-mist text-carbon border border-carbon px-3 py-1 rounded-full font-label-pill text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-ember" style="font-variation-settings: 'FILL' 1;">star</span>
+                4.9/5 (84k+ Terjual)
+              </span>
+<span class="bg-sunburst text-carbon border border-carbon px-3 py-1 rounded-full font-label-pill text-xs">
+                Guest Mode: No Signup
+              </span>
+</div>
+<h1 class="font-headline-xl-mobile md:font-headline-lg text-headline-xl-mobile md:text-headline-lg font-black text-carbon tracking-tight uppercase leading-none mt-1">
+              Netflix Premium 4K UHD Private &amp; Sharing
+            </h1>
+<p class="font-body-lg text-carbon/80 max-w-2xl">
+              Aktivasi instan tanpa antri. Nonton resolusi 4K UHD di TV, Laptop, dan Smartphone dengan garansi penuh 30 hari. Guest-direct: kredensial langsung terinjeksi otomatis ke layar dan WhatsApp Anda.
+            </p>
+<!-- Highlights Pill Cluster -->
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="border border-carbon bg-paper-white px-3 py-1 rounded-full font-caption text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-ember">tv</span> Semua Device Support
+              </span>
+<span class="border border-carbon bg-paper-white px-3 py-1 rounded-full font-caption text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-ember">lock</span> Anti On-Hold / Anti Hapus
+              </span>
+<span class="border border-carbon bg-paper-white px-3 py-1 rounded-full font-caption text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-ember">autorenew</span> Full Replacement Guarantee
+              </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4-STEP DIRECT CHECKOUT GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COL: STEPS 1, 2, 3 (8 COLS) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- STEP 1: Pilih Jenis Akun / Paket -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between border-b border-carbon pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-8 h-8 rounded-full bg-ember text-paper-white font-display-hero-mobile text-lg font-black flex items-center justify-center border border-carbon">1</span>
+<h2 class="font-headline-md text-headline-md font-bold uppercase tracking-tight text-carbon">
+                Pilih Jenis Akun / Paket
+              </h2>
+</div>
+<span class="text-xs font-label-pill bg-soft-mist border border-carbon px-2.5 py-1 rounded-full">Garansi Aktif</span>
+</div>
+<!-- Cards Grid for Step 1 -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Option 1 -->
+<label class="relative flex flex-col justify-between border border-carbon rounded-2xl p-4 bg-paper-white hover:scale-[1.01] cursor-pointer transition-transform group">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-sunburst text-carbon border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] uppercase">
+                  Popular
+                </span>
+<input class="w-5 h-5 text-ember border-carbon focus:ring-0 focus:ring-offset-0" name="plan_option" type="radio" value="25000">
+</div>
+<h3 class="font-headline-md text-lg font-bold text-carbon group-hover:text-ember transition-colors">1 Bulan Sharing</h3>
+<p class="font-caption text-xs text-carbon/70 mb-4">1 Device aktif, PIN Profil pribadi, Bebas tontonan 4K.</p>
+<div class="pt-2 border-t border-carbon/20 flex items-baseline justify-between">
+<span class="font-caption text-xs text-carbon/60">Harga Pas</span>
+<span class="font-headline-md text-xl font-extrabold text-carbon">Rp 25.000</span>
+</div>
+</label>
+<!-- Option 2 (Selected Card) -->
+<label class="relative flex flex-col justify-between border-2 border-carbon rounded-2xl p-4 bg-primary-fixed hover:scale-[1.01] cursor-pointer transition-transform">
+<div class="absolute -top-3 right-4 bg-ember text-paper-white border border-carbon px-3 py-0.5 rounded-full font-label-pill text-[11px] uppercase -rotate-2">
+                Pilihan Terbaik
+              </div>
+<div class="flex justify-between items-start mb-2">
+<span class="bg-mint-pop text-carbon border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] uppercase">
+                  Private Account
+                </span>
+<input checked="" class="w-5 h-5 text-ember border-carbon focus:ring-0 focus:ring-offset-0" name="plan_option" type="radio" value="110000">
+</div>
+<h3 class="font-headline-md text-lg font-bold text-carbon">1 Bulan Akun Private</h3>
+<p class="font-caption text-xs text-carbon/80 mb-4">4 Screen simultan, bisa custom profile &amp; ubah PIN/password mandiri.</p>
+<div class="pt-2 border-t border-carbon/30 flex items-baseline justify-between">
+<span class="font-caption text-xs font-bold text-on-primary-fixed">Rekomendasi</span>
+<span class="font-headline-md text-2xl font-black text-carbon">Rp 110.000</span>
+</div>
+</label>
+<!-- Option 3 -->
+<label class="relative flex flex-col justify-between border border-carbon rounded-2xl p-4 bg-paper-white hover:scale-[1.01] cursor-pointer transition-transform group">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-lavender text-carbon border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] uppercase">
+                  Best Value
+                </span>
+<input class="w-5 h-5 text-ember border-carbon focus:ring-0 focus:ring-offset-0" name="plan_option" type="radio" value="310000">
+</div>
+<h3 class="font-headline-md text-lg font-bold text-carbon group-hover:text-ember transition-colors">3 Bulan Akun Private</h3>
+<p class="font-caption text-xs text-carbon/70 mb-4">4 Screen, Full garansi perpanjangan otomatis tanpa ganti email.</p>
+<div class="pt-2 border-t border-carbon/20 flex items-baseline justify-between">
+<span class="font-caption text-xs text-carbon/60">Hemat 10%</span>
+<span class="font-headline-md text-xl font-extrabold text-carbon">Rp 310.000</span>
+</div>
+</label>
+<!-- Option 4 -->
+<label class="relative flex flex-col justify-between border border-carbon rounded-2xl p-4 bg-paper-white hover:scale-[1.01] cursor-pointer transition-transform group">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-soft-mist text-carbon border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[11px] uppercase">
+                  VIP Long Term
+                </span>
+<input class="w-5 h-5 text-ember border-carbon focus:ring-0 focus:ring-offset-0" name="plan_option" type="radio" value="1150000">
+</div>
+<h3 class="font-headline-md text-lg font-bold text-carbon group-hover:text-ember transition-colors">1 Tahun Akun Private</h3>
+<p class="font-caption text-xs text-carbon/70 mb-4">Nonstop entertainment tanpa ribet bulanan. Prioritas support bot VIP.</p>
+<div class="pt-2 border-t border-carbon/20 flex items-baseline justify-between">
+<span class="font-caption text-xs text-carbon/60">Super Hemat</span>
+<span class="font-headline-md text-xl font-extrabold text-carbon">Rp 1.150.000</span>
+</div>
+</label>
+</div>
+</section>
+<!-- STEP 2: Informasi Penerima Lisensi -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between border-b border-carbon pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-8 h-8 rounded-full bg-carbon text-paper-white font-display-hero-mobile text-lg font-black flex items-center justify-center border border-carbon">2</span>
+<h2 class="font-headline-md text-headline-md font-bold uppercase tracking-tight text-carbon">
+                Informasi Penerima Lisensi
+              </h2>
+</div>
+<span class="text-xs font-label-pill bg-mint-pop text-carbon border border-carbon px-2.5 py-1 rounded-full">100% Guest Private</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5 md:col-span-2">
+<label class="font-label-pill text-xs uppercase text-carbon">Nama Penerima / Profil Netflix</label>
+<input class="bg-paper-white border border-carbon rounded-xl p-3 text-carbon font-body-md focus:border-2 focus:border-carbon focus:ring-0" placeholder="Contoh: Dimas Aditya" type="text" value="Dimas Aditya">
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-pill text-xs uppercase text-carbon flex items-center justify-between">
+<span>Nomor WhatsApp (Kredensial Langsung) *</span>
+<span class="text-ember font-bold">WA AKTIF</span>
+</label>
+<div class="relative flex items-center">
+<span class="absolute left-3 font-bold text-carbon text-sm">+62</span>
+<input class="pl-12 bg-paper-white border border-carbon rounded-xl p-3 text-carbon font-body-md w-full focus:border-2 focus:border-carbon focus:ring-0" placeholder="81234567890" type="tel" value="81289901234">
+</div>
+<span class="font-caption text-[11px] text-carbon/60">Bot sistem mengirim akun &amp; PIN dalam hitungan detik setelah bayar.</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-pill text-xs uppercase text-carbon">Email Pengiriman Invoice &amp; Cadangan Kredensial *</label>
+<input class="bg-paper-white border border-carbon rounded-xl p-3 text-carbon font-body-md focus:border-2 focus:border-carbon focus:ring-0" placeholder="emailanda@gmail.com" type="email" value="dimas.creative@gmail.com">
+<span class="font-caption text-[11px] text-carbon/60">Salinan invoice &amp; panduan aktivasi dikirimkan ke email ini.</span>
+</div>
+</div>
+<!-- Guest Security Notice -->
+<div class="bg-soft-mist border border-carbon rounded-xl p-3.5 flex items-start gap-3">
+<span class="material-symbols-outlined text-carbon mt-0.5">verified_user</span>
+<p class="font-caption text-xs text-carbon leading-relaxed">
+<strong>Jaminan Privasi Tamu:</strong> Data Anda 100% aman sebagai tamu (Guest). Kredensial login akun akan langsung dikirim via WhatsApp bot dan tampil di layar konfirmasi tanpa perlu registrasi akun portal.
+            </p>
+</div>
+</section>
+<!-- STEP 3: Pilih Metode Pembayaran -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between border-b border-carbon pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-8 h-8 rounded-full bg-carbon text-paper-white font-display-hero-mobile text-lg font-black flex items-center justify-center border border-carbon">3</span>
+<h2 class="font-headline-md text-headline-md font-bold uppercase tracking-tight text-carbon">
+                Pilih Metode Pembayaran
+              </h2>
+</div>
+<span class="text-xs font-label-pill bg-sunburst border border-carbon px-2.5 py-1 rounded-full">Instan QRIS</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- QRIS Selected Card -->
+<label class="flex items-center justify-between p-4 border-2 border-carbon rounded-2xl bg-sunburst/20 hover:scale-[1.01] cursor-pointer transition-transform">
+<div class="flex items-center gap-3">
+<input checked="" class="w-5 h-5 text-ember border-carbon focus:ring-0" name="payment_method" type="radio" value="qris">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-base font-bold text-carbon">QRIS Real-Time</span>
+<span class="bg-mint-pop text-carbon border border-carbon px-2 py-0.5 rounded-full font-label-pill text-[10px] uppercase">0% Fee</span>
+</div>
+<p class="font-caption text-xs text-carbon/80">Scan GoPay, OVO, Shopee, BCA Mobile</p>
+</div>
+</div>
+<span class="font-headline-md text-base font-extrabold text-carbon">Rp 110.000</span>
+</label>
+<!-- BCA VA -->
+<label class="flex items-center justify-between p-4 border border-carbon rounded-2xl bg-paper-white hover:scale-[1.01] cursor-pointer transition-transform">
+<div class="flex items-center gap-3">
+<input class="w-5 h-5 text-ember border-carbon focus:ring-0" name="payment_method" type="radio" value="bca">
+<div>
+<span class="font-headline-md text-base font-bold text-carbon">BCA Virtual Account</span>
+<p class="font-caption text-xs text-carbon/60">Verifikasi Otomatis 24/7</p>
+</div>
+</div>
+<span class="font-headline-md text-base font-bold text-carbon">Rp 111.000</span>
+</label>
+<!-- Mandiri VA -->
+<label class="flex items-center justify-between p-4 border border-carbon rounded-2xl bg-paper-white hover:scale-[1.01] cursor-pointer transition-transform">
+<div class="flex items-center gap-3">
+<input class="w-5 h-5 text-ember border-carbon focus:ring-0" name="payment_method" type="radio" value="mandiri">
+<div>
+<span class="font-headline-md text-base font-bold text-carbon">Mandiri Virtual Account</span>
+<p class="font-caption text-xs text-carbon/60">Konfirmasi dalam hitungan detik</p>
+</div>
+</div>
+<span class="font-headline-md text-base font-bold text-carbon">Rp 111.000</span>
+</label>
+<!-- E-Wallet -->
+<label class="flex items-center justify-between p-4 border border-carbon rounded-2xl bg-paper-white hover:scale-[1.01] cursor-pointer transition-transform">
+<div class="flex items-center gap-3">
+<input class="w-5 h-5 text-ember border-carbon focus:ring-0" name="payment_method" type="radio" value="ewallet">
+<div>
+<span class="font-headline-md text-base font-bold text-carbon">DANA / GoPay / ShopeePay</span>
+<p class="font-caption text-xs text-carbon/60">Direct app redirection</p>
+</div>
+</div>
+<span class="font-headline-md text-base font-bold text-carbon">Rp 111.500</span>
+</label>
+</div>
+</section>
+</div>
+<!-- RIGHT COL: STEP 4 STICKY SUMMARY (4 COLS) -->
+<aside class="lg:col-span-4 sticky top-20 flex flex-col gap-space-md">
+<!-- STEP 4 Card -->
+<div class="bg-paper-white border-2 border-carbon rounded-2xl p-space-lg relative overflow-hidden">
+<!-- Die-Cut Stamp Decoration -->
+<div class="absolute -right-3 -top-3 bg-sunburst border border-carbon px-3 py-1 rounded-full font-label-pill text-xs font-black uppercase rotate-6">
+            GUEST CHECKOUT
+          </div>
+<div class="flex items-center gap-space-sm border-b border-carbon pb-space-sm mb-space-md">
+<span class="w-8 h-8 rounded-full bg-voltage-violet text-paper-white font-display-hero-mobile text-lg font-black flex items-center justify-center border border-carbon">4</span>
+<h2 class="font-headline-md text-headline-md font-bold uppercase tracking-tight text-carbon">
+              Ringkasan Checkout
+            </h2>
+</div>
+<!-- Summary Items -->
+<div class="flex flex-col gap-space-sm mb-space-md">
+<div class="flex justify-between items-start text-xs border-b border-carbon/10 pb-2">
+<span class="font-label-pill text-carbon/70">Produk</span>
+<span class="font-body-md font-bold text-carbon text-right max-w-[180px]">Netflix Premium 4K UHD</span>
+</div>
+<div class="flex justify-between items-center text-xs border-b border-carbon/10 pb-2">
+<span class="font-label-pill text-carbon/70">Pilihan Paket</span>
+<span class="font-label-pill bg-lavender border border-carbon px-2 py-0.5 rounded-full text-carbon">1 Bulan Private</span>
+</div>
+<div class="flex justify-between items-center text-xs border-b border-carbon/10 pb-2">
+<span class="font-label-pill text-carbon/70">Target WhatsApp</span>
+<span class="font-body-md font-bold text-carbon">+62 812-8990-1234</span>
+</div>
+<div class="flex justify-between items-center text-xs border-b border-carbon/10 pb-2">
+<span class="font-label-pill text-carbon/70">Metode Bayar</span>
+<span class="font-label-pill bg-mint-pop border border-carbon px-2 py-0.5 rounded-full text-carbon">QRIS Real-Time</span>
+</div>
+<!-- Promo Voucher Input -->
+<div class="pt-2">
+<label class="font-label-pill text-xs uppercase text-carbon block mb-1">Kode Promo / Voucher</label>
+<div class="flex gap-2">
+<input class="w-full bg-soft-mist border border-carbon rounded-full px-3 py-1.5 font-label-pill text-xs uppercase text-carbon focus:ring-0 focus:border-2" type="text" value="XYZSTICKER">
+<button class="bg-carbon text-paper-white font-label-pill text-xs uppercase px-4 py-1.5 rounded-full border border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform">
+                  Applied
+                </button>
+</div>
+</div>
+</div>
+<!-- Price Calculations -->
+<div class="bg-soft-mist border border-carbon rounded-xl p-3 flex flex-col gap-1.5 mb-space-md">
+<div class="flex justify-between text-xs font-body-md text-carbon">
+<span>Subtotal Paket</span>
+<span class="font-bold">Rp 110.000</span>
+</div>
+<div class="flex justify-between text-xs font-body-md text-ember">
+<span>Diskon Voucher (XYZSTICKER)</span>
+<span class="font-bold">- Rp 10.000</span>
+</div>
+<div class="flex justify-between text-xs font-body-md text-carbon">
+<span>Biaya Layanan QRIS</span>
+<span class="font-bold text-mint-pop">Rp 0 (GRATIS)</span>
+</div>
+<div class="border-t border-carbon pt-2 mt-1 flex justify-between items-baseline">
+<span class="font-label-pill text-xs uppercase text-carbon font-extrabold">Total Bayar</span>
+<span class="font-display-hero-mobile text-2xl font-black text-carbon">Rp 100.000</span>
+</div>
+</div>
+<!-- BIG ORANGE CTA BUTTON -->
+<button class="w-full bg-ember text-paper-white font-label-pill text-base uppercase py-4 rounded-full border-2 border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform tracking-wider font-extrabold flex items-center justify-center gap-2 mb-space-sm">
+<span>⚡ BAYAR SEKARANG — RP 100.000 ⚡</span>
+</button>
+<!-- Guarantee Badge -->
+<div class="flex items-center gap-2 p-2 border border-carbon rounded-xl bg-paper-white">
+<span class="material-symbols-outlined text-mint-pop text-lg" style="font-variation-settings: 'FILL' 1;">security</span>
+<p class="font-caption text-[11px] text-carbon leading-tight">
+<strong>100% Garansi Ganti Baru</strong> jika akun bermasalah dalam 30 hari. Layanan pelanggan siap sedia 24 jam.
+            </p>
+</div>
+</div>
+<!-- Additional Sticky Widget: Guest Tracker Helper -->
+<div class="bg-paper-white border border-carbon rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-carbon">support_agent</span>
+<div>
+<p class="font-label-pill text-xs text-carbon uppercase">Butuh Bantuan Cepat?</p>
+<p class="font-caption text-xs text-carbon/70">WhatsApp CS: 0811-9988-7766</p>
+</div>
+</div>
+<a class="bg-carbon text-paper-white font-label-pill text-xs px-3 py-1.5 rounded-full border border-carbon hover:scale-105 transition-transform" href="#">
+            Chat CS
+          </a>
+</div>
+</aside>
+</div>
+<!-- FAQ & GUARANTEE SECTION ACCORDION -->
+<section class="bg-paper-white border border-carbon rounded-2xl p-space-lg md:p-space-xl flex flex-col gap-space-lg">
+<div class="flex flex-col gap-1">
+<span class="bg-lavender text-carbon border border-carbon px-3 py-1 rounded-full font-label-pill text-xs w-max uppercase">
+          Pertanyaan Umum &amp; Kebijakan
+        </span>
+<h2 class="font-headline-md text-headline-md font-bold uppercase tracking-tight text-carbon">
+          Frequently Asked Questions (FAQ)
+        </h2>
+<p class="font-body-md text-carbon/70">Ketahui bagaimana sistem transaksi tanpa pendaftaran kami bekerja secara transparan.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- FAQ 1 -->
+<div class="border border-carbon rounded-2xl p-5 bg-sky-wash/30 flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ember">send_and_archive</span>
+<h3 class="font-headline-md text-base font-bold text-carbon">Bagaimana akun dikirim?</h3>
+</div>
+<p class="font-body-md text-xs text-carbon/80 leading-relaxed">
+            Setelah pembayaran QRIS atau VA terverifikasi (rata-rata 0.8 detik), bot XYZPEDIA otomatis mengirimkan kredensial login (Email &amp; Password/PIN) langsung ke WhatsApp dan email penerima, serta langsung muncul di layar status transaksi.
+          </p>
+</div>
+<!-- FAQ 2 -->
+<div class="border border-carbon rounded-2xl p-5 bg-sunburst/20 flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ember">cached</span>
+<h3 class="font-headline-md text-base font-bold text-carbon">Bagaimana jika akun terkena logout?</h3>
+</div>
+<p class="font-body-md text-xs text-carbon/80 leading-relaxed">
+            Semua paket private dan sharing kami bergaransi penuh 30 hari. Cukup masukkan Order ID Anda pada menu <strong>Track Order</strong> atau hubungi CS WhatsApp kami untuk injeksi reset kredensial baru instan.
+          </p>
+</div>
+<!-- FAQ 3 -->
+<div class="border border-carbon rounded-2xl p-5 bg-mint-pop/20 flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ember">person_off</span>
+<h3 class="font-headline-md text-base font-bold text-carbon">Apakah perlu daftar akun portal?</h3>
+</div>
+<p class="font-body-md text-xs text-carbon/80 leading-relaxed">
+            Sama sekali tidak! XYZPEDIA 100% Guest-Direct. Anda tidak perlu repot mengingat password portal atau membuat akun baru. Cukup gunakan nomor WhatsApp &amp; email aktif untuk menerima pesanan Anda.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- SHARED COMPONENT: Footer -->
+<footer class="w-full bg-carbon text-paper-white border-t border-carbon mt-space-xl">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Footer Top: Brand & Quick Intro -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md border-b border-paper-white/20 pb-space-lg">
+<div>
+<div class="flex items-center gap-1.5 font-black text-2xl tracking-tight mb-3"><span class="bg-white text-black px-2.5 py-0.5 rounded-full text-xl font-black">XYZ</span><span class="text-white">PEDIA</span></div>
+<p class="font-body-md text-sm text-concrete-gray mt-1 max-w-md">
+            Platform pengisian voucher game dan langganan digital terdepan di Indonesia. Full otomatisasi 24 jam tanpa antri, tanpa pendaftaran akun.
+          </p>
+</div>
+<!-- Operational Status Indicator -->
+<div class="bg-paper-white/10 border border-paper-white/30 rounded-2xl px-4 py-3 flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-mint-pop animate-ping"></span>
+<div>
+<p class="font-label-pill text-xs uppercase text-paper-white">SERVER DISPATCH STATUS</p>
+<p class="font-caption text-xs text-sunburst font-bold">ALL SYSTEM NORMAL (0.8s INJECTION)</p>
+</div>
+</div>
+</div>
+<!-- Footer Navigation Links -->
+<div class="flex flex-wrap gap-x-space-lg gap-y-space-sm items-center">
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-sunburst font-label-pill hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Customer Care WhatsApp</a>
+</div>
+<!-- Footer Copyright Text -->
+<div class="pt-space-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-t border-paper-white/10">
+<p class="font-caption text-concrete-gray text-xs">
+          © 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.
+        </p>
+<div class="flex items-center gap-2 text-concrete-gray font-caption text-xs">
+<span>Jakarta, Indonesia</span>
+<span>•</span>
+<span>SSL 256-Bit Encrypted</span>
+</div>
+</div>
+</div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+</body></html>

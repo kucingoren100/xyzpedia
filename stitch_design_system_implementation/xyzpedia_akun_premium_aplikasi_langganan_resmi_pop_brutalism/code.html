@@ -1,0 +1,911 @@
+<!DOCTYPE html><html class="light" lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>XYZPEDIA — Akun Premium &amp; Aplikasi Langganan Resmi</title>
+<!-- Google Fonts: Bricolage Grotesque & Hanken Grotesk / Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with Forms & Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#ffffff",
+            "on-surface": "#1b1b1b",
+            "tertiary-fixed-dim": "#a2c9ff",
+            "surface-dim": "#dadada",
+            "surface-bright": "#f9f9f9",
+            "lavender": "#E9CCFF",
+            "outline": "#916f66",
+            "electric-blue": "#4DA2FF",
+            "error": "#ba1a1a",
+            "soft-mist": "#E9E9E9",
+            "surface-container-highest": "#e2e2e2",
+            "paper-white": "#FFFFFF",
+            "tertiary-fixed": "#d3e4ff",
+            "tertiary": "#005ea5",
+            "outline-variant": "#e6beb2",
+            "primary-fixed": "#ffdbd1",
+            "inverse-primary": "#ffb59f",
+            "carbon": "#000000",
+            "tertiary-container": "#0076cf",
+            "inverse-on-surface": "#f1f1f1",
+            "concrete-gray": "#CCCCCC",
+            "secondary": "#5542d7",
+            "on-tertiary-fixed": "#001c38",
+            "on-primary-fixed-variant": "#862200",
+            "on-surface-variant": "#5c4038",
+            "on-primary": "#ffffff",
+            "secondary-fixed": "#e4dfff",
+            "sunburst": "#FFD731",
+            "voltage-violet": "#5C4ADE",
+            "surface-container-high": "#e8e8e8",
+            "ember": "#FB4903",
+            "primary-fixed-dim": "#ffb59f",
+            "on-primary-fixed": "#3a0a00",
+            "surface-tint": "#af3000",
+            "surface": "#f9f9f9",
+            "background": "#f9f9f9",
+            "on-secondary-fixed": "#160066",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-container": "#fffbff",
+            "sky-wash": "#DCEEFF",
+            "surface-container": "#eeeeee",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-background": "#1b1b1b",
+            "surface-variant": "#e2e2e2",
+            "on-error-container": "#93000a",
+            "secondary-container": "#6e5ef1",
+            "on-tertiary": "#ffffff",
+            "primary": "#ab2e00",
+            "on-tertiary-container": "#fdfcff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "inverse-surface": "#303030",
+            "surface-container-low": "#f3f3f3",
+            "secondary-fixed-dim": "#c6bfff",
+            "primary-container": "#d63c00",
+            "mint-pop": "#55DB9C",
+            "on-primary-container": "#fffbff",
+            "on-tertiary-fixed-variant": "#004881"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.5rem",
+            "space-hero": "11.25rem",
+            "gutter": "1rem",
+            "space-3xl": "5rem",
+            "space-2xl": "3rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "2rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-xl": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "display-hero": ["Bricolage Grotesque"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "subheading": ["Hanken Grotesk"],
+            "body-md": ["Plus Jakarta Sans", "Hanken Grotesk"],
+            "body-lg": ["Plus Jakarta Sans", "Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "headline-lg": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Absolute No Shadow Rule & Brutalist Crisp 1px outline */
+    * {
+      box-shadow: none !important;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<style id="typography-override">body, button, input, select, textarea, .font-body-md, .font-body-lg, .font-caption, .font-label-pill, .font-marquee { font-family: 'Plus Jakarta Sans', sans-serif !important; } h1, h2, h3, h4, h5, h6, .font-headline-xl, .font-display-hero, .font-display-hero-mobile, .font-headline-md, .font-headline-lg { font-family: 'Bricolage Grotesque', sans-serif !important; letter-spacing: -0.02em; }</style><style id="product-card-hover-effects">
+  /* Tactile Pop Brutalism Micro-interactions for Product Cards */
+  section.grid > div.group {
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  section.grid > div.group:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 5px 5px 0px #000000 !important;
+  }
+  section.grid > div.group:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0px 0px 0px #000000 !important;
+  }
+  section.grid > div.group:hover .group-hover\:scale-105 {
+    transform: scale(1.08) !important;
+  }
+  section.grid > div.group:hover a.mt-3\.5 {
+    background-color: #fb4903 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+</style></head>
+<body class="bg-paper-white text-carbon font-body-md text-body-md antialiased selection:bg-sunburst selection:text-carbon min-h-screen flex flex-col">
+<!-- TOP MARQUEE BAND (Neo-Brutalist Ticker) -->
+<div class="bg-carbon text-paper-white py-2 px-4 border-b border-carbon overflow-hidden whitespace-nowrap z-50">
+<div class="inline-flex gap-8 items-center font-marquee text-marquee uppercase tracking-wider animate-pulse">
+<span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-mint-pop"></span> DISPATCH OTOMATIS 24/7 INSTAN</span>
+<span class="text-sunburst">★</span>
+<span>GARANSI RESMI GANTI BARU ANTI ON-HOLD</span>
+<span class="text-sunburst">★</span>
+<span>QRIS, BCA, MANDIRI, DANA, GOPAY ACTIVE</span>
+<span class="text-sunburst">★</span>
+<span>LEBIH DARI 120.000+ AKUN TERKIRIM SEJAK 2021</span>
+<span class="text-sunburst">★</span>
+<span>PENGIRIMAN DETAIL VIA WHATSAPP &amp; EMAIL INSTAN</span>
+</div>
+</div>
+<!-- NAVIGATION BAR (Semantic Shell: TopNavBar) -->
+<header class="sticky top-0 z-40 bg-paper-white border-b border-carbon">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto">
+<!-- Logo + Search Left Cluster -->
+<div class="flex items-center gap-6">
+<a class="font-display-hero-mobile text-headline-md font-extrabold tracking-tight text-carbon flex items-center gap-2 hover:scale-[1.02] transition-transform duration-150" href="#">
+<span class="bg-carbon text-paper-white px-2.5 py-0.5 rounded-lg border border-carbon rotate-[-2deg]">XYZ</span>
+<span class="tracking-tighter">PEDIA</span>
+</a>
+<!-- Search Bar Capsule with ⌘K -->
+<div class="hidden lg:flex items-center relative w-[380px]">
+<span class="material-symbols-outlined absolute left-3.5 text-carbon text-[18px]">search</span>
+<input class="w-full pl-10 pr-12 py-2 text-[13px] bg-paper-white rounded-full border border-carbon focus:ring-0 focus:border-[2px] focus:border-carbon placeholder:text-neutral-500 font-label-pill" placeholder="Cari akun premium (Netflix, Spotify, Canva, YouTube, ChatGPT)..." type="text">
+<kbd class="absolute right-3 px-1.5 py-0.5 text-[11px] font-mono bg-soft-mist border border-carbon rounded font-bold text-carbon">⌘K</kbd>
+</div>
+</div>
+<!-- Center & Trailing Navigation Links -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-carbon font-label-pill text-label-pill hover:scale-[1.02] transition-transform duration-150" href="#games">Games</a>
+<!-- Active Nav: "Akun Premium" -->
+<a class="text-ember font-label-pill text-label-pill underline decoration-2 underline-offset-4 flex items-center gap-1.5 font-bold" href="#akun-premium">
+<span class="w-1.5 h-1.5 rounded-full bg-ember inline-block animate-ping"></span>
+          Akun Premium
+        </a>
+<a class="text-carbon font-label-pill text-label-pill hover:scale-[1.02] transition-transform duration-150" href="#vouchers">Vouchers</a>
+<a class="text-carbon font-label-pill text-label-pill hover:scale-[1.02] transition-transform duration-150" href="#check-order">Check Order</a>
+</nav>
+<!-- Action Cluster -->
+<div class="flex items-center gap-3">
+<a class="hidden sm:flex items-center justify-center w-10 h-10 rounded-full border border-carbon bg-paper-white hover:bg-soft-mist hover:scale-[1.02] active:scale-[0.98] transition-all" href="#help" title="Bantuan">
+<span class="material-symbols-outlined text-carbon text-[20px]">help</span>
+</a>
+<a class="bg-carbon text-paper-white font-label-pill text-label-pill px-4 py-2.5 rounded-full border border-carbon hover:scale-[1.02] active:scale-[0.98] transition-transform inline-flex items-center gap-2" href="#track">
+<span class="material-symbols-outlined text-paper-white text-[16px]">local_shipping</span>
+<span>Track Order</span>
+</a>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS CONTAINER -->
+<main class="flex-grow max-w-[1440px] w-full mx-auto px-space-md md:px-margin-desktop py-space-xl flex flex-col gap-space-2xl">
+<!-- HERO BANNER SECTION (Tactile Brutalist Collage) -->
+<section class="border border-carbon rounded-2xl bg-sky-wash p-6 md:p-10 relative overflow-hidden">
+<!-- Inflatable sticker accents floating in corners -->
+<div class="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-sunburst border border-carbon rotate-12 flex items-center justify-center text-center font-headline-xl text-carbon pointer-events-none opacity-90 hidden sm:flex">
+<span class="font-display-hero-mobile text-[16px] leading-tight font-extrabold uppercase">INSTAN<br>24/7</span>
+</div>
+<div class="max-w-4xl relative z-10 flex flex-col gap-6">
+<!-- Badge Pill -->
+<div class="inline-flex items-center gap-2 bg-paper-white border border-carbon px-3 py-1 rounded-full w-fit">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop border border-carbon"></span>
+<span class="font-label-pill text-label-pill uppercase text-carbon tracking-wider">XYZPEDIA DIRECT FULFILLMENT</span>
+</div>
+<!-- Big Display Title -->
+<h1 class="font-display-hero-mobile md:font-headline-xl text-headline-xl-mobile md:text-headline-xl font-extrabold tracking-tight text-carbon leading-[0.95]">
+          AKUN PREMIUM &amp; APLIKASI LANGGANAN RESMI.
+        </h1>
+<!-- Subheading -->
+<p class="font-body-lg text-body-lg text-carbon max-w-2xl font-medium">
+          Nikmati streaming 4K UHD, tools produktivitas, AI Pro, dan musik tanpa batas. Kredensial dan invite langsung dikirim instan ke WhatsApp &amp; email tanpa ribet.
+        </p>
+<!-- Value Badges Row -->
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<span class="bg-paper-white border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill text-carbon inline-flex items-center gap-1.5 rotate-[-1deg]">
+<span class="material-symbols-outlined text-mint-pop text-[18px]">verified</span>
+            ✓ Garansi Full Anti On-Hold
+          </span>
+<span class="bg-paper-white border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill text-carbon inline-flex items-center gap-1.5 rotate-[1.5deg]">
+<span class="material-symbols-outlined text-voltage-violet text-[18px]">lock</span>
+            ✓ Akun Private &amp; Sharing Legal
+          </span>
+<span class="bg-paper-white border border-carbon px-4 py-2 rounded-full font-label-pill text-label-pill text-carbon inline-flex items-center gap-1.5 rotate-[-0.5deg]">
+<span class="material-symbols-outlined text-ember text-[18px]">support_agent</span>
+            ✓ Bantuan Admin WhatsApp 24 Jam
+          </span>
+</div>
+</div>
+</section>
+<!-- CATEGORY FILTER PILLS (Interactive Tab Selection) -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="font-display-hero-mobile text-headline-md font-bold text-carbon font-headline-xl">
+          Eksplorasi Katalog
+        </h2>
+<span class="font-caption text-caption text-neutral-600 hidden sm:inline-block">Menampilkan 15 Layanan Populer Terverifikasi</span>
+</div>
+<!-- Horizontal Pills Scrollable -->
+<div class="flex items-center gap-2.5 overflow-x-auto pb-2 custom-scroll">
+<button class="bg-carbon text-paper-white border border-carbon px-5 py-2.5 rounded-full font-label-pill text-label-pill shrink-0 hover:scale-[1.02] transition-transform">
+          Semua Akun Premium
+        </button>
+<button class="bg-paper-white hover:bg-soft-mist text-carbon border border-carbon px-5 py-2.5 rounded-full font-label-pill text-label-pill shrink-0 hover:scale-[1.02] transition-transform">
+          Streaming Film &amp; TV
+        </button>
+<button class="bg-paper-white hover:bg-soft-mist text-carbon border border-carbon px-5 py-2.5 rounded-full font-label-pill text-label-pill shrink-0 hover:scale-[1.02] transition-transform">
+          Musik &amp; Podcast
+        </button>
+<button class="bg-paper-white hover:bg-soft-mist text-carbon border border-carbon px-5 py-2.5 rounded-full font-label-pill text-label-pill shrink-0 hover:scale-[1.02] transition-transform">
+          Produktivitas &amp; Desain
+        </button>
+<button class="bg-paper-white hover:bg-soft-mist text-carbon border border-carbon px-5 py-2.5 rounded-full font-label-pill text-label-pill shrink-0 hover:scale-[1.02] transition-transform">
+          AI &amp; Cloud Tools
+        </button>
+<button class="bg-paper-white hover:bg-soft-mist text-carbon border border-carbon px-5 py-2.5 rounded-full font-label-pill text-label-pill shrink-0 hover:scale-[1.02] transition-transform">
+          Pendidikan &amp; Kursus
+        </button>
+</div>
+</section>
+<!-- PRODUCTS GRID (Tactile Pop Brutalism White Cards: 15 items) -->
+<section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
+<!-- 1. NETFLIX PREMIUM -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#FFF0F0] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-black border border-carbon flex items-center justify-center text-[#E50914] font-headline-xl font-black text-3xl group-hover:scale-105 transition-transform">
+      N
+    </div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">4K UHD + HDR</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Sharing / Private</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Netflix Premium</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 25.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#netflix">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 2. CAPCUT PRO -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#F4F4F5] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-black border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<svg class="w-8 h-8 fill-current" viewBox="0 0 24 24">
+<path d="M18.8 5.6C17.2 4 14.8 4 13.2 5.6L12 6.8 10.8 5.6C9.2 4 6.8 4 5.2 5.6 3.6 7.2 3.6 9.6 5.2 11.2l6.8 6.8 6.8-6.8c1.6-1.6 1.6-4 0-5.6zM7.2 8.8c-.8-.8-.8-2 0-2.8.8-.8 2-.8 2.8 0L12 8l2-2c.8-.8 2-.8 2.8 0 .8.8.8 2 0 2.8L12 13.6 7.2 8.8z"></path>
+</svg>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">All Pro Features</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">1 &amp; 12 Bulan</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">CapCut Pro</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 20.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#capcut">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 3. CANVA PRO DESIGNER -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#EFFBFC] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#00c4cc] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="font-headline-xl font-black text-xl italic tracking-tight">Canva</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Email Pribadi</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Invite Member</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Canva Pro Designer</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 15.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#canva">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 4. YOUTUBE PREMIUM -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#FFF2F2] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#FF0000] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">play_circle</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">No Ads + Music</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Family / Indiv</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">YouTube Premium</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 12.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#youtube">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 5. GEMINI ADVANCED -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#F0F5FF] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#1A73E8] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[30px]">auto_awesome</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Gemini 1.5 Pro</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">2TB Cloud Inc.</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Gemini Advanced</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 30.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#gemini">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 6. ADOBE CREATIVE CLOUD -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#FFF3F0] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#FA0F00] border border-carbon flex items-center justify-center text-white font-headline-xl font-bold text-2xl group-hover:scale-105 transition-transform">
+      Cc
+    </div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">All 20+ Apps</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Full License</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Adobe Creative Cloud</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 65.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#adobe">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 7. SPOTIFY PREMIUM -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#F0FAF3] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#1DB954] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">graphic_eq</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Offline Play</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Akun Sendiri</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Spotify Premium</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 18.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#spotify">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 8. DISNEY+ HOTSTAR -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#EFF4FF] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#0F1E4A] border border-carbon flex items-center justify-center text-[#4DA2FF] font-headline-xl font-black text-sm tracking-tight group-hover:scale-105 transition-transform">
+      Disney+
+    </div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">IMAX Enhanced</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Profile PIN</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Disney+ Hotstar</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 25.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#disney">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 9. CHATGPT PLUS & TEAM -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#EDFAF5] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#10A37F] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">smart_toy</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">GPT-4o &amp; DALL-E</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Plus &amp; Team</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">ChatGPT Plus &amp; Team</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 35.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#chatgpt">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 10. PRIME VIDEO -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#F0F8FF] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#00A8E1] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">play_arrow</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Ultra HD 4K</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Private &amp; Share</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Prime Video</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 18.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#prime">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 11. DUOLINGO SUPER -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#F4FBEA] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#58CC02] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">school</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Unlimited Hearts</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Akun Sendiri</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Duolingo Super</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 22.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#duolingo">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 12. ZOOM PRO -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#F0F6FF] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#2D8CFF] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">videocam</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">30 Jam Limit</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">100 Peserta</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Zoom Pro</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 28.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#zoom">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 13. CLAUDE PRO -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#FFF7EE] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#CC785C] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">psychology</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Claude 3.5 Sonnet</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">High Usage</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Claude Pro</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 35.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#claude">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 14. APPLE ONE & MUSIC -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#FFF0F3] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#FA233B] border border-carbon flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">album</span>
+</div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">Lossless &amp; TV+</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Invite Family</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Apple One &amp; Music</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 24.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#applemusic">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+<!-- 15. GRAMMARLY PREMIUM -->
+<div class="group relative flex flex-col justify-between bg-paper-white border border-carbon rounded-[22px] p-4 transition-all duration-150 hover:-translate-y-1">
+<div class="flex flex-col gap-3">
+<!-- Visual Badge -->
+<div class="relative w-full aspect-square rounded-[18px] border border-carbon bg-[#EDFBF5] flex flex-col items-center justify-center p-3 overflow-hidden">
+<span class="absolute top-2.5 right-2.5 bg-paper-white border border-carbon text-carbon text-[10px] font-bold px-2 py-0.5 rounded-full font-label-pill">Anti On-Hold</span>
+<div class="w-14 h-14 rounded-2xl bg-[#15C39A] border border-carbon flex items-center justify-center text-white font-headline-xl font-bold text-2xl group-hover:scale-105 transition-transform">
+      G
+    </div>
+<span class="absolute bottom-2 text-[10px] font-bold tracking-tight text-neutral-600 bg-white/80 border border-neutral-300 px-2 py-0.2 rounded-full">AI Writing Asst.</span>
+</div>
+<!-- Content -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="text-[10px] font-bold uppercase tracking-wider bg-soft-mist border border-carbon/40 px-2 py-0.5 rounded-md text-carbon">Private Login</span>
+</div>
+<h3 class="font-headline-xl text-base font-bold text-carbon line-clamp-1 mt-0.5">Grammarly Premium</h3>
+<div class="flex items-baseline gap-1 text-xs text-neutral-500">
+<span>Mulai</span>
+<span class="text-[15px] font-extrabold text-carbon">Rp 20.000</span>
+</div>
+</div>
+</div>
+<!-- Button CTA -->
+<a class="mt-3.5 w-full bg-carbon text-paper-white font-label-pill text-xs font-bold py-2.5 rounded-full border border-carbon flex items-center justify-center gap-1.5 hover:bg-neutral-800 transition-colors" href="#grammarly">
+<span>Langganan</span>
+<span class="text-sm leading-none">➔</span>
+</a>
+</div>
+</section>
+<!-- SECTION CARA PENGIRIMAN & SISTEM DISPATCH INSTAN -->
+<section class="border border-carbon rounded-2xl bg-lavender p-6 md:p-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<span class="bg-carbon text-paper-white border border-carbon px-3 py-1 rounded-full font-label-pill text-caption uppercase tracking-wider inline-block mb-2">
+            PENGIRIMAN OTOMATIS
+          </span>
+<h2 class="font-display-hero-mobile text-headline-md md:text-headline-lg font-bold text-carbon font-headline-xl">
+            3 Langkah Mudah &amp; Cepat
+          </h2>
+</div>
+<p class="font-body-md text-neutral-700 max-w-md">
+          Sistem robot server XYZPEDIA memproses pesanan secara real-time detik itu juga setelah verifikasi mutasi berhasil.
+        </p>
+</div>
+<!-- 3 Steps Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-paper-white border border-carbon rounded-2xl p-6 flex flex-col gap-3">
+<div class="w-10 h-10 rounded-full bg-sunburst border border-carbon flex items-center justify-center font-display-hero-mobile font-bold text-carbon text-lg">
+            1
+          </div>
+<h4 class="font-headline-xl text-subheading font-bold text-carbon">Pilih Paket &amp; Durasi</h4>
+<p class="font-body-md text-caption text-neutral-600">
+            Tentukan jenis akun (Private Email atau Dedicated Profile PIN) dan durasi langganan yang kamu butuhkan.
+          </p>
+</div>
+<div class="bg-paper-white border border-carbon rounded-2xl p-6 flex flex-col gap-3">
+<div class="w-10 h-10 rounded-full bg-mint-pop border border-carbon flex items-center justify-center font-display-hero-mobile font-bold text-carbon text-lg">
+            2
+          </div>
+<h4 class="font-headline-xl text-subheading font-bold text-carbon">Bayar QRIS / Virtual Account</h4>
+<p class="font-body-md text-caption text-neutral-600">
+            Gunakan QRIS all-payment atau transfer Virtual Account BCA, Mandiri, BRI, BNI tanpa biaya admin tersembunyi.
+          </p>
+</div>
+<div class="bg-paper-white border border-carbon rounded-2xl p-6 flex flex-col gap-3">
+<div class="w-10 h-10 rounded-full bg-ember border border-carbon flex items-center justify-center font-display-hero-mobile font-bold text-paper-white text-lg">
+            3
+          </div>
+<h4 class="font-headline-xl text-subheading font-bold text-carbon">Kredensial Muncul Instan</h4>
+<p class="font-body-md text-caption text-neutral-600">
+            Detail akun, PIN login, link invitation, dan tutorial langsung tampil di layar invoice dan dikirim ke nomor WhatsApp kamu.
+          </p>
+</div>
+</div>
+</section>
+<!-- SECTION FAQ TENTANG ATURAN & GARANSI RESMI -->
+<section class="border border-carbon rounded-2xl bg-paper-white p-6 md:p-10 flex flex-col gap-6">
+<div class="max-w-2xl">
+<h2 class="font-display-hero-mobile text-headline-md font-bold text-carbon mb-2 font-headline-xl">
+          Pertanyaan Umum (FAQ) &amp; Garansi
+        </h2>
+<p class="font-body-md text-neutral-600">
+          Transparan dan amanah. Kami memberikan jaminan perlindungan penuh untuk setiap pesanan yang kamu lakukan.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- FAQ 1 -->
+<div class="border border-carbon rounded-2xl p-5 bg-surface-bright flex flex-col gap-2">
+<h4 class="font-headline-xl text-[16px] font-bold text-carbon flex items-center gap-2">
+<span class="material-symbols-outlined text-ember text-[20px]">help</span>
+            Apakah profil sharing aman dan tidak bentrok limit?
+          </h4>
+<p class="font-body-md text-caption text-neutral-600 leading-relaxed">
+            Sangat aman. Setiap slot sharing diberikan nomor profil tertentu yang dilindungi 4 digit PIN unik pribadi. Dilarang login di lebih dari 1 perangkat bersamaan agar tidak mengganggu anggota lainnya.
+          </p>
+</div>
+<!-- FAQ 2 -->
+<div class="border border-carbon rounded-2xl p-5 bg-surface-bright flex flex-col gap-2">
+<h4 class="font-headline-xl text-[16px] font-bold text-carbon flex items-center gap-2">
+<span class="material-symbols-outlined text-voltage-violet text-[20px]">verified_user</span>
+            Bagaimana mekanisme klaim jika terjadi kendala login?
+          </h4>
+<p class="font-body-md text-caption text-neutral-600 leading-relaxed">
+            XYZPEDIA memberikan Garansi Penuh Ganti Akun Baru selama durasi sewa aktif. Cukup klik tombol WhatsApp CS di dashboard invoice, cantumkan Order ID, dan staf kami akan memvalidasi penggantian unit dalam 5-15 menit.
+          </p>
+</div>
+<!-- FAQ 3 -->
+<div class="border border-carbon rounded-2xl p-5 bg-surface-bright flex flex-col gap-2">
+<h4 class="font-headline-xl text-[16px] font-bold text-carbon flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-container text-[20px]">mail</span>
+            Untuk Spotify &amp; Canva, apakah memakai email lama saya?
+          </h4>
+<p class="font-body-md text-caption text-neutral-600 leading-relaxed">
+            Ya! Untuk paket invite (seperti Spotify Family, Canva Pro, YouTube Premium, Duolingo), kamu cukup mencantumkan alamat email akun aktif kamu saat checkout. Semua riwayat, playlist, dan berkas desain tetap utuh tanpa reset.
+          </p>
+</div>
+<!-- FAQ 4 -->
+<div class="border border-carbon rounded-2xl p-5 bg-surface-bright flex flex-col gap-2">
+<h4 class="font-headline-xl text-[16px] font-bold text-carbon flex items-center gap-2">
+<span class="material-symbols-outlined text-mint-pop text-[20px]">lock_reset</span>
+            Apakah diperbolehkan mengganti password email utama?
+          </h4>
+<p class="font-body-md text-caption text-neutral-600 leading-relaxed">
+            Untuk akun kategori Sharing Profile, pembeli dilarang keras mengubah password akun atau nama profil orang lain. Mengubah password akan membatalkan garansi. Untuk akun bertipe Full Private, kamu memiliki akses penuh mengelola password secara mandiri.
+          </p>
+</div>
+</div>
+</section>
+<!-- LIVE ASSISTANCE CALLOUT BANNER -->
+<div class="border border-carbon rounded-2xl bg-sunburst p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-carbon text-paper-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[26px]">chat</span>
+</div>
+<div>
+<h4 class="font-headline-xl text-subheading font-bold text-carbon">Butuh Bantuan Memilih Paket?</h4>
+<p class="font-body-md text-caption text-carbon font-medium">Customer care WhatsApp kami aktif 24 jam untuk melayani panduan login, aktivasi Smart TV, dan invoice perusahaan.</p>
+</div>
+</div>
+<a class="bg-carbon text-paper-white border border-carbon px-6 py-3 rounded-full font-label-pill text-label-pill hover:scale-[1.02] active:scale-[0.98] transition-transform shrink-0 inline-flex items-center gap-2" href="https://wa.me/" target="_blank">
+<span>Hubungi CS WhatsApp</span>
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</a>
+</div>
+</main>
+<!-- FOOTER (Semantic Shell: Footer) -->
+<footer class="bg-carbon text-paper-white border-t border-carbon mt-space-3xl w-full">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Top Row: Brand & Payment Gateway Badges -->
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 pb-8 border-b border-neutral-800">
+<div class="flex flex-col gap-2">
+<div class="font-display-hero-mobile text-headline-md font-black text-paper-white flex items-center gap-2">
+<span class="bg-sunburst text-carbon px-2.5 py-0.5 rounded-lg border border-carbon rotate-[-2deg]">XYZ</span>
+<span>PEDIA</span>
+</div>
+<p class="font-body-md text-caption text-soft-mist max-w-md">
+            Pusat voucher game, akun premium, dan lisensi digital instan terpercaya. Transaksi terenkripsi otomatis dan jaminan purna jual resmi.
+          </p>
+</div>
+<!-- Payment Badges List -->
+<div class="flex flex-col items-start lg:items-end gap-2">
+<span class="font-label-pill text-caption text-soft-mist uppercase tracking-wider">Metode Pembayaran Instan</span>
+<div class="flex flex-wrap items-center gap-2">
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">QRIS</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">BCA VA</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">Mandiri</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">BRI</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">BNI</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">DANA</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">GoPay</span>
+<span class="bg-paper-white text-carbon font-bold text-[11px] px-2.5 py-1 rounded border border-carbon">ShopeePay</span>
+</div>
+</div>
+</div>
+<!-- Links Cluster & Copyright -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pt-2">
+<div class="flex flex-wrap items-center gap-6">
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-sunburst font-label-pill hover:underline flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">call</span>
+            Customer Care WhatsApp
+          </a>
+</div>
+<p class="font-caption text-caption text-concrete-gray">
+          © 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.
+        </p>
+</div>
+</div>
+</footer>
+<!-- FLOATING INTERACTIVE MICRO-SCRIPTS -->
+<script>
+    // Keyboard shortcut for quick search input focus
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) searchInput.focus();
+      }
+    });
+  </script>
+
+
+</body></html>

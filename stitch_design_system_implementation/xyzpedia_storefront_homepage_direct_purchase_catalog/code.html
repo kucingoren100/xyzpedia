@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>XYZPEDIA — Storefront Homepage | Instant Top-Up &amp; Digital Subscriptions</title>
+<!-- Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;800&amp;family=Hanken+Grotesk:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS & Theme Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#fdfcff",
+            "on-tertiary-fixed": "#001c38",
+            "secondary-container": "#6e5ef1",
+            "inverse-on-surface": "#f1f1f1",
+            "secondary": "#5542d7",
+            "tertiary-container": "#0076cf",
+            "error": "#ba1a1a",
+            "primary-fixed": "#ffdbd1",
+            "primary-fixed-dim": "#ffb59f",
+            "tertiary": "#005ea5",
+            "on-secondary-container": "#fffbff",
+            "tertiary-fixed": "#d3e4ff",
+            "on-tertiary-fixed-variant": "#004881",
+            "lavender": "#E9CCFF",
+            "primary-container": "#d63c00",
+            "inverse-primary": "#ffb59f",
+            "mint-pop": "#55DB9C",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#e8e8e8",
+            "on-background": "#1b1b1b",
+            "voltage-violet": "#5C4ADE",
+            "surface-container": "#eeeeee",
+            "secondary-fixed-dim": "#c6bfff",
+            "surface-tint": "#af3000",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#e4dfff",
+            "paper-white": "#FFFFFF",
+            "outline": "#916f66",
+            "inverse-surface": "#303030",
+            "surface-variant": "#e2e2e2",
+            "on-surface": "#1b1b1b",
+            "sunburst": "#FFD731",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f25c1",
+            "on-secondary-fixed": "#160066",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "background": "#f9f9f9",
+            "surface-container-highest": "#e2e2e2",
+            "on-error-container": "#93000a",
+            "electric-blue": "#4DA2FF",
+            "on-primary-fixed-variant": "#862200",
+            "surface-container-lowest": "#ffffff",
+            "concrete-gray": "#CCCCCC",
+            "soft-mist": "#E9E9E9",
+            "surface-container-low": "#f3f3f3",
+            "surface": "#f9f9f9",
+            "primary": "#ab2e00",
+            "ember": "#FB4903",
+            "on-primary-container": "#fffbff",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#5c4038",
+            "carbon": "#000000",
+            "outline-variant": "#e6beb2",
+            "on-primary-fixed": "#3a0a00",
+            "sky-wash": "#DCEEFF",
+            "surface-bright": "#f9f9f9",
+            "tertiary-fixed-dim": "#a2c9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2.5rem",
+            "margin-desktop": "3rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-3xl": "5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-hero": "11.25rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "subheading": ["Hanken Grotesk"],
+            "display-hero-mobile": ["Bricolage Grotesque"],
+            "display-hero": ["Bricolage Grotesque"],
+            "body-lg": ["Hanken Grotesk"],
+            "marquee": ["Hanken Grotesk"],
+            "headline-xl": ["Bricolage Grotesque"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "headline-xl-mobile": ["Bricolage Grotesque"],
+            "label-pill": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "subheading": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "display-hero-mobile": ["72px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-hero": ["180px", { "lineHeight": "144px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "marquee": ["13px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl": ["96px", { "lineHeight": "84px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["36px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "headline-lg": ["64px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["48px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-pill": ["13px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700" }],
+            "headline-md": ["30px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "caption": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Infinite Marquee Animation */
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marquee-scroll 25s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+    /* Physical Neo-Brutalist Sticker Invariants */
+    .ink-border {
+      border: 1px solid #000000;
+    }
+    .ink-border-thick {
+      border: 2px solid #000000;
+    }
+  </style>
+</head>
+<body class="bg-background text-carbon antialiased selection:bg-ember selection:text-paper-white min-h-screen flex flex-col">
+<!-- 1. TOP MARQUEE ANNOUNCEMENT -->
+<div class="w-full bg-carbon text-paper-white overflow-hidden py-2 border-b border-carbon select-none z-50">
+<div class="animate-marquee whitespace-nowrap flex items-center font-marquee text-marquee">
+<span class="px-6 flex items-center gap-3">
+<span>⚡ 24/7 AUTOMATED INSTANT DISPATCH</span>
+<span class="text-sunburst">★</span>
+<span>100% OFFICIAL PUBLISHER API</span>
+<span class="text-mint-pop">★</span>
+<span>GUEST-DIRECT CHECKOUT (NO LOGIN NEEDED)</span>
+<span class="text-ember">★</span>
+<span>QRIS 0% ADMIN FEE</span>
+<span class="text-electric-blue">★</span>
+<span>INSTANT DELIVERY UNDER 5 SECONDS</span>
+</span>
+<span class="px-6 flex items-center gap-3">
+<span>⚡ 24/7 AUTOMATED INSTANT DISPATCH</span>
+<span class="text-sunburst">★</span>
+<span>100% OFFICIAL PUBLISHER API</span>
+<span class="text-mint-pop">★</span>
+<span>GUEST-DIRECT CHECKOUT (NO LOGIN NEEDED)</span>
+<span class="text-ember">★</span>
+<span>QRIS 0% ADMIN FEE</span>
+<span class="text-electric-blue">★</span>
+<span>INSTANT DELIVERY UNDER 5 SECONDS</span>
+</span>
+</div>
+</div>
+<!-- 2. TOP NAVIGATION BAR (Exact Shared Component implementation) -->
+<header class="sticky top-0 z-40 bg-paper-white border-b border-carbon">
+<div class="flex justify-between items-center w-full px-space-md md:px-margin-desktop py-space-sm max-w-[1440px] mx-auto gap-4">
+<!-- Brand Logo -->
+<a class="font-display-hero-mobile text-headline-md font-extrabold tracking-tight text-carbon hover:scale-[1.02] transition-transform duration-150 flex items-center gap-1.5 shrink-0" href="#">
+<span class="inline-block bg-ember text-paper-white px-2 py-0.5 rounded-lg ink-border rotate-[-3deg] text-subheading">X</span>
+<span>XYZPEDIA</span>
+</a>
+<!-- Search Bar (on_left configuration) -->
+<div class="hidden sm:flex flex-1 max-w-md relative items-center">
+<span class="material-symbols-outlined absolute left-4 text-carbon opacity-60 text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low pl-11 pr-4 py-2.5 rounded-full ink-border font-body-md text-body-md text-carbon placeholder:text-on-surface-variant focus:outline-none focus:border-2 focus:border-carbon transition-all" placeholder="Search game, diamond, or streaming app..." type="text"/>
+<div class="absolute right-3 hidden md:flex items-center gap-1 bg-paper-white px-2 py-0.5 rounded ink-border text-[10px] font-bold text-carbon">
+<span>⌘K</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden lg:flex items-center gap-6 shrink-0">
+<a class="text-ember font-label-pill underline decoration-2 underline-offset-4 hover:scale-[1.02] transition-transform duration-150" href="#games-section">Games</a>
+<a class="text-carbon font-label-pill hover:text-ember transition-colors" href="#subscriptions-section">Subscriptions</a>
+<a class="text-carbon font-label-pill hover:text-ember transition-colors" href="#categories-section">Vouchers</a>
+<a class="text-carbon font-label-pill hover:text-ember transition-colors" href="#how-it-works-section">How It Works</a>
+</nav>
+<!-- Trailing Action: Track Order & Help (NO login, NO cart) -->
+<div class="flex items-center gap-3 shrink-0">
+<a class="bg-carbon text-paper-white font-label-pill text-label-pill px-4 py-2 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-1.5" href="#order-tracker">
+<span class="material-symbols-outlined text-[18px]" data-icon="local_shipping">local_shipping</span>
+<span>Track Order</span>
+</a>
+<a class="w-9 h-9 rounded-full bg-mint-pop ink-border flex items-center justify-center text-carbon hover:scale-[1.05] transition-transform" href="https://wa.me/6280000000000" rel="noopener" target="_blank" title="Customer Care">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+</a>
+</div>
+</div>
+<!-- Mobile Search Row -->
+<div class="sm:hidden px-space-md pb-3">
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-3 text-carbon opacity-60 text-[18px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low pl-9 pr-3 py-2 rounded-full ink-border font-body-md text-caption text-carbon placeholder:text-on-surface-variant focus:outline-none" placeholder="Search games or vouchers..." type="text"/>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-space-md md:px-margin-desktop py-space-lg flex flex-col gap-space-2xl">
+<!-- 3. KILAVOX-INSPIRED HERO CAROUSEL -->
+<section class="relative w-full rounded-2xl ink-border overflow-hidden bg-sky-wash p-6 md:p-12 flex flex-col justify-between min-h-[460px] md:min-h-[500px]">
+<!-- Asymmetric Physical Stickers Floating in Background -->
+<div class="absolute top-4 right-4 md:top-8 md:right-12 z-10 flex flex-col items-end gap-3 pointer-events-none">
+<div class="bg-sunburst px-4 py-2 rounded-xl ink-border font-label-pill text-carbon rotate-[3deg] shadow-none flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="bolt">bolt</span>
+<span>DISPATCH IN 0.4s</span>
+</div>
+<div class="hidden sm:flex bg-lavender px-3 py-1.5 rounded-lg ink-border font-caption text-carbon rotate-[-2deg]">
+<span>★ 100% GUEST PRIVACY</span>
+</div>
+</div>
+<!-- Main Slide 1 Content -->
+<div class="max-w-2xl z-20 space-y-6 my-auto">
+<div class="inline-flex items-center gap-2 bg-paper-white px-3.5 py-1.5 rounded-full ink-border font-label-pill text-caption">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop inline-block"></span>
+<span>AUTOMATED DISPATCH SYSTEM V3.2 LIVE</span>
+</div>
+<h1 class="font-headline-xl-mobile md:font-display-hero text-headline-xl-mobile md:text-[88px] md:leading-[88px] font-extrabold tracking-tight text-carbon">
+          YOUR DIGITAL WORLD, <span class="text-ember underline decoration-carbon decoration-4 underline-offset-8">ONE PLACE.</span>
+</h1>
+<p class="font-subheading text-body-lg text-on-surface-variant max-w-xl font-medium">
+          Instant automated game top-ups &amp; digital subscriptions delivered in 5 seconds. Direct guest checkout — no password, no registration, 100% official publisher API.
+        </p>
+<!-- CTA Cluster -->
+<div class="flex flex-wrap items-center gap-4 pt-2">
+<a class="bg-carbon text-paper-white font-label-pill px-6 py-3.5 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-2" href="#games-section">
+<span>Browse Top-Ups</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<a class="bg-paper-white text-carbon font-label-pill px-6 py-3.5 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-2" href="#order-tracker">
+<span class="material-symbols-outlined text-[18px]" data-icon="search_check">search_check</span>
+<span>Check Order Status</span>
+</a>
+</div>
+</div>
+<!-- Hero Visual Accent Cutout (Sticker Graphic Simulation) -->
+<div class="absolute bottom-6 right-8 hidden lg:block z-10 pointer-events-none">
+<div class="w-72 h-72 rounded-2xl ink-border overflow-hidden rotate-[2deg] bg-paper-white p-2">
+<img class="w-full h-full object-cover rounded-xl" data-alt="Vibrant neon digital gaming card with glowing cyan and purple gem crystals floating against a clean pastel studio backdrop. Minimalist pop brutalist aesthetic with razor-sharp black ink outlines, warm paper tones, and glossy playful plastic textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3cwBbM6mj6JeHpw9OETDYiGbMpdI2KD8DTawi3RyFmLOQqRs87TlkmyNIjowVhStRuTe69EIDZoe1EMzZjQlcnT66Mql1TDpUqtXwDER4p_vy7GXlg02UrIcl4NkxUZW6VSoBsTmCTe59TgcgnYNmYfJOCQD8Jv4BeycIKeh4SNStA4E-l0RWl_6uAswsDtzRTZ2QNgp28f_X0wFhHzgjxfdeRHINy0lR-_3CFd0"/>
+</div>
+</div>
+<!-- Carousel Navigation & Indicators Footer Bar -->
+<div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 z-20 border-t border-carbon/20 mt-6">
+<!-- Indicator Pills -->
+<div class="flex flex-wrap items-center gap-2">
+<button class="bg-carbon text-paper-white px-3 py-1 rounded-full ink-border font-label-pill text-caption flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-ember"></span>
+<span>01 Main Promo</span>
+</button>
+<button class="bg-paper-white text-carbon hover:bg-soft-mist px-3 py-1 rounded-full ink-border font-label-pill text-caption transition-colors">
+            02 Game Top-Up
+          </button>
+<button class="bg-paper-white text-carbon hover:bg-soft-mist px-3 py-1 rounded-full ink-border font-label-pill text-caption transition-colors">
+            03 Subscriptions
+          </button>
+<button class="bg-paper-white text-carbon hover:bg-soft-mist px-3 py-1 rounded-full ink-border font-label-pill text-caption transition-colors">
+            04 Flash Vouchers
+          </button>
+</div>
+<!-- Left / Right Carousel Controls -->
+<div class="flex items-center gap-2">
+<button aria-label="Previous Slide" class="w-9 h-9 rounded-full bg-paper-white ink-border flex items-center justify-center hover:scale-[1.05] active:scale-[0.95] transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button aria-label="Next Slide" class="w-9 h-9 rounded-full bg-paper-white ink-border flex items-center justify-center hover:scale-[1.05] active:scale-[0.95] transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 4. CORE CATEGORY CARDS (Bento Stratification) -->
+<section class="w-full space-y-4" id="categories-section">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 bg-ember rounded-sm ink-border"></span>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Explore Catalog</h2>
+</div>
+<span class="font-caption text-caption text-on-surface-variant font-medium">Select a category for direct lookup</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Category 1: Sky Wash -->
+<a class="group bg-sky-wash rounded-2xl p-6 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between h-48 relative overflow-hidden" href="#games-section">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-paper-white ink-border flex items-center justify-center text-carbon group-hover:rotate-[-6deg] transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-icon="sports_esports">sports_esports</span>
+</div>
+<span class="bg-paper-white px-2.5 py-0.5 rounded-full ink-border font-label-pill text-[11px]">80+ Titles</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">Game Top-Up</h3>
+<p class="font-body-md text-caption text-carbon/80">Diamonds, UC, VP, &amp; Tokens</p>
+</div>
+</a>
+<!-- Category 2: Lavender -->
+<a class="group bg-lavender rounded-2xl p-6 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between h-48 relative overflow-hidden" href="#subscriptions-section">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-paper-white ink-border flex items-center justify-center text-carbon group-hover:rotate-[6deg] transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-icon="subscriptions">subscriptions</span>
+</div>
+<span class="bg-paper-white px-2.5 py-0.5 rounded-full ink-border font-label-pill text-[11px]">Instant Invite</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">Digital Subscriptions</h3>
+<p class="font-body-md text-caption text-carbon/80">Streaming, AI &amp; Creative Tools</p>
+</div>
+</a>
+<!-- Category 3: Sunburst -->
+<a class="group bg-sunburst rounded-2xl p-6 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between h-48 relative overflow-hidden" href="#games-section">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-paper-white ink-border flex items-center justify-center text-carbon group-hover:rotate-[-6deg] transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-icon="redeem">redeem</span>
+</div>
+<span class="bg-paper-white px-2.5 py-0.5 rounded-full ink-border font-label-pill text-[11px]">0% Fee</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">Gift Cards &amp; Vouchers</h3>
+<p class="font-body-md text-caption text-carbon/80">Google Play, Steam &amp; Apple</p>
+</div>
+</a>
+<!-- Category 4: Mint Pop -->
+<a class="group bg-mint-pop rounded-2xl p-6 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between h-48 relative overflow-hidden" href="#subscriptions-section">
+<div class="flex justify-between items-start">
+<div class="w-12 h-12 rounded-xl bg-paper-white ink-border flex items-center justify-center text-carbon group-hover:rotate-[6deg] transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-icon="vpn_key">vpn_key</span>
+</div>
+<span class="bg-paper-white px-2.5 py-0.5 rounded-full ink-border font-label-pill text-[11px]">Official Key</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">Software &amp; Keys</h3>
+<p class="font-body-md text-caption text-carbon/80">VPNs, Office &amp; Utilities</p>
+</div>
+</a>
+</div>
+</section>
+<!-- 5. POPULAR GAME TOP-UP GRID (Direct Purchase Flow, No Cart) -->
+<section class="w-full space-y-6" id="games-section">
+<!-- Section Header -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-carbon pb-4">
+<div>
+<div class="inline-flex items-center gap-2 bg-ember text-paper-white px-2.5 py-0.5 rounded ink-border font-label-pill text-[11px] mb-2">
+<span>OFFICIAL API SERVERS</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Popular Game Top-Up</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Top-up instantly using ID &amp; Zone. Direct guest checkout with QRIS.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-caption font-caption text-on-surface-variant">Auto-Dispatch Status:</span>
+<span class="inline-flex items-center gap-1.5 bg-mint-pop/30 text-carbon px-2.5 py-1 rounded-full ink-border font-label-pill text-caption">
+<span class="w-2 h-2 rounded-full bg-mint-pop"></span>
+<span>All 12 Gateways Normal</span>
+</span>
+</div>
+</div>
+<!-- 12 Game Cards Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+<!-- Game 1: Mobile Legends -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Dramatic high-contrast illustration of a celestial fantasy MOBA warrior hero in shimmering golden armor with glowing eyes. Pop brutalist studio lighting against pastel sky blue backdrop with solid black ink line edges." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0XXps-w3Cb-dfdN1hOXgkyK0gPiU74qDQjPU0Zavj6nOvdPWQRL4iv1g1cXyEltqTrbXcWY5eKfblzQey2sn07DRBbJnbaYbp5gm6J89sq44KmmfaAAJs1YQAltG87TEW_1t_QT5SnmsVHQovw4wtiHxLhX2Tj9mz7jj1MlNey8Rw7yfx_V6u6Ipo0lNBUz1PkdIQa8HlKQFMXP0i4SHxDNZ6ef5dQOPpHCQxVco"/>
+<span class="absolute top-1.5 left-1.5 bg-sunburst px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Moonton</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Mobile Legends</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp1.700</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 2: Free Fire -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Futuristic cyber-action battle royale character wearing sleek tactical orange jacket and visor goggles in urban ruins. Pop art comic style with clean neo-brutalist ink outlines and warm paper studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAswvI7VwMFK356KklzJV2IXzMHy9CSyl6zUlzUgRlNLmjtVAQ6cM-9ma49aBzivL3evCfycmFXhZ8TGVjvbZtfipO0yFGI403aOUIMYMhIWIZwV8Et4V-04ZsLzdyux6TqrkE_EkUUU3KfTKHXpNWQQNu4McDr1WqKcQL7hL1q1-jr9qPEqGUScCc4lFkO9R1cxv7tRTod174G9hgXWkWfeitu5uppeiIgSyGDpnM"/>
+<span class="absolute top-1.5 left-1.5 bg-mint-pop px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Garena</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Free Fire</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp800</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 3: PUBG Mobile -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Iconic tier-three military combat helmet with smoke and tactical gear against a clean solid pastel lavender background. Sharp toy-like plastic neo-brutalist lighting with bold black ink borders." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEkKLp0hF_MiO_m9Xtjr0DIGAA1slfdT_19cIW_5wrTjIoY-stmvOe4LFRa3p2PO7bvve6VmYG7IecTqyRZxj8MB674sczjXZELSXexF2taUxyYsqlIGDScHozl1nNZ6ScD8pafKtIwXj4MJSkGSk7RC4M16VfIIFzba5IcsufnLOrEpFCk6VlwEX3-LE8yNPbq9V13hkeBEHAY9a6DkEAlvhSclcMFIGs8sFvBh0"/>
+<span class="absolute top-1.5 left-1.5 bg-lavender px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Level Infinite</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">PUBG Mobile</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp16.800</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 4: Honor of Kings -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Majestic oriental mythic warrior wielding an energetic glowing blue sword with ethereal dragons swirling. Pop brutalist comic shading, bright clean lighting, and stark ink borders." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW56zCH_AK35AAY5TgA9FlyKLA9EkcVHS29C3jRetCoR3SDcaYXT5ceD7CjE7nhAWxmExsWOKHwayBExDA-qxCeJ4ybHIF4tS5BSnFhmfVNGh6Nm2Mu2KB76c_GBTH0QLaXzbzBFzYajAiWcw5MY48SEmiJ-37MCBJE5Mau6kbgOqmd229Nnc3vUi-yKK_q7N7TFVoAarQjitVjU3T65sBRcZOROXX2uiQThMjw_s"/>
+<span class="absolute top-1.5 left-1.5 bg-electric-blue text-paper-white px-2 py-0.5 rounded text-[10px] font-extrabold ink-border">TiMi Studio</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Honor of Kings</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp15.730</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 5: Genshin Impact -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Anime fantasy heroine with flowing white hair holding glowing elemental stellar crystals. Vibrant pastel tones, clean high-key studio light, neo-brutalist pop cutout silhouette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA57sq_IML9Asm8uMtiExhUuvFr58iMvmrA2EBhzVHUdCwXsCKcLua-_FWWDWLDctkl75tojXi12P9mk8nVKu2_uG8_Cxc-3Vpiag7jHBqUn8TmMgwLcv_b5H7rBAoI0HnOJ-yV06FMjpJy9JCpF6PtxsjdUdvpz9FisbxB00huR9kzdbihSgpgp9WzrdNDiT7S2QGpf8q2v8El-8IbB7v1oF2PRki1JelqR_1YvkA"/>
+<span class="absolute top-1.5 left-1.5 bg-sunburst px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">HoYoverse</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Genshin Impact</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp16.600</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 6: Valorant Points -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Stylized tactile tactical knife and radiant ruby spike emblem with sleek carbon fiber accents. Matte pop sculpture style against crisp paper white background with black ink contours." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs3XBReqjvd3pppwxYF8o-mrMaaFojs6UoTNrwB92htifVreb0MUsXzF-tDHH42-I0dVUGtRa4QPG38T60uxABr5z03N8hCM1zZmgPBqXGSCtVmTiPKTW8BJqnp09UCKdlpcrTAWKKUbBC1NRKL5IjEIgMdb2k98r3ElSChfOOWKSlT0mnt87uVrxUeBoK2MYdP3hrB8-xXcR6OABUF9G0ZRl1PSfZ1UC7cBHPkAc"/>
+<span class="absolute top-1.5 left-1.5 bg-ember text-paper-white px-2 py-0.5 rounded text-[10px] font-extrabold ink-border">Riot Games</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Valorant Points</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp54.000</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 7: Blood Strike -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Tactical operative with crimson mask and scoped rifle sprinting forward in dynamic perspective. Bold comic ink strokes, bright neon accents, and physical toy aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA6oByH47_Vs78tm7YK6bqTmhKeqvuUfsyGX5c3k_Dzs4hRpWa1jiURx41vfMrMIpIuGER5kZxiGQzpFTa39Q0J9RY0PYWiXbw8MCVbnf8JVy828ziJlrzjr_Ews873PKCD59FvwJDOoYJQf6qB0VPgyzvn0LcY2bT7wSyRjgTYlpcfGzCII5RegfW90govg__8F4ZShKlunezyMw1Ziav0Bq9ZD7sXbmnTgN8rSI"/>
+<span class="absolute top-1.5 left-1.5 bg-voltage-violet text-paper-white px-2 py-0.5 rounded text-[10px] font-extrabold ink-border">NetEase</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Blood Strike</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp13.600</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 8: Magic Chess Go Go -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Chibi cute fantasy commander mascot holding a glowing chess piece on a colorful board. Toy-like smooth 3D plastic figurine aesthetic with distinct clean black ink edges." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXegdkxL_BnBEMtVNFTlSd9RcB2SKlFiLC2qRtw_lfqeZPy1bJ9NT8kPddUUf2opKd8KBkgcl2S-9UVPhT4iwq3t-VY-qzfUVxZCcTlyeI3UR5I8q40guABGrGpB3XCmi5f9oRNBiQ8eLqJ9HJFvsLidmpTwZC5cQa9G_dY4MtoVHuAOOMCu-DaTFYJY47nRh9MNU_Tly3SJgPJCi3ebIl1_gSpH75b8WCX_Hn0Uo"/>
+<span class="absolute top-1.5 left-1.5 bg-sunburst px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Moonton</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Magic Chess Go Go</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp1.700</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 9: Point Blank ID -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Classic special forces counter-terrorist mask in deep charcoal black with golden dual beretta pistols. Crisp brutalist lighting, flat pastel backdrop, and sticker outline." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzp2m-CuVQ3pUbaXOYiWZs3WpHJEnu5YDkpMd1xwA0pEf4UQIIZDDdw1EUnqf2bHUGcZsr2WRKDXN_yML6Y6exNmTKjWmDzaBHaXFq-aH1lUAhTcOpUlpxUHi2UuT0iwxB8PwnHGbwVJmOeUi64f_ZArHjF8X0CoKqbQTibQ6d98XIfGsjGNj_hJz58XXLgFFNlSlhvbzZ4BQwa2RBYSe2AoQAWoF05bq_runbK5s"/>
+<span class="absolute top-1.5 left-1.5 bg-paper-white px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Zepetto</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Point Blank ID</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp9.400</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 10: Delta Force Mobile -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Next-gen tactical drone operator with high-tech HUD goggles and military desert combat rig. Pop sticker aesthetic with flat shadowless high-key paper lighting and crisp outline." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAautX7pZZwpk96qOMUX_pSE8J99vD1ccm2pIIXVWBYU3I41nSJY9PvpVnHLEBitwlFvSMjAE1tSUJAkidL21PPlXBdxuP1QNBG74RRZn3UAHi5ymN6VwdSKuZk49AoHzG0ngoPZMwrL-uRszo5uK2LO6-03FyjP8h3QbGPnokz3HQfoCfNeq7DcWcgyu30l5oriQ5LYLIXE42u9547UWWUdkZohG7Sy68U9v4qz58"/>
+<span class="absolute top-1.5 left-1.5 bg-mint-pop px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Tencent</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Delta Force</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp15.000</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 11: Arena of Valor -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Fantasy paladin knight with glowing crystalline shield and golden wings. Saturated pop colors on pastel paper background, sharp 1px black contours and glossy toy finish." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmVibElRt5v25jSJA3pX71p_iPl5Hv2PQkjU92zgOppof0kpXISM482kmXD74mF5HKd90Vm50G9FcAx9hY4udY32FqEA8y5AeQdBV6zUyvfUbKhr61R_ha5Lth5oN8RrhBwp9LFUIDt80I9AMZWLUc6PCmRGraMHyridXoHhAT8GxZXaJYHn_uewWGUcEHJm5MtUB241Oc6OQH3ntunTaCBO-TA0wIktVFL7cKkd8"/>
+<span class="absolute top-1.5 left-1.5 bg-mint-pop px-2 py-0.5 rounded text-[10px] font-extrabold ink-border text-carbon">Garena</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">Arena of Valor</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp8.600</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Game 12: Call of Duty Mobile -->
+<div class="group bg-paper-white rounded-2xl ink-border p-3 flex flex-col justify-between hover:scale-[1.02] transition-transform">
+<div class="space-y-2">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden ink-border bg-soft-mist">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Tactical ghost skull balaclava soldier holding suppressed modern carbine with laser sight. High-contrast pop neo-brutalist poster styling with crisp black outline." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfFxNCG3R6GbcDOD57SkBdzEHn1PfKv-OsirKzWG4DDSILBO6P7P7s9cD74T64vFh99MklBhEhJZXOqVmOZxbK8hVjQ9Gepc6r8obE0c32r7Ra3HcF6NXSZKKjrZxQYLqkVhUlznl0Spo2LOMET_kgIaSZWmLekefJbi4821K45qDEPk8OGfnNUWHkigiwBYkBZjWo2d9en_H-H3xssAYLhkJjl4JddsMtZ_S_yLg"/>
+<span class="absolute top-1.5 left-1.5 bg-electric-blue text-paper-white px-2 py-0.5 rounded text-[10px] font-extrabold ink-border">Activision</span>
+</div>
+<div>
+<h3 class="font-label-pill text-label-pill font-bold text-carbon truncate">COD Mobile</h3>
+<p class="font-caption text-caption text-on-surface-variant">Mulai <span class="font-bold text-ember">Rp12.500</span></p>
+</div>
+</div>
+<button class="mt-3 w-full bg-carbon text-paper-white hover:bg-ember py-2 rounded-full ink-border font-label-pill text-[12px] flex items-center justify-center gap-1 transition-colors">
+<span>Top Up Now</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 6. POPULAR DIGITAL SUBSCRIPTIONS GRID -->
+<section class="w-full space-y-6" id="subscriptions-section">
+<!-- Section Header -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-carbon pb-4">
+<div>
+<div class="inline-flex items-center gap-2 bg-voltage-violet text-paper-white px-2.5 py-0.5 rounded ink-border font-label-pill text-[11px] mb-2">
+<span>PREMIUM VERIFIED ACCOUNTS</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Digital Subscriptions &amp; Premium</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Instant activation &amp; official family invites. Full replacement guarantee.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-paper-white px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+            ⚡ 100% Replacement Warranty
+          </span>
+</div>
+</div>
+<!-- 6 Subscription Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Sub 1: Netflix Premium -->
+<div class="bg-paper-white rounded-2xl ink-border p-6 flex flex-col justify-between space-y-4 hover:scale-[1.01] transition-transform relative">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-14 h-14 rounded-2xl bg-carbon text-ember ink-border flex items-center justify-center text-subheading font-black">
+                N
+              </div>
+<span class="bg-mint-pop px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+                4K UHD + HDR
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-subheading font-bold text-carbon">Netflix Premium</h3>
+<p class="font-body-md text-caption text-on-surface-variant">Private Profile, 1 Profile 1 User, Anti-Hold Guarantee.</p>
+</div>
+<!-- Duration Preview Badges -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">1 Bulan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">3 Bulan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Semi Private</span>
+</div>
+</div>
+<div class="pt-4 border-t border-carbon/20 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Mulai dari</span>
+<span class="font-subheading text-subheading font-black text-ember">Rp25.000</span>
+</div>
+<button class="bg-carbon text-paper-white hover:bg-ember px-5 py-2.5 rounded-full ink-border font-label-pill text-label-pill flex items-center gap-1.5 transition-colors">
+<span>Subscribe Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Sub 2: Spotify Premium -->
+<div class="bg-paper-white rounded-2xl ink-border p-6 flex flex-col justify-between space-y-4 hover:scale-[1.01] transition-transform relative">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-14 h-14 rounded-2xl bg-mint-pop text-carbon ink-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]" data-icon="graphic_eq">graphic_eq</span>
+</div>
+<span class="bg-lavender px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+                Individual / Family
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-subheading font-bold text-carbon">Spotify Premium</h3>
+<p class="font-body-md text-caption text-on-surface-variant">Bebas iklan, download offline, audio lossless high-fidelity.</p>
+</div>
+<!-- Duration Preview Badges -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">1 Bulan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">3 Bulan Plan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Akun Pribadi</span>
+</div>
+</div>
+<div class="pt-4 border-t border-carbon/20 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Mulai dari</span>
+<span class="font-subheading text-subheading font-black text-ember">Rp25.000</span>
+</div>
+<button class="bg-carbon text-paper-white hover:bg-ember px-5 py-2.5 rounded-full ink-border font-label-pill text-label-pill flex items-center gap-1.5 transition-colors">
+<span>Subscribe Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Sub 3: YouTube Premium -->
+<div class="bg-paper-white rounded-2xl ink-border p-6 flex flex-col justify-between space-y-4 hover:scale-[1.01] transition-transform relative">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-14 h-14 rounded-2xl bg-ember text-paper-white ink-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]" data-icon="smart_display">smart_display</span>
+</div>
+<span class="bg-sunburst px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+                No Ads + Music
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-subheading font-bold text-carbon">YouTube Premium</h3>
+<p class="font-body-md text-caption text-on-surface-variant">Include YT Music. Putar video di latar belakang tanpa jeda.</p>
+</div>
+<!-- Duration Preview Badges -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">1 Bulan Invite</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Individu</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Email Pribadi</span>
+</div>
+</div>
+<div class="pt-4 border-t border-carbon/20 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Mulai dari</span>
+<span class="font-subheading text-subheading font-black text-ember">Rp10.000</span>
+</div>
+<button class="bg-carbon text-paper-white hover:bg-ember px-5 py-2.5 rounded-full ink-border font-label-pill text-label-pill flex items-center gap-1.5 transition-colors">
+<span>Subscribe Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Sub 4: Canva Pro -->
+<div class="bg-paper-white rounded-2xl ink-border p-6 flex flex-col justify-between space-y-4 hover:scale-[1.01] transition-transform relative">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-14 h-14 rounded-2xl bg-electric-blue text-paper-white ink-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]" data-icon="design_services">design_services</span>
+</div>
+<span class="bg-mint-pop px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+                All Pro Assets
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-subheading font-bold text-carbon">Canva Pro</h3>
+<p class="font-body-md text-caption text-on-surface-variant">Akses 100M+ template, Magic Studio AI, dan Brand Kit lengkap.</p>
+</div>
+<!-- Duration Preview Badges -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">1 Bulan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">1 Tahun Lifetime</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Team Invite</span>
+</div>
+</div>
+<div class="pt-4 border-t border-carbon/20 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Mulai dari</span>
+<span class="font-subheading text-subheading font-black text-ember">Rp10.000</span>
+</div>
+<button class="bg-carbon text-paper-white hover:bg-ember px-5 py-2.5 rounded-full ink-border font-label-pill text-label-pill flex items-center gap-1.5 transition-colors">
+<span>Subscribe Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Sub 5: CapCut Pro -->
+<div class="bg-paper-white rounded-2xl ink-border p-6 flex flex-col justify-between space-y-4 hover:scale-[1.01] transition-transform relative">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-14 h-14 rounded-2xl bg-paper-white text-carbon ink-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]" data-icon="movie_filter">movie_filter</span>
+</div>
+<span class="bg-lavender px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+                Cloud 100GB
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-subheading font-bold text-carbon">CapCut Pro</h3>
+<p class="font-body-md text-caption text-on-surface-variant">Buka semua efek pro, AI script generator, auto caption &amp; template.</p>
+</div>
+<!-- Duration Preview Badges -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">7 Hari</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">1 Bulan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Multi-Device</span>
+</div>
+</div>
+<div class="pt-4 border-t border-carbon/20 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Mulai dari</span>
+<span class="font-subheading text-subheading font-black text-ember">Rp10.000</span>
+</div>
+<button class="bg-carbon text-paper-white hover:bg-ember px-5 py-2.5 rounded-full ink-border font-label-pill text-label-pill flex items-center gap-1.5 transition-colors">
+<span>Subscribe Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Sub 6: ChatGPT Plus -->
+<div class="bg-paper-white rounded-2xl ink-border p-6 flex flex-col justify-between space-y-4 hover:scale-[1.01] transition-transform relative">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-14 h-14 rounded-2xl bg-mint-pop text-carbon ink-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px]" data-icon="psychology">psychology</span>
+</div>
+<span class="bg-sunburst px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+                GPT-4o Access
+              </span>
+</div>
+<div>
+<h3 class="font-headline-md text-subheading font-bold text-carbon">ChatGPT Plus</h3>
+<p class="font-body-md text-caption text-on-surface-variant">DALL-E 3 image gen, advanced voice mode, &amp; canvas workspace.</p>
+</div>
+<!-- Duration Preview Badges -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Sharing Plan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Private Plan</span>
+<span class="bg-soft-mist px-2.5 py-1 rounded-lg ink-border font-label-pill text-[11px]">Full Garansi</span>
+</div>
+</div>
+<div class="pt-4 border-t border-carbon/20 flex items-center justify-between">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Mulai dari</span>
+<span class="font-subheading text-subheading font-black text-ember">Rp50.000</span>
+</div>
+<button class="bg-carbon text-paper-white hover:bg-ember px-5 py-2.5 rounded-full ink-border font-label-pill text-label-pill flex items-center gap-1.5 transition-colors">
+<span>Subscribe Now</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. GUEST INSTANT ORDER LOOKUP WIDGET (CEK PESANAN TANPA LOGIN) -->
+<section class="w-full bg-voltage-violet rounded-2xl ink-border p-6 md:p-10 text-paper-white relative overflow-hidden" id="order-tracker">
+<!-- Pop sticker background ornaments -->
+<div class="absolute -right-10 -bottom-10 opacity-20 pointer-events-none">
+<span class="material-symbols-outlined text-[240px]">local_shipping</span>
+</div>
+<div class="max-w-3xl space-y-6 relative z-10">
+<div class="inline-flex items-center gap-2 bg-paper-white text-carbon px-3 py-1 rounded-full ink-border font-label-pill text-caption">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock_open">lock_open</span>
+<span>100% GUEST PRIVACY — NO LOGIN REQUIRED</span>
+</div>
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-black text-paper-white tracking-tight">
+            Guest Instant Order Lookup
+          </h2>
+<p class="font-body-md text-body-lg text-paper-white/90 mt-1 max-w-xl">
+            Lacak status pengiriman otomatis voucher game atau aktivasi langganan secara realtime. Cukup masukkan nomor invoice dan nomor WhatsApp/Email kamu saat checkout.
+          </p>
+</div>
+<!-- Inline Direct Tracking Form -->
+<div class="bg-paper-white p-4 md:p-6 rounded-2xl ink-border text-carbon space-y-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Order Number Field -->
+<div class="space-y-1.5">
+<label class="block font-label-pill text-caption text-carbon uppercase font-bold">
+                Order Invoice Number
+              </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-3 text-carbon opacity-60 text-[20px]" data-icon="receipt_long">receipt_long</span>
+<input class="w-full bg-surface-container-lowest pl-11 pr-4 py-2.5 rounded-xl ink-border font-body-md text-carbon placeholder:text-concrete-gray focus:outline-none focus:border-2 focus:border-carbon transition-all uppercase" placeholder="Contoh: XYZ-882194" type="text" value="XYZ-882194"/>
+</div>
+</div>
+<!-- WhatsApp or Email Field -->
+<div class="space-y-1.5">
+<label class="block font-label-pill text-caption text-carbon uppercase font-bold">
+                WhatsApp or Checkout Email
+              </label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3.5 top-3 text-carbon opacity-60 text-[20px]" data-icon="contact_mail">contact_mail</span>
+<input class="w-full bg-surface-container-lowest pl-11 pr-4 py-2.5 rounded-xl ink-border font-body-md text-carbon placeholder:text-concrete-gray focus:outline-none focus:border-2 focus:border-carbon transition-all" placeholder="0812xxxx or name@domain.com" type="text" value="081298457721"/>
+</div>
+</div>
+</div>
+<!-- Action and Helper Status -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+<span class="font-caption text-caption text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-mint-pop" data-icon="check_circle">check_circle</span>
+<span>Terakhir dicek: 12 detik lalu dari Server AP-Southeast</span>
+</span>
+<button class="w-full sm:w-auto bg-ember text-paper-white px-8 py-3 rounded-full ink-border font-label-pill text-label-pill hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="bolt">bolt</span>
+<span>Periksa Pesanan Sekarang</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 8. WHY CHOOSE XYZPEDIA (Trust Badges & Value Matrix) -->
+<section class="w-full space-y-4">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 bg-mint-pop rounded-sm ink-border"></span>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Why Gamers Choose XYZPEDIA</h2>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Trust 1 -->
+<div class="bg-paper-white p-6 rounded-2xl ink-border flex flex-col justify-between space-y-3">
+<div class="w-12 h-12 rounded-xl bg-sunburst ink-border flex items-center justify-center text-carbon">
+<span class="material-symbols-outlined text-[28px]" data-icon="shield_person">shield_person</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">100% Guest Privacy</h3>
+<p class="font-body-md text-caption text-on-surface-variant mt-1">
+              Tanpa password, tanpa akun tersimpan. Data kamu langsung diproses ke API game tanpa jejak profil.
+            </p>
+</div>
+</div>
+<!-- Trust 2 -->
+<div class="bg-paper-white p-6 rounded-2xl ink-border flex flex-col justify-between space-y-3">
+<div class="w-12 h-12 rounded-xl bg-ember text-paper-white ink-border flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]" data-icon="speed">speed</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">0.4s Instant API Dispatch</h3>
+<p class="font-body-md text-caption text-on-surface-variant mt-1">
+              Terhubung langsung ke server resmi Moonton, Garena, Riot, dan Level Infinite 24 jam nonstop.
+            </p>
+</div>
+</div>
+<!-- Trust 3 -->
+<div class="bg-paper-white p-6 rounded-2xl ink-border flex flex-col justify-between space-y-3">
+<div class="w-12 h-12 rounded-xl bg-mint-pop ink-border flex items-center justify-center text-carbon">
+<span class="material-symbols-outlined text-[28px]" data-icon="price_check">price_check</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">Lowest Price Guarantee</h3>
+<p class="font-body-md text-caption text-on-surface-variant mt-1">
+              Harga grosir langsung dari distributor resmi. 0% biaya admin QRIS untuk semua nominal pembelian.
+            </p>
+</div>
+</div>
+<!-- Trust 4 -->
+<div class="bg-paper-white p-6 rounded-2xl ink-border flex flex-col justify-between space-y-3">
+<div class="w-12 h-12 rounded-xl bg-sky-wash ink-border flex items-center justify-center text-carbon">
+<span class="material-symbols-outlined text-[28px]" data-icon="support_agent">support_agent</span>
+</div>
+<div>
+<h3 class="font-subheading text-subheading font-bold text-carbon">24/7 Human WhatsApp</h3>
+<p class="font-body-md text-caption text-on-surface-variant mt-1">
+              Bukan bot lambat. Tim customer service siap bantu transaksi atau kendala top up kamu dalam hitungan detik.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- HOW IT WORKS STEPPER (Neo-Brutalist Physical Process) -->
+<section class="w-full bg-soft-mist rounded-2xl ink-border p-6 md:p-8 space-y-6" id="how-it-works-section">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-carbon/20 pb-4">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-carbon">Cara Order Kilat Tanpa Akun</h2>
+<p class="font-body-md text-caption text-on-surface-variant">Selesaikan pesananmu hanya dalam 4 langkah mudah</p>
+</div>
+<span class="bg-paper-white px-3 py-1 rounded-full ink-border font-label-pill text-caption text-carbon">
+          Rata-rata selesai: 45 detik
+        </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-paper-white p-5 rounded-xl ink-border space-y-2">
+<span class="bg-carbon text-paper-white font-black text-caption px-2 py-0.5 rounded ink-border">01</span>
+<h4 class="font-label-pill text-subheading font-bold text-carbon">Pilih Game &amp; Nominal</h4>
+<p class="font-body-md text-caption text-on-surface-variant">Pilih jumlah diamond, UC, token PLN, atau paket langganan yang kamu inginkan.</p>
+</div>
+<div class="bg-paper-white p-5 rounded-xl ink-border space-y-2">
+<span class="bg-carbon text-paper-white font-black text-caption px-2 py-0.5 rounded ink-border">02</span>
+<h4 class="font-label-pill text-subheading font-bold text-carbon">Masukkan Data Tujuan</h4>
+<p class="font-body-md text-caption text-on-surface-variant">Ketikkan User ID &amp; Zone ID game kamu, atau nomor WhatsApp untuk pengiriman invoice.</p>
+</div>
+<div class="bg-paper-white p-5 rounded-xl ink-border space-y-2">
+<span class="bg-carbon text-paper-white font-black text-caption px-2 py-0.5 rounded ink-border">03</span>
+<h4 class="font-label-pill text-subheading font-bold text-carbon">Bayar QRIS Instant</h4>
+<p class="font-body-md text-caption text-on-surface-variant">Scan QRIS dari GoPay, DANA, BCA, OVO, atau ShopeePay. Pembayaran otomatis terverifikasi.</p>
+</div>
+<div class="bg-paper-white p-5 rounded-xl ink-border space-y-2">
+<span class="bg-ember text-paper-white font-black text-caption px-2 py-0.5 rounded ink-border">04</span>
+<h4 class="font-label-pill text-subheading font-bold text-carbon">Diamond Langsung Masuk</h4>
+<p class="font-body-md text-caption text-on-surface-variant">Sistem otomatis mengirim item dalam 5 detik. Invoice digital langsung tampil di layar.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- 9. COMPREHENSIVE FOOTER (Exact Shared Component implementation) -->
+<footer class="w-full bg-carbon text-paper-white border-t border-carbon mt-12">
+<div class="w-full px-space-md md:px-margin-desktop py-space-xl max-w-[1440px] mx-auto flex flex-col gap-space-lg">
+<!-- Top Row: Brand & Payment Matrix -->
+<div class="flex flex-col lg:flex-row justify-between gap-8 pb-8 border-b border-paper-white/20">
+<div class="space-y-4 max-w-sm">
+<div class="flex items-center gap-1.5">
+<span class="inline-block bg-ember text-paper-white px-2 py-0.5 rounded-lg ink-border rotate-[-3deg] text-subheading font-black">X</span>
+<span class="font-display-hero-mobile text-headline-md font-black text-paper-white">XYZPEDIA</span>
+</div>
+<p class="font-body-md text-caption text-soft-mist">
+            Platform direct-fulfillment digital terkemuka untuk top up game, voucher, dan langganan premium instan. Transaksi guest langsung tanpa login akun.
+          </p>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-mint-pop animate-pulse"></span>
+<span class="font-caption text-caption text-mint-pop font-bold">All 14 Automated Dispatch Nodes Active</span>
+</div>
+</div>
+<!-- Payment Method Badges Row -->
+<div class="space-y-3">
+<span class="font-label-pill text-caption text-soft-mist block uppercase">Metode Pembayaran Resmi (0% Admin Fee)</span>
+<div class="flex flex-wrap gap-2">
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-black">QRIS Instant</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">BCA VA</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">Mandiri</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">BRI</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">BNI</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">DANA</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">GoPay</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">ShopeePay</div>
+<div class="bg-paper-white text-carbon px-3 py-1.5 rounded-lg ink-border font-label-pill text-[12px] font-bold">OVO</div>
+</div>
+</div>
+</div>
+<!-- Middle Row: Footer Navigation Links -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-6">
+<a class="text-sunburst font-label-pill hover:text-sunburst transition-colors duration-150" href="#">Payment Gateways</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">QRIS Instant</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Order Status Policy</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Privacy Policy</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-soft-mist font-caption hover:text-sunburst transition-colors duration-150 flex items-center gap-1" href="https://wa.me/6280000000000">
+<span class="material-symbols-outlined text-[14px]" data-icon="support">support</span>
+<span>Customer Care WhatsApp</span>
+</a>
+</div>
+</div>
+<!-- Bottom Row: Copyright Notice -->
+<div class="pt-4 border-t border-paper-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-soft-mist font-caption text-caption">
+<p>© 2025 XYZPEDIA. Guest-direct digital fulfillment. All rights reserved. Automated dispatch operational 24/7.</p>
+<div class="flex items-center gap-2">
+<span class="inline-block px-2 py-0.5 rounded bg-surface-container-high/20 text-[11px] font-mono">SECURE SSL 256-BIT</span>
+<span class="inline-block px-2 py-0.5 rounded bg-surface-container-high/20 text-[11px] font-mono">UPTIME 99.98%</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
