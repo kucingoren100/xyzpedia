@@ -689,6 +689,16 @@ Mohon untuk dikirimkan kredensial akun saya ya min. Terima kasih!`;
             </Link>
 
             <Link
+              href={`/struk/${order.invoiceNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-[#16a34a] text-white rounded-full ink-border font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000] hover:bg-green-700 transition-colors flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Struk PDF
+            </Link>
+
+            <Link
               href="/cek-transaksi"
               className="px-6 py-3 bg-white dark:bg-[#20202e] text-carbon dark:text-white rounded-full ink-border font-black text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >

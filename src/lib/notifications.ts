@@ -788,6 +788,7 @@ export function generateBuyerReceiptEmailHtml(data: {
   const store = data.storeName || "XYZPEDIA";
   const appUrl = (data.appUrl || process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
   const trackingUrl = `${appUrl}/transaksi/${data.invoice}`;
+  const strukUrl = `${appUrl}/struk/${data.invoice}`;
 
   return `<!DOCTYPE html>
 <html lang="id">
@@ -871,10 +872,13 @@ export function generateBuyerReceiptEmailHtml(data: {
         </tr>
       </table>
 
-      <!-- Track Order CTA Button -->
-      <div style="text-align: center; margin-bottom: 20px;">
-        <a href="${trackingUrl}" style="display: block; background-color: #ffd731; color: #000000; font-size: 13px; font-weight: 900; text-transform: uppercase; text-decoration: none; padding: 14px 20px; border-radius: 12px; border: 2px solid #000000; box-shadow: 0 4px 10px rgba(255, 215, 49, 0.3);">
-          Lihat Status Transaksi & Invoice
+      <!-- Track Order & PDF Struk CTA Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+        <a href="${strukUrl}" style="display: block; background-color: #10b981; color: #ffffff; font-size: 13px; font-weight: 900; text-transform: uppercase; text-align: center; text-decoration: none; padding: 14px 20px; border-radius: 12px; border: 2px solid #000000; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+          📄 Download / Cetak Struk PDF
+        </a>
+        <a href="${trackingUrl}" style="display: block; background-color: #ffd731; color: #000000; font-size: 13px; font-weight: 900; text-transform: uppercase; text-align: center; text-decoration: none; padding: 12px 20px; border-radius: 12px; border: 2px solid #000000;">
+          Lihat Status Transaksi & Invoice Web
         </a>
       </div>
 
