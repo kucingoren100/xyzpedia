@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { WaroengPayClient } from "@/lib/waroengpay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
+import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,13 @@ export async function POST(req: NextRequest) {
           });
 
           if (order) {
+            // 1. Trigger automated fulfillment to supplier API (Games / Pulsa / E-Wallet / Voucher)
+            try {
+              await fulfillOrderWithSupplier(order);
+            } catch (fulfillErr) {
+              console.error("[WaroengPay Webhook] Auto-fulfillment error:", fulfillErr);
+            }
+
             const target = order.targetUserId + (order.targetZoneId ? ` (${order.targetZoneId})` : "");
             const profit = Math.max(
               0,

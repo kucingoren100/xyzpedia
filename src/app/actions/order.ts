@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { WaroengPayClient } from "@/lib/waroengpay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
+import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 
 export interface CreateOrderInput {
   productSlug: string;
@@ -223,6 +224,13 @@ export async function checkPaymentStatus(invoiceNumber: string) {
 
           revalidatePath(`/transaksi/${invoiceNumber}`);
           revalidatePath("/cek-transaksi");
+
+          // Automatically trigger supplier injection
+          try {
+            await fulfillOrderWithSupplier(updated);
+          } catch (fulfillErr) {
+            console.error("[checkPaymentStatus] Auto-fulfillment error:", fulfillErr);
+          }
 
           // Dispatch async notification
           (async () => {
