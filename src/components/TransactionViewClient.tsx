@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { checkPaymentStatus, simulatePaymentSuccess } from "@/app/actions/order";
+import { checkPaymentStatus } from "@/app/actions/order";
 import {
   CheckCircle2,
   Clock,
@@ -52,7 +52,6 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
   const [copiedInvoice, setCopiedInvoice] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
-  const [isSimulating, setIsSimulating] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const getRemainingSeconds = () => {
     if (!initialOrder?.createdAt) return 15 * 60;
@@ -126,24 +125,6 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
     navigator.clipboard.writeText(text);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
-  };
-
-  const handleSimulatePayment = async () => {
-    setIsSimulating(true);
-    try {
-      const res = await simulatePaymentSuccess(order.invoiceNumber);
-      if (res.success && res.order) {
-        setOrder((prev) => ({
-          ...prev,
-          status: "SUCCESS",
-          paidAt: new Date(),
-        }));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSimulating(false);
-    }
   };
 
   const handleManualCheckStatus = async () => {
