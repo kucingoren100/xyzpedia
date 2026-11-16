@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import KatalogClient from "@/components/KatalogClient";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function KatalogPage() {
   const categories = await prisma.category.findMany({
     orderBy: { order: "asc" },

@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import HeroBanner from "@/components/HeroBanner";
 import StorefrontClient from "@/components/StorefrontClient";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HomePage() {
   const categories = await prisma.category.findMany({
     orderBy: { order: "asc" },

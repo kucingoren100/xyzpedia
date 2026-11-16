@@ -6,6 +6,9 @@ import ProductCustomizerClient from "@/components/ProductCustomizerClient";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
