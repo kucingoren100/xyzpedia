@@ -7,10 +7,13 @@ import BrandLogo from "./BrandLogo";
 export default function Footer() {
   const pathname = usePathname();
 
-  // Hide storefront footer on admin pages
+  // Hide storefront footer on admin pages & struk receipt page
   if (
     pathname?.startsWith("/admin") ||
-    (typeof window !== "undefined" && window.location.pathname.startsWith("/admin"))
+    pathname?.startsWith("/struk") ||
+    (typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/admin") ||
+        window.location.pathname.startsWith("/struk")))
   ) {
     return null;
   }

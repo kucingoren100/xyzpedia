@@ -7,10 +7,13 @@ import { MessageCircle, X, ExternalLink, ShieldCheck, Clock } from "lucide-react
 export default function FloatingWhatsApp() {
   const pathname = usePathname();
 
-  // Hide customer WhatsApp button on admin dashboard & admin pages
+  // Hide customer WhatsApp button on admin & struk receipt pages
   if (
     pathname?.startsWith("/admin") ||
-    (typeof window !== "undefined" && window.location.pathname.startsWith("/admin"))
+    pathname?.startsWith("/struk") ||
+    (typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/admin") ||
+        window.location.pathname.startsWith("/struk")))
   ) {
     return null;
   }

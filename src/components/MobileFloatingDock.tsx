@@ -19,10 +19,13 @@ import { ThemeToggle } from "./ThemeProvider";
 export default function MobileFloatingDock() {
   const pathname = usePathname();
 
-  // Hide mobile floating dock on admin pages
+  // Hide mobile floating dock on admin & struk receipt pages
   if (
     pathname?.startsWith("/admin") ||
-    (typeof window !== "undefined" && window.location.pathname.startsWith("/admin"))
+    pathname?.startsWith("/struk") ||
+    (typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/admin") ||
+        window.location.pathname.startsWith("/struk")))
   ) {
     return null;
   }

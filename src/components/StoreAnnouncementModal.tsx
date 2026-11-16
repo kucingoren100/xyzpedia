@@ -10,10 +10,13 @@ const STORAGE_KEY = "xyzpedia_announcement_seen";
 export default function StoreAnnouncementModal() {
   const pathname = usePathname();
 
-  // Hide customer announcement on admin dashboard & admin pages
+  // Hide customer announcement on admin & struk receipt pages
   if (
     pathname?.startsWith("/admin") ||
-    (typeof window !== "undefined" && window.location.pathname.startsWith("/admin"))
+    pathname?.startsWith("/struk") ||
+    (typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/admin") ||
+        window.location.pathname.startsWith("/struk")))
   ) {
     return null;
   }

@@ -208,13 +208,14 @@ export async function checkPaymentStatus(invoiceNumber: string) {
           status === "COMPLETED";
 
         if (isPaid) {
+          const hasExistingSn = order.notes?.includes("SN:");
           const updated = await prisma.order.update({
             where: { invoiceNumber },
             data: {
               status: "SUCCESS",
-              paidAt: new Date(),
-              fulfilledAt: new Date(),
-              notes: `Pembayaran terverifikasi via WaroengPay API Status: ${status}`,
+              paidAt: order.paidAt || new Date(),
+              fulfilledAt: order.fulfilledAt || new Date(),
+              ...(hasExistingSn ? {} : { notes: `Pembayaran terverifikasi via WaroengPay API Status: ${status}` }),
             },
             include: {
               product: true,

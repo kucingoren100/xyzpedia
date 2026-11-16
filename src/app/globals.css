@@ -365,3 +365,45 @@ html.dark .shadow-\[4px_4px_0px_0px_\#000000\],
 html.dark .shadow-\[2px_2px_0px_0px_\#000000\] {
   box-shadow: 2.5px 2.5px 0px 0px #000000;
 }
+
+/* ========================================================
+   PRINT / PDF STYLES
+   Clean single-page document printing without website chrome
+   ======================================================== */
+@media print {
+  header,
+  nav,
+  footer,
+  aside,
+  .no-print,
+  [data-floating],
+  #floating-whatsapp,
+  .mobile-bottom-nav,
+  #store-announcement-modal {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  @page {
+    margin: 8mm 10mm !important;
+    size: A4 portrait;
+  }
+}

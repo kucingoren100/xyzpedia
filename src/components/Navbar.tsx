@@ -129,10 +129,13 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Hide storefront navbar on admin dashboard & admin login
+  // Hide storefront navbar on admin dashboard & struk receipt page
   if (
     pathname?.startsWith("/admin") ||
-    (typeof window !== "undefined" && window.location.pathname.startsWith("/admin"))
+    pathname?.startsWith("/struk") ||
+    (typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/admin") ||
+        window.location.pathname.startsWith("/struk")))
   ) {
     return null;
   }

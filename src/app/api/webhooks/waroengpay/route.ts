@@ -64,13 +64,18 @@ export async function POST(req: NextRequest) {
       status === "PAYMENT.PAID";
 
     if (isPaid) {
+      const existingOrder = await prisma.order.findUnique({
+        where: { invoiceNumber },
+      });
+      const hasExistingSn = existingOrder?.notes?.includes("SN:");
+
       await prisma.order.updateMany({
         where: { invoiceNumber },
         data: {
           status: "SUCCESS",
-          paidAt: new Date(),
-          fulfilledAt: new Date(),
-          notes: `Settled via WaroengPay Webhook at ${new Date().toISOString()}`,
+          paidAt: existingOrder?.paidAt || new Date(),
+          fulfilledAt: existingOrder?.fulfilledAt || new Date(),
+          ...(hasExistingSn ? {} : { notes: `Settled via WaroengPay Webhook at ${new Date().toISOString()}` }),
         },
       });
       console.log(`[WaroengPay Webhook] Order ${invoiceNumber} marked as SUCCESS.`);
