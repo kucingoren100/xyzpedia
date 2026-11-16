@@ -38,11 +38,20 @@ async function main() {
   for (const group of groups) {
     console.log(`\n-> Memproses ${group.name} (${group.slug}) [${group.variants.length} denominasi]...`);
 
+    const isVoucher = group.slug === "google-play" || group.slug === "steam" || group.slug === "vidio-voucher";
+    const prodCategorySlug = isVoucher ? "voucher-digital" : category.slug;
+    const prodThumbnail = isVoucher
+      ? `/images/voucher/${group.slug === "vidio-voucher" ? "vidio" : group.slug}.webp`
+      : `/images/games/${group.slug}.webp`;
+
     // Upsert Product
     const product = await prisma.product.upsert({
       where: { slug: group.slug },
       update: {
-        name: group.name,
+        name: group.slug === "steam" ? "Steam Wallet Code IDR" : group.name,
+        categorySlug: prodCategorySlug,
+        thumbnailUrl: prodThumbnail,
+        bannerUrl: prodThumbnail,
         developer: group.publisher,
         tagline: group.tagline,
         description: group.description,
@@ -52,12 +61,14 @@ async function main() {
         serverInputPlaceholder: group.serverInputPlaceholder,
       },
       create: {
-        name: group.name,
+        name: group.slug === "steam" ? "Steam Wallet Code IDR" : group.name,
         slug: group.slug,
         tagline: group.tagline,
         description: group.description,
-        categorySlug: category.slug,
+        categorySlug: prodCategorySlug,
         developer: group.publisher,
+        thumbnailUrl: prodThumbnail,
+        bannerUrl: prodThumbnail,
         thumbnailUrl: group.thumbnailUrl,
         bannerUrl: group.bannerUrl,
         badgeText: "INSTAN",
