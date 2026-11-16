@@ -196,19 +196,12 @@ export async function POST(req: Request) {
           name: it.name?.trim() || `Denominasi ${orderIdx}`,
           price: itemPrice,
           originalPrice: itemOriginal,
+          supplierPrice: itemSupplier || 0,
           discountPercent: discount,
           stockStatus: "AVAILABLE",
           order: orderIdx++,
         },
       });
-
-      if (itemSupplier !== undefined) {
-        await prisma.$executeRawUnsafe(
-          `UPDATE "ProductItem" SET "supplierPrice" = ? WHERE "id" = ?`,
-          itemSupplier,
-          createdItem.id
-        );
-      }
     }
 
     return NextResponse.json({

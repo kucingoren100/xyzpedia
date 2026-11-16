@@ -15,36 +15,38 @@ export async function GET() {
     const ppobItems = ppobRes.status === "fulfilled" ? ppobRes.value : [];
     const catalogItems = catalogRes.status === "fulfilled" ? catalogRes.value : [];
 
-    // Inspect database categories and counts
-    const rawDbSummary = await prisma.$queryRawUnsafe<any[]>(
-      `SELECT p."categorySlug", c.name as categoryName, CAST(COUNT(pi.id) as integer) as itemCount, CAST(COUNT(DISTINCT p.id) as integer) as productCount 
-       FROM "Product" p 
-       JOIN "Category" c ON p."categorySlug" = c.slug 
-       LEFT JOIN "ProductItem" pi ON p.id = pi."productId" 
-       GROUP BY p."categorySlug"`
-    );
+    // Inspect database categories and counts using standard Prisma
+    const categories = await prisma.category.findMany({
+      include: {
+        products: {
+          include: {
+            items: true,
+          },
+        },
+      },
+    });
 
-    const dbSummary = rawDbSummary.map((r) => ({
-      categorySlug: r.categorySlug,
-      categoryName: r.categoryName,
-      itemCount: Number(r.itemCount),
-      productCount: Number(r.productCount),
+    const dbSummary = categories.map((c) => ({
+      categorySlug: c.slug,
+      categoryName: c.name,
+      itemCount: c.products.reduce((acc, p) => acc + p.items.length, 0),
+      productCount: c.products.length,
     }));
 
     // Find unsynced products
-    const rawUnsynced = await prisma.$queryRawUnsafe<any[]>(
-      `SELECT p.name as prodName, p."categorySlug", CAST(COUNT(pi.id) as integer) as count 
-       FROM "ProductItem" pi 
-       JOIN "Product" p ON pi."productId" = p.id 
-       WHERE pi."supplierPrice" IS NULL OR pi."supplierPrice" = 0 OR pi."supplierPrice" = ROUND(pi.price * 0.88) 
-       GROUP BY p.id`
-    );
-
-    const unsyncedProducts = rawUnsynced.map((u) => ({
-      prodName: u.prodName,
-      categorySlug: u.categorySlug,
-      count: Number(u.count),
-    }));
+    const allProducts = categories.flatMap((c) => c.products);
+    const unsyncedProducts = allProducts
+      .map((p) => {
+        const count = p.items.filter(
+          (pi) => !pi.supplierPrice || pi.supplierPrice === 0 || pi.supplierPrice === Math.round(pi.price * 0.88)
+        ).length;
+        return {
+          prodName: p.name,
+          categorySlug: p.categorySlug,
+          count,
+        };
+      })
+      .filter((u) => u.count > 0);
 
     return NextResponse.json({
       success: true,
@@ -270,26 +272,28 @@ export async function POST(req?: Request) {
             updateData.discountPercent = newDiscount;
           }
 
-          // Execute direct SQL update to bypass Prisma Client DMMF generation lock
-          await prisma.$executeRawUnsafe(
-            `UPDATE "ProductItem" SET "supplierPrice" = ?, "stockStatus" = ?, "price" = ?, "originalPrice" = ?, "discountPercent" = ?, "sku" = ? WHERE "id" = ?`,
-            realSupplierPrice,
-            updateData.stockStatus,
-            updateData.price,
-            updateData.originalPrice,
-            updateData.discountPercent,
-            updateData.sku,
-            item.id
-          );
+          // Update product item cleanly with Prisma
+          await prisma.productItem.update({
+            where: { id: item.id },
+            data: {
+              supplierPrice: realSupplierPrice,
+              stockStatus: updateData.stockStatus,
+              price: updateData.price,
+              originalPrice: updateData.originalPrice,
+              discountPercent: updateData.discountPercent,
+              sku: updateData.sku,
+            },
+          });
 
           // Synchronize Instan vs Manual label for Akun Premium based on Waroengkuy type
           if (cat === "akun-premium" && matchedApiItem.type) {
             const waroengLabel = matchedApiItem.type === "manual" ? "Manual" : "Instan";
-            await prisma.$executeRawUnsafe(
-              `UPDATE "Product" SET "developer" = ? WHERE "id" = ?`,
-              waroengLabel,
-              prod.id
-            );
+            await prisma.product.update({
+              where: { id: prod.id },
+              data: {
+                developer: waroengLabel,
+              },
+            });
           }
 
           totalUpdated++;

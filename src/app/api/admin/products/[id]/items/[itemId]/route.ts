@@ -37,29 +37,15 @@ export async function PATCH(
     if (body.bonusText !== undefined) updateData.bonusText = body.bonusText?.trim() || null;
     if (body.stockStatus !== undefined) updateData.stockStatus = body.stockStatus;
 
-    const supplierPriceToSet = updateData.supplierPrice;
-    delete updateData.supplierPrice;
-
     const updated = await prisma.productItem.update({
       where: { id: itemId },
       data: updateData,
     });
 
-    if (supplierPriceToSet !== undefined) {
-      await prisma.$executeRawUnsafe(
-        `UPDATE "ProductItem" SET "supplierPrice" = ? WHERE "id" = ?`,
-        supplierPriceToSet,
-        itemId
-      );
-    }
-
     return NextResponse.json({
       success: true,
       message: `Varian "${updated.name}" berhasil diupdate.`,
-      item: {
-        ...updated,
-        supplierPrice: supplierPriceToSet !== undefined ? supplierPriceToSet : (updated as any).supplierPrice,
-      },
+      item: updated,
     });
   } catch (error: any) {
     console.error("Update item error:", error);

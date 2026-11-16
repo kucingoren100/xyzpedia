@@ -42,19 +42,12 @@ export async function POST(
         name: name.trim(),
         price: numPrice,
         originalPrice: numOrig,
+        supplierPrice: numSupplier ?? 0,
         discountPercent: calcDiscount,
         bonusText: bonusText?.trim() || null,
         stockStatus: stockStatus || "AVAILABLE",
       },
     });
-
-    if (numSupplier !== undefined) {
-      await prisma.$executeRawUnsafe(
-        `UPDATE "ProductItem" SET "supplierPrice" = ? WHERE "id" = ?`,
-        numSupplier,
-        newItem.id
-      );
-    }
 
     return NextResponse.json({
       success: true,
