@@ -45,6 +45,20 @@ async function main() {
 
   for (const p of existingPremProducts) {
     if (!waroengkuySlugs.has(p.slug)) {
+      const isManual =
+        (p.developer || "").toLowerCase() === "manual" ||
+        p.items.some(
+          (it) =>
+            it.sku?.startsWith("CUSTOM-") ||
+            it.sku?.startsWith("SKU-") ||
+            it.sku?.startsWith("MANUAL-")
+        );
+
+      if (isManual) {
+        console.log(`- Mempertahankan produk manual admin: ${p.name} (${p.slug})...`);
+        continue;
+      }
+
       console.log(`- Menghapus produk lama non-Waroengkuy: ${p.name} (${p.slug})...`);
       if (p.orders.length > 0) {
         await prisma.order.deleteMany({ where: { productId: p.id } });
