@@ -74,15 +74,45 @@ export async function fulfillOrderWithSupplier(order: FulfillOrderInput) {
           `[Fulfillment] Injeksi berhasil dikirim! Ref: ${data.order.ref}, Status: ${data.order.status}`
         );
 
+        let finalStatus = data.order.status;
+        let sn = data.order.sn;
+
+        // Poll for SN if processing (up to 3 quick attempts of 2s each)
+        if (!sn && data.order.id) {
+          for (let attempt = 0; attempt < 3; attempt++) {
+            await new Promise((r) => setTimeout(r, 2000));
+            try {
+              const checkRes = await fetch(`${baseUrl}/ppob/orders/${data.order.id}`, {
+                headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
+              });
+              const checkData = await checkRes.json();
+              if (checkData.ok && checkData.order) {
+                finalStatus = checkData.order.status;
+                if (checkData.order.sn) {
+                  sn = checkData.order.sn;
+                  break;
+                }
+              }
+            } catch {
+              // Ignore polling check error
+            }
+          }
+        }
+
         await prisma.order.update({
           where: { id: order.id },
           data: {
             fulfilledAt: new Date(),
-            notes: `Injeksi PPOB: ${data.order.ref} | Status: ${data.order.status} | SN: ${data.order.sn || "Diproses"}`,
+            notes: `Injeksi PPOB: ${data.order.ref} | Status: ${finalStatus} | SN: ${sn || "Dalam antrean Moonton/Publisher"}`,
           },
         });
 
-        return { success: true, supplierRef: data.order.ref, status: data.order.status };
+        return {
+          success: true,
+          supplierRef: data.order.ref,
+          status: finalStatus,
+          sn: sn || "Sedang diproses langsung ke server akun in-game",
+        };
       } else {
         console.error(
           `[Fulfillment] Gagal kirim ke Waroengkuy:`,

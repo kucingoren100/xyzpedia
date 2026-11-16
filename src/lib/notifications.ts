@@ -725,6 +725,9 @@ export function formatSuccessOrderMessage(data: {
   paymentMethod?: string;
   deliveryType?: "INSTANT" | "MANUAL" | string;
   customerPhone?: string;
+  customerEmail?: string;
+  sn?: string;
+  supplierRef?: string;
   dateStr?: string;
   storeName?: string;
 }) {
@@ -746,20 +749,139 @@ export function formatSuccessOrderMessage(data: {
 
   const targetLine = data.targetUser ? `🎯 Target Akun: <code>${data.targetUser}</code>\n` : "";
   const phoneLine = data.customerPhone ? `📱 WhatsApp: <code>${data.customerPhone}</code>\n` : "";
+  const snLine = data.sn ? `🧾 <b>SN / Bukti Pengiriman:</b> <code>${data.sn}</code>\n` : "";
+  const refLine = data.supplierRef ? `🔗 Ref Supplier: <code>${data.supplierRef}</code>\n` : "";
   const isManual = data.deliveryType?.toUpperCase() === "MANUAL";
   const deliveryStatus = isManual
     ? "⚠️ Pengiriman: <b>MANUAL (Kirim kredensial via WA admin)</b>"
-    : "⚡ Pengiriman: <b>INSTAN (Kredensial otomatis aktif)</b>";
+    : "⚡ Pengiriman: <b>INSTAN (Sukses masuk ke akun tujuan)</b>";
 
-  return `✅ <b>Pembayaran berhasil · ${store}</b>
+  return `✅ <b>Pembayaran Berhasil & Terkirim · ${store}</b>
 <blockquote>${now}</blockquote>
 
 Invoice: <code>${data.invoice}</code>
 📦 Layanan: <b>${data.productName} — ${data.variantName}</b>
-${targetLine}${phoneLine}
-💰 Total lunas: <b>Rp${data.totalAmount.toLocaleString("id-ID")}</b>
-${data.profit ? `💼 Laba bersih: <b>+Rp${data.profit.toLocaleString("id-ID")}</b>\n` : ""}💳 Metode: <b>${data.paymentMethod || "QRIS Terverifikasi"}</b>
-${deliveryStatus}`;
+${targetLine}${phoneLine}💰 Total Lunas: <b>Rp${data.totalAmount.toLocaleString("id-ID")}</b>
+${data.profit ? `💼 Laba Bersih: <b>+Rp${data.profit.toLocaleString("id-ID")}</b>\n` : ""}💳 Metode: <b>${data.paymentMethod || "QRIS Terverifikasi"}</b>
+${deliveryStatus}
+${snLine}${refLine}`;
+}
+
+/**
+ * Generate official receipt email for the BUYER
+ */
+export function generateBuyerReceiptEmailHtml(data: {
+  invoice: string;
+  productName: string;
+  variantName: string;
+  targetUser?: string;
+  totalAmount: number;
+  paymentMethod?: string;
+  sn?: string;
+  supplierRef?: string;
+  storeName?: string;
+  appUrl?: string;
+}): string {
+  const store = data.storeName || "XYZPEDIA";
+  const appUrl = (data.appUrl || process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
+  const trackingUrl = `${appUrl}/transaksi/${data.invoice}`;
+
+  return `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bukti Pembayaran & Pengiriman Berhasil · ${data.invoice}</title>
+</head>
+<body style="margin: 0; padding: 24px 12px; background-color: #0b0b10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff;">
+  <div style="max-width: 580px; margin: 0 auto; background: #12121a; border-radius: 20px; overflow: hidden; border: 2px solid #2d2d3d; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+    <!-- Header -->
+    <div style="background-color: #ffd731; padding: 24px 24px 20px; text-align: center; border-bottom: 2px solid #000000;">
+      <div style="font-size: 13px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: #000000; margin-bottom: 4px;">
+        ${store.toUpperCase()} OFFICIAL RECEIPT
+      </div>
+      <div style="font-size: 22px; font-weight: 900; color: #000000;">
+        Pesanan Berhasil & Lunas 🎉
+      </div>
+      <p style="margin: 6px 0 0; font-size: 12px; font-weight: 700; color: #333333;">
+        Terima kasih atas pembelian Anda! Item telah dikirim ke akun Anda.
+      </p>
+    </div>
+
+    <div style="padding: 24px 22px;">
+      <!-- Invoice & Status Box -->
+      <div style="background: #1a1a24; border: 1.5px solid #2e2e42; border-radius: 14px; padding: 16px; margin-bottom: 20px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td>
+              <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Nomor Invoice</div>
+              <div style="font-size: 17px; font-weight: 900; color: #ffd731; font-family: monospace; margin-top: 2px;">
+                ${data.invoice}
+              </div>
+            </td>
+            <td style="text-align: right; vertical-align: middle;">
+              <span style="display: inline-block; background-color: #10b981; color: #ffffff; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 900; text-transform: uppercase;">
+                ✓ BERHASIL
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- SN / Proof Box -->
+      ${data.sn ? `
+      <div style="background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 14px; padding: 14px 16px; margin-bottom: 20px;">
+        <div style="font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+          🧾 Bukti Serial Number (SN) / Pengiriman Server:
+        </div>
+        <div style="font-size: 12px; font-weight: 700; color: #f8fafc; font-family: monospace; word-break: break-all; line-height: 1.5;">
+          ${data.sn}
+        </div>
+      </div>
+      ` : ""}
+
+      <!-- Order Details -->
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px;">
+        <tr style="border-bottom: 1px solid #232332;">
+          <td style="padding: 12px 0; color: #94a3b8; font-weight: 700;">Layanan & Varian:</td>
+          <td style="padding: 12px 0; font-weight: 900; text-align: right; color: #ffffff;">
+            ${data.productName} — ${data.variantName}
+          </td>
+        </tr>
+        ${data.targetUser ? `
+        <tr style="border-bottom: 1px solid #232332;">
+          <td style="padding: 12px 0; color: #94a3b8; font-weight: 700;">ID Akun / Server Tujuan:</td>
+          <td style="padding: 12px 0; font-weight: 900; text-align: right; font-family: monospace; color: #ffd731;">
+            ${data.targetUser}
+          </td>
+        </tr>` : ""}
+        <tr style="border-bottom: 1px solid #232332;">
+          <td style="padding: 12px 0; color: #94a3b8; font-weight: 700;">Metode Pembayaran:</td>
+          <td style="padding: 12px 0; font-weight: 900; text-align: right; color: #ffffff;">
+            ${data.paymentMethod || "QRIS Real-time"}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 14px 0; font-size: 15px; font-weight: 900; color: #ffffff;">Total Pembayaran:</td>
+          <td style="padding: 14px 0; font-size: 20px; font-weight: 900; text-align: right; color: #10b981;">
+            Rp ${data.totalAmount.toLocaleString("id-ID")}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Track Order CTA Button -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <a href="${trackingUrl}" style="display: block; background-color: #ffd731; color: #000000; font-size: 13px; font-weight: 900; text-transform: uppercase; text-decoration: none; padding: 14px 20px; border-radius: 12px; border: 2px solid #000000; box-shadow: 0 4px 10px rgba(255, 215, 49, 0.3);">
+          Lihat Status Transaksi & Invoice
+        </a>
+      </div>
+
+      <div style="text-align: center; font-size: 11px; color: #64748b; line-height: 1.6;">
+        Butuh bantuan terkait pesanan Anda? Hubungi Customer Support kami via WhatsApp: <strong style="color: #22c55e;">+62 896-4666-1132</strong>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
 }
 
 export function generateSuccessOrderEmailHtml(data: {
@@ -1145,30 +1267,61 @@ export async function dispatchNotificationEvent(
     }
 
     // 2. Email Dispatch
-    if (settings.email.enabled && eventConfig.email && settings.email.recipient) {
+    if (settings.email.enabled) {
       let emailSubject = "";
       let emailHtml = "";
 
-      if (eventType === "notifyNewOrder") {
-        emailSubject = `🔔 Pesanan Baru Masuk · ${payload.invoice} — XYZPEDIA`;
-        emailHtml = generateNewOrderEmailHtml(payload);
-      } else if (eventType === "notifySuccessOrder") {
-        emailSubject = `✅ Pembayaran Berhasil & Lunas · ${payload.invoice} — XYZPEDIA`;
-        emailHtml = generateSuccessOrderEmailHtml(payload);
-      } else if (eventType === "notifyFailedOrder") {
-        emailSubject = `🚨 Peringatan: Transaksi Gagal · ${payload.invoice} — XYZPEDIA`;
-        emailHtml = generateFailedOrderEmailHtml(payload);
-      } else if (eventType === "notifyDailyReport") {
-        emailSubject = `🌙 Rekap Penjualan Harian · ${payload.date} — XYZPEDIA`;
-        emailHtml = generateDailyReportEmailHtml(payload);
-      } else if (eventType === "notifyWeeklyReport") {
-        emailSubject = `📊 Laporan Mingguan · Rp ${payload.totalProfit?.toLocaleString("id-ID")} — XYZPEDIA`;
-        emailHtml = generateWeeklyReportEmailHtml(payload);
+      // 2a. Send to Admin recipient
+      if (eventConfig.email && settings.email.recipient) {
+        if (eventType === "notifyNewOrder") {
+          emailSubject = `🔔 Pesanan Baru Masuk · ${payload.invoice} — XYZPEDIA`;
+          emailHtml = generateNewOrderEmailHtml(payload);
+        } else if (eventType === "notifySuccessOrder") {
+          emailSubject = `✅ Pembayaran Berhasil & Lunas · ${payload.invoice} — XYZPEDIA`;
+          emailHtml = generateSuccessOrderEmailHtml(payload);
+        } else if (eventType === "notifyFailedOrder") {
+          emailSubject = `🚨 Peringatan: Transaksi Gagal · ${payload.invoice} — XYZPEDIA`;
+          emailHtml = generateFailedOrderEmailHtml(payload);
+        } else if (eventType === "notifyDailyReport") {
+          emailSubject = `🌙 Rekap Penjualan Harian · ${payload.date} — XYZPEDIA`;
+          emailHtml = generateDailyReportEmailHtml(payload);
+        } else if (eventType === "notifyWeeklyReport") {
+          emailSubject = `📊 Laporan Mingguan · Rp ${payload.totalProfit?.toLocaleString("id-ID")} — XYZPEDIA`;
+          emailHtml = generateWeeklyReportEmailHtml(payload);
+        }
+
+        if (emailSubject && emailHtml) {
+          const res = await sendEmailMessage(settings.email.recipient, emailSubject, emailHtml);
+          emailSent = res.success;
+        }
       }
 
-      if (emailSubject && emailHtml) {
-        const res = await sendEmailMessage(settings.email.recipient, emailSubject, emailHtml);
-        emailSent = res.success;
+      // 2b. Send official proof receipt to BUYER email
+      if (
+        eventType === "notifySuccessOrder" &&
+        payload.customerEmail &&
+        payload.customerEmail.includes("@")
+      ) {
+        try {
+          const buyerSubject = `🧾 Bukti Pembayaran & Pengiriman Berhasil · ${payload.invoice} — XYZPEDIA`;
+          const buyerHtml = generateBuyerReceiptEmailHtml({
+            invoice: payload.invoice,
+            productName: payload.productName,
+            variantName: payload.variantName,
+            targetUser: payload.targetUser,
+            totalAmount: payload.totalAmount,
+            paymentMethod: payload.paymentMethod,
+            sn: payload.sn,
+            supplierRef: payload.supplierRef,
+            storeName: payload.storeName,
+          });
+          const buyerRes = await sendEmailMessage(payload.customerEmail, buyerSubject, buyerHtml);
+          if (buyerRes.success) {
+            console.log(`[Notification] Bukti transaksi berhasil dikirim ke email pembeli: ${payload.customerEmail}`);
+          }
+        } catch (buyerMailErr) {
+          console.error(`[Notification] Gagal kirim email ke pembeli (${payload.customerEmail}):`, buyerMailErr);
+        }
       }
     }
 

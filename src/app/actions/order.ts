@@ -226,8 +226,9 @@ export async function checkPaymentStatus(invoiceNumber: string) {
           revalidatePath("/cek-transaksi");
 
           // Automatically trigger supplier injection
+          let fulfillResult: any = null;
           try {
-            await fulfillOrderWithSupplier(updated);
+            fulfillResult = await fulfillOrderWithSupplier(updated);
           } catch (fulfillErr) {
             console.error("[checkPaymentStatus] Auto-fulfillment error:", fulfillErr);
           }
@@ -249,6 +250,9 @@ export async function checkPaymentStatus(invoiceNumber: string) {
                 paymentMethod: updated.paymentMethod || "QRIS Real-time",
                 deliveryType: (updated.product as any).deliveryType || (updated.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
                 customerPhone: updated.customerPhone || undefined,
+                customerEmail: updated.customerEmail || undefined,
+                sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
+                supplierRef: fulfillResult?.supplierRef,
               });
             } catch (notifErr) {
               console.error("Gagal dispatch notifikasi checkStatus:", notifErr);

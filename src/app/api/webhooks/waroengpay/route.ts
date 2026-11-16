@@ -85,8 +85,9 @@ export async function POST(req: NextRequest) {
 
           if (order) {
             // 1. Trigger automated fulfillment to supplier API (Games / Pulsa / E-Wallet / Voucher)
+            let fulfillResult: any = null;
             try {
-              await fulfillOrderWithSupplier(order);
+              fulfillResult = await fulfillOrderWithSupplier(order);
             } catch (fulfillErr) {
               console.error("[WaroengPay Webhook] Auto-fulfillment error:", fulfillErr);
             }
@@ -106,6 +107,9 @@ export async function POST(req: NextRequest) {
               paymentMethod: order.paymentMethod || "QRIS Real-time",
               deliveryType: (order.product as any).deliveryType || (order.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
               customerPhone: order.customerPhone || undefined,
+              customerEmail: order.customerEmail || undefined,
+              sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
+              supplierRef: fulfillResult?.supplierRef,
             });
           }
         } catch (notifErr) {
