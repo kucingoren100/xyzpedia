@@ -46,7 +46,10 @@ export class WaroengPayClient {
     }
 
     const baseAmount = Math.round(input.grossAmount);
-    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
+    let appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
+    if (appUrl.includes("localhost") || appUrl.includes("127.0.0.1")) {
+      appUrl = "https://xyzpedia.vercel.app";
+    }
 
     const payload = {
       amount: baseAmount,

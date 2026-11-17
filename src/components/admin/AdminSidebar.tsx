@@ -13,6 +13,7 @@ import {
   Moon,
   Sun,
   X,
+  Activity,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/components/ThemeProvider";
@@ -60,6 +61,14 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       href: "/admin/produk",
       icon: Package,
       active: pathname.startsWith("/admin/produk"),
+    },
+    {
+      label: "Cek Stok Server",
+      href: "/admin/stok",
+      icon: Activity,
+      active: pathname.startsWith("/admin/stok"),
+      badge: "H2H",
+      badgeColor: "bg-[#38bdf8] text-black",
     },
     {
       label: "Pengaturan",

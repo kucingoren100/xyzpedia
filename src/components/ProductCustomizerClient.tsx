@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createOrder } from "@/app/actions/order";
 import {
@@ -56,6 +56,51 @@ export default function ProductCustomizerClient({ product }: { product: Product 
   // Form State
   const [targetUserId, setTargetUserId] = useState("");
   const [targetZoneId, setTargetZoneId] = useState("");
+  const [checkedNickname, setCheckedNickname] = useState<string | null>(null);
+  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+
+  // Live in-game nickname verification
+  useEffect(() => {
+    const isGame = product.categorySlug === "game-topup" || product.requiresServer;
+    if (!isGame) return;
+
+    if (!targetUserId || targetUserId.trim().length < 4) {
+      setCheckedNickname(null);
+      return;
+    }
+
+    if (product.requiresServer && (!targetZoneId || targetZoneId.trim().length < 3)) {
+      setCheckedNickname(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsCheckingNickname(true);
+      try {
+        const params = new URLSearchParams({
+          userId: targetUserId.trim(),
+          game: product.slug,
+        });
+        if (targetZoneId) {
+          params.set("zoneId", targetZoneId.trim());
+        }
+
+        const res = await fetch(`/api/check-nickname?${params.toString()}`);
+        const data = await res.json();
+        if (data && data.success && data.name) {
+          setCheckedNickname(data.name);
+        } else {
+          setCheckedNickname(null);
+        }
+      } catch {
+        setCheckedNickname(null);
+      } finally {
+        setIsCheckingNickname(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [targetUserId, targetZoneId, product.slug, product.categorySlug, product.requiresServer]);
 
   const displayPlaceholder = useMemo(() => {
     const label = product.targetInputLabel?.trim();
@@ -320,6 +365,38 @@ export default function ProductCustomizerClient({ product }: { product: Product 
                 </div>
               )}
             </div>
+
+            {/* Live Verified Game Nickname Indicator */}
+            {(isCheckingNickname || checkedNickname) && (
+              <div
+                className={`mt-3 p-3 rounded-xl ink-border flex items-center justify-between text-xs font-bold transition-all shadow-[2px_2px_0px_#000000] ${
+                  checkedNickname
+                    ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30 text-[#065f46] dark:text-[#6ee7b7]"
+                    : "bg-[#fffbeb] dark:bg-[#78350f]/20 text-[#92400e] dark:text-[#fde68a]"
+                }`}
+              >
+                <div className="flex items-center gap-2 flex-wrap">
+                  {isCheckingNickname ? (
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  )}
+                  <span>
+                    {isCheckingNickname ? "Sedang memeriksa akun in-game..." : "Nickname Akun:"}
+                  </span>
+                  {!isCheckingNickname && checkedNickname && (
+                    <span className="font-mono text-sm font-black text-emerald-700 dark:text-emerald-300 bg-white dark:bg-[#1a1a24] px-2 py-0.5 rounded ink-border">
+                      {checkedNickname}
+                    </span>
+                  )}
+                </div>
+                {!isCheckingNickname && checkedNickname && (
+                  <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shrink-0">
+                    ✓ Valid
+                  </span>
+                )}
+              </div>
+            )}
 
             {product.instructions && (
               <div className="mt-4 p-3 product-instruction-box bg-[#dceeff] dark:bg-[#152338] ink-border dark:border-[#2d3f5e] rounded-xl flex items-center gap-2 text-xs font-semibold text-[#003a6b] dark:text-[#bae6fd]">
@@ -669,6 +746,14 @@ export default function ProductCustomizerClient({ product }: { product: Product 
                   {targetUserId || "Belum diisi"} {targetZoneId ? `(${targetZoneId})` : ""}
                 </span>
               </div>
+              {checkedNickname && (
+                <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-gray-500 dark:text-gray-400">Nickname:</span>
+                  <span className="font-black text-emerald-600 dark:text-emerald-400 font-mono">
+                    {checkedNickname}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800">
                 <span className="text-gray-500 dark:text-gray-400">Metode:</span>
                 <span className="font-black text-[#5c4ade] dark:text-[#a78bfa]">QRIS Dinamis</span>

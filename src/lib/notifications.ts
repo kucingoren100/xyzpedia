@@ -86,12 +86,27 @@ export interface SendTelegramOptions {
 }
 
 /**
- * Telegram Bot API strictly prohibits localhost or loopback IP addresses in inline keyboard URLs.
- * If url contains localhost or 127.0.0.1, we automatically map it to https://xyzpedia.id.
+ * Returns a guaranteed public domain URL (never localhost in notification emails / telegram)
  */
-export function sanitizeTelegramButtonUrl(url?: string): string {
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  if (!url || typeof url !== "string") return `${appUrl}/admin`;
+export function getPublicAppUrl(): string {
+  const envUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+    process.env.VERCEL_URL;
+  if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
+    return "https://xyzpedia.vercel.app";
+  }
+  const clean = envUrl.startsWith("http") ? envUrl : `https://${envUrl}`;
+  return clean.replace(/\/$/, "");
+}
+
+/**
+ * Universal sanitizer for outgoing links in Emails and Telegram.
+ * If url contains localhost or 127.0.0.1, it safely converts it to the live public domain.
+ */
+export function sanitizePublicUrl(url?: string): string {
+  const base = getPublicAppUrl();
+  if (!url || typeof url !== "string") return `${base}/admin`;
   const trimmed = url.trim();
   if (
     trimmed.startsWith("http://localhost") ||
@@ -101,12 +116,16 @@ export function sanitizeTelegramButtonUrl(url?: string): string {
   ) {
     try {
       const parsed = new URL(trimmed);
-      return `${appUrl}${parsed.pathname}${parsed.search}`;
+      return `${base}${parsed.pathname}${parsed.search}`;
     } catch {
-      return `${appUrl}/admin`;
+      return `${base}/admin`;
     }
   }
   return trimmed;
+}
+
+export function sanitizeTelegramButtonUrl(url?: string): string {
+  return sanitizePublicUrl(url);
 }
 
 /**
@@ -270,8 +289,8 @@ export function generateWeeklyReportEmailHtml(stats: WeeklyReportStats): string 
       hour: "2-digit",
       minute: "2-digit",
     }) + " WIB";
-  const appUrlW = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  const adminUrl = stats.adminUrl || `${appUrlW}/admin`;
+  const appUrlW = getPublicAppUrl();
+  const adminUrl = sanitizePublicUrl(stats.adminUrl || `${appUrlW}/admin`);
 
   return `<!DOCTYPE html>
 <html lang="id">
@@ -649,8 +668,8 @@ export function generateNewOrderEmailHtml(data: {
   adminUrl?: string;
 }): string {
   const store = data.storeName || "XYZPEDIA";
-  const appUrl1 = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  const adminUrl = data.adminUrl || `${appUrl1}/admin/transaksi`;
+  const appUrl1 = getPublicAppUrl();
+  const adminUrl = sanitizePublicUrl(data.adminUrl || `${appUrl1}/admin/transaksi`);
   const contact = [data.customerPhone, data.customerEmail].filter(Boolean).join(" • ") || "-";
   return `<!DOCTYPE html>
 <html lang="id">
@@ -786,9 +805,9 @@ export function generateBuyerReceiptEmailHtml(data: {
   appUrl?: string;
 }): string {
   const store = data.storeName || "XYZPEDIA";
-  const appUrl = (data.appUrl || process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  const trackingUrl = `${appUrl}/transaksi/${data.invoice}`;
-  const strukUrl = `${appUrl}/struk/${data.invoice}`;
+  const appUrl = getPublicAppUrl();
+  const trackingUrl = sanitizePublicUrl(data.appUrl ? `${data.appUrl}/transaksi/${data.invoice}` : `${appUrl}/transaksi/${data.invoice}`);
+  const strukUrl = sanitizePublicUrl(data.appUrl ? `${data.appUrl}/struk/${data.invoice}` : `${appUrl}/struk/${data.invoice}`);
 
   return `<!DOCTYPE html>
 <html lang="id">
@@ -905,8 +924,8 @@ export function generateSuccessOrderEmailHtml(data: {
   adminUrl?: string;
 }): string {
   const store = data.storeName || "XYZPEDIA";
-  const appUrl2 = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  const adminUrl = data.adminUrl || `${appUrl2}/admin/transaksi`;
+  const appUrl2 = getPublicAppUrl();
+  const adminUrl = sanitizePublicUrl(data.adminUrl || `${appUrl2}/admin/transaksi`);
   const isManual = data.deliveryType?.toUpperCase() === "MANUAL";
   return `<!DOCTYPE html>
 <html lang="id">
@@ -1028,8 +1047,8 @@ export function generateFailedOrderEmailHtml(data: {
   adminUrl?: string;
 }): string {
   const store = data.storeName || "XYZPEDIA";
-  const appUrl3 = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  const adminUrl = data.adminUrl || `${appUrl3}/admin/transaksi`;
+  const appUrl3 = getPublicAppUrl();
+  const adminUrl = sanitizePublicUrl(data.adminUrl || `${appUrl3}/admin/transaksi`);
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -1135,8 +1154,8 @@ export function generateDailyReportEmailHtml(stats: {
   adminUrl?: string;
 }): string {
   const store = stats.storeName || "XYZPEDIA";
-  const appUrl4 = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
-  const adminUrl = stats.adminUrl || `${appUrl4}/admin`;
+  const appUrl4 = getPublicAppUrl();
+  const adminUrl = sanitizePublicUrl(stats.adminUrl || `${appUrl4}/admin`);
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -1211,37 +1230,31 @@ export async function dispatchNotificationEvent(
       let tgText = "";
       let photoBuffer: Buffer | undefined;
       let button: { text: string; url: string } | undefined;
-      const appUrlTg = (process.env.NEXT_PUBLIC_APP_URL || "https://xyzpedia.vercel.app").replace(/\/$/, "");
+      const appUrlTg = getPublicAppUrl();
 
       if (eventType === "notifyNewOrder") {
         tgText = formatNewOrderMessage(payload);
         button = {
           text: "🧾 Cek Pesanan Masuk",
-          url: payload.invoice
-            ? `${appUrlTg}/invoice/${payload.invoice}`
-            : `${appUrlTg}/admin`,
+          url: sanitizePublicUrl(payload.invoice ? `${appUrlTg}/transaksi/${payload.invoice}` : `${appUrlTg}/admin`),
         };
       } else if (eventType === "notifySuccessOrder") {
         tgText = formatSuccessOrderMessage(payload);
         button = {
           text: "⚡ Kelola Transaksi",
-          url: payload.invoice
-            ? `${appUrlTg}/invoice/${payload.invoice}`
-            : `${appUrlTg}/admin`,
+          url: sanitizePublicUrl(payload.invoice ? `${appUrlTg}/transaksi/${payload.invoice}` : `${appUrlTg}/admin`),
         };
       } else if (eventType === "notifyFailedOrder") {
         tgText = formatFailedOrderMessage(payload);
         button = {
           text: "🚨 Periksa Kendala",
-          url: payload.invoice
-            ? `${appUrlTg}/invoice/${payload.invoice}`
-            : `${appUrlTg}/admin`,
+          url: sanitizePublicUrl(payload.invoice ? `${appUrlTg}/transaksi/${payload.invoice}` : `${appUrlTg}/admin`),
         };
       } else if (eventType === "notifyDailyReport") {
         tgText = formatDailyReportMessage(payload);
         button = {
           text: "📈 Buka Dashboard",
-          url: `${appUrlTg}/admin`,
+          url: sanitizePublicUrl(`${appUrlTg}/admin`),
         };
       } else if (eventType === "notifyWeeklyReport") {
         tgText = formatWeeklyReportMessage(payload);
@@ -1262,7 +1275,7 @@ export async function dispatchNotificationEvent(
         }
         button = {
           text: "📊 Buka laporan lengkap",
-          url: payload.adminUrl || `${appUrlTg}/admin`,
+          url: sanitizePublicUrl(payload.adminUrl || `${appUrlTg}/admin`),
         };
       }
 
