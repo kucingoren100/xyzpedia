@@ -59,6 +59,9 @@ interface Product {
   targetInputPlaceholder: string;
   serverInputPlaceholder: string | null;
   instructions: string | null;
+  importantNotice?: string | null;
+  warrantyTerms?: string | null;
+  additionalNotes?: string | null;
   isPopular: boolean;
   isActive: boolean;
   category: {
@@ -89,7 +92,7 @@ export default function AdminProdukClient({
 
   // Manage Product Modal State
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-  const [modalTab, setModalTab] = useState<"variants" | "image_info">("variants");
+  const [modalTab, setModalTab] = useState<"variants" | "image_info" | "notices">("variants");
   const [modalLoading, setModalLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
   const [syncingApi, setSyncingApi] = useState(false);
@@ -110,6 +113,9 @@ export default function AdminProdukClient({
   const [editProdDescription, setEditProdDescription] = useState("");
   const [editProdTargetLabel, setEditProdTargetLabel] = useState("");
   const [editProdInstructions, setEditProdInstructions] = useState("");
+  const [editProdImportantNotice, setEditProdImportantNotice] = useState("");
+  const [editProdWarrantyTerms, setEditProdWarrantyTerms] = useState("");
+  const [editProdAdditionalNotes, setEditProdAdditionalNotes] = useState("");
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -315,7 +321,10 @@ export default function AdminProdukClient({
   };
 
   // Open Manage Modal
-  const openManageModal = (prod: Product, initialTab: "variants" | "image_info" = "variants") => {
+  const openManageModal = (
+    prod: Product,
+    initialTab: "variants" | "image_info" | "notices" = "variants"
+  ) => {
     setActiveProduct(prod);
     setModalTab(initialTab);
     setActionMsg("");
@@ -328,6 +337,9 @@ export default function AdminProdukClient({
     setEditProdDescription(prod.description || "");
     setEditProdTargetLabel(prod.targetInputLabel || "User ID");
     setEditProdInstructions(prod.instructions || "");
+    setEditProdImportantNotice(prod.importantNotice || "");
+    setEditProdWarrantyTerms(prod.warrantyTerms || "");
+    setEditProdAdditionalNotes(prod.additionalNotes || "");
   };
 
   // Start inline editing an item
@@ -405,6 +417,9 @@ export default function AdminProdukClient({
           targetInputLabel: cleanLabel,
           targetInputPlaceholder: autoPlaceholder,
           instructions: editProdInstructions.trim(),
+          importantNotice: editProdImportantNotice.trim() || null,
+          warrantyTerms: editProdWarrantyTerms.trim() || null,
+          additionalNotes: editProdAdditionalNotes.trim() || null,
         }),
       });
       const data = await res.json();
@@ -420,6 +435,9 @@ export default function AdminProdukClient({
           targetInputLabel: cleanLabel,
           targetInputPlaceholder: autoPlaceholder,
           instructions: editProdInstructions.trim(),
+          importantNotice: editProdImportantNotice.trim() || null,
+          warrantyTerms: editProdWarrantyTerms.trim() || null,
+          additionalNotes: editProdAdditionalNotes.trim() || null,
         };
         setActiveProduct(updatedProduct);
         setProducts((prev) =>
@@ -945,6 +963,19 @@ export default function AdminProdukClient({
               >
                 <ImageIcon className="w-3.5 h-3.5" />
                 <span>Kelola Gambar & Detail Produk</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setModalTab("notices")}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider ink-border flex items-center gap-2 transition-all cursor-pointer ${
+                  modalTab === "notices"
+                    ? "bg-black text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_#000000]"
+                    : "bg-[#f3f4f6] dark:bg-[#20202e] text-gray-600 dark:text-gray-300 hover:bg-gray-200"
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Deskripsi & Ketentuan Produk</span>
               </button>
             </div>
 
@@ -1581,6 +1612,95 @@ export default function AdminProdukClient({
                     className="px-6 py-2.5 rounded-xl bg-[#55db9c] hover:bg-[#43cd8c] text-black font-black text-xs uppercase tracking-wider ink-border shadow-[2px_2px_0px_#000000] cursor-pointer"
                   >
                     {modalLoading ? "Menyimpan..." : "Simpan Gambar & Detail Produk"}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* TAB 3: KETENTUAN, GARANSI & CATATAN PRODUK */}
+            {modalTab === "notices" && (
+              <form onSubmit={handleSaveProductInfo} className="space-y-5">
+                <div className="p-4 bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-2xl space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-[#ffd731]" />
+                      <h4 className="text-xs font-black uppercase text-carbon dark:text-white">
+                        Kelola Deskripsi, Aturan & Ketentuan Pembeli
+                      </h4>
+                    </div>
+                    <span className="text-[10px] font-bold text-gray-500">
+                      Tampil di halaman produk
+                    </span>
+                  </div>
+
+                  {/* 1. Penting Sebelum Beli */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-blue-500" />
+                        <span>Penting Sebelum Beli (1 baris per poin):</span>
+                      </label>
+                      <span className="text-[9.5px] text-gray-400 font-semibold">
+                        Gunakan awalan <strong>✕</strong> atau <strong>-</strong> untuk aturan larangan
+                      </span>
+                    </div>
+                    <textarea
+                      rows={5}
+                      value={editProdImportantNotice}
+                      onChange={(e) => setEditProdImportantNotice(e.target.value)}
+                      placeholder={"Contoh:\n✓ Akun sharing – dipakai bersama\n✕ Hanya pakai profil yang ditentukan\n✕ Jangan ubah password, email, atau profil\n✓ Bisa di HP, laptop, tablet & smart TV\n✓ Dikirim otomatis setelah bayar"}
+                      className="w-full px-3 py-2 bg-white dark:bg-[#181824] rounded-xl ink-border text-xs font-mono font-bold text-carbon dark:text-white focus:outline-none"
+                    />
+                    <p className="text-[10px] text-gray-500">
+                      Kosongkan untuk menggunakan template otomatis kategori {activeProduct.category.name}.
+                    </p>
+                  </div>
+
+                  {/* 2. Syarat & Ketentuan (Garansi) */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#ffd731]" />
+                      <span>Syarat & Ketentuan / Garansi (1 baris per poin):</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={editProdWarrantyTerms}
+                      onChange={(e) => setEditProdWarrantyTerms(e.target.value)}
+                      placeholder={"Contoh:\n• Mengikuti keterangan tiap varian\n• Klaim lewat halaman pesanan dengan kode transaksi"}
+                      className="w-full px-3 py-2 bg-white dark:bg-[#181824] rounded-xl ink-border text-xs font-mono font-bold text-carbon dark:text-white focus:outline-none"
+                    />
+                  </div>
+
+                  {/* 3. Catatan */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Catatan Pembeli (1 baris per poin):</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={editProdAdditionalNotes}
+                      onChange={(e) => setEditProdAdditionalNotes(e.target.value)}
+                      placeholder={"Contoh:\n• Pesanan diproses otomatis 24 jam\n• Kendala? Hubungi admin dengan menyertakan kode transaksi"}
+                      className="w-full px-3 py-2 bg-white dark:bg-[#181824] rounded-xl ink-border text-xs font-mono font-bold text-carbon dark:text-white focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveProduct(null)}
+                    className="px-4 py-2.5 rounded-xl bg-gray-200 dark:bg-[#20202e] text-gray-700 dark:text-gray-300 font-black text-xs uppercase ink-border"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={modalLoading}
+                    className="px-6 py-2.5 rounded-xl bg-[#ffd731] hover:bg-[#ebc425] text-black font-black text-xs uppercase tracking-wider ink-border shadow-[2px_2px_0px_#000000] cursor-pointer"
+                  >
+                    {modalLoading ? "Menyimpan..." : "Simpan Ketentuan Produk"}
                   </button>
                 </div>
               </form>

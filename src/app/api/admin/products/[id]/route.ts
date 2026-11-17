@@ -32,6 +32,9 @@ export async function PATCH(
       "targetInputPlaceholder",
       "serverInputPlaceholder",
       "instructions",
+      "importantNotice",
+      "warrantyTerms",
+      "additionalNotes",
     ];
 
     const dataToUpdate: any = {};

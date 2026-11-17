@@ -19,6 +19,9 @@ interface ProductNoticeBoxProps {
     categorySlug?: string | null;
     developer?: string | null;
     requiresServer?: boolean;
+    importantNotice?: string | null;
+    warrantyTerms?: string | null;
+    additionalNotes?: string | null;
   };
   selectedItemName?: string;
 }
@@ -412,6 +415,43 @@ export default function ProductNoticeBox({
         "Kendala? Hubungi admin dengan menyertakan kode transaksi.",
       ],
     };
+  }
+
+  // Apply manual customizations from Admin Dashboard if provided
+  if (product.importantNotice && product.importantNotice.trim()) {
+    const lines = product.importantNotice.split("\n").map((l) => l.trim()).filter(Boolean);
+    if (lines.length > 0) {
+      content.importantItems = lines.map((line) => {
+        const isNegative =
+          line.startsWith("✕") ||
+          line.startsWith("x ") ||
+          line.startsWith("X ") ||
+          line.startsWith("- ") ||
+          line.startsWith("!");
+        const cleanText = line.replace(/^[✓✕xX\-!+•]\s*/, "");
+        return { text: cleanText, isPositive: !isNegative };
+      });
+    }
+  }
+
+  if (product.warrantyTerms && product.warrantyTerms.trim()) {
+    const lines = product.warrantyTerms
+      .split("\n")
+      .map((l) => l.replace(/^[•\-*]\s*/, "").trim())
+      .filter(Boolean);
+    if (lines.length > 0) {
+      content.warrantyPoints = lines;
+    }
+  }
+
+  if (product.additionalNotes && product.additionalNotes.trim()) {
+    const lines = product.additionalNotes
+      .split("\n")
+      .map((l) => l.replace(/^[•\-*]\s*/, "").trim())
+      .filter(Boolean);
+    if (lines.length > 0) {
+      content.notesPoints = lines;
+    }
   }
 
   return (

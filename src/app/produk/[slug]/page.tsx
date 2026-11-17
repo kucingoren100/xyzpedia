@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cache } from "react";
 import type { Metadata } from "next";
 import ProductCustomizerClient from "@/components/ProductCustomizerClient";
+import RelatedProductsSection from "@/components/RelatedProductsSection";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 
@@ -173,6 +174,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       {/* Main Checkout Experience */}
       <ProductCustomizerClient product={product} />
+
+      {/* Produk Terkait / Produk Lainnya di XYZPEDIA */}
+      <RelatedProductsSection
+        currentSlug={product.slug}
+        categorySlug={product.categorySlug}
+      />
     </div>
   );
 }

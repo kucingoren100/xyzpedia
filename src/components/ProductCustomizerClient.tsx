@@ -50,6 +50,9 @@ interface Product {
   targetInputPlaceholder: string;
   serverInputPlaceholder: string | null;
   instructions: string | null;
+  importantNotice?: string | null;
+  warrantyTerms?: string | null;
+  additionalNotes?: string | null;
   items: ProductItem[];
 }
 

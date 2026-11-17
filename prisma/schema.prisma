@@ -37,6 +37,9 @@ model Product {
   targetInputPlaceholder String        @default("Masukkan User ID akun")
   serverInputPlaceholder String?       @default("Zone / Server ID")
   instructions           String?
+  importantNotice        String?
+  warrantyTerms          String?
+  additionalNotes        String?
   isPopular              Boolean       @default(false)
   isActive               Boolean       @default(true)
   items                  ProductItem[]
