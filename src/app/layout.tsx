@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   description: "Marketplace top-up game injeksi instan, voucher digital, dan akun premium resmi.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,6 +44,10 @@ export default function RootLayout({
       className={`${bricolage.variable} ${hanken.variable} min-h-screen antialiased`}
     >
       <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

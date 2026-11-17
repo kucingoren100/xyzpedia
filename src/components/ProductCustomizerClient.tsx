@@ -12,6 +12,8 @@ import {
   Phone,
   ShieldCheck,
   CheckCircle2,
+  XCircle,
+  AlertTriangle,
   Clock,
   Sparkles,
   ArrowRight,
@@ -57,47 +59,69 @@ export default function ProductCustomizerClient({ product }: { product: Product 
   const [targetUserId, setTargetUserId] = useState("");
   const [targetZoneId, setTargetZoneId] = useState("");
   const [checkedNickname, setCheckedNickname] = useState<string | null>(null);
-  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+  const [nicknameStatus, setNicknameStatus] = useState<"IDLE" | "CHECKING" | "VALID" | "INVALID" | "UNVERIFIED">("IDLE");
+  const [nicknameMessage, setNicknameMessage] = useState<string>("");
 
-  // Live in-game nickname verification
+  // Live in-game nickname verification across all game topup products
   useEffect(() => {
     const isGame = product.categorySlug === "game-topup" || product.requiresServer;
     if (!isGame) return;
 
-    if (!targetUserId || targetUserId.trim().length < 4) {
+    const trimmedUser = targetUserId.trim();
+    const trimmedZone = targetZoneId.trim();
+
+    if (!trimmedUser || trimmedUser.length < 3) {
       setCheckedNickname(null);
+      setNicknameStatus("IDLE");
+      setNicknameMessage("");
       return;
     }
 
-    if (product.requiresServer && (!targetZoneId || targetZoneId.trim().length < 3)) {
+    if (product.requiresServer && (!trimmedZone || trimmedZone.length < 2)) {
       setCheckedNickname(null);
+      setNicknameStatus("IDLE");
+      setNicknameMessage("");
       return;
     }
+
+    setNicknameStatus("CHECKING");
 
     const timer = setTimeout(async () => {
-      setIsCheckingNickname(true);
       try {
         const params = new URLSearchParams({
-          userId: targetUserId.trim(),
+          userId: trimmedUser,
           game: product.slug,
         });
-        if (targetZoneId) {
-          params.set("zoneId", targetZoneId.trim());
+        if (trimmedZone) {
+          params.set("zoneId", trimmedZone);
         }
 
         const res = await fetch(`/api/check-nickname?${params.toString()}`);
-        const data = await res.json();
-        if (data && data.success && data.name) {
+        const data = await res.json().catch(() => null);
+
+        if (data && data.success && data.name && data.name !== trimmedUser) {
           setCheckedNickname(data.name);
+          setNicknameStatus("VALID");
+          setNicknameMessage("Akun terverifikasi resmi in-game.");
+        } else if (data && data.isFound === false) {
+          setCheckedNickname(null);
+          setNicknameStatus("INVALID");
+          setNicknameMessage(data.message || "Akun tidak ditemukan. Mohon cek kembali User ID & Server.");
+        } else if (data && data.success) {
+          setCheckedNickname(null);
+          setNicknameStatus("UNVERIFIED");
+          setNicknameMessage(data.message || "Format ID valid & tersimpan.");
         } else {
           setCheckedNickname(null);
+          setNicknameStatus("INVALID");
+          setNicknameMessage("Akun tidak ditemukan. Mohon cek kembali User ID & Server.");
         }
       } catch {
         setCheckedNickname(null);
-      } finally {
-        setIsCheckingNickname(false);
+        setNicknameStatus("UNVERIFIED");
+        setNicknameMessage("Server verifikasi sedang sibuk. Data akun Anda tetap tersimpan.");
       }
-    }, 500);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [targetUserId, targetZoneId, product.slug, product.categorySlug, product.requiresServer]);
@@ -252,6 +276,13 @@ export default function ProductCustomizerClient({ product }: { product: Product 
       return;
     }
 
+    if (nicknameStatus === "INVALID") {
+      const proceed = window.confirm(
+        "Peringatan: Akun game tidak ditemukan dengan User ID & Server yang Anda masukkan. Apakah Anda yakin data akun sudah benar dan ingin tetap melanjutkan?"
+      );
+      if (!proceed) return;
+    }
+
     setIsModalOpen(true);
   };
 
@@ -272,6 +303,13 @@ export default function ProductCustomizerClient({ product }: { product: Product 
     if (product.requiresServer && !targetZoneId.trim()) {
       setErrorMessage("Mohon isi Server / Zone ID akun");
       return;
+    }
+
+    if (nicknameStatus === "INVALID") {
+      const proceed = window.confirm(
+        "Peringatan: Akun game tidak ditemukan dengan User ID & Server yang Anda masukkan. Apakah Anda yakin data akun sudah benar dan ingin tetap melanjutkan?"
+      );
+      if (!proceed) return;
     }
 
     if (!selectedItemId) {
@@ -367,33 +405,70 @@ export default function ProductCustomizerClient({ product }: { product: Product 
             </div>
 
             {/* Live Verified Game Nickname Indicator */}
-            {(isCheckingNickname || checkedNickname) && (
+            {nicknameStatus !== "IDLE" && (
               <div
-                className={`mt-3 p-3 rounded-xl ink-border flex items-center justify-between text-xs font-bold transition-all shadow-[2px_2px_0px_#000000] ${
-                  checkedNickname
-                    ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30 text-[#065f46] dark:text-[#6ee7b7]"
-                    : "bg-[#fffbeb] dark:bg-[#78350f]/20 text-[#92400e] dark:text-[#fde68a]"
+                className={`mt-3 p-3.5 rounded-xl ink-border text-xs font-bold transition-all shadow-[2px_2px_0px_#000000] ${
+                  nicknameStatus === "CHECKING"
+                    ? "bg-[#fffbeb] dark:bg-[#78350f]/20 text-[#92400e] dark:text-[#fde68a] border-amber-400"
+                    : nicknameStatus === "VALID"
+                    ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30 text-[#065f46] dark:text-[#6ee7b7] border-emerald-500"
+                    : nicknameStatus === "INVALID"
+                    ? "bg-[#fef2f2] dark:bg-[#7f1d1d]/30 text-[#991b1b] dark:text-[#fca5a5] border-red-500"
+                    : "bg-[#f0f9ff] dark:bg-[#0c4a6e]/20 text-[#0369a1] dark:text-[#7dd3fc] border-sky-400"
                 }`}
               >
-                <div className="flex items-center gap-2 flex-wrap">
-                  {isCheckingNickname ? (
-                    <div className="w-3.5 h-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  )}
-                  <span>
-                    {isCheckingNickname ? "Sedang memeriksa akun in-game..." : "Nickname Akun:"}
-                  </span>
-                  {!isCheckingNickname && checkedNickname && (
-                    <span className="font-mono text-sm font-black text-emerald-700 dark:text-emerald-300 bg-white dark:bg-[#1a1a24] px-2 py-0.5 rounded ink-border">
-                      {checkedNickname}
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    {nicknameStatus === "CHECKING" && (
+                      <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
+                    )}
+                    {nicknameStatus === "VALID" && (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    )}
+                    {nicknameStatus === "INVALID" && (
+                      <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+                    )}
+                    {nicknameStatus === "UNVERIFIED" && (
+                      <Info className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
+                    )}
+
+                    <span className="font-extrabold">
+                      {nicknameStatus === "CHECKING" && "Sedang memeriksa akun in-game..."}
+                      {nicknameStatus === "VALID" && "Nickname Akun:"}
+                      {nicknameStatus === "INVALID" && "Akun Tidak Ditemukan!"}
+                      {nicknameStatus === "UNVERIFIED" && "Data Akun Tersimpan"}
                     </span>
-                  )}
+
+                    {nicknameStatus === "VALID" && checkedNickname && (
+                      <span className="font-mono text-sm font-black text-emerald-800 dark:text-emerald-300 bg-white dark:bg-[#1a1a24] px-2.5 py-0.5 rounded ink-border">
+                        {checkedNickname}
+                      </span>
+                    )}
+                  </div>
+
+                  <div>
+                    {nicknameStatus === "VALID" && (
+                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">
+                        ✓ Terverifikasi
+                      </span>
+                    )}
+                    {nicknameStatus === "INVALID" && (
+                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-red-600 text-white">
+                        ✕ ID Salah / Tidak Ada
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {!isCheckingNickname && checkedNickname && (
-                  <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shrink-0">
-                    ✓ Valid
-                  </span>
+
+                {nicknameStatus === "INVALID" && (
+                  <p className="mt-1.5 text-[11px] text-red-600 dark:text-red-400 font-semibold">
+                    {nicknameMessage || "Pastikan User ID dan Zone ID sudah sesuai dengan akun Anda di dalam game."}
+                  </p>
+                )}
+                {nicknameStatus === "UNVERIFIED" && (
+                  <p className="mt-1 text-[11px] text-sky-700 dark:text-sky-300 font-semibold">
+                    {nicknameMessage}
+                  </p>
                 )}
               </div>
             )}
