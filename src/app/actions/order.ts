@@ -234,31 +234,29 @@ export async function checkPaymentStatus(invoiceNumber: string) {
             console.error("[checkPaymentStatus] Auto-fulfillment error:", fulfillErr);
           }
 
-          // Dispatch async notification
-          (async () => {
-            try {
-              const profit = Math.max(
-                0,
-                updated.totalAmount - (updated.productItem.supplierPrice || updated.productItem.price * 0.8)
-              );
-              await dispatchNotificationEvent("notifySuccessOrder", {
-                invoice: updated.invoiceNumber,
-                productName: updated.product.name,
-                variantName: updated.productItem.name,
-                targetUser: updated.targetUserId + (updated.targetZoneId ? ` (${updated.targetZoneId})` : ""),
-                totalAmount: updated.totalAmount,
-                profit: Math.round(profit),
-                paymentMethod: updated.paymentMethod || "QRIS Real-time",
-                deliveryType: (updated.product as any).deliveryType || (updated.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
-                customerPhone: updated.customerPhone || undefined,
-                customerEmail: updated.customerEmail || undefined,
-                sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
-                supplierRef: fulfillResult?.supplierRef,
-              });
-            } catch (notifErr) {
-              console.error("Gagal dispatch notifikasi checkStatus:", notifErr);
-            }
-          })();
+          // Dispatch notification
+          try {
+            const profit = Math.max(
+              0,
+              updated.totalAmount - (updated.productItem.supplierPrice || updated.productItem.price * 0.8)
+            );
+            await dispatchNotificationEvent("notifySuccessOrder", {
+              invoice: updated.invoiceNumber,
+              productName: updated.product.name,
+              variantName: updated.productItem.name,
+              targetUser: updated.targetUserId + (updated.targetZoneId ? ` (${updated.targetZoneId})` : ""),
+              totalAmount: updated.totalAmount,
+              profit: Math.round(profit),
+              paymentMethod: updated.paymentMethod || "QRIS Real-time",
+              deliveryType: (updated.product as any).deliveryType || (updated.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
+              customerPhone: updated.customerPhone || undefined,
+              customerEmail: updated.customerEmail || undefined,
+              sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
+              supplierRef: fulfillResult?.supplierRef,
+            });
+          } catch (notifErr) {
+            console.error("Gagal dispatch notifikasi checkStatus:", notifErr);
+          }
 
           return { success: true, isPaid: true, order: updated };
         }

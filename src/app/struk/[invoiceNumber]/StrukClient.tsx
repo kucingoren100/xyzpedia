@@ -50,14 +50,20 @@ function formatDate(date: Date | string | null) {
   );
 }
 
-export default function StrukClient({ order }: { order: Order }) {
+export default function StrukClient({
+  order,
+  initialNickname,
+}: {
+  order: Order;
+  initialNickname?: string | null;
+}) {
   const isSuccess = order.status === "SUCCESS" || order.status === "PAID";
   const paymentMethod = "QRIS Real-time";
 
   // Parse SN and Nickname from notes or SN string
   const { sn, nickname } = useMemo(() => {
     let rawSn: string | null = null;
-    let rawNick: string | null = null;
+    let rawNick: string | null = initialNickname || null;
 
     if (order.notes) {
       // 1. Extract SN from notes

@@ -80,47 +80,45 @@ export async function POST(req: NextRequest) {
       });
       console.log(`[WaroengPay Webhook] Order ${invoiceNumber} marked as SUCCESS.`);
 
-      // Dispatch Telegram / Email notifications asynchronously
-      (async () => {
-        try {
-          const order = await prisma.order.findUnique({
-            where: { invoiceNumber },
-            include: { product: true, productItem: true },
-          });
+      // Dispatch Telegram / Email notifications & fulfill order
+      try {
+        const order = await prisma.order.findUnique({
+          where: { invoiceNumber },
+          include: { product: true, productItem: true },
+        });
 
-          if (order) {
-            // 1. Trigger automated fulfillment to supplier API (Games / Pulsa / E-Wallet / Voucher)
-            let fulfillResult: any = null;
-            try {
-              fulfillResult = await fulfillOrderWithSupplier(order);
-            } catch (fulfillErr) {
-              console.error("[WaroengPay Webhook] Auto-fulfillment error:", fulfillErr);
-            }
-
-            const target = order.targetUserId + (order.targetZoneId ? ` (${order.targetZoneId})` : "");
-            const profit = Math.max(
-              0,
-              order.totalAmount - (order.productItem.supplierPrice || order.productItem.price * 0.8)
-            );
-            await dispatchNotificationEvent("notifySuccessOrder", {
-              invoice: order.invoiceNumber,
-              productName: order.product.name,
-              variantName: order.productItem.name,
-              targetUser: target,
-              totalAmount: order.totalAmount,
-              profit: Math.round(profit),
-              paymentMethod: order.paymentMethod || "QRIS Real-time",
-              deliveryType: (order.product as any).deliveryType || (order.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
-              customerPhone: order.customerPhone || undefined,
-              customerEmail: order.customerEmail || undefined,
-              sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
-              supplierRef: fulfillResult?.supplierRef,
-            });
+        if (order) {
+          // 1. Trigger automated fulfillment to supplier API (Games / Pulsa / E-Wallet / Voucher)
+          let fulfillResult: any = null;
+          try {
+            fulfillResult = await fulfillOrderWithSupplier(order);
+          } catch (fulfillErr) {
+            console.error("[WaroengPay Webhook] Auto-fulfillment error:", fulfillErr);
           }
-        } catch (notifErr) {
-          console.error("Gagal dispatch notifikasi webhook:", notifErr);
+
+          const target = order.targetUserId + (order.targetZoneId ? ` (${order.targetZoneId})` : "");
+          const profit = Math.max(
+            0,
+            order.totalAmount - (order.productItem.supplierPrice || order.productItem.price * 0.8)
+          );
+          await dispatchNotificationEvent("notifySuccessOrder", {
+            invoice: order.invoiceNumber,
+            productName: order.product.name,
+            variantName: order.productItem.name,
+            targetUser: target,
+            totalAmount: order.totalAmount,
+            profit: Math.round(profit),
+            paymentMethod: order.paymentMethod || "QRIS Real-time",
+            deliveryType: (order.product as any).deliveryType || (order.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
+            customerPhone: order.customerPhone || undefined,
+            customerEmail: order.customerEmail || undefined,
+            sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
+            supplierRef: fulfillResult?.supplierRef,
+          });
         }
-      })();
+      } catch (notifErr) {
+        console.error("Gagal dispatch notifikasi webhook:", notifErr);
+      }
     } else if (status === "EXPIRED" || status === "CANCELLED" || status === "FAILED") {
       await prisma.order.updateMany({
         where: { invoiceNumber, status: "PENDING" },
@@ -130,27 +128,25 @@ export async function POST(req: NextRequest) {
       });
       console.log(`[WaroengPay Webhook] Order ${invoiceNumber} marked as ${status}.`);
 
-      // Dispatch Telegram / Email alert for failed order asynchronously
-      (async () => {
-        try {
-          const order = await prisma.order.findUnique({
-            where: { invoiceNumber },
-            include: { product: true, productItem: true },
+      // Dispatch Telegram / Email alert for failed order
+      try {
+        const order = await prisma.order.findUnique({
+          where: { invoiceNumber },
+          include: { product: true, productItem: true },
+        });
+        if (order) {
+          await dispatchNotificationEvent("notifyFailedOrder", {
+            invoice: order.invoiceNumber,
+            productName: order.product.name,
+            variantName: order.productItem.name,
+            totalAmount: order.totalAmount,
+            reason: `Status pembayaran ${status} dari WaroengPay`,
+            customerPhone: order.customerPhone || undefined,
           });
-          if (order) {
-            await dispatchNotificationEvent("notifyFailedOrder", {
-              invoice: order.invoiceNumber,
-              productName: order.product.name,
-              variantName: order.productItem.name,
-              totalAmount: order.totalAmount,
-              reason: `Status pembayaran ${status} dari WaroengPay`,
-              customerPhone: order.customerPhone || undefined,
-            });
-          }
-        } catch (err) {
-          console.error("Gagal dispatch notif failed order webhook:", err);
         }
-      })();
+      } catch (err) {
+        console.error("Gagal dispatch notif failed order webhook:", err);
+      }
     }
 
     return NextResponse.json({ received: true });
