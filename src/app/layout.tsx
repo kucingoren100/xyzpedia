@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -7,6 +8,7 @@ import MobileFloatingDock from "@/components/MobileFloatingDock";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import StoreAnnouncementModal from "@/components/StoreAnnouncementModal";
+import NavigationProgressBar from "@/components/NavigationProgressBar";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -68,6 +70,9 @@ export default function RootLayout({
         className="min-h-screen flex flex-col bg-[#fbfbfd] text-carbon font-[var(--font-hanken)]"
       >
         <ThemeProvider>
+          <Suspense fallback={null}>
+            <NavigationProgressBar />
+          </Suspense>
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

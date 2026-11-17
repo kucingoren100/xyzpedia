@@ -1,24 +1,33 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { cache } from "react";
 import type { Metadata } from "next";
 import ProductCustomizerClient from "@/components/ProductCustomizerClient";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
+const getProductBySlug = cache(async (slug: string) => {
+  return await prisma.product.findUnique({
+    where: { slug },
+    include: {
+      category: true,
+      items: {
+        orderBy: { order: "asc" },
+      },
+    },
+  });
+});
+
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -56,16 +65,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      category: true,
-      items: {
-        orderBy: { order: "asc" },
-      },
-    },
-  });
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();

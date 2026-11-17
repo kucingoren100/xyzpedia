@@ -26,6 +26,7 @@ function NavLinks() {
     <nav className="hidden md:flex items-center gap-6 sm:gap-8 shrink-0 text-xs font-bold uppercase tracking-wider">
       <Link
         href="/katalog?cat=game-topup"
+        prefetch={true}
         className={`transition-colors ${
           isGame
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
@@ -36,6 +37,7 @@ function NavLinks() {
       </Link>
       <Link
         href="/katalog?cat=akun-premium"
+        prefetch={true}
         className={`transition-colors ${
           isAkun
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
@@ -46,6 +48,7 @@ function NavLinks() {
       </Link>
       <Link
         href="/katalog?cat=voucher-digital"
+        prefetch={true}
         className={`transition-colors ${
           isVoucher
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
@@ -56,6 +59,7 @@ function NavLinks() {
       </Link>
       <Link
         href="/katalog?cat=pulsa-ewallet"
+        prefetch={true}
         className={`transition-colors ${
           isPulsa
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
@@ -66,6 +70,7 @@ function NavLinks() {
       </Link>
       <Link
         href="/katalog"
+        prefetch={true}
         className={`transition-colors ${
           isSemua
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
@@ -76,6 +81,7 @@ function NavLinks() {
       </Link>
       <Link
         href="/bantuan"
+        prefetch={true}
         className={`transition-colors ${
           isBantuan
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"

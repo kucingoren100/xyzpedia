@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getItemSubCategory, getProductSubCategories } from "@/lib/productSubCategories";
+import ProductNoticeBox from "@/components/ProductNoticeBox";
 
 interface ProductItem {
   id: string;
@@ -666,6 +667,12 @@ export default function ProductCustomizerClient({ product }: { product: Product 
               )}
               </div>
             </div>
+
+            {/* Custom Product Notice Box (Penting Sebelum Beli, Syarat Ketentuan & Catatan) */}
+            <ProductNoticeBox
+              product={product}
+              selectedItemName={selectedItem?.name}
+            />
           </section>
 
           {/* Error Message if any on main page */}

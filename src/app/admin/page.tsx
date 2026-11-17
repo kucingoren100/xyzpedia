@@ -4,17 +4,18 @@ import AdminOverviewClient from "@/components/admin/AdminOverviewClient";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  // Fetch stats from database
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+  // Concurrent fast aggregates in a single round-trip
   const [
     totalOrders,
     pendingOrders,
     paidOrders,
     successOrders,
     failedOrders,
-    todayOrders,
+    todayAgg,
+    allTimeAgg,
     recentOrders,
     productsCount,
   ] = await Promise.all([
@@ -23,12 +24,16 @@ export default async function AdminDashboardPage() {
     prisma.order.count({ where: { status: { in: ["PAID", "PROCESSING"] } } }),
     prisma.order.count({ where: { status: "SUCCESS" } }),
     prisma.order.count({ where: { status: { in: ["FAILED", "EXPIRED"] } } }),
-    prisma.order.findMany({
+    prisma.order.aggregate({
       where: {
         createdAt: { gte: startOfToday },
         status: "SUCCESS",
       },
-      select: { totalAmount: true },
+      _sum: { totalAmount: true },
+    }),
+    prisma.order.aggregate({
+      where: { status: "SUCCESS" },
+      _sum: { totalAmount: true },
     }),
     prisma.order.findMany({
       take: 8,
@@ -41,14 +46,8 @@ export default async function AdminDashboardPage() {
     prisma.product.count(),
   ]);
 
-  // Calculate today's revenue & all-time revenue
-  const todayRevenue = todayOrders.reduce((acc, curr) => acc + curr.totalAmount, 0);
-
-  const allSuccessOrders = await prisma.order.findMany({
-    where: { status: "SUCCESS" },
-    select: { totalAmount: true },
-  });
-  const allTimeRevenue = allSuccessOrders.reduce((acc, curr) => acc + curr.totalAmount, 0);
+  const todayRevenue = todayAgg._sum.totalAmount || 0;
+  const allTimeRevenue = allTimeAgg._sum.totalAmount || 0;
 
   return (
     <AdminOverviewClient

@@ -136,6 +136,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   onClick={onClose}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl ink-border text-xs font-black uppercase tracking-wider transition-all duration-150 ${
                     item.active

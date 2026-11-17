@@ -173,6 +173,7 @@ export default function MobileFloatingDock() {
           {/* 1. Beranda */}
           <Link
             href="/"
+            prefetch={true}
             className={`flex flex-col items-center gap-0.5 min-w-[46px] py-1 px-1.5 rounded-xl transition-all active:scale-90 ${
               isHome
                 ? "bg-[#ffd731] text-carbon ink-border shadow-[1px_1px_0px_0px_#000000]"
@@ -188,6 +189,7 @@ export default function MobileFloatingDock() {
           {/* 2. Produk / Katalog */}
           <Link
             href="/katalog"
+            prefetch={true}
             className={`flex flex-col items-center gap-0.5 min-w-[46px] py-1 px-1.5 rounded-xl transition-all active:scale-90 ${
               isKatalog
                 ? "bg-[#ffd731] text-carbon ink-border shadow-[1px_1px_0px_0px_#000000]"
@@ -203,6 +205,7 @@ export default function MobileFloatingDock() {
           {/* 3. Lacak Pesanan / Cek Transaksi */}
           <Link
             href="/cek-transaksi"
+            prefetch={true}
             className={`flex flex-col items-center gap-0.5 min-w-[46px] py-1 px-1.5 rounded-xl transition-all active:scale-90 ${
               isCekTransaksi
                 ? "bg-[#ffd731] text-carbon ink-border shadow-[1px_1px_0px_0px_#000000]"
