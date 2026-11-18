@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { createDigiflazzTransaction } from "./digiflazz";
 
 interface FulfillOrderInput {
   id: string;
@@ -17,9 +18,75 @@ interface FulfillOrderInput {
 }
 
 /**
- * Automate supplier order execution (H2H) to Waroengkuy
+ * Automate supplier order execution (H2H) to Digiflazz or Waroengkuy
  */
 export async function fulfillOrderWithSupplier(order: FulfillOrderInput) {
+  const sku = order.productItem.sku;
+  const isNumericSku = /^\d+$/.test(sku);
+
+  // 0. DIGIFLAZZ INJECTION (Mobile Legends, Free Fire, dll)
+  const isDigiflazz =
+    sku.startsWith("ml") ||
+    sku.startsWith("ff") ||
+    sku.startsWith("pre359") ||
+    sku.startsWith("pln") ||
+    sku.startsWith("dana") ||
+    sku.startsWith("go") ||
+    sku.startsWith("ovo") ||
+    sku.startsWith("shopee");
+
+  if (isDigiflazz) {
+    const target = order.targetZoneId
+      ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
+      : order.targetUserId.trim();
+
+    console.log(
+      `[Fulfillment] Mengirim pesanan ${order.invoiceNumber} ke Digiflazz (sku: ${sku}, target: ${target})...`
+    );
+
+    try {
+      const digiRes = await createDigiflazzTransaction({
+        buyerSkuCode: sku,
+        customerNo: target,
+        refId: order.invoiceNumber,
+      });
+
+      const noteText = `Digiflazz Ref: ${digiRes.refId} | Status: ${digiRes.status} | SN: ${
+        digiRes.sn || digiRes.message || "Diproses Digiflazz"
+      }`;
+
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          fulfilledAt: new Date(),
+          notes: noteText,
+          status:
+            digiRes.status === "SUCCESS"
+              ? "SUCCESS"
+              : digiRes.status === "FAILED"
+              ? "FAILED"
+              : "PROCESSING",
+        },
+      });
+
+      return {
+        success: digiRes.success,
+        supplierRef: digiRes.refId,
+        status: digiRes.status,
+        sn:
+          digiRes.sn ||
+          digiRes.message ||
+          "Diproses langsung ke server akun in-game",
+      };
+    } catch (err: any) {
+      console.error(
+        "[Fulfillment] Error connecting to Digiflazz:",
+        err.message || err
+      );
+      return { success: false, error: err.message };
+    }
+  }
+
   const apiKey =
     process.env.WAROENGKUY_API_KEY ||
     "wrk_15f6505ecd7be057da1448373998d9fb39b7d24a";
@@ -31,9 +98,6 @@ export async function fulfillOrderWithSupplier(order: FulfillOrderInput) {
     console.warn("[Fulfillment] WAROENGKUY_API_KEY tidak tersedia.");
     return { success: false, reason: "No API Key" };
   }
-
-  const sku = order.productItem.sku;
-  const isNumericSku = /^\d+$/.test(sku);
 
   // 1. PPOB / GAME / PULSA / VOUCHER INJECTION
   if (
