@@ -25,6 +25,8 @@ import {
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getItemSubCategory, getProductSubCategories } from "@/lib/productSubCategories";
 import ProductNoticeBox from "@/components/ProductNoticeBox";
+import PaymentMaintenanceModal from "@/components/PaymentMaintenanceModal";
+import { IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
 
 interface ProductItem {
   id: string;
@@ -167,6 +169,9 @@ export default function ProductCustomizerClient({ product }: { product: Product 
   // Mobile Pop-up Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Payment Maintenance Modal State
+  const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
+
   // Sub-Category Classification & Filtering
   const [activeSubCategory, setActiveSubCategory] = useState<string>("ALL");
 
@@ -287,6 +292,11 @@ export default function ProductCustomizerClient({ product }: { product: Product 
       if (!proceed) return;
     }
 
+    if (IS_PAYMENT_MAINTENANCE) {
+      setIsMaintenanceModalOpen(true);
+      return;
+    }
+
     setIsModalOpen(true);
   };
 
@@ -318,6 +328,12 @@ export default function ProductCustomizerClient({ product }: { product: Product 
 
     if (!selectedItemId) {
       setErrorMessage("Silakan pilih salah satu nominal atau varian item.");
+      return;
+    }
+
+    if (IS_PAYMENT_MAINTENANCE) {
+      if (isModalOpen) setIsModalOpen(false);
+      setIsMaintenanceModalOpen(true);
       return;
     }
 
@@ -1184,6 +1200,16 @@ export default function ProductCustomizerClient({ product }: { product: Product 
           </div>
         </div>
       )}
+
+      {/* Pop-up Modal Status Pemeliharaan Sistem Pembayaran */}
+      <PaymentMaintenanceModal
+        isOpen={isMaintenanceModalOpen}
+        onClose={() => setIsMaintenanceModalOpen(false)}
+        productName={product.name}
+        itemName={selectedItem?.name}
+        targetId={targetUserId ? `${targetUserId}${targetZoneId ? ` (${targetZoneId})` : ""}` : undefined}
+        totalPrice={finalPrice}
+      />
     </form>
   );
 }

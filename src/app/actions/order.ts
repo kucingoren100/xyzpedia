@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { WaroengPayClient } from "@/lib/waroengpay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
+import { IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
 
 export interface CreateOrderInput {
   productSlug: string;
@@ -18,6 +19,12 @@ export interface CreateOrderInput {
 
 export async function createOrder(data: CreateOrderInput) {
   try {
+    if (IS_PAYMENT_MAINTENANCE) {
+      return {
+        success: false,
+        error: "Sistem pembayaran saat ini sedang dalam pemeliharaan berkala (maintenance). Layanan akan segera dibuka kembali.",
+      };
+    }
     const product = await prisma.product.findUnique({
       where: { slug: data.productSlug },
       include: { items: true },
