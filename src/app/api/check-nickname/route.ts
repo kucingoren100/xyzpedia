@@ -1,10 +1,28 @@
 import { NextResponse } from "next/server";
 import { checkGameAccount } from "@/lib/gameNickname";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
+    const clientIp = getClientIp(req);
+    const rl = checkRateLimit(`check-nickname:${clientIp}`, {
+      intervalMs: 60_000,
+      max: 30, // max 30 requests per minute per IP
+    });
+
+    if (!rl.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          isFound: false,
+          error: "Terlalu banyak permintaan cek ID. Silakan tunggu 1 menit.",
+        },
+        { status: 429 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId")?.trim();
     const zoneId = searchParams.get("zoneId")?.trim() || null;

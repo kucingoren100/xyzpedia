@@ -1,8 +1,26 @@
 import { NextResponse } from "next/server";
 import { signAdminToken, verifyAdminCredentials, AUTH_COOKIE_NAME } from "@/lib/adminAuth";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export async function POST(req: Request) {
   try {
+    const clientIp = getClientIp(req);
+    // Rate limit: max 5 login attempts per 5 minutes per IP
+    const rl = checkRateLimit(`admin-login:${clientIp}`, {
+      intervalMs: 5 * 60_000,
+      max: 5,
+    });
+
+    if (!rl.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Terlalu banyak percobaan login admin. Silakan tunggu 5 menit demi keamanan.",
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const { username, password } = body;
 

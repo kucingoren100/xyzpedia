@@ -3,11 +3,25 @@ import { prisma } from "@/lib/prisma";
 import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit check: prevent webhook flooding (max 60/min per IP)
+    const clientIp = getClientIp(req);
+    const rl = checkRateLimit(`webhook:qiospay:${clientIp}`, {
+      intervalMs: 60_000,
+      max: 60,
+    });
+    if (!rl.success) {
+      console.warn(`[QiosPay Webhook] Rate limit exceeded from IP ${clientIp}`);
+      return NextResponse.json(
+        { error: "Too many webhook requests" },
+        { status: 429 }
+      );
+    }
     const rawBody = await req.text();
     const signature =
       req.headers.get("x-qiospay-signature") ||

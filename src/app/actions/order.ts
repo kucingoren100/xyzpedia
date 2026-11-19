@@ -2,11 +2,13 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 import { isProductInMaintenance, IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
 import { getWebCondition, checkIsCategoryUnderMaintenance } from "@/lib/webCondition";
+import { checkRateLimit, getClientIpFromHeaders } from "@/lib/rateLimit";
 
 export interface CreateOrderInput {
   productSlug: string;
@@ -20,6 +22,19 @@ export interface CreateOrderInput {
 
 export async function createOrder(data: CreateOrderInput) {
   try {
+    // Rate limit check: max 15 orders/minute per IP
+    const reqHeaders = await headers();
+    const clientIp = getClientIpFromHeaders(reqHeaders);
+    const rl = checkRateLimit(`order-create:${clientIp}`, {
+      intervalMs: 60_000,
+      max: 15,
+    });
+    if (!rl.success) {
+      return {
+        success: false,
+        error: "Terlalu banyak permintaan pembuatan pesanan. Silakan tunggu 1 menit.",
+      };
+    }
     const product = await prisma.product.findUnique({
       where: { slug: data.productSlug },
       include: { items: true },
@@ -282,65 +297,16 @@ export async function checkPaymentStatus(invoiceNumber: string) {
   }
 }
 
-export async function simulatePaymentSuccess(invoiceNumber: string) {
-  try {
-    const order = await prisma.order.findUnique({
-      where: { invoiceNumber },
-    });
+function maskEmail(email: string): string {
+  if (!email || !email.includes("@")) return "***";
+  const [user, domain] = email.split("@");
+  if (user.length <= 2) return `${user[0]}***@${domain}`;
+  return `${user.slice(0, 2)}***${user.slice(-1)}@${domain}`;
+}
 
-    if (!order) {
-      return { success: false, error: "Pesanan tidak ditemukan." };
-    }
-
-    if (order.status === "SUCCESS") {
-      return { success: true, message: "Pesanan sudah berstatus SUKSES." };
-    }
-
-    const updated = await prisma.order.update({
-      where: { invoiceNumber },
-      data: {
-        status: "SUCCESS",
-        paidAt: new Date(),
-        fulfilledAt: new Date(),
-        notes: "Pembayaran terverifikasi via QRIS Dinamis. Item berhasil diinjeksi.",
-      },
-      include: {
-        product: true,
-        productItem: true,
-      },
-    });
-
-    revalidatePath(`/transaksi/${invoiceNumber}`);
-    revalidatePath("/cek-transaksi");
-
-    // Dispatch async notification for payment success
-    (async () => {
-      try {
-        const profit = Math.max(
-          0,
-          updated.totalAmount - (updated.productItem.supplierPrice || updated.productItem.price * 0.8)
-        );
-        await dispatchNotificationEvent("notifySuccessOrder", {
-          invoice: updated.invoiceNumber,
-          productName: updated.product.name,
-          variantName: updated.productItem.name,
-          targetUser: updated.targetUserId + (updated.targetZoneId ? ` (${updated.targetZoneId})` : ""),
-          totalAmount: updated.totalAmount,
-          profit: Math.round(profit),
-          paymentMethod: updated.paymentMethod || "QRIS Real-time",
-          deliveryType: (updated.product as any).deliveryType || (updated.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
-          customerPhone: updated.customerPhone || undefined,
-        });
-      } catch (err) {
-        console.error("Gagal dispatch notif success payment simulation:", err);
-      }
-    })();
-
-    return { success: true, order: updated };
-  } catch (error) {
-    console.error("Simulate payment error:", error);
-    return { success: false, error: "Gagal memproses simulasi pembayaran." };
-  }
+function maskPhone(phone: string): string {
+  if (!phone || phone.length < 6) return "***";
+  return `${phone.slice(0, 3)}****${phone.slice(-3)}`;
 }
 
 export async function searchOrders(query: string) {
@@ -348,23 +314,53 @@ export async function searchOrders(query: string) {
     const trimmed = query.trim();
     if (!trimmed) return [];
 
+    // Rate limiting: max 20 searches per minute per IP
+    const reqHeaders = await headers();
+    const clientIp = getClientIpFromHeaders(reqHeaders);
+    const rl = checkRateLimit(`search-orders:${clientIp}`, {
+      intervalMs: 60_000,
+      max: 20,
+    });
+    if (!rl.success) {
+      console.warn(`[searchOrders] Rate limit exceeded from IP ${clientIp}`);
+      return [];
+    }
+
+    const isInvoice = /^INV-XYZ-[a-zA-Z0-9-]+$/i.test(trimmed);
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+
+    // Prevent open enumeration / broad queries (e.g. searching "@", "gmail", etc.)
+    if (!isInvoice && !isEmail) {
+      return [];
+    }
+
     const orders = await prisma.order.findMany({
-      where: {
-        OR: [
-          { invoiceNumber: { contains: trimmed } },
-          { customerEmail: { contains: trimmed } },
-          { targetUserId: { contains: trimmed } },
-        ],
-      },
+      where: isInvoice
+        ? { invoiceNumber: { equals: trimmed, mode: "insensitive" } }
+        : { customerEmail: { equals: trimmed.toLowerCase(), mode: "insensitive" } },
       include: {
-        product: true,
-        productItem: true,
+        product: {
+          select: {
+            name: true,
+            thumbnailUrl: true,
+          },
+        },
+        productItem: {
+          select: {
+            name: true,
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
       take: 10,
     });
 
-    return orders;
+    // Mask sensitive PII before sending to client
+    return orders.map((o) => ({
+      ...o,
+      customerEmail: maskEmail(o.customerEmail),
+      customerPhone: o.customerPhone ? maskPhone(o.customerPhone) : null,
+    }));
   } catch (error) {
     console.error("Search orders error:", error);
     return [];
