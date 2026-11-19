@@ -118,6 +118,7 @@ export async function GET() {
       { key: "QIOSPAY_MERCHANT_CODE", isSet: !!qiospayMerchant, label: "QiosPay Merchant ID" },
       { key: "DIGIFLAZZ_USERNAME", isSet: !!digiUser, label: "Digiflazz Supplier ID" },
       { key: digiKeyName, isSet: hasDigiKey, label: "Digiflazz API Key / Production Secret" },
+      { key: "VPS_PROXY_URL", isSet: !!vpsProxy, label: "VPS Static IP Bridge Proxy" },
       { key: "ADMIN_JWT_SECRET", isSet: !!process.env.ADMIN_JWT_SECRET, label: "HMAC Session Encryption" },
     ];
 

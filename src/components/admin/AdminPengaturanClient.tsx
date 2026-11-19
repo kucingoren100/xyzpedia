@@ -1264,8 +1264,17 @@ export default function AdminPengaturanClient() {
                       <Server className="w-3.5 h-3.5 text-[#0284c7]" />
                       <span>Digiflazz Provider</span>
                     </span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-black bg-[#38bdf8] text-black ink-border">
-                      BRIDGE READY
+                    <span
+                      className={`px-2 py-0.5 rounded text-[9px] font-black ink-border ${
+                        healthData?.gateways?.digiflazz?.status === "ONLINE"
+                          ? "bg-[#55db9c] text-black"
+                          : healthData?.gateways?.digiflazz?.status === "CONFIGURED" ||
+                            healthData?.gateways?.digiflazz?.status === "PROXY_STANDBY"
+                          ? "bg-[#ffd731] text-black"
+                          : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {healthData?.gateways?.digiflazz?.status || "STANDBY"}
                     </span>
                   </div>
                   <div className="space-y-1 text-[11px] text-gray-600 dark:text-gray-300">
