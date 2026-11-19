@@ -82,10 +82,22 @@ export async function checkDigiflazzBalance() {
   return json?.data?.deposit ?? 0;
 }
 
+// Memory cache for Digiflazz pricelist to prevent RC 83 rate limit
+let cachedPriceList: { data: any[]; timestamp: number } | null = null;
+const PRICE_LIST_CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+
 /**
- * Tarik Daftar Harga & Produk dari Digiflazz
+ * Tarik Daftar Harga & Produk dari Digiflazz (dengan caching 5 menit anti RC 83)
  */
-export async function getDigiflazzPriceList(cmd: "prepaid" | "pasca" = "prepaid") {
+export async function getDigiflazzPriceList(
+  cmd: "prepaid" | "pasca" = "prepaid",
+  forceRefresh = false
+) {
+  const now = Date.now();
+  if (!forceRefresh && cachedPriceList && now - cachedPriceList.timestamp < PRICE_LIST_CACHE_TTL) {
+    return cachedPriceList.data;
+  }
+
   const { username, apiKey } = getConfig();
   const sign = md5(username + apiKey + "pricelist");
 
@@ -101,11 +113,31 @@ export async function getDigiflazzPriceList(cmd: "prepaid" | "pasca" = "prepaid"
   });
 
   if (!res.ok) {
+    if (cachedPriceList) return cachedPriceList.data;
     const errText = await res.text();
     throw new Error(`Digiflazz HTTP ${res.status}: ${errText}`);
   }
 
   const json = await res.json();
+  if (json?.data && Array.isArray(json.data)) {
+    cachedPriceList = {
+      data: json.data,
+      timestamp: now,
+    };
+    return json.data;
+  }
+
+  // Handle RC 83 (limitasi frekuensi request pricelist dari Digiflazz)
+  if (json?.data?.rc === "83" || json?.rc === "83") {
+    if (cachedPriceList) {
+      console.warn("[Digiflazz] Rate limit RC 83 hit, fallback to cached pricelist.");
+      return cachedPriceList.data;
+    }
+    throw new Error(
+      "Limitasi pengecekan pricelist Digiflazz (RC 83). Harap tunggu beberapa menit sebelum mencoba lagi."
+    );
+  }
+
   return (json?.data || []) as any[];
 }
 

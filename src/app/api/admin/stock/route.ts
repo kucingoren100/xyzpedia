@@ -1,39 +1,32 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkDigiflazzBalance, getDigiflazzPriceList, createDigiflazzTransaction } from "@/lib/digiflazz";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const apiKey = process.env.WAROENGKUY_API_KEY || "";
-    const baseUrl = (
-      process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1"
-    ).replace(/\/$/, "");
+    // 1. Fetch Digiflazz balance & pricelist
+    let balance = 0;
+    let resellerName = "Digiflazz H2H Partner";
+    let digiItems: any[] = [];
 
-    // 1. Fetch balance & profile
-    const balRes = await fetch(`${baseUrl}/balance`, {
-      headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
-      cache: "no-store",
-    });
-    const balData = await balRes.json().catch(() => ({}));
+    try {
+      balance = await checkDigiflazzBalance();
+      digiItems = await getDigiflazzPriceList("prepaid");
+    } catch (digiErr) {
+      console.warn("[Admin Stock] Error fetching Digiflazz:", digiErr);
+    }
 
-    // 2. Fetch PPOB products from Waroengkuy
-    const ppobRes = await fetch(`${baseUrl}/ppob/products`, {
-      headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
-      cache: "no-store",
-    });
-    const ppobData = await ppobRes.json().catch(() => ({}));
-    const ppobItems: any[] = ppobData.items || [];
-
-    // Map Waroengkuy availability by variant_id
-    const apiMap = new Map<number, any>();
-    for (const it of ppobItems) {
-      if (it.variant_id) {
-        apiMap.set(Number(it.variant_id), it);
+    // Map Digiflazz availability by buyer_sku_code
+    const digiMap = new Map<string, any>();
+    for (const it of digiItems) {
+      if (it.buyer_sku_code) {
+        digiMap.set(String(it.buyer_sku_code).toLowerCase(), it);
       }
     }
 
-    // 3. Fetch products and items from database
+    // 2. Fetch products and items from database
     const dbProducts = await prisma.product.findMany({
       include: {
         items: {
@@ -45,37 +38,27 @@ export async function GET() {
 
     const productsReport = dbProducts.map((p) => {
       const itemsReport = p.items.map((it) => {
-        const skuNum = parseInt(it.sku || "", 10);
-        const apiItem = !isNaN(skuNum) ? apiMap.get(skuNum) : null;
+        const skuKey = String(it.sku || "").toLowerCase();
+        const digiItem = digiMap.get(skuKey);
 
-        // Determine real-time server readiness
         let serverStatus = "UNKNOWN";
         let isReady = false;
         let note = "";
 
-        if (apiItem) {
-          if (apiItem.available === false) {
-            serverStatus = "OUT_OF_STOCK";
-            isReady = false;
-            note = "Server Supplier: available=false";
-          } else if (String(it.sku) === "916") {
-            // Known upstream outage for MLBB 3 Diamond
-            serverStatus = "OUT_OF_STOCK";
-            isReady = false;
-            note = "Moonton upstream: Nominal ini sementara tidak tersedia";
-          } else {
-            serverStatus = "READY";
-            isReady = true;
-            note = "Server Supplier: Normal & Ready";
-          }
+        if (digiItem) {
+          const isDigiAvailable = Boolean(digiItem.buyer_product_status && digiItem.seller_product_status);
+          serverStatus = isDigiAvailable ? "READY" : "OUT_OF_STOCK";
+          isReady = isDigiAvailable;
+          note = `Digiflazz H2H (${digiItem.buyer_product_status ? "Buyer Ready" : "Buyer Closed"} | Seller: ${digiItem.seller_product_status ? "Active" : "Closed"})`;
         } else if (p.categorySlug === "akun-premium") {
           serverStatus = "MANUAL_OR_INSTANT";
           isReady = it.stockStatus === "AVAILABLE";
-          note = "Akun Premium (Manual / Reseller Account)";
+          note = "Akun Premium (Manual / Auto-Fulfillment)";
         } else {
-          serverStatus = "CUSTOM";
+          // Check standard database status
+          serverStatus = it.stockStatus === "AVAILABLE" ? "READY" : "OUT_OF_STOCK";
           isReady = it.stockStatus === "AVAILABLE";
-          note = "SKU tidak terdaftar di PPOB";
+          note = it.stockStatus === "AVAILABLE" ? "Database Ready" : "Stok Dinonaktifkan";
         }
 
         return {
@@ -83,7 +66,7 @@ export async function GET() {
           name: it.name,
           sku: it.sku,
           dbPrice: it.price,
-          supplierPrice: it.supplierPrice || apiItem?.price || null,
+          supplierPrice: it.supplierPrice || digiItem?.price || null,
           dbStatus: it.stockStatus,
           serverStatus,
           isReady,
@@ -113,9 +96,8 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      balance: balData.reseller?.balance ?? 0,
-      resellerName: balData.reseller?.name ?? "Waroengkuy Reseller",
-      totalApiItems: ppobItems.length,
+      balance,
+      resellerName,
       totalDbItems,
       totalReady,
       totalUnready,
@@ -135,12 +117,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const action = body.action || "sync_all";
 
-    const apiKey = process.env.WAROENGKUY_API_KEY || "";
-    const baseUrl = (
-      process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1"
-    ).replace(/\/$/, "");
-
-    // 1. ACTION: Test specific SKU with server
+    // 1. ACTION: Test specific SKU with Digiflazz
     if (action === "test_sku") {
       const sku = String(body.sku || "").trim();
       const target = String(body.target || "1215320232610").trim();
@@ -152,51 +129,37 @@ export async function POST(req: Request) {
         );
       }
 
-      const variantId = parseInt(sku, 10);
-      if (isNaN(variantId)) {
-        return NextResponse.json({
-          success: false,
-          error: "SKU harus berupa angka variant_id Waroengkuy",
-        });
-      }
-
-      // Check with live order test call
-      const res = await fetch(`${baseUrl}/ppob/orders`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          variant_id: variantId,
-          target,
-          ref_id: "TEST-LIVE-" + Date.now(),
-        }),
+      // Check with live Digiflazz test call
+      const res = await createDigiflazzTransaction({
+        buyerSkuCode: sku,
+        customerNo: target,
+        refId: "TEST-SKU-" + Date.now(),
+        testing: true,
       });
 
-      const data = await res.json().catch(() => ({}));
       return NextResponse.json({
         success: true,
         sku,
         target,
-        rawResponse: data,
-        isAvailable: data.ok === true || data.status === "processing" || data.status === "success",
+        rawResponse: res.raw,
+        isAvailable: res.success || res.status === "PENDING" || res.status === "SUCCESS",
+        message: res.message || (res.success ? "SKU Ready dan Valid di Digiflazz" : "Gagal di Digiflazz"),
       });
     }
 
-    // 2. ACTION: Sync all items stock status from server
-    const ppobRes = await fetch(`${baseUrl}/ppob/products`, {
-      headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
-      cache: "no-store",
-    });
-    const ppobData = await ppobRes.json().catch(() => ({}));
-    const ppobItems: any[] = ppobData.items || [];
+    // 2. ACTION: Sync all items stock status from Digiflazz
+    let digiItems: any[] = [];
+    try {
+      digiItems = await getDigiflazzPriceList("prepaid");
+    } catch (err: any) {
+      console.warn("Digiflazz pricelist error during sync:", err.message);
+    }
 
-    const apiMap = new Map<number, boolean>();
-    for (const it of ppobItems) {
-      if (it.variant_id) {
-        apiMap.set(Number(it.variant_id), it.available === true);
+    const digiMap = new Map<string, boolean>();
+    for (const it of digiItems) {
+      if (it.buyer_sku_code) {
+        const isAvail = Boolean(it.buyer_product_status && it.seller_product_status);
+        digiMap.set(String(it.buyer_sku_code).toLowerCase(), isAvail);
       }
     }
 
@@ -206,15 +169,10 @@ export async function POST(req: Request) {
     let updatedToAvailable = 0;
 
     for (const it of allItems) {
-      const skuNum = parseInt(it.sku || "", 10);
-      if (isNaN(skuNum)) continue;
+      const skuKey = String(it.sku || "").toLowerCase();
+      if (!digiMap.has(skuKey)) continue;
 
-      let isServerAvailable = apiMap.has(skuNum) ? apiMap.get(skuNum)! : false;
-
-      // Special check: Known upstream outage for MLBB 3 Diamond (sku 916)
-      if (it.sku === "916") {
-        isServerAvailable = false;
-      }
+      const isServerAvailable = digiMap.get(skuKey)!;
 
       if (!isServerAvailable && it.stockStatus === "AVAILABLE") {
         await prisma.productItem.update({
@@ -223,7 +181,6 @@ export async function POST(req: Request) {
         });
         updatedToOutOfStock++;
       } else if (isServerAvailable && it.stockStatus === "OUT_OF_STOCK") {
-        // If server is now available and was marked out of stock
         await prisma.productItem.update({
           where: { id: it.id },
           data: { stockStatus: "AVAILABLE" },
@@ -234,7 +191,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `Sinkronisasi selesai! ${updatedToOutOfStock} item berhasil diubah menjadi 'Belum tersedia' (OUT_OF_STOCK), dan ${updatedToAvailable} item aktif ready.`,
+      message: `Sinkronisasi stok Digiflazz selesai! ${updatedToOutOfStock} item dinonaktifkan (gangguan/tutup), dan ${updatedToAvailable} item berhasil diaktifkan kembali.`,
       updatedToOutOfStock,
       updatedToAvailable,
     });

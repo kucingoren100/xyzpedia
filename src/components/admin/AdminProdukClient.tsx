@@ -96,6 +96,37 @@ export default function AdminProdukClient({
   const [modalLoading, setModalLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
   const [syncingApi, setSyncingApi] = useState(false);
+  const [syncingDigi, setSyncingDigi] = useState(false);
+
+  // Sync products & prices directly from Digiflazz H2H API
+  const handleSyncDigiflazz = async () => {
+    if (
+      !confirm(
+        "Tarik dan petakan seluruh produk & harga modal terbaru dari Digiflazz ke katalog database sekarang?"
+      )
+    ) {
+      return;
+    }
+    setSyncingDigi(true);
+    try {
+      const res = await fetch("/api/admin/products/sync-digiflazz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markupPercent: 8 }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message);
+        fetchProducts(selectedCategory, searchQuery);
+      } else {
+        alert("Gagal sinkronisasi Digiflazz: " + (data.message || data.error));
+      }
+    } catch (err: any) {
+      alert("Terjadi kesalahan: " + (err?.message || "Koneksi gagal"));
+    } finally {
+      setSyncingDigi(false);
+    }
+  };
 
   // Inline Variant Edit States
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
@@ -667,6 +698,17 @@ export default function AdminProdukClient({
               >
                 <Plus className="w-4 h-4 stroke-[3]" />
                 <span>Tambah Produk Baru</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSyncDigiflazz}
+                disabled={syncingDigi}
+                className="px-4 py-2.5 bg-[#38bdf8] hover:bg-[#0284c7] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-transform hover:scale-102 active:scale-98 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
+                title="Tarik & petakan seluruh produk game & PPOB langsung dari Digiflazz"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${syncingDigi ? "animate-spin text-blue-900" : "text-black"}`} />
+                <span>{syncingDigi ? "Menarik Digiflazz..." : "Tarik Digiflazz"}</span>
               </button>
 
               <button

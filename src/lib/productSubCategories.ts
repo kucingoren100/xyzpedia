@@ -10,35 +10,47 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
 
   // 1. Free Fire
   if (productSlug === "free-fire") {
-    if (name.includes("membership") || name.includes("pass") || name.includes("bp card")) {
+    if (
+      name.includes("membership") ||
+      name.includes("pass") ||
+      name.includes("bp card") ||
+      name.includes("level up")
+    ) {
       return "Membership & Pass";
     }
     if (name.includes("diamond")) {
       return "Diamond";
     }
-    return "Lainnya";
+    return "Diamond";
   }
 
   // 2. Mobile Legends
   if (productSlug === "mobile-legends") {
-    if (name.includes("pass") || name.includes("bundle") || name.includes("twilight") || name.includes("coupon")) {
+    if (
+      name.includes("pass") ||
+      name.includes("bundle") ||
+      name.includes("twilight") ||
+      name.includes("coupon") ||
+      name.includes("wdp") ||
+      name.includes("weekly")
+    ) {
       return "Pass & Bundle";
     }
-    if (name.includes("diamond")) {
+    if (name.includes("diamond") || /\d+\s*diamond/i.test(name)) {
       return "Diamond";
     }
-    return "Lainnya";
+    return "Diamond";
   }
 
   // 3. Honor of Kings
   if (productSlug === "honor-of-kings") {
-    if (name.includes("card") || name.includes("pass")) {
+    if (name.includes("card") || name.includes("pass") || name.includes("weekly")) {
       return "Weekly Card";
     }
     if (name.includes("token")) {
       return "Tokens";
     }
-    return "Lainnya";
+    return "Tokens";
   }
 
   // 4. Arena Breakout
@@ -59,13 +71,13 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
 
   // 6. Magic Chess: Go Go
   if (productSlug === "magic-chess-go-go") {
-    if (name.includes("card") || name.includes("pass")) {
+    if (name.includes("card") || name.includes("pass") || name.includes("weekly")) {
       return "Weekly Card";
     }
     if (name.includes("diamond")) {
       return "Diamonds";
     }
-    return "Lainnya";
+    return "Diamonds";
   }
 
   // 7. PUBG Mobile
@@ -73,24 +85,50 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
     if (name.includes("global")) {
       return "PUBG Global";
     }
+    if (name.includes("pass") || name.includes("royale")) {
+      return "Royale Pass";
+    }
     if (name.includes("uc")) {
       return "PUBG Indo";
     }
-    return "Lainnya";
+    return "PUBG Indo";
   }
 
-  // 8. Vidio Voucher
+  // 8. Blood Strike
+  if (productSlug === "blood-strike") {
+    if (name.includes("pass")) return "Strike Pass";
+    return "Gold";
+  }
+
+  // 9. Call of Duty Mobile
+  if (productSlug === "call-of-duty-mobile") {
+    if (name.includes("pass")) return "Battle Pass";
+    return "CP";
+  }
+
+  // 10. Vidio Voucher
   if (productSlug === "vidio-voucher") {
     if (name.includes("diamond")) return "Diamond";
     if (name.includes("ultimate")) return "Ultimate";
     if (name.includes("platinum")) return "Platinum";
-    return "Lainnya";
+    return "Reguler";
   }
 
-  // 9. E-Wallet Multi-Types (GoPay, GrabPay, LinkAja)
+  // 11. Pulsa Operators (Telkomsel, Indosat, XL, Axis, Tri, Smartfren, by.U)
+  if (productSlug.startsWith("pulsa-")) {
+    if (name.includes("data") || name.includes("kuota") || name.includes("gb")) {
+      return "Paket Data";
+    }
+    if (name.includes("masa aktif") || name.includes("hari") && !name.includes("000")) {
+      return "Masa Aktif";
+    }
+    return "Pulsa Reguler";
+  }
+
+  // 12. E-Wallet Multi-Types (GoPay, GrabPay, LinkAja, DANA, OVO, ShopeePay)
   if (productSlug.includes("gopay")) {
-    if (name.includes("customer")) return "Gopay Customer";
-    if (name.includes("pengemudi") || name.includes("driver")) return "Gopay Pengemudi";
+    if (name.includes("customer")) return "GoPay Customer";
+    if (name.includes("pengemudi") || name.includes("driver")) return "GoPay Driver";
     return "GoPay";
   }
   if (productSlug.includes("grab")) {
@@ -102,8 +140,21 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
     return "LinkAja Reguler";
   }
 
-  // 10. Generic Fallback for other games or services
-  if (name.includes("membership") || name.includes("pass") || name.includes("bundle") || name.includes("weekly card")) {
+  // 13. Akun Premium multi-device or multi-duration
+  if (name.includes("sendiri") || name.includes("private") || name.includes("invite")) {
+    return "Akun Private";
+  }
+  if (name.includes("sharing") || name.includes("toko") || name.includes("1p1u")) {
+    return "Akun Sharing";
+  }
+
+  // 14. Generic Fallback
+  if (
+    name.includes("membership") ||
+    name.includes("pass") ||
+    name.includes("bundle") ||
+    name.includes("weekly card")
+  ) {
     return "Membership & Pass";
   }
   if (name.includes("diamond")) return "Diamond";
@@ -113,7 +164,7 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
   if (name.includes("cash") || name.includes("pb cash")) return "Cash";
   if (name.includes("point")) return "Points";
 
-  return "Umum";
+  return "Nominal Reguler";
 }
 
 /**
@@ -132,9 +183,12 @@ export function getProductSubCategories(items: { name: string }[], productSlug: 
 
   // Sort with primary currency first, then passes/bundles
   const primaryKeys = [
+    "Pulsa Reguler",
+    "Paket Data",
+    "Masa Aktif",
     "GoPay",
-    "Gopay Customer",
-    "Gopay Pengemudi",
+    "GoPay Customer",
+    "GoPay Driver",
     "GrabPay Penumpang",
     "GrabPay Driver",
     "LinkAja Reguler",
@@ -146,11 +200,21 @@ export function getProductSubCategories(items: { name: string }[], productSlug: 
     "Delta Coins",
     "PUBG Indo",
     "PUBG Global",
+    "Gold",
+    "CP",
+    "Cash",
+    "Akun Sharing",
+    "Akun Private",
     "Platinum",
     "Ultimate",
-    "Cash",
-    "Gold",
-    "Coins",
+    "Membership & Pass",
+    "Pass & Bundle",
+    "Weekly Card",
+    "Supplies & Pass",
+    "Pass & Paket",
+    "Royale Pass",
+    "Strike Pass",
+    "Battle Pass",
   ];
 
   return arr.sort((a, b) => {

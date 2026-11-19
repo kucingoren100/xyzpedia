@@ -57,10 +57,42 @@ export default function AdminStockClient() {
   const [expandedProducts, setExpandedProducts] = useState<Record<string, boolean>>({});
 
   // Live SKU Tester State
-  const [testInputSku, setTestInputSku] = useState("916");
+  const [testInputSku, setTestInputSku] = useState("ml5");
   const [testInputTarget, setTestInputTarget] = useState("1215320232610");
   const [testResult, setTestResult] = useState<any>(null);
   const [syncNotice, setSyncNotice] = useState<string>("");
+  const [syncingDigi, setSyncingDigi] = useState(false);
+
+  const handleSyncDigiflazzProducts = async () => {
+    if (
+      !confirm(
+        "Tarik dan petakan seluruh produk & harga modal terbaru dari Digiflazz ke katalog database sekarang?"
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setSyncingDigi(true);
+      setSyncNotice("");
+      const res = await fetch("/api/admin/products/sync-digiflazz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markupPercent: 8 }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSyncNotice(data.message);
+        await loadStockData();
+      } else {
+        alert("Gagal sinkronisasi Digiflazz: " + (data.message || data.error));
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setSyncingDigi(false);
+    }
+  };
 
   const loadStockData = async () => {
     try {
@@ -180,7 +212,7 @@ export default function AdminStockClient() {
     <div className="flex-1 flex flex-col">
       <AdminTopbar
         title="Cek Stok & Kesiapan Server"
-        subtitle="Monitoring ketersediaan varian langsung ke server supplier Waroengkuy secara real-time"
+        subtitle="Monitoring ketersediaan produk dan varian ke server supplier Digiflazz H2H secara real-time"
       />
 
       <main className="p-4 sm:p-6 md:p-8 space-y-6 max-w-7xl w-full mx-auto">
@@ -297,22 +329,30 @@ export default function AdminStockClient() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <button
               onClick={loadStockData}
-              disabled={loading || syncing}
+              disabled={loading || syncing || syncingDigi}
               className="p-3 bg-white dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-carbon dark:text-white hover:bg-gray-100 cursor-pointer transition disabled:opacity-50"
               title="Refresh Data"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
             <button
+              onClick={handleSyncDigiflazzProducts}
+              disabled={syncingDigi || syncing || loading}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-[#38bdf8] hover:bg-[#0284c7] text-black font-black text-xs uppercase tracking-wider rounded-xl ink-border shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50 cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${syncingDigi ? "animate-spin" : ""}`} />
+              {syncingDigi ? "Menarik Digiflazz..." : "Tarik & Petakan Digiflazz"}
+            </button>
+            <button
               onClick={handleSyncAll}
-              disabled={syncing || loading}
+              disabled={syncing || syncingDigi || loading}
               className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-[#ffd731] hover:bg-[#e6c12c] text-black font-black text-xs uppercase tracking-wider rounded-xl ink-border shadow-[3px_3px_0px_0px_#000000] transition active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50 cursor-pointer"
             >
               <Zap className="w-4 h-4" />
-              {syncing ? "Sedang Menyinkronkan..." : "Sinkronkan Kesiapan & Stok Ke Server"}
+              {syncing ? "Menyinkronkan..." : "Sinkronkan Stok Live"}
             </button>
           </div>
         </section>
