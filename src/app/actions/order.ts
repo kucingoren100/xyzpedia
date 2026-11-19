@@ -55,7 +55,11 @@ export async function createOrder(data: CreateOrderInput) {
       return { success: false, error: "Server / Zone ID wajib diisi." };
     }
 
-    if (!data.customerEmail.trim() || !data.customerEmail.includes("@")) {
+    const finalCustomerEmail =
+      data.customerEmail?.trim() ||
+      (data.targetUserId?.includes("@") ? data.targetUserId.trim() : "");
+
+    if (!finalCustomerEmail || !finalCustomerEmail.includes("@")) {
       return { success: false, error: "Alamat email valid wajib diisi untuk bukti pesanan." };
     }
 
@@ -88,7 +92,7 @@ export async function createOrder(data: CreateOrderInput) {
         amount: discountedPrice,
         description: `Pembayaran ${item.name} (${product.name}) - ${invoiceNumber}`,
         customerName: data.targetUserId.trim(),
-        customerEmail: data.customerEmail.trim(),
+        customerEmail: finalCustomerEmail,
         customerPhone: data.customerPhone?.trim(),
         expiredMinutes: 15,
       });
@@ -120,7 +124,7 @@ export async function createOrder(data: CreateOrderInput) {
         invoiceNumber,
         targetUserId: data.targetUserId.trim(),
         targetZoneId: data.targetZoneId?.trim() || null,
-        customerEmail: data.customerEmail.trim(),
+        customerEmail: finalCustomerEmail,
         customerPhone: data.customerPhone?.trim() || null,
         productId: product.id,
         productItemId: item.id,
@@ -146,7 +150,7 @@ export async function createOrder(data: CreateOrderInput) {
           totalAmount: order.totalAmount,
           paymentMethod: order.paymentMethod,
           customerPhone: data.customerPhone || undefined,
-          customerEmail: data.customerEmail || undefined,
+          customerEmail: finalCustomerEmail,
         });
       } catch (err) {
         console.error("Gagal dispatch notif new order:", err);

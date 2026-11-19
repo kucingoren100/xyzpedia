@@ -337,9 +337,17 @@ export default function ProductCustomizerClient({ product }: { product: Product 
       return;
     }
 
-    if (!customerEmail.trim() || !customerEmail.includes("@")) {
+    const effectiveEmail =
+      customerEmail.trim() ||
+      (targetUserId.includes("@") ? targetUserId.trim() : "");
+
+    if (!effectiveEmail || !effectiveEmail.includes("@")) {
       setErrorMessage("Mohon masukkan alamat email yang valid untuk bukti transaksi.");
       return;
+    }
+
+    if (!customerEmail && effectiveEmail) {
+      setCustomerEmail(effectiveEmail);
     }
 
     setIsSubmitting(true);
@@ -350,7 +358,7 @@ export default function ProductCustomizerClient({ product }: { product: Product 
         itemId: selectedItemId,
         targetUserId: targetUserId.trim(),
         targetZoneId: targetZoneId.trim() || undefined,
-        customerEmail: customerEmail.trim(),
+        customerEmail: effectiveEmail,
         customerPhone: customerPhone.trim() || undefined,
         promoCode: appliedPromo || undefined,
       });
@@ -361,8 +369,20 @@ export default function ProductCustomizerClient({ product }: { product: Product 
         setErrorMessage(res.error || "Gagal memproses pesanan.");
         setIsSubmitting(false);
       }
-    } catch (err) {
-      setErrorMessage("Terjadi kesalahan koneksi saat membuat pesanan.");
+    } catch (err: any) {
+      console.error("[handleSubmit] Order error:", err);
+      const errMsg = String(err?.message || "");
+      if (
+        errMsg.includes("Server Action") ||
+        errMsg.includes("Failed to fetch") ||
+        errMsg.includes("NetworkError")
+      ) {
+        setErrorMessage(
+          "Sesi koneksi sistem diperbarui. Silakan refresh halaman browser (tekan F5 / Refresh) dan ulangi klik Bayar."
+        );
+      } else {
+        setErrorMessage("Terjadi kesalahan koneksi saat membuat pesanan. Silakan refresh halaman dan coba kembali.");
+      }
       setIsSubmitting(false);
     }
   };
@@ -398,7 +418,13 @@ export default function ProductCustomizerClient({ product }: { product: Product 
                 <input
                   type="text"
                   value={targetUserId}
-                  onChange={(e) => setTargetUserId(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setTargetUserId(val);
+                    if (val.includes("@") && !customerEmail) {
+                      setCustomerEmail(val.trim());
+                    }
+                  }}
                   placeholder={displayPlaceholder}
                   className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
                   required
