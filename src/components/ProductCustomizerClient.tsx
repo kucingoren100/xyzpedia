@@ -725,7 +725,7 @@ export default function ProductCustomizerClient({ product }: { product: Product 
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-black text-carbon dark:text-white uppercase">
-                      QRIS DINAMIS (WaroengPay)
+                      QRIS DINAMIS (QiosPay)
                     </span>
                     <span className="text-[9px] font-black px-1.5 py-0.5 bg-[#55db9c] text-black rounded ink-border">
                       OTOMATIS

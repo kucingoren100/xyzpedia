@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { WaroengPayClient } from "@/lib/waroengpay";
+import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 import { IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
@@ -80,36 +80,35 @@ export async function createOrder(data: CreateOrderInput) {
     let uniqueCode = 0;
     let qrisString = "";
 
-    // 1. Try Live WaroengPay Gateway if enabled & configured
-    const waroengPayEnabled = process.env.WAROENGPAY_ENABLED === "true";
-    const waroengPayKey = process.env.WAROENGPAY_API_KEY;
+    // 1. Try Live QiosPay Gateway
+    try {
+      const qp = new QiosPayClient();
+      const qpRes = await qp.createInvoice({
+        orderId: invoiceNumber,
+        amount: discountedPrice,
+        description: `Pembayaran ${item.name} (${product.name}) - ${invoiceNumber}`,
+        customerName: data.targetUserId.trim(),
+        customerEmail: data.customerEmail.trim(),
+        customerPhone: data.customerPhone?.trim(),
+        expiredMinutes: 15,
+      });
 
-    if (waroengPayEnabled && waroengPayKey) {
-      try {
-        const wp = new WaroengPayClient();
-        const wpRes = await wp.createCharge({
-          orderNumber: invoiceNumber,
-          grossAmount: discountedPrice,
-          customerEmail: data.customerEmail.trim(),
-          customerPhone: data.customerPhone?.trim(),
-          description: `Pembayaran ${item.name} (${product.name}) - ${invoiceNumber}`,
-        });
-
-        if (wpRes.success && wpRes.qrString) {
-          qrisString = wpRes.qrString;
-          totalAmount = wpRes.totalAmount || wpRes.amount || discountedPrice;
-          uniqueCode = wpRes.uniqueCode || Math.max(0, totalAmount - discountedPrice);
-        }
-      } catch (wpErr) {
-        console.warn("WaroengPay live charge fallback triggered:", wpErr);
+      if (qpRes.success && qpRes.qrisContent) {
+        qrisString = qpRes.qrisContent;
+        totalAmount = qpRes.totalAmount || discountedPrice;
+        uniqueCode = qpRes.uniqueCode || Math.max(0, totalAmount - discountedPrice);
+      } else {
+        console.warn("[createOrder] QiosPay response error:", qpRes.error);
       }
+    } catch (qpErr) {
+      console.warn("[createOrder] QiosPay live invoice exception:", qpErr);
     }
 
     // 2. Fallback to EMVCo dynamic QRIS simulation if offline / test mode
     if (!qrisString) {
       uniqueCode = Math.floor(100 + Math.random() * 900);
       totalAmount = discountedPrice + uniqueCode;
-      qrisString = `00020101021226600016ID.CO.WAROENGPAY0118936009180000000000520458125303360540${totalAmount}5802ID5912XYZPEDIA6007JAKARTA62070703A016304${invoiceNumber.slice(-4)}`;
+      qrisString = `00020101021226610016ID.CO.QIOSPAY0118936009180000000000520458125303360540${totalAmount}5802ID5912XYZPEDIA6007JAKARTA62070703A016304${invoiceNumber.slice(-4)}`;
     }
 
     const orderNotes = cleanPromo && discountAmount > 0
@@ -199,36 +198,34 @@ export async function checkPaymentStatus(invoiceNumber: string) {
       return { success: true, isPaid: true, order };
     }
 
-    // Check with WaroengPay API if configured
-    const waroengPayKey = process.env.WAROENGPAY_API_KEY;
-    if (waroengPayKey) {
-      try {
-        const wp = new WaroengPayClient();
-        const wpStatus = await wp.checkStatus(invoiceNumber);
-        const data = wpStatus?.data || wpStatus;
-        const status = String(data?.status || wpStatus?.status || "").toUpperCase();
+    // Check with QiosPay API
+    try {
+      const qp = new QiosPayClient();
+      const qpStatus = await qp.checkStatus(invoiceNumber);
+      const data = qpStatus?.raw || qpStatus;
+      const status = String(data?.status || qpStatus?.status || "").toUpperCase();
 
-        const isPaid =
-          status === "PAID" ||
-          status === "SETTLED" ||
-          status === "SUCCESS" ||
-          status === "COMPLETED";
+      const isPaid =
+        status === "PAID" ||
+        status === "SETTLED" ||
+        status === "SUCCESS" ||
+        status === "COMPLETED";
 
-        if (isPaid) {
-          const hasExistingSn = order.notes?.includes("SN:");
-          const updated = await prisma.order.update({
-            where: { invoiceNumber },
-            data: {
-              status: "SUCCESS",
-              paidAt: order.paidAt || new Date(),
-              fulfilledAt: order.fulfilledAt || new Date(),
-              ...(hasExistingSn ? {} : { notes: `Pembayaran terverifikasi via WaroengPay API Status: ${status}` }),
-            },
-            include: {
-              product: true,
-              productItem: true,
-            },
-          });
+      if (isPaid) {
+        const hasExistingSn = order.notes?.includes("SN:");
+        const updated = await prisma.order.update({
+          where: { invoiceNumber },
+          data: {
+            status: "SUCCESS",
+            paidAt: order.paidAt || new Date(),
+            fulfilledAt: order.fulfilledAt || new Date(),
+            ...(hasExistingSn ? {} : { notes: `Pembayaran terverifikasi via QiosPay API Status: ${status}` }),
+          },
+          include: {
+            product: true,
+            productItem: true,
+          },
+        });
 
           revalidatePath(`/transaksi/${invoiceNumber}`);
           revalidatePath("/cek-transaksi");
@@ -268,9 +265,8 @@ export async function checkPaymentStatus(invoiceNumber: string) {
           return { success: true, isPaid: true, order: updated };
         }
       } catch (checkErr) {
-        console.warn("WaroengPay checkStatus error:", checkErr);
+        console.warn("QiosPay checkStatus error:", checkErr);
       }
-    }
 
     return { success: true, isPaid: false, order };
   } catch (error: any) {

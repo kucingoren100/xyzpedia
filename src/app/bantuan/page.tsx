@@ -22,7 +22,7 @@ export default function BantuanPage() {
       items: [
         {
           q: "Mengapa nominal transfer QRIS harus tepat sesuai kode unik?",
-          a: "Sistem WaroengPay menggunakan kode unik 3 digit acak (contoh: transfer Rp 20.732) sebagai ID identifikasi pembayaran otomatis di mutasi perbankan. Jika dibayar pas tanpa kode unik atau dibulatkan, sistem tidak dapat mengenali pengirim secara otomatis sehingga pesanan tertunda.",
+          a: "Sistem QiosPay menggunakan kode unik acak (contoh: transfer Rp 20.732) sebagai ID identifikasi pembayaran otomatis di mutasi perbankan. Jika dibayar pas tanpa kode unik atau dibulatkan, sistem tidak dapat mengenali pengirim secara otomatis sehingga pesanan tertunda.",
         },
         {
           q: "Aplikasi apa saja yang didukung untuk scan QRIS?",

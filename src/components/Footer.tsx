@@ -100,7 +100,7 @@ export default function Footer() {
           </div>
 
           <div className="text-gray-400 text-[11px] font-mono">
-            WaroengPay QRIS Dynamic Gateway Engine • ISO/IEC 27001
+            QiosPay QRIS Dynamic Gateway Engine • ISO/IEC 27001
           </div>
         </div>
 

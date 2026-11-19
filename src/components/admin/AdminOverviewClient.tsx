@@ -267,7 +267,7 @@ export default function AdminOverviewClient({ stats, recentOrders }: AdminOvervi
                 </div>
                 <div>
                   <h3 className="text-xs font-black uppercase">Gateway & Webhook</h3>
-                  <p className="text-[11px] font-semibold opacity-75">Konfigurasi API WaroengPay</p>
+                  <p className="text-[11px] font-semibold opacity-75">Konfigurasi API QiosPay</p>
                 </div>
               </div>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

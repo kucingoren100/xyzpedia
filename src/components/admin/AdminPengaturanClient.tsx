@@ -144,7 +144,7 @@ export default function AdminPengaturanClient() {
   }, []);
 
   const copyWebhookUrl = () => {
-    const url = `${window.location.origin}/api/webhooks/waroengpay`;
+    const url = `${window.location.origin}/api/webhooks/qiospay`;
     navigator.clipboard.writeText(url);
     setCopiedWebhook(true);
     setTimeout(() => setCopiedWebhook(false), 2000);
@@ -268,7 +268,7 @@ export default function AdminPengaturanClient() {
             }`}
           >
             <Zap className="w-3.5 h-3.5" />
-            <span>Gateway Pembayaran (WaroengPay)</span>
+            <span>Gateway Pembayaran (QiosPay)</span>
           </button>
 
           <button
@@ -990,7 +990,7 @@ export default function AdminPengaturanClient() {
         )}
 
         {/* ========================================================
-            TAB 2: INTEGRASI GATEWAY WAROENGPAY
+            TAB 2: INTEGRASI GATEWAY QIOSPAY
             ======================================================== */}
         {activeTab === "gateway" && (
           <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#000000] space-y-4">
@@ -1001,7 +1001,7 @@ export default function AdminPengaturanClient() {
                 </span>
                 <div>
                   <h2 className="text-base sm:text-lg font-black uppercase text-carbon dark:text-white font-[var(--font-bricolage)]">
-                    Integrasi WaroengPay (QRIS Dinamis)
+                    Integrasi QiosPay (QRIS Dinamis)
                   </h2>
                   <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                     Konfigurasi endpoint webhook untuk verifikasi pembayaran real-time 24 jam
@@ -1016,13 +1016,13 @@ export default function AdminPengaturanClient() {
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-black uppercase text-carbon dark:text-white block mb-1">
-                  URL Webhook Callback (Masukkan di Dashboard WaroengPay):
+                  URL Webhook Callback (Masukkan di Dashboard QiosPay):
                 </label>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     readOnly
-                    value={typeof window !== "undefined" ? `${window.location.origin}/api/webhooks/waroengpay` : "/api/webhooks/waroengpay"}
+                    value={typeof window !== "undefined" ? `${window.location.origin}/api/webhooks/qiospay` : "/api/webhooks/qiospay"}
                     className="flex-1 px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-mono font-bold text-carbon dark:text-white"
                   />
                   <button
@@ -1039,7 +1039,7 @@ export default function AdminPengaturanClient() {
               <div className="p-3.5 bg-[#dceeff] dark:bg-[#152338] ink-border dark:border-[#2d3f5e] rounded-2xl text-xs font-semibold text-[#003a6b] dark:text-[#bae6fd] space-y-1">
                 <p className="font-bold">💡 Cara Kerja Verifikasi Otomatis:</p>
                 <p className="text-[11px] leading-relaxed">
-                  Saat pembeli berhasil melakukan scan dan membayar QRIS via BCA, DANA, GoPay, OVO, atau ShopeePay, server WaroengPay akan mengirimkan sinyal HTTP POST ke URL di atas. Sistem XYZPEDIA akan langsung mengubah status transaksi menjadi <strong>PAID</strong> dan memicu pengiriman item secara instan, sekaligus mengirimkan notifikasi ke Telegram Anda jika diaktifkan.
+                  Saat pembeli berhasil melakukan scan dan membayar QRIS via BCA, DANA, GoPay, OVO, ShopeePay, atau m-Banking, server QiosPay akan mengirimkan sinyal HTTP POST ke URL di atas. Sistem XYZPEDIA akan langsung mengubah status transaksi menjadi <strong>PAID</strong> dan memicu pengiriman item secara instan, sekaligus mengirimkan notifikasi ke Telegram Anda jika diaktifkan.
                 </p>
               </div>
             </div>
