@@ -76,7 +76,11 @@ export async function GET() {
 
     // 3. Check Digiflazz Provider H2H & VPS Proxy
     const digiUser = process.env.DIGIFLAZZ_USERNAME || "";
-    const digiKey = process.env.DIGIFLAZZ_PRODUCTION_KEY || process.env.DIGIFLAZZ_API_KEY || "";
+    const digiKey =
+      process.env.DIGIFLAZZ_KEY ||
+      process.env.DIGIFLAZZ_PRODUCTION_KEY ||
+      process.env.DIGIFLAZZ_API_KEY ||
+      "";
     const vpsProxy = process.env.VPS_PROXY_URL || "http://103.127.135.158:3001";
     let digiLatency = 0;
     let digiStatus = digiUser && digiKey ? "CONFIGURED" : "CREDENTIALS_MISSING";
@@ -100,13 +104,20 @@ export async function GET() {
     const tgStatus = tgToken && tgChatId ? "CONFIGURED" : "NOT_CONFIGURED";
 
     // 5. Environment Integrity Checklist
+    const hasDigiKey = !!digiKey;
+    const digiKeyName = process.env.DIGIFLAZZ_KEY
+      ? "DIGIFLAZZ_KEY"
+      : process.env.DIGIFLAZZ_PRODUCTION_KEY
+      ? "DIGIFLAZZ_PRODUCTION_KEY"
+      : "DIGIFLAZZ_KEY";
+
     const envAudit = [
       { key: "DATABASE_URL", isSet: !!process.env.DATABASE_URL, label: "Neon PostgreSQL Connection" },
       { key: "QIOSPAY_API_KEY", isSet: !!qiospayKey, label: "QiosPay API Key (Live)" },
       { key: "QIOSPAY_PRIVATE_KEY", isSet: !!process.env.QIOSPAY_PRIVATE_KEY, label: "QiosPay Webhook Secret" },
       { key: "QIOSPAY_MERCHANT_CODE", isSet: !!qiospayMerchant, label: "QiosPay Merchant ID" },
       { key: "DIGIFLAZZ_USERNAME", isSet: !!digiUser, label: "Digiflazz Supplier ID" },
-      { key: "DIGIFLAZZ_PRODUCTION_KEY", isSet: !!digiKey, label: "Digiflazz API Secret" },
+      { key: digiKeyName, isSet: hasDigiKey, label: "Digiflazz API Key / Production Secret" },
       { key: "ADMIN_JWT_SECRET", isSet: !!process.env.ADMIN_JWT_SECRET, label: "HMAC Session Encryption" },
     ];
 
