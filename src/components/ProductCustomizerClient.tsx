@@ -26,7 +26,7 @@ import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrency
 import { getItemSubCategory, getProductSubCategories } from "@/lib/productSubCategories";
 import ProductNoticeBox from "@/components/ProductNoticeBox";
 import PaymentMaintenanceModal from "@/components/PaymentMaintenanceModal";
-import { IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
+import { isProductInMaintenance, IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
 
 interface ProductItem {
   id: string;
@@ -263,6 +263,12 @@ export default function ProductCustomizerClient({ product }: { product: Product 
   const handleOpenMobileModal = () => {
     setErrorMessage("");
 
+    const isUnderMaintenance = isProductInMaintenance(product.categorySlug);
+    if (isUnderMaintenance) {
+      setIsMaintenanceModalOpen(true);
+      return;
+    }
+
     if (!targetUserId.trim()) {
       setErrorMessage(`Mohon isi ${product.targetInputLabel} terlebih dahulu.`);
       window.scrollTo({ top: 120, behavior: "smooth" });
@@ -326,14 +332,15 @@ export default function ProductCustomizerClient({ product }: { product: Product 
       if (!proceed) return;
     }
 
-    if (!selectedItemId) {
-      setErrorMessage("Silakan pilih salah satu nominal atau varian item.");
+    const isUnderMaintenance = isProductInMaintenance(product.categorySlug);
+    if (isUnderMaintenance) {
+      if (isModalOpen) setIsModalOpen(false);
+      setIsMaintenanceModalOpen(true);
       return;
     }
 
-    if (IS_PAYMENT_MAINTENANCE) {
-      if (isModalOpen) setIsModalOpen(false);
-      setIsMaintenanceModalOpen(true);
+    if (!selectedItemId) {
+      setErrorMessage("Silakan pilih salah satu nominal atau varian item.");
       return;
     }
 

@@ -69,17 +69,17 @@ export default function PaymentMaintenanceModal({
           <div>
             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-400/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wide">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Maintenance Mode</span>
+              <span>Pemeliharaan / Perbaikan</span>
             </div>
             <h3 className="font-[var(--font-bricolage)] text-base font-black text-carbon dark:text-white uppercase leading-tight mt-0.5">
-              Sistem Pembayaran
+              Sedang Dalam Pemeliharaan
             </h3>
           </div>
         </div>
 
         {/* Pesan Ringkas & Padat */}
         <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed mb-3">
-          Halo Gamers! 🚀 Gateway pembayaran sedang dalam pemeliharaan berkala untuk persiapan rilis penuh. Pembelian akan segera dibuka kembali dalam waktu dekat!
+          Halo Gamers! 🚀 Layanan pembelian untuk produk ini sedang dalam tahap pemeliharaan / perbaikan berkala. Pembelian akan segera dibuka kembali dalam waktu dekat!
         </p>
 
         {/* Ringkasan Pesanan Mini (1 Kotak Padat) */}

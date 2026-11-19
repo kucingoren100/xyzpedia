@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
-import { IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
+import { isProductInMaintenance, IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
 
 export interface CreateOrderInput {
   productSlug: string;
@@ -19,12 +19,6 @@ export interface CreateOrderInput {
 
 export async function createOrder(data: CreateOrderInput) {
   try {
-    if (IS_PAYMENT_MAINTENANCE) {
-      return {
-        success: false,
-        error: "Sistem pembayaran saat ini sedang dalam pemeliharaan berkala (maintenance). Layanan akan segera dibuka kembali.",
-      };
-    }
     const product = await prisma.product.findUnique({
       where: { slug: data.productSlug },
       include: { items: true },
@@ -32,6 +26,13 @@ export async function createOrder(data: CreateOrderInput) {
 
     if (!product) {
       return { success: false, error: "Produk tidak ditemukan." };
+    }
+
+    if (isProductInMaintenance(product.categorySlug)) {
+      return {
+        success: false,
+        error: "Layanan untuk produk ini sedang dalam pemeliharaan / perbaikan berkala. Pembelian akan segera dibuka kembali.",
+      };
     }
 
     const item = product.items.find((i) => i.id === data.itemId);
