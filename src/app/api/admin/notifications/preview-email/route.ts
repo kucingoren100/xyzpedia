@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getAdminSession } from "@/lib/adminAuth";
 import {
   generateWeeklyReportEmailHtml,
   generateNewOrderEmailHtml,
@@ -11,6 +12,12 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  // Auth guard: only allow authenticated admins
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type") || "weekly";

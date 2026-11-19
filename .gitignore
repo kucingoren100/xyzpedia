@@ -40,3 +40,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Sensitive local data files (notification settings stored in DB for production)
+/data/
+/data/*.json
+
+# SQLite dev database (never commit)
+*.db
+*.db-shm
+*.db-wal

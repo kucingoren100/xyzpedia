@@ -3,7 +3,54 @@ import type { NextRequest } from "next/server";
 
 const AUTH_COOKIE_NAME = "xyz_admin_session";
 
-export function middleware(request: NextRequest) {
+/**
+ * Verify admin token with HMAC-SHA256 signature using Web Crypto API (Edge Runtime compatible).
+ * This prevents forged tokens where only the exp field is set.
+ */
+async function verifyAdminTokenEdge(token: string): Promise<boolean> {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 2) return false;
+    const [encodedPayload, sig] = parts;
+
+    const secret = process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET;
+    if (!secret) return false;
+
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+
+    // Decode base64url signature
+    const base64 = sig.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+    const sigBytes = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
+
+    const isValid = await crypto.subtle.verify(
+      "HMAC",
+      key,
+      sigBytes,
+      enc.encode(encodedPayload)
+    );
+
+    if (!isValid) return false;
+
+    // After signature verified, check expiry
+    const payloadBase64 = encodedPayload.replace(/-/g, "+").replace(/_/g, "/");
+    const payloadPadded = payloadBase64 + "=".repeat((4 - (payloadBase64.length % 4)) % 4);
+    const payloadJson = atob(payloadPadded);
+    const payload = JSON.parse(payloadJson);
+    return !!(payload.exp && Date.now() < payload.exp);
+  } catch {
+    return false;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Only handle /admin paths
@@ -14,22 +61,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
   const isLoginPage = pathname === "/admin/login";
 
-  let isAuthenticated = false;
-
-  if (token) {
-    try {
-      const parts = token.split(".");
-      if (parts.length === 2) {
-        const payloadJson = Buffer.from(parts[0], "base64url").toString("utf8");
-        const payload = JSON.parse(payloadJson);
-        if (payload.exp && Date.now() < payload.exp) {
-          isAuthenticated = true;
-        }
-      }
-    } catch {
-      isAuthenticated = false;
-    }
-  }
+  // Verify token with full HMAC-SHA256 signature check (Edge-compatible)
+  const isAuthenticated = token ? await verifyAdminTokenEdge(token) : false;
 
   // If trying to access protected admin page without auth -> redirect to login
   if (!isAuthenticated && !isLoginPage) {

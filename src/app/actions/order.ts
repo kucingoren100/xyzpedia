@@ -81,9 +81,10 @@ export async function createOrder(data: CreateOrderInput) {
       return { success: false, error: "Alamat email valid wajib diisi untuk bukti pesanan." };
     }
 
-    // Generate Invoice Number: INV-XYZ-YYYYMMDD-XXXX
+    // Generate Invoice Number: INV-XYZ-YYYYMMDD-XXXXXXXXXX (10 hex chars = 16^10 combinations)
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const { randomBytes } = await import("crypto");
+    const randomSuffix = randomBytes(5).toString("hex").toUpperCase();
     const invoiceNumber = `INV-XYZ-${dateStr}-${randomSuffix}`;
 
     // Calculate Promo Discount
@@ -126,11 +127,12 @@ export async function createOrder(data: CreateOrderInput) {
       console.warn("[createOrder] QiosPay live invoice exception:", qpErr);
     }
 
-    // 2. Fallback to EMVCo dynamic QRIS simulation if offline / test mode
+    // 2. If QiosPay unavailable, return error — do NOT create fake QRIS
     if (!qrisString) {
-      uniqueCode = Math.floor(100 + Math.random() * 900);
-      totalAmount = discountedPrice + uniqueCode;
-      qrisString = `00020101021226610016ID.CO.QIOSPAY0118936009180000000000520458125303360540${totalAmount}5802ID5912XYZPEDIA6007JAKARTA62070703A016304${invoiceNumber.slice(-4)}`;
+      return {
+        success: false,
+        error: "Layanan pembayaran QRIS sedang mengalami gangguan sementara. Silakan coba beberapa saat lagi.",
+      };
     }
 
     const orderNotes = cleanPromo && discountAmount > 0
@@ -235,18 +237,27 @@ export async function checkPaymentStatus(invoiceNumber: string) {
 
       if (isPaid) {
         const hasExistingSn = order.notes?.includes("SN:");
-        const updated = await prisma.order.update({
-          where: { invoiceNumber },
+
+        // Atomic claim: only update if still PENDING (prevents double-fulfillment race condition)
+        const claimed = await prisma.order.updateMany({
+          where: { invoiceNumber, status: { in: ["PENDING", "PROCESSING"] } },
           data: {
             status: "SUCCESS",
             paidAt: order.paidAt || new Date(),
             fulfilledAt: order.fulfilledAt || new Date(),
             ...(hasExistingSn ? {} : { notes: `Pembayaran terverifikasi via QiosPay API Status: ${status}` }),
           },
-          include: {
-            product: true,
-            productItem: true,
-          },
+        });
+
+        if (claimed.count === 0) {
+          // Already handled by webhook, just return current state
+          const current = await prisma.order.findUnique({ where: { invoiceNumber }, include: { product: true, productItem: true } });
+          return { success: true, isPaid: true, order: current! };
+        }
+
+        const updated = await prisma.order.findUniqueOrThrow({
+          where: { invoiceNumber },
+          include: { product: true, productItem: true },
         });
 
           revalidatePath(`/transaksi/${invoiceNumber}`);

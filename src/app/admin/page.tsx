@@ -1,9 +1,18 @@
 import { prisma } from "@/lib/prisma";
+import { getAdminSession } from "@/lib/adminAuth";
+import { redirect } from "next/navigation";
 import AdminOverviewClient from "@/components/admin/AdminOverviewClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
+  // Double-check: middleware only verifies /admin/* paths, but we also
+  // validate the HMAC-signed session here as a defense-in-depth measure.
+  const session = await getAdminSession();
+  if (!session) {
+    redirect("/admin/login");
+  }
+
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 

@@ -1,25 +1,30 @@
-import { readFile, writeFile, mkdir } from "fs/promises";
-import path from "path";
 import nodemailer from "nodemailer";
 import {
   NotificationSettings,
   DEFAULT_NOTIFICATION_SETTINGS,
 } from "@/types/notifications";
 import { generateReportCardPng } from "./reportCardImage";
+import { prisma } from "./prisma";
 
 export type { NotificationSettings };
 export { DEFAULT_NOTIFICATION_SETTINGS };
 
-const SETTINGS_DIR = path.join(process.cwd(), "data");
-const SETTINGS_FILE = path.join(SETTINGS_DIR, "notification-settings.json");
+const SETTINGS_DB_KEY = "notification_settings";
 
 /**
- * Get notification settings with persistence in data/notification-settings.json
+ * Get notification settings — stored in SystemSetting table (Neon DB).
+ * Falls back to DEFAULT_NOTIFICATION_SETTINGS when not set.
+ * This replaces the old file-based approach (data/notification-settings.json)
+ * which was incompatible with Vercel's ephemeral serverless filesystem.
  */
 export async function getNotificationSettings(): Promise<NotificationSettings> {
   try {
-    const raw = await readFile(SETTINGS_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
+    const row = await prisma.systemSetting.findUnique({
+      where: { key: SETTINGS_DB_KEY },
+    });
+    if (!row) return DEFAULT_NOTIFICATION_SETTINGS;
+
+    const parsed = JSON.parse(row.value);
     return {
       ...DEFAULT_NOTIFICATION_SETTINGS,
       ...parsed,
@@ -42,7 +47,7 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
 }
 
 /**
- * Save notification settings
+ * Save notification settings to SystemSetting table (Neon DB).
  */
 export async function saveNotificationSettings(
   settings: Partial<NotificationSettings>
@@ -66,10 +71,13 @@ export async function saveNotificationSettings(
   };
 
   try {
-    await mkdir(SETTINGS_DIR, { recursive: true });
-    await writeFile(SETTINGS_FILE, JSON.stringify(merged, null, 2), "utf-8");
+    await prisma.systemSetting.upsert({
+      where: { key: SETTINGS_DB_KEY },
+      update: { value: JSON.stringify(merged) },
+      create: { key: SETTINGS_DB_KEY, value: JSON.stringify(merged) },
+    });
   } catch (err) {
-    console.error("Gagal menyimpan notification settings:", err);
+    console.error("Gagal menyimpan notification settings ke DB:", err);
   }
 
   return merged;

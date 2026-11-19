@@ -85,33 +85,40 @@ export async function getAdminSession(): Promise<AdminSessionPayload | null> {
 }
 
 /**
- * Verify admin credentials against environment variables or database
+ * Verify admin credentials against environment variables or database.
+ * Uses timing-safe comparison to prevent timing attacks on master password.
  */
 export async function verifyAdminCredentials(username: string, pass: string): Promise<boolean> {
   const masterUsername = process.env.ADMIN_USERNAME;
   const masterPassword = process.env.ADMIN_PASSWORD;
 
-  // Check master credentials strictly when defined in environment variables
-  if (masterUsername && masterPassword && username === masterUsername && pass === masterPassword) {
-    return true;
+  // Check master credentials with timing-safe comparison
+  if (masterUsername && masterPassword && username === masterUsername) {
+    const bufA = Buffer.from(pass);
+    const bufB = Buffer.from(masterPassword);
+    if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
+      return true;
+    }
+    // Even if length differs, return false (don't short-circuit timing)
+    return false;
   }
 
-  // Check database Admin table if exists
+  // Check database Admin table with Prisma (safe from SQL injection)
   try {
-    const admins = await prisma.$queryRawUnsafe<any[]>(
-      'SELECT * FROM "Admin" WHERE username = ? LIMIT 1',
-      username
-    );
-    if (admins && admins.length > 0) {
-      const dbAdmin = admins[0];
-      // Compare plain or sha256
+    const dbAdmin = await prisma.admin.findUnique({
+      where: { username },
+    });
+    if (dbAdmin) {
+      // Compare sha256 hash
       const hashedInput = crypto.createHash("sha256").update(pass).digest("hex");
-      if (dbAdmin.password === pass || dbAdmin.password === hashedInput) {
+      const bufA = Buffer.from(hashedInput);
+      const bufB = Buffer.from(dbAdmin.password);
+      if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
         return true;
       }
     }
   } catch {
-    // Ignore database lookup error and rely on master credentials
+    // Ignore database lookup error; master credentials only
   }
 
   return false;

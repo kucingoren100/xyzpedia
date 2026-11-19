@@ -49,32 +49,14 @@ export async function POST(req: NextRequest) {
       payload.ref_id ||
       payload.order_id;
 
-    // Verify signature
+    // Verify signature – reject immediately if invalid (no bypass allowed)
     const isValid = qp.verifyWebhookSignature(rawBody, signature);
     if (!isValid) {
-      // Fallback verification: query QiosPay API directly if signature failed
-      if (invoiceNumber) {
-        const directCheck = await qp.checkStatus(invoiceNumber);
-        if (directCheck.success && directCheck.status === "PAID") {
-          console.log(
-            `[QiosPay Webhook] Signature check bypassed via verified API status for ${invoiceNumber}`
-          );
-        } else {
-          console.warn(
-            `[QiosPay Webhook] Signature mismatch and API check not PAID for ${invoiceNumber}`
-          );
-          return NextResponse.json(
-            { error: "Invalid signature" },
-            { status: 401 }
-          );
-        }
-      } else {
-        console.warn("[QiosPay Webhook] Signature mismatch, no invoiceNumber.");
-        return NextResponse.json(
-          { error: "Invalid signature" },
-          { status: 401 }
-        );
-      }
+      console.warn(`[QiosPay Webhook] Invalid signature for invoice: ${invoiceNumber || "unknown"}`);
+      return NextResponse.json(
+        { error: "Invalid signature" },
+        { status: 401 }
+      );
     }
 
     if (!invoiceNumber) {
@@ -110,8 +92,24 @@ export async function POST(req: NextRequest) {
     const hasExistingSn = !!order.notes && order.notes.includes("SN:");
 
     if (status === "PAID" || status === "INVOICE.PAID" || status === "SUCCESS") {
-      const updatedOrder = await prisma.order.update({
-        where: { invoiceNumber },
+      // Amount verification: tolak jika ada selisih lebih dari Rp 1.000 dari total order
+      const webhookAmount = Number(eventData.amount || payload.amount || 0);
+      if (webhookAmount > 0) {
+        const allowedDelta = (order.uniqueCode || 0) + 1000;
+        if (Math.abs(webhookAmount - order.totalAmount) > allowedDelta) {
+          console.warn(
+            `[QiosPay Webhook] Amount mismatch for ${invoiceNumber}: webhook=${webhookAmount}, order=${order.totalAmount}`
+          );
+          return NextResponse.json(
+            { error: "Amount mismatch" },
+            { status: 400 }
+          );
+        }
+      }
+
+      // Atomic claim: hanya update jika masih PENDING (mencegah race condition double-fulfillment)
+      const claimed = await prisma.order.updateMany({
+        where: { invoiceNumber, status: "PENDING" },
         data: {
           status: "PAID",
           paidAt: new Date(),
@@ -121,6 +119,20 @@ export async function POST(req: NextRequest) {
                 notes: `Settled via QiosPay Webhook at ${new Date().toISOString()}`,
               }),
         },
+      });
+
+      if (claimed.count === 0) {
+        // Already claimed by another process (race condition)
+        console.log(`[QiosPay Webhook] Order ${invoiceNumber} already claimed by concurrent process.`);
+        return NextResponse.json({
+          success: true,
+          message: "Order already being processed.",
+        });
+      }
+
+      // Reload updated order for fulfillment
+      const updatedOrder = await prisma.order.findUniqueOrThrow({
+        where: { invoiceNumber },
         include: { product: true, productItem: true },
       });
 
@@ -176,8 +188,12 @@ export async function POST(req: NextRequest) {
     }
 
     if (status === "EXPIRED" || status === "CANCELLED") {
-      await prisma.order.update({
-        where: { invoiceNumber },
+      // Status guard: only process if still PENDING (never override PAID/SUCCESS)
+      await prisma.order.updateMany({
+        where: {
+          invoiceNumber,
+          status: "PENDING",
+        },
         data: {
           status: status === "EXPIRED" ? "EXPIRED" : "CANCELLED",
         },

@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getAdminSession } from "@/lib/adminAuth";
 import { WaroengkuyClient } from "@/lib/waroengkuy";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  // Auth guard: only allow authenticated admins
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const client = new WaroengkuyClient();
     const [ppobRes, catalogRes] = await Promise.allSettled([
@@ -65,6 +72,12 @@ export async function GET() {
 }
 
 export async function POST(req?: Request) {
+  // Auth guard: only allow authenticated admins
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = req ? await req.json().catch(() => ({})) : {};
     const forceUpdateSellingPrice = body?.updateSellingPrice ?? true;
