@@ -7,6 +7,7 @@ import ProductCustomizerClient from "@/components/ProductCustomizerClient";
 import RelatedProductsSection from "@/components/RelatedProductsSection";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
+import { getWebCondition } from "@/lib/webCondition";
 
 export const revalidate = 60;
 
@@ -71,6 +72,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) {
     notFound();
   }
+
+  const webCondition = await getWebCondition();
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-6">
@@ -173,7 +176,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       {/* Main Checkout Experience */}
-      <ProductCustomizerClient product={product} />
+      <ProductCustomizerClient product={product} initialCondition={webCondition} />
 
       {/* Produk Terkait / Produk Lainnya di XYZPEDIA */}
       <RelatedProductsSection

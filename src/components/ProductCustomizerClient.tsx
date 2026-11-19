@@ -26,7 +26,11 @@ import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrency
 import { getItemSubCategory, getProductSubCategories } from "@/lib/productSubCategories";
 import ProductNoticeBox from "@/components/ProductNoticeBox";
 import PaymentMaintenanceModal from "@/components/PaymentMaintenanceModal";
-import { isProductInMaintenance, IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
+import {
+  WebConditionSettings,
+  checkIsCategoryUnderMaintenance,
+  DEFAULT_WEB_CONDITION,
+} from "@/lib/webCondition";
 
 interface ProductItem {
   id: string;
@@ -58,8 +62,18 @@ interface Product {
   items: ProductItem[];
 }
 
-export default function ProductCustomizerClient({ product }: { product: Product }) {
+export default function ProductCustomizerClient({
+  product,
+  initialCondition,
+}: {
+  product: Product;
+  initialCondition?: WebConditionSettings;
+}) {
   const router = useRouter();
+
+  // Dynamic Web Condition
+  const condition = initialCondition || DEFAULT_WEB_CONDITION;
+  const isUnderMaintenance = checkIsCategoryUnderMaintenance(condition, product.categorySlug);
 
   // Form State
   const [targetUserId, setTargetUserId] = useState("");
@@ -263,7 +277,7 @@ export default function ProductCustomizerClient({ product }: { product: Product 
   const handleOpenMobileModal = () => {
     setErrorMessage("");
 
-    const isUnderMaintenance = isProductInMaintenance(product.categorySlug);
+    const isUnderMaintenance = checkIsCategoryUnderMaintenance(condition, product.categorySlug);
     if (isUnderMaintenance) {
       setIsMaintenanceModalOpen(true);
       return;
@@ -298,11 +312,6 @@ export default function ProductCustomizerClient({ product }: { product: Product 
       if (!proceed) return;
     }
 
-    if (IS_PAYMENT_MAINTENANCE) {
-      setIsMaintenanceModalOpen(true);
-      return;
-    }
-
     setIsModalOpen(true);
   };
 
@@ -332,7 +341,7 @@ export default function ProductCustomizerClient({ product }: { product: Product 
       if (!proceed) return;
     }
 
-    const isUnderMaintenance = isProductInMaintenance(product.categorySlug);
+    const isUnderMaintenance = checkIsCategoryUnderMaintenance(condition, product.categorySlug);
     if (isUnderMaintenance) {
       if (isModalOpen) setIsModalOpen(false);
       setIsMaintenanceModalOpen(true);
@@ -1242,6 +1251,11 @@ export default function ProductCustomizerClient({ product }: { product: Product 
         itemName={selectedItem?.name}
         targetId={targetUserId ? `${targetUserId}${targetZoneId ? ` (${targetZoneId})` : ""}` : undefined}
         totalPrice={finalPrice}
+        badge={condition.badge}
+        title={condition.title}
+        description={condition.description}
+        secondaryText={condition.secondaryText}
+        estimatedTime={condition.estimatedTime}
       />
     </form>
   );

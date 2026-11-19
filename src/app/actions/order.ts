@@ -6,6 +6,7 @@ import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 import { isProductInMaintenance, IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
+import { getWebCondition, checkIsCategoryUnderMaintenance } from "@/lib/webCondition";
 
 export interface CreateOrderInput {
   productSlug: string;
@@ -28,10 +29,11 @@ export async function createOrder(data: CreateOrderInput) {
       return { success: false, error: "Produk tidak ditemukan." };
     }
 
-    if (isProductInMaintenance(product.categorySlug)) {
+    const condition = await getWebCondition();
+    if (checkIsCategoryUnderMaintenance(condition, product.categorySlug)) {
       return {
         success: false,
-        error: "Layanan untuk produk ini sedang dalam pemeliharaan / perbaikan berkala. Pembelian akan segera dibuka kembali.",
+        error: `${condition.title}. ${condition.description}`,
       };
     }
 

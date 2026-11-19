@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { X, Sparkles, AlertTriangle } from "lucide-react";
+import { X, Sparkles, Clock, AlertTriangle } from "lucide-react";
 
 interface PaymentMaintenanceModalProps {
   isOpen: boolean;
@@ -10,6 +10,11 @@ interface PaymentMaintenanceModalProps {
   itemName?: string;
   targetId?: string;
   totalPrice?: number;
+  badge?: string;
+  title?: string;
+  description?: string;
+  secondaryText?: string;
+  estimatedTime?: string;
 }
 
 export default function PaymentMaintenanceModal({
@@ -18,6 +23,11 @@ export default function PaymentMaintenanceModal({
   productName,
   itemName,
   totalPrice,
+  badge,
+  title,
+  description,
+  secondaryText,
+  estimatedTime,
 }: PaymentMaintenanceModalProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -36,6 +46,13 @@ export default function PaymentMaintenanceModal({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
+
+  const displayBadge = badge || "PEMELIHARAAN SISTEM • MAINTENANCE";
+  const displayTitle = title || "Sedang Dalam Pemeliharaan";
+  const displayDesc =
+    description ||
+    "Halo Gamers! 🚀 Layanan pembelian sedang dalam tahap pemeliharaan / perbaikan berkala. Pembelian akan segera dibuka kembali dalam waktu dekat!";
+  const displayEst = estimatedTime || "Estimasi Buka: Segera (Coming Soon)";
 
   return (
     <div
@@ -69,18 +86,26 @@ export default function PaymentMaintenanceModal({
           <div>
             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-400/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wide">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Pemeliharaan / Perbaikan</span>
+              <span>{displayBadge}</span>
             </div>
             <h3 className="font-[var(--font-bricolage)] text-base font-black text-carbon dark:text-white uppercase leading-tight mt-0.5">
-              Sedang Dalam Pemeliharaan
+              {displayTitle}
             </h3>
           </div>
         </div>
 
         {/* Pesan Ringkas & Padat */}
         <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-relaxed mb-3">
-          Halo Gamers! 🚀 Layanan pembelian untuk produk ini sedang dalam tahap pemeliharaan / perbaikan berkala. Pembelian akan segera dibuka kembali dalam waktu dekat!
+          {displayDesc}
         </p>
+
+        {/* Estimasi Waktu Buka */}
+        {displayEst && (
+          <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-[#26201a] border border-amber-200 dark:border-amber-900/50 rounded-xl text-[11px] font-bold text-amber-800 dark:text-amber-300 mb-3">
+            <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+            <span>{displayEst}</span>
+          </div>
+        )}
 
         {/* Ringkasan Pesanan Mini (1 Kotak Padat) */}
         {(productName || itemName) && (
@@ -106,7 +131,7 @@ export default function PaymentMaintenanceModal({
         {/* Satu Tombol Tunggal untuk Menutup */}
         <button
           onClick={onClose}
-          className="w-full py-2.5 px-4 bg-carbon text-white dark:bg-[#ffd731] dark:text-black font-black uppercase text-xs rounded-xl hover:bg-[#fb4903] dark:hover:bg-[#f5c800] active:scale-95 transition-all shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center gap-1.5"
+          className="w-full py-2.5 px-4 bg-carbon text-white dark:bg-[#ffd731] dark:text-black font-black uppercase text-xs rounded-xl hover:bg-[#fb4903] dark:hover:bg-[#f5c800] active:scale-95 transition-all shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span>Oke, Mengerti</span>

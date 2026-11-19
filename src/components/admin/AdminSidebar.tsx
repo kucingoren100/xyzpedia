@@ -10,6 +10,7 @@ import {
   LogOut,
   ExternalLink,
   ShieldCheck,
+  ShieldAlert,
   Moon,
   Sun,
   X,
@@ -69,6 +70,14 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       active: pathname.startsWith("/admin/stok"),
       badge: "H2H",
       badgeColor: "bg-[#38bdf8] text-black",
+    },
+    {
+      label: "Kondisi Web",
+      href: "/admin/kondisi-web",
+      icon: ShieldAlert,
+      active: pathname.startsWith("/admin/kondisi-web"),
+      badge: "Kontrol",
+      badgeColor: "bg-[#fb4903] text-white",
     },
     {
       label: "Pengaturan",
