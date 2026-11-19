@@ -10,10 +10,16 @@ export interface AdminSessionPayload {
 }
 
 const AUTH_COOKIE_NAME = "xyz_admin_session";
-const FALLBACK_SECRET = "xyzpedia_super_secret_admin_token_key_2026";
 
 function getSecret(): string {
-  return process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET || FALLBACK_SECRET;
+  const secret = process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("ADMIN_JWT_SECRET environment variable is required in production.");
+    }
+    return "dev_secret_only_for_local_debugging_purposes";
+  }
+  return secret;
 }
 
 /**
@@ -82,11 +88,11 @@ export async function getAdminSession(): Promise<AdminSessionPayload | null> {
  * Verify admin credentials against environment variables or database
  */
 export async function verifyAdminCredentials(username: string, pass: string): Promise<boolean> {
-  const masterUsername = process.env.ADMIN_USERNAME || "admin";
-  const masterPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const masterUsername = process.env.ADMIN_USERNAME;
+  const masterPassword = process.env.ADMIN_PASSWORD;
 
-  // Check master credentials
-  if (username === masterUsername && pass === masterPassword) {
+  // Check master credentials strictly when defined in environment variables
+  if (masterUsername && masterPassword && username === masterUsername && pass === masterPassword) {
     return true;
   }
 

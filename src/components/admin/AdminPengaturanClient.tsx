@@ -1240,7 +1240,7 @@ export default function AdminPengaturanClient() {
                   <div className="space-y-1 text-[11px] text-gray-600 dark:text-gray-300">
                     <p className="flex justify-between">
                       <span className="text-gray-400">Merchant Code:</span>
-                      <span className="font-mono font-bold">{healthData?.gateways?.qiospay?.merchantCode || "314657669869"}</span>
+                      <span className="font-mono font-bold">{healthData?.gateways?.qiospay?.merchantCode || "Terkonfigurasi"}</span>
                     </p>
                     <p className="flex justify-between">
                       <span className="text-gray-400">Metode:</span>
@@ -1270,12 +1270,14 @@ export default function AdminPengaturanClient() {
                   </div>
                   <div className="space-y-1 text-[11px] text-gray-600 dark:text-gray-300">
                     <p className="flex justify-between">
-                      <span className="text-gray-400">VPS Static IP:</span>
-                      <span className="font-mono font-bold text-sky-600 dark:text-sky-400">103.127.135.158</span>
+                      <span className="text-gray-400">VPS Proxy Bridge:</span>
+                      <span className="font-mono font-bold text-sky-600 dark:text-sky-400">
+                        {healthData?.gateways?.digiflazz?.vpsProxyIp || "Terkonfigurasi"}
+                      </span>
                     </p>
                     <p className="flex justify-between">
-                      <span className="text-gray-400">Bridge Port:</span>
-                      <span className="font-mono font-bold">3001 (Active)</span>
+                      <span className="text-gray-400">Akun Supplier:</span>
+                      <span className="font-mono font-bold">{healthData?.gateways?.digiflazz?.username || "Terkonfigurasi"}</span>
                     </p>
                     <p className="flex justify-between">
                       <span className="text-gray-400">Fulfillment:</span>

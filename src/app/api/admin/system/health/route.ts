@@ -47,7 +47,7 @@ export async function GET() {
 
     // 2. Check QiosPay Gateway
     const qiospayKey = process.env.QIOSPAY_API_KEY || "";
-    const qiospayMerchant = process.env.QIOSPAY_MERCHANT_CODE || "314657669869";
+    const qiospayMerchant = process.env.QIOSPAY_MERCHANT_CODE || "";
     const qiospayUrl = (
       process.env.QIOSPAY_BASE_URL ||
       process.env.QIOSPAY_BASE_UR ||
@@ -81,11 +81,11 @@ export async function GET() {
       process.env.DIGIFLAZZ_PRODUCTION_KEY ||
       process.env.DIGIFLAZZ_API_KEY ||
       "";
-    const vpsProxy = process.env.VPS_PROXY_URL || "http://103.127.135.158:3001";
+    const vpsProxy = process.env.VPS_PROXY_URL || "";
     let digiLatency = 0;
     let digiStatus = digiUser && digiKey ? "CONFIGURED" : "CREDENTIALS_MISSING";
 
-    if (digiUser && digiKey) {
+    if (digiUser && digiKey && vpsProxy) {
       try {
         const t0 = performance.now();
         const res = await fetch(`${vpsProxy}/ping`, {
@@ -135,14 +135,14 @@ export async function GET() {
       gateways: {
         qiospay: {
           status: qiospayStatus,
-          merchantCode: qiospayMerchant,
+          merchantCode: qiospayMerchant ? `${qiospayMerchant.slice(0, 4)}***` : "Belum diatur",
           baseUrl: qiospayUrl,
           latency: qiospayLatency,
         },
         digiflazz: {
           status: digiStatus,
           username: digiUser ? `${digiUser.slice(0, 3)}***` : "Belum diisi",
-          vpsProxyIp: "103.127.135.158 (Static Bridge)",
+          vpsProxyIp: vpsProxy ? "Terkonfigurasi (Static IP Bridge)" : "Belum diatur (Direct)",
           latency: digiLatency,
         },
         telegram: {

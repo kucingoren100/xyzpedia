@@ -87,9 +87,7 @@ export async function fulfillOrderWithSupplier(order: FulfillOrderInput) {
     }
   }
 
-  const apiKey =
-    process.env.WAROENGKUY_API_KEY ||
-    "wrk_15f6505ecd7be057da1448373998d9fb39b7d24a";
+  const apiKey = process.env.WAROENGKUY_API_KEY || "";
   const baseUrl = (
     process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1"
   ).replace(/\/$/, "");
