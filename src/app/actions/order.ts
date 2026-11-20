@@ -192,12 +192,48 @@ export async function getOrderDetails(invoiceNumber: string) {
     const order = await prisma.order.findUnique({
       where: { invoiceNumber },
       include: {
-        product: true,
-        productItem: true,
+        product: {
+          select: {
+            name: true,
+            slug: true,
+            categorySlug: true,
+            developer: true,
+            thumbnailUrl: true,
+          },
+        },
+        productItem: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
-    return order;
+    if (!order) return null;
+
+    // Mask sensitive fields and remove raw notes or unused qris string
+    return {
+      id: order.id,
+      invoiceNumber: order.invoiceNumber,
+      targetUserId: order.targetUserId,
+      targetZoneId: order.targetZoneId,
+      customerEmail: maskEmail(order.customerEmail),
+      customerPhone: order.customerPhone ? maskPhone(order.customerPhone) : null,
+      basePrice: order.basePrice,
+      uniqueCode: order.uniqueCode,
+      fee: order.fee,
+      totalAmount: order.totalAmount,
+      status: order.status,
+      // Only send QRIS string when order is pending
+      qrisString: order.status === "PENDING" ? order.qrisString : null,
+      paidAt: order.paidAt,
+      createdAt: order.createdAt,
+      product: order.product,
+      productItem: order.productItem,
+      sn: (order as any).sn || null,
+      supplierStatus: (order as any).supplierStatus || null,
+      notes: order.notes, // Used internally by client fallback if structured sn is not yet populated
+    };
   } catch (error) {
     console.error("Get order details error:", error);
     return null;
