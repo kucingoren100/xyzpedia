@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ProductCard from "./ProductCard";
 import { isProductOutOfStock, sortProductsByAvailability } from "@/lib/stock";
+import { fuzzySearchProducts } from "@/lib/searchHelper";
 import {
   Search,
   Zap,
@@ -158,15 +159,13 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
   }, [inputPhone]);
 
   const filteredProducts = useMemo(() => {
-    const list = products.filter((p) => {
-      const matchesCategory =
-        selectedCategory === "all" || p.categorySlug === selectedCategory;
-      const matchesSearch =
-        searchQuery.trim() === "" ||
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (p.developer && p.developer.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesCategory && matchesSearch;
+    const categoryFiltered = products.filter((p) => {
+      return selectedCategory === "all" || p.categorySlug === selectedCategory;
     });
+
+    const list = searchQuery.trim()
+      ? fuzzySearchProducts(categoryFiltered, searchQuery)
+      : categoryFiltered;
 
     const categoryOrderMap = new Map<string, number>();
     categories.forEach((c, idx) => {
