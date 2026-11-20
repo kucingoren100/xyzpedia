@@ -91,20 +91,23 @@ export async function DELETE(
     const { id } = await params;
     const existing = await prisma.product.findUnique({
       where: { id },
-      select: { name: true },
+      select: { id: true, name: true },
     });
 
     if (!existing) {
       return NextResponse.json({ success: false, message: "Produk tidak ditemukan." }, { status: 404 });
     }
 
-    await prisma.product.delete({
-      where: { id },
+    // Clean transaction delete: remove associated orders & items first to prevent FK constraint failures
+    await prisma.$transaction(async (tx) => {
+      await tx.order.deleteMany({ where: { productId: id } });
+      await tx.productItem.deleteMany({ where: { productId: id } });
+      await tx.product.delete({ where: { id } });
     });
 
     return NextResponse.json({
       success: true,
-      message: `Produk "${existing.name}" berhasil dihapus.`,
+      message: `Produk "${existing.name}" berhasil dihapus permanen dari sistem.`,
     });
   } catch (error: any) {
     console.error("Product delete error:", error);

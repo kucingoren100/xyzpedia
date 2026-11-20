@@ -82,8 +82,8 @@ export async function createOrder(data: CreateOrderInput) {
       include: { items: true },
     });
 
-    if (!product) {
-      return { success: false, error: "Produk tidak ditemukan." };
+    if (!product || !product.isActive) {
+      return { success: false, error: "Produk sedang tidak aktif atau tidak ditemukan." };
     }
 
     const condition = await getWebCondition();

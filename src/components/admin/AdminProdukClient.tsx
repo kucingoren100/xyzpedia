@@ -269,6 +269,11 @@ export default function AdminProdukClient({
         if (activeProduct?.id === prod.id) {
           setActiveProduct({ ...activeProduct, isActive: nextStatus });
         }
+        setActionMsg(
+          nextStatus
+            ? `✓ Produk "${prod.name}" sekarang ONLINE (aktif & tampil di katalog pembeli).`
+            : `✓ Produk "${prod.name}" sekarang OFFLINE (dinonaktifkan & disembunyikan dari pembeli).`
+        );
       }
     } catch {
       alert("Gagal mengubah status aktif produk.");
@@ -635,10 +640,15 @@ export default function AdminProdukClient({
 
   // Delete entire product
   const handleDeleteProduct = async (prod: Product) => {
-    if (!confirm(`Yakin ingin menghapus produk "${prod.name}" beserta seluruh datanya? Tindakan ini tidak dapat dibatalkan.`)) {
+    if (
+      !confirm(
+        `PERINGATAN: Apakah Anda yakin ingin MENGHAPUS PERMANEN produk "${prod.name}" beserta seluruh varian dan riwayatnya dari sistem?\n\nTindakan ini TIDAK DAPAT DIBATALKAN!`
+      )
+    ) {
       return;
     }
     try {
+      setLoading(true);
       const res = await fetch(`/api/admin/products/${prod.id}`, {
         method: "DELETE",
       });
@@ -648,12 +658,15 @@ export default function AdminProdukClient({
         if (activeProduct?.id === prod.id) {
           setActiveProduct(null);
         }
-        alert(`Produk "${prod.name}" telah dihapus.`);
+        setActionMsg(`✓ Produk "${prod.name}" berhasil dihapus secara permanen dari sistem.`);
+        alert(`✓ Sukses: Produk "${prod.name}" telah dihapus permanen dari sistem.`);
       } else {
         alert("Gagal menghapus produk: " + data.message);
       }
     } catch (err: any) {
       alert("Gagal menghapus: " + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -855,14 +868,15 @@ export default function AdminProdukClient({
                     <button
                       type="button"
                       onClick={() => handleToggleActive(p)}
-                      className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase ink-border transition-all cursor-pointer shrink-0 shadow-[1px_1px_0px_#000000] ${
+                      className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase ink-border transition-all cursor-pointer shrink-0 shadow-[1px_1px_0px_#000000] flex items-center gap-1.5 active:scale-95 ${
                         p.isActive
                           ? "bg-[#55db9c] text-black hover:bg-emerald-400"
                           : "bg-[#ffdad6] dark:bg-[#3d141a] text-[#93000a] dark:text-[#fca5a5] hover:bg-red-200"
                       }`}
-                      title="Klik untuk ubah status online/offline"
+                      title="Klik untuk ubah status Online / Offline di katalog pembeli"
                     >
-                      {p.isActive ? "ONLINE" : "OFFLINE"}
+                      <span className={`w-1.5 h-1.5 rounded-full ${p.isActive ? "bg-black" : "bg-red-600"}`} />
+                      <span>{p.isActive ? "ONLINE" : "OFFLINE"}</span>
                     </button>
                   </div>
 
@@ -953,15 +967,19 @@ export default function AdminProdukClient({
                     <h3 className="text-base sm:text-lg font-black uppercase text-carbon dark:text-white font-[var(--font-bricolage)]">
                       {activeProduct.name}
                     </h3>
-                    <span
-                      className={`px-2 py-0.5 rounded text-[9px] font-black ink-border uppercase ${
+                    <button
+                      type="button"
+                      onClick={() => handleToggleActive(activeProduct)}
+                      className={`px-2.5 py-1 rounded-lg text-[9px] font-black ink-border uppercase flex items-center gap-1.5 shadow-[1px_1px_0px_#000000] cursor-pointer active:scale-95 transition-all ${
                         activeProduct.isActive
-                          ? "bg-[#55db9c] text-black"
-                          : "bg-[#ffdad6] dark:bg-[#3d141a] text-[#93000a] dark:text-[#fca5a5]"
+                          ? "bg-[#55db9c] text-black hover:bg-emerald-400"
+                          : "bg-[#ffdad6] dark:bg-[#3d141a] text-[#93000a] dark:text-[#fca5a5] hover:bg-red-200"
                       }`}
+                      title="Klik untuk ubah status Online / Offline di katalog pembeli"
                     >
-                      {activeProduct.isActive ? "ONLINE" : "OFFLINE"}
-                    </span>
+                      <span className={`w-1.5 h-1.5 rounded-full ${activeProduct.isActive ? "bg-black" : "bg-red-600"}`} />
+                      <span>{activeProduct.isActive ? "ONLINE" : "OFFLINE"}</span>
+                    </button>
                   </div>
                   <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                     {activeProduct.category.name} • {activeProduct.developer || "Official Publisher"}
@@ -969,14 +987,26 @@ export default function AdminProdukClient({
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setActiveProduct(null)}
-                className="w-8 h-8 rounded-full bg-[#f3f4f6] dark:bg-[#252538] hover:bg-[#ffdad6] dark:hover:bg-red-900/40 active:scale-95 ink-border flex items-center justify-center cursor-pointer transition-colors"
-                aria-label="Tutup"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleDeleteProduct(activeProduct)}
+                  className="px-3 py-1.5 rounded-xl bg-[#ffdad6] dark:bg-[#3d141a] text-[#93000a] dark:text-[#fca5a5] hover:bg-red-200 dark:hover:bg-red-900/60 ink-border text-xs font-black uppercase flex items-center gap-1.5 transition-colors cursor-pointer shadow-[1px_1px_0px_#000000]"
+                  title="Hapus Produk Permanen"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Hapus Produk</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveProduct(null)}
+                  className="w-8 h-8 rounded-full bg-[#f3f4f6] dark:bg-[#252538] hover:bg-[#ffdad6] dark:hover:bg-red-900/40 active:scale-95 ink-border flex items-center justify-center cursor-pointer transition-colors"
+                  aria-label="Tutup"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* Modal Tabs */}
