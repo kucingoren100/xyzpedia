@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import nodemailer from "nodemailer";
 import {
   NotificationSettings,
@@ -12,10 +13,64 @@ export { DEFAULT_NOTIFICATION_SETTINGS };
 const SETTINGS_DB_KEY = "notification_settings";
 
 /**
+ * AES-256-GCM encryption/decryption helpers using SETTINGS_ENCRYPTION_KEY (base64 32 bytes)
+ */
+function getEncryptionKey(): Buffer | null {
+  const envKey = process.env.SETTINGS_ENCRYPTION_KEY;
+  if (!envKey) return null;
+  try {
+    const buf = Buffer.from(envKey, "base64");
+    return buf.length === 32 ? buf : null;
+  } catch {
+    return null;
+  }
+}
+
+export function encryptSecret(plainText: string): string {
+  if (!plainText) return "";
+  const key = getEncryptionKey();
+  if (!key) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("SETTINGS_ENCRYPTION_KEY is required in production to store secrets.");
+    }
+    return plainText; // Dev fallback if not set
+  }
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+  const enc = Buffer.concat([cipher.update(plainText, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return `enc:v1:${iv.toString("base64")}:${tag.toString("base64")}:${enc.toString("base64")}`;
+}
+
+export function decryptSecret(cipherText: string): string {
+  if (!cipherText) return "";
+  if (!cipherText.startsWith("enc:v1:")) {
+    // Backward compatible with existing plaintext stored in DB
+    return cipherText;
+  }
+  const key = getEncryptionKey();
+  if (!key) {
+    return "";
+  }
+  try {
+    const parts = cipherText.split(":");
+    if (parts.length !== 5) return "";
+    const iv = Buffer.from(parts[2], "base64");
+    const tag = Buffer.from(parts[3], "base64");
+    const data = Buffer.from(parts[4], "base64");
+
+    const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv);
+    decipher.setAuthTag(tag);
+    return Buffer.concat([decipher.update(data), decipher.final()]).toString("utf8");
+  } catch (err) {
+    console.error("[decryptSecret] Error decrypting secret:", err);
+    return "";
+  }
+}
+
+/**
  * Get notification settings — stored in SystemSetting table (Neon DB).
- * Falls back to DEFAULT_NOTIFICATION_SETTINGS when not set.
- * This replaces the old file-based approach (data/notification-settings.json)
- * which was incompatible with Vercel's ephemeral serverless filesystem.
+ * Secrets are automatically decrypted for internal use.
  */
 export async function getNotificationSettings(): Promise<NotificationSettings> {
   try {
@@ -25,16 +80,21 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
     if (!row) return DEFAULT_NOTIFICATION_SETTINGS;
 
     const parsed = JSON.parse(row.value);
+    const rawBotToken = parsed.telegram?.botToken || "";
+    const rawSmtpPass = parsed.email?.smtpPass || "";
+
     return {
       ...DEFAULT_NOTIFICATION_SETTINGS,
       ...parsed,
       telegram: {
         ...DEFAULT_NOTIFICATION_SETTINGS.telegram,
         ...(parsed.telegram || {}),
+        botToken: decryptSecret(rawBotToken),
       },
       email: {
         ...DEFAULT_NOTIFICATION_SETTINGS.email,
         ...(parsed.email || {}),
+        smtpPass: decryptSecret(rawSmtpPass),
       },
       events: {
         ...DEFAULT_NOTIFICATION_SETTINGS.events,
@@ -48,21 +108,46 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
 
 /**
  * Save notification settings to SystemSetting table (Neon DB).
+ * If secrets are empty or masked placeholders, existing secrets are preserved.
+ * Secrets are encrypted using AES-256-GCM before writing to the database.
  */
 export async function saveNotificationSettings(
   settings: Partial<NotificationSettings>
 ): Promise<NotificationSettings> {
   const current = await getNotificationSettings();
+
+  // Handle incoming telegram.botToken: preserve if empty, placeholder, or unchanged
+  let newBotToken = current.telegram.botToken;
+  if (
+    settings.telegram?.botToken !== undefined &&
+    settings.telegram.botToken.trim() !== "" &&
+    !settings.telegram.botToken.startsWith("••••")
+  ) {
+    newBotToken = settings.telegram.botToken.trim();
+  }
+
+  // Handle incoming email.smtpPass: preserve if empty, placeholder, or unchanged
+  let newSmtpPass = current.email.smtpPass;
+  if (
+    settings.email?.smtpPass !== undefined &&
+    settings.email.smtpPass.trim() !== "" &&
+    !settings.email.smtpPass.startsWith("••••")
+  ) {
+    newSmtpPass = settings.email.smtpPass.trim();
+  }
+
   const merged: NotificationSettings = {
     ...current,
     ...settings,
     telegram: {
       ...current.telegram,
       ...(settings.telegram || {}),
+      botToken: newBotToken,
     },
     email: {
       ...current.email,
       ...(settings.email || {}),
+      smtpPass: newSmtpPass,
     },
     events: {
       ...current.events,
@@ -70,11 +155,24 @@ export async function saveNotificationSettings(
     },
   };
 
+  // Prepare payload for DB storage with encrypted secrets
+  const storagePayload = {
+    ...merged,
+    telegram: {
+      ...merged.telegram,
+      botToken: encryptSecret(merged.telegram.botToken),
+    },
+    email: {
+      ...merged.email,
+      smtpPass: encryptSecret(merged.email.smtpPass || ""),
+    },
+  };
+
   try {
     await prisma.systemSetting.upsert({
       where: { key: SETTINGS_DB_KEY },
-      update: { value: JSON.stringify(merged) },
-      create: { key: SETTINGS_DB_KEY, value: JSON.stringify(merged) },
+      update: { value: JSON.stringify(storagePayload) },
+      create: { key: SETTINGS_DB_KEY, value: JSON.stringify(storagePayload) },
     });
   } catch (err) {
     console.error("Gagal menyimpan notification settings ke DB:", err);

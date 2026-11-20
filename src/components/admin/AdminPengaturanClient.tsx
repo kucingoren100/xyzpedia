@@ -445,7 +445,11 @@ export default function AdminPengaturanClient() {
                             },
                           })
                         }
-                        placeholder="Contoh: 1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ"
+                        placeholder={
+                          (notificationSettings.telegram as any).botTokenSet
+                            ? "•••••••• tersimpan (isi hanya jika ingin mengganti)"
+                            : "Contoh: 1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ"
+                        }
                         className="w-full pl-3 pr-10 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-mono font-bold text-carbon dark:text-white placeholder:text-gray-400"
                       />
                       <button
@@ -697,7 +701,11 @@ export default function AdminPengaturanClient() {
                                     },
                                   })
                                 }
-                                placeholder="16 digit app password"
+                                placeholder={
+                                  (notificationSettings.email as any).smtpPassSet
+                                    ? "•••••••• tersimpan (isi jika ingin mengganti)"
+                                    : "16 digit app password"
+                                }
                                 className="w-full pl-3 pr-10 py-2 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border text-xs font-mono font-bold text-carbon dark:text-white"
                               />
                               <button

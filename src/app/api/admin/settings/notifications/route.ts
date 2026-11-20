@@ -15,9 +15,30 @@ export async function GET() {
     }
 
     const settings = await getNotificationSettings();
+
+    // Redact secrets: do NOT return raw botToken or smtpPass to the client
+    const botToken = settings.telegram.botToken || "";
+    const smtpPass = settings.email.smtpPass || "";
+
+    const safeSettings = {
+      ...settings,
+      telegram: {
+        ...settings.telegram,
+        botToken: botToken ? `••••••••${botToken.slice(-4)}` : "",
+        botTokenSet: !!botToken,
+        botTokenLast4: botToken.slice(-4),
+      },
+      email: {
+        ...settings.email,
+        smtpPass: smtpPass ? `••••••••${smtpPass.slice(-4)}` : "",
+        smtpPassSet: !!smtpPass,
+        smtpPassLast4: smtpPass.slice(-4),
+      },
+    };
+
     return NextResponse.json({
       success: true,
-      settings,
+      settings: safeSettings,
     });
   } catch (error: any) {
     return NextResponse.json(

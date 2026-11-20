@@ -34,7 +34,10 @@ export async function POST(req: Request) {
 
     // Helper to send to Telegram
     const dispatchTelegram = async (text: string, options?: SendTelegramOptions) => {
-      const activeToken = botToken?.trim() || settings.telegram.botToken;
+      let activeToken = botToken?.trim();
+      if (!activeToken || activeToken.startsWith("••••")) {
+        activeToken = settings.telegram.botToken;
+      }
       const activeChatId = chatId?.trim() || settings.telegram.chatId;
 
       if (!activeToken) {
@@ -54,12 +57,17 @@ export async function POST(req: Request) {
         return { success: false, message: "Email penerima belum diisi di Pengaturan." };
       }
 
+      let activeSmtpPass = body.smtpPass?.trim();
+      if (!activeSmtpPass || activeSmtpPass.startsWith("••••")) {
+        activeSmtpPass = settings.email.smtpPass;
+      }
+
       return await sendEmailMessage(activeRecipient, subject, html, {
-        smtpHost: body.smtpHost,
-        smtpPort: body.smtpPort,
-        smtpUser: body.smtpUser,
-        smtpPass: body.smtpPass,
-        smtpSecure: body.smtpSecure,
+        smtpHost: body.smtpHost || settings.email.smtpHost,
+        smtpPort: body.smtpPort || settings.email.smtpPort,
+        smtpUser: body.smtpUser || settings.email.smtpUser,
+        smtpPass: activeSmtpPass,
+        smtpSecure: body.smtpSecure !== undefined ? body.smtpSecure : settings.email.smtpSecure,
         senderName: body.senderName || settings.email.senderName,
       });
     };
