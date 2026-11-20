@@ -7,6 +7,7 @@ export interface CheckNicknameResult {
   success: boolean;
   name?: string | null;
   isFound: boolean;
+  verified?: boolean | null; // true: valid account found, false: definitely not found, null: timeout/unverified
   message: string;
 }
 
@@ -217,11 +218,12 @@ export async function checkGameAccount(
     }
   }
 
-  // 4. If inquiry timed out or service is temporarily unreachable, allow buyer to proceed without blocking
+  // 4. If inquiry timed out or service is temporarily unreachable: return verified: null
   return {
     success: true,
     name: null,
     isFound: true,
+    verified: null,
     message: "Server verifikasi sedang sibuk. Data akun Anda tetap tersimpan dan dapat diproses.",
   };
 }
