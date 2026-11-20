@@ -115,12 +115,11 @@ export async function GET(req: Request) {
         successOrders,
         totalOmset,
         totalProfit,
-        dateRange: dateRangeStr,
-        visits: 42,
-        conversionRate: 4.8,
-        topProduct: topProd,
-        storeName: "XYZPEDIA",
-        adminUrl: "http://localhost:3000/admin",
+        dateRange: `${dateRangeStr} (DATA CONTOH)`,
+        conversionRate: totalOrders > 0 ? ((successOrders / totalOrders) * 100).toFixed(1) : undefined,
+        topProduct: `${topProd} (CONTOH)`,
+        storeName: "XYZPEDIA (CONTOH PREVIEW)",
+        adminUrl: "/admin",
       });
     }
 

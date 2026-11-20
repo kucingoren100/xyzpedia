@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { siteUrl } from "@/lib/siteUrl";
 
 export interface QiosPayCreateInput {
   orderId: string;
@@ -37,7 +38,6 @@ export class QiosPayClient {
   constructor() {
     this.baseUrl = (
       process.env.QIOSPAY_BASE_URL ||
-      process.env.QIOSPAY_BASE_UR ||
       "https://my.qiospay.com/v1"
     ).replace(/\/$/, "");
     this.apiKey = process.env.QIOSPAY_API_KEY || "";
@@ -64,16 +64,16 @@ export class QiosPayClient {
         keterangan: input.description.slice(0, 100),
         customer: {
           name: input.customerName || "Customer",
-          email: input.customerEmail || "customer@xyzpedia.my.id",
+          email: input.customerEmail || `customer@${new URL(siteUrl()).hostname}`,
         },
         whatsapp_buyer: input.customerPhone ? input.customerPhone.replace(/\D/g, "") : undefined,
         callback_url:
           input.callbackUrl ||
           process.env.QIOSPAY_CALLBACK_URL ||
-          "https://xyzpedia.my.id/api/webhooks/qiospay",
+          siteUrl("/api/webhooks/qiospay"),
         redirect_url:
           input.redirectUrl ||
-          `https://xyzpedia.my.id/transaksi/${input.orderId}`,
+          siteUrl(`/transaksi/${input.orderId}`),
         expired_menit: input.expiredMinutes || 15,
       };
 

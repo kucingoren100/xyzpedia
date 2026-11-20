@@ -36,6 +36,7 @@ jobs:
         run: npx vitest run
         env:
           ADMIN_JWT_SECRET: "ci-test-secret-key-xyzpedia-for-testing-purpose-only"
+          SETTINGS_ENCRYPTION_KEY: "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
           SYSTEM_NOTIFICATION_AES_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
       - name: Next.js Build
@@ -44,6 +45,7 @@ jobs:
           DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
           DIRECT_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
           ADMIN_JWT_SECRET: "ci-test-secret-key-xyzpedia-for-testing-purpose-only"
+          SETTINGS_ENCRYPTION_KEY: "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
           SYSTEM_NOTIFICATION_AES_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
           NEXT_PUBLIC_SITE_URL: "https://xyzpedia.test"
 

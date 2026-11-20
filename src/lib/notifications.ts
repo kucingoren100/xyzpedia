@@ -16,11 +16,16 @@ const SETTINGS_DB_KEY = "notification_settings";
  * AES-256-GCM encryption/decryption helpers using SETTINGS_ENCRYPTION_KEY (base64 32 bytes)
  */
 function getEncryptionKey(): Buffer | null {
-  const envKey = process.env.SETTINGS_ENCRYPTION_KEY;
+  const envKey = process.env.SETTINGS_ENCRYPTION_KEY || process.env.SYSTEM_NOTIFICATION_AES_KEY;
   if (!envKey) return null;
   try {
-    const buf = Buffer.from(envKey, "base64");
-    return buf.length === 32 ? buf : null;
+    // Check base64 (44 chars)
+    let buf = Buffer.from(envKey, "base64");
+    if (buf.length === 32) return buf;
+    // Check hex (64 chars)
+    buf = Buffer.from(envKey, "hex");
+    if (buf.length === 32) return buf;
+    return null;
   } catch {
     return null;
   }
@@ -378,12 +383,12 @@ export interface WeeklyReportStats {
  */
 export function generateWeeklyReportEmailHtml(stats: WeeklyReportStats): string {
   const store = stats.storeName || "XYZPEDIA";
-  const visits = stats.visits ?? Math.max(stats.totalOrders * 12, 42);
   const convRate =
-    stats.conversionRate ??
-    (visits > 0
-      ? ((stats.successOrders / visits) * 100).toFixed(1)
-      : "4.8");
+    stats.conversionRate !== undefined
+      ? String(stats.conversionRate)
+      : (stats.totalOrders > 0
+          ? ((stats.successOrders / stats.totalOrders) * 100).toFixed(1)
+          : "0");
   const topProd = stats.topProduct || "Canva Pro — 1 Tahun";
   const now =
     stats.timestamp ||
@@ -482,10 +487,10 @@ export function generateWeeklyReportEmailHtml(stats: WeeklyReportStats): string 
                   <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; color: #64748b; font-weight: 700;">Pesanan:</td>
                   <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; text-align: right; font-weight: 900; color: #0f172a;">${stats.successOrders}</td>
                 </tr>
-                <tr>
+                ${stats.visits ? `<tr>
                   <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; color: #64748b; font-weight: 700;">Kunjungan:</td>
-                  <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; text-align: right; font-weight: 900; color: #0f172a;">${visits}</td>
-                </tr>
+                  <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; text-align: right; font-weight: 900; color: #0f172a;">${stats.visits}</td>
+                </tr>` : ""}
                 <tr>
                   <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; color: #64748b; font-weight: 700;">Konversi:</td>
                   <td style="padding: 5px 0; border-top: 1px solid #f1f5f9; text-align: right; font-weight: 900; color: #0f172a;">${convRate}%</td>
@@ -519,7 +524,7 @@ export function generateWeeklyReportEmailHtml(stats: WeeklyReportStats): string 
           💼 <strong>Laba bersih:</strong> Rp ${stats.totalProfit.toLocaleString("id-ID")}
         </div>
         <div>
-          👀 <strong>Traffic:</strong> ${visits} kunjungan · konversi ${convRate}%
+          ${stats.visits ? `👀 <strong>Traffic:</strong> ${stats.visits} kunjungan · konversi ${convRate}%` : `📊 <strong>Tingkat Keberhasilan:</strong> ${convRate}% (${stats.successOrders} pesanan sukses)`}
         </div>
         <div>
           🏆 <strong>Terlaris:</strong> ${topProd}
@@ -687,10 +692,9 @@ export function formatWeeklyReportMessage(stats: {
   storeName?: string;
   timestamp?: string;
 }) {
-  const store = stats.storeName || "TokoKaryawan";
-  const visits = stats.visits ?? 42;
-  const convRate = stats.conversionRate ?? "4,8%";
-  const topProd = stats.topProduct || "Canva — 1 Tahun";
+  const store = stats.storeName || "XYZPEDIA";
+  const convRate = stats.conversionRate ?? (stats.successOrders > 0 ? "100%" : "0%");
+  const topProd = stats.topProduct || "Semua Layanan";
   const now =
     stats.timestamp ||
     new Date().toLocaleDateString("id-ID", {
@@ -706,13 +710,13 @@ export function formatWeeklyReportMessage(stats: {
     }) +
     " WIB";
 
+  const trafficLine = stats.visits ? `\n👀 ${stats.visits} kunjungan · konversi ${convRate}` : "";
+
   return `📈 <b>Laporan mingguan · ${store}</b>
 <blockquote>${now}</blockquote>
 
 Senin–Minggu lalu: <b>${stats.successOrders} pesanan</b> · omzet <b>Rp${stats.totalOmset.toLocaleString("id-ID")}</b>
-💼 Laba bersih: <b>Rp${stats.totalProfit.toLocaleString("id-ID")}</b>
-
-👀 ${visits} kunjungan · konversi ${convRate}
+💼 Laba bersih: <b>Rp${stats.totalProfit.toLocaleString("id-ID")}</b>${trafficLine}
 🏆 Terlaris: <b>${topProd}</b>`;
 }
 

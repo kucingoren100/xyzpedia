@@ -1358,8 +1358,14 @@ export default function AdminPengaturanClient() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
                 <div className="p-3.5 bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-2xl space-y-1">
                   <span className="text-[10px] font-black uppercase text-gray-400 block">Domain & SSL</span>
-                  <p className="font-black text-carbon dark:text-white">xyzpedia.my.id</p>
-                  <span className="text-[10px] text-green-600 dark:text-green-400 font-bold block">Cloudflare TLS 1.3 Strict</span>
+                  <p className="font-black text-carbon dark:text-white">
+                    {healthData?.security?.domain
+                      ? healthData.security.domain.replace(/^https?:\/\//, "")
+                      : (typeof window !== "undefined" ? window.location.host : "Domain")}
+                  </p>
+                  <span className="text-[10px] text-green-600 dark:text-green-400 font-bold block">
+                    {healthData?.security?.ssl || "TLS Terenkripsi"}
+                  </span>
                 </div>
 
                 <div className="p-3.5 bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-2xl space-y-1">

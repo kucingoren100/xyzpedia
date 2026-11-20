@@ -19,6 +19,48 @@ import {
 } from "@/lib/notifications";
 import { generateReportCardPng } from "@/lib/reportCardImage";
 
+function isSafeSmtpHost(host?: string, savedHost?: string): boolean {
+  if (!host) return false;
+  const cleanHost = host.trim().toLowerCase();
+  // Matches saved host from settings
+  if (savedHost && cleanHost === savedHost.trim().toLowerCase()) {
+    return true;
+  }
+  // Reject IP private & loopback
+  if (
+    cleanHost === "localhost" ||
+    cleanHost === "127.0.0.1" ||
+    cleanHost === "::1" ||
+    cleanHost.startsWith("10.") ||
+    cleanHost.startsWith("192.168.") ||
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(cleanHost) ||
+    cleanHost.endsWith(".local") ||
+    cleanHost.endsWith(".internal")
+  ) {
+    return false;
+  }
+  // Trusted public SMTP providers allowlist
+  const allowedSuffixes = [
+    "gmail.com",
+    "googlemail.com",
+    "sendgrid.net",
+    "mailgun.org",
+    "zoho.com",
+    "zoho.eu",
+    "outlook.com",
+    "office365.com",
+    "brevo.com",
+    "sendinblue.com",
+    "resend.com",
+    "postmarkapp.com",
+    "amazon.com",
+    "amazonaws.com",
+  ];
+  return allowedSuffixes.some(
+    (allowed) => cleanHost === allowed || cleanHost.endsWith(`.${allowed}`)
+  );
+}
+
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
@@ -55,6 +97,14 @@ export async function POST(req: Request) {
       const activeRecipient = recipient?.trim() || settings.email.recipient;
       if (!activeRecipient) {
         return { success: false, message: "Email penerima belum diisi di Pengaturan." };
+      }
+
+      const activeHost = body.smtpHost || settings.email.smtpHost;
+      if (!isSafeSmtpHost(activeHost, settings.email.smtpHost)) {
+        return {
+          success: false,
+          message: "Host SMTP ditolak: host privat/loopback dilarang. Hanya domain tersimpan atau penyedia terpercaya yang diizinkan.",
+        };
       }
 
       let activeSmtpPass = body.smtpPass?.trim();
@@ -142,9 +192,8 @@ export async function POST(req: Request) {
           successOrders: 16,
           totalOmset: 245000,
           totalProfit: 52000,
-          dateRange: "Senin - Minggu Ini",
-          visits: 64,
-          conversionRate: 25.0,
+          dateRange: "Senin - Minggu Ini (DATA CONTOH)",
+          conversionRate: 88.8,
           topProduct: "Canva Pro — 1 Tahun",
         };
         tgText = formatWeeklyReportMessage(mockData);
@@ -315,12 +364,11 @@ Bot ini akan mengirimkan notifikasi otomatis saat:
         successOrders,
         totalOmset,
         totalProfit,
-        dateRange: dateRangeStr,
-        visits: 42,
-        conversionRate: 4.8,
+        dateRange: `${dateRangeStr} (DATA CONTOH)`,
+        conversionRate: totalOrders > 0 ? ((successOrders / totalOrders) * 100).toFixed(1) : undefined,
         topProduct: successOrdersList[0]?.product?.name || "Canva Pro — 1 Tahun",
         storeName: "XYZPEDIA",
-        adminUrl: "http://localhost:3000/admin",
+        adminUrl: "/admin",
       });
 
       const emailSubject = `Laporan mingguan · Rp ${totalProfit.toLocaleString("id-ID")} — XYZPEDIA`;
@@ -377,12 +425,11 @@ Bot ini akan mengirimkan notifikasi otomatis saat:
         successOrders,
         totalOmset,
         totalProfit,
-        dateRange: dateRangeStr,
-        visits: 42,
-        conversionRate: 4.8,
+        dateRange: `${dateRangeStr} (DATA CONTOH)`,
+        conversionRate: totalOrders > 0 ? ((successOrders / totalOrders) * 100).toFixed(1) : undefined,
         topProduct: successOrdersList[0]?.product?.name || "Canva Pro — 1 Tahun",
         storeName: "XYZPEDIA",
-        adminUrl: "http://localhost:3000/admin",
+        adminUrl: "/admin",
       });
 
       let sentCount = 0;

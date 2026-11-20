@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/adminAuth";
 import { prisma } from "@/lib/prisma";
+import { siteUrl } from "@/lib/siteUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,6 @@ export async function GET() {
     const qiospayMerchant = process.env.QIOSPAY_MERCHANT_CODE || "";
     const qiospayUrl = (
       process.env.QIOSPAY_BASE_URL ||
-      process.env.QIOSPAY_BASE_UR ||
       "https://my.qiospay.com/v1"
     ).replace(/\/$/, "");
 
@@ -127,8 +127,8 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       database: {
         status: dbStatus,
-        engine: "PostgreSQL 16 (Neon Serverless Pooler)",
-        region: "AWS ap-southeast-1 (Singapore)",
+        engine: "PostgreSQL (terukur via ping prisma)",
+        region: "Tidak diverifikasi secara langsung",
         latency: dbLatency,
         stats,
         error: dbError,
@@ -152,11 +152,11 @@ export async function GET() {
         },
       },
       security: {
-        ssl: "Cloudflare TLS 1.3 Full (Strict)",
-        cnameFlattening: "fc9210bf065e459a.vercel-dns-017.com",
+        ssl: "Tidak diverifikasi oleh endpoint lokal",
+        cnameFlattening: "Tidak diverifikasi",
         cookieAuth: "HMAC SHA-256 (HTTP-Only, Secure, SameSite=Lax)",
-        runtime: "Node.js 20+ (Next.js 16 Turbo Edge)",
-        domain: "https://xyzpedia.my.id",
+        runtime: process.version,
+        domain: siteUrl(),
       },
       envAudit,
     });

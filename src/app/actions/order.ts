@@ -6,7 +6,6 @@ import { headers } from "next/headers";
 import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
-import { isProductInMaintenance, IS_PAYMENT_MAINTENANCE } from "@/config/maintenance";
 import { getWebCondition, checkIsCategoryUnderMaintenance } from "@/lib/webCondition";
 import { checkRateLimit, getClientIpFromHeaders } from "@/lib/rateLimit";
 

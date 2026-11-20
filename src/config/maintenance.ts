@@ -1,18 +1,10 @@
 /**
  * Konfigurasi Status Pemeliharaan Sistem Pembayaran XYZPEDIA
- * Sekarang didukung penuh oleh dynamic database configuration (src/lib/webCondition.ts)
+ * Didukung penuh oleh dynamic database configuration (src/lib/webCondition.ts)
  */
 
 export const IS_PAYMENT_MAINTENANCE: boolean =
   process.env.NEXT_PUBLIC_PAYMENT_MAINTENANCE === "true";
-
-export const isProductInMaintenance = (categorySlug?: string | null): boolean => {
-  if (process.env.NEXT_PUBLIC_PAYMENT_MAINTENANCE === "true") {
-    return true;
-  }
-  // Default: semua kategori (termasuk akun-premium) masuk pemeliharaan
-  return true;
-};
 
 export const MAINTENANCE_CONFIG = {
   title: "Sedang Dalam Pemeliharaan / Perbaikan",
