@@ -50,18 +50,45 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await req.json();
-    const { status, notes } = body;
+    const { status, notes, sn } = body;
+
+    const currentOrder = await prisma.order.findUnique({
+      where: { id },
+      include: { product: true, productItem: true },
+    });
+
+    if (!currentOrder) {
+      return NextResponse.json({ success: false, message: "Order not found" }, { status: 404 });
+    }
 
     const updateData: any = {};
 
     if (status) {
+      const { canTransition } = await import("@/lib/orderStatus");
+      const isOwner = session.role === "OWNER";
+      const validTransition = canTransition(currentOrder.status, status);
+
+      if (!validTransition && !isOwner) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Transisi status tidak valid dari ${currentOrder.status} ke ${status}. Hanya OWNER yang dapat melakukan override manual.`,
+          },
+          { status: 403 }
+        );
+      }
+
       updateData.status = status;
       if (status === "PAID" || status === "PROCESSING" || status === "SUCCESS") {
-        updateData.paidAt = new Date();
+        updateData.paidAt = currentOrder.paidAt || new Date();
       }
       if (status === "SUCCESS") {
-        updateData.fulfilledAt = new Date();
+        updateData.fulfilledAt = currentOrder.fulfilledAt || new Date();
       }
+    }
+
+    if (sn !== undefined) {
+      updateData.sn = sn;
     }
 
     if (notes !== undefined) {
