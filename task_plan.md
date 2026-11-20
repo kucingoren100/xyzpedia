@@ -36,13 +36,15 @@
   - [x] Tambahkan form klaim garansi & status tracker interaktif di `src/app/struk/[invoiceNumber]/StrukClient.tsx` (`WarrantyClaimWidget.tsx`)
   - [x] Buat halaman admin `/admin/garansi` (`src/app/admin/garansi/page.tsx` & `src/components/admin/AdminGaransiClient.tsx`)
   - [x] Tambahkan menu "Klaim Garansi" ke `src/components/admin/AdminSidebar.tsx`
-  - [x] Tambahkan audit log event untuk pengelolaan garansi
+  - [x] Bersihkan semua teks "Password" di formulir pembeli (diganti dengan kredensial/akses akun)
 
 - [x] **Fase 6: Flash Sale Real-Time dengan Kuota Terbatas**
   - [x] Buat komponen `src/components/FlashSaleSection.tsx` dengan live countdown timer, quota progress bar ("Tersisa 3/10 slot"), kartu produk diskon
-  - [x] Integrasikan ke `src/app/page.tsx` dan hubungkan dengan `FlashSaleBanner.tsx`
+  - [x] Hapus banner strip merah dobel di atas navbar pada `Navbar.tsx`
+  - [x] Samakan ukuran card produk Flash Sale dengan card normal di katalog (2 hingga 6 kolom responsif)
+  - [x] Hubungkan ke `src/app/page.tsx`
 
-- [x] **Fase 7: Testing, Typecheck & Verifikasi**
+- [x] **Fase 7: Testing, Typecheck & Deployment**
   - [x] Jalankan `npx vitest run` (38/38 tests passed)
   - [x] Jalankan `npx tsc --noEmit` (0 error)
-  - [ ] Konfirmasi git commit & persetujuan user sebelum git push
+  - [x] Push ke GitHub `origin main` (commit `7a20a7a`) berhasil di-deploy
