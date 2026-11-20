@@ -92,6 +92,14 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       badgeColor: "bg-[#fb4903] text-white",
     },
     {
+      label: "Klaim Garansi",
+      href: "/admin/garansi",
+      icon: ShieldCheck,
+      active: pathname.startsWith("/admin/garansi"),
+      badge: "Tiket",
+      badgeColor: "bg-[#22c55e] text-white",
+    },
+    {
       label: "Kupon Promo",
       href: "/admin/kupon",
       icon: Ticket,

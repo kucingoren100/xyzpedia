@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import ReviewWidget from "@/components/ReviewWidget";
+import WarrantyClaimWidget from "@/components/WarrantyClaimWidget";
 import { ArrowLeft, Printer } from "lucide-react";
 
 interface Order {
@@ -593,6 +594,14 @@ export default function StrukClient({
             </div>
           </div>
         </div>
+
+        {/* Structured Warranty Claim & Customer Support System (Hidden in print) */}
+        <WarrantyClaimWidget
+          invoiceNumber={order.invoiceNumber}
+          customerPhone={order.customerPhone}
+          customerEmail={order.customerEmail}
+          productName={order.product.name}
+        />
 
         {/* Customer Review & Rating Widget (Hidden in print) */}
         {isSuccess && (

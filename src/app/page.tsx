@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import HeroBanner from "@/components/HeroBanner";
 import PromoBannerCarousel from "@/components/PromoBannerCarousel";
 import StorefrontClient from "@/components/StorefrontClient";
+import FlashSaleSection from "@/components/FlashSaleSection";
+import SecurityTrustBanner from "@/components/SecurityTrustBanner";
 
 export const revalidate = 60;
 
@@ -14,7 +16,14 @@ export default async function HomePage() {
       where: { isActive: true },
       include: {
         items: {
-          select: { price: true, stockStatus: true },
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            originalPrice: true,
+            discountPercent: true,
+            stockStatus: true,
+          },
         },
       },
       orderBy: [
@@ -36,8 +45,14 @@ export default async function HomePage() {
       {/* Dynamic Graphic Banner Carousel */}
       {banners.length > 0 && <PromoBannerCarousel banners={banners} />}
 
+      {/* Real-Time Flash Sale with Limited Quota */}
+      <FlashSaleSection products={products} />
+
       {/* Interactive Catalog and Filtering */}
       <StorefrontClient categories={categories} products={products} />
+
+      {/* Security Trust Badges & Anti-Fraud Banner */}
+      <SecurityTrustBanner />
     </div>
   );
 }

@@ -206,3 +206,22 @@ model Review {
   @@index([isPublished])
 }
 
+model WarrantyClaim {
+  id            String    @id @default(cuid())
+  invoiceNumber String
+  customerPhone String
+  customerEmail String?
+  issueType     String    @default("ITEM_BELUM_MASUK") // "AKUN_LOGIN_GAGAL", "ITEM_BELUM_MASUK", "SALAH_NOMINAL", "RESET_PROFIL", "LAINNYA"
+  description   String    @db.Text
+  proofImageUrl String?
+  status        String    @default("PENDING") // "PENDING", "IN_REVIEW", "RESOLVED", "REJECTED"
+  adminNotes    String?   @db.Text
+  resolvedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([invoiceNumber])
+  @@index([status])
+  @@index([createdAt])
+}
+

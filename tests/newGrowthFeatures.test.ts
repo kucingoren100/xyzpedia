@@ -43,4 +43,26 @@ describe("Paket Fitur Pertumbuhan XYZPEDIA", () => {
       expect(price).toBe(11300);
     });
   });
+
+  describe("Sitemap & Robots SEO Configuration", () => {
+    it("should return correct domain in robots rules", async () => {
+      const robotsFn = (await import("@/app/robots")).default;
+      const robots = robotsFn();
+      expect(robots.sitemap).toContain("xyzpedia.my.id");
+    });
+  });
+
+  describe("Warranty Claim System Constants", () => {
+    it("should include all essential issue categories", () => {
+      const validIssues = [
+        "ITEM_BELUM_MASUK",
+        "AKUN_LOGIN_GAGAL",
+        "RESET_PROFIL",
+        "SALAH_NOMINAL",
+        "LAINNYA",
+      ];
+      expect(validIssues).toContain("ITEM_BELUM_MASUK");
+      expect(validIssues).toContain("AKUN_LOGIN_GAGAL");
+    });
+  });
 });

@@ -21,11 +21,13 @@ import {
   Check,
   X,
   Tag,
+  Gamepad2,
 } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getItemSubCategory, getProductSubCategories } from "@/lib/productSubCategories";
 import ProductNoticeBox from "@/components/ProductNoticeBox";
 import PaymentMaintenanceModal from "@/components/PaymentMaintenanceModal";
+import SecurityTrustBanner from "@/components/SecurityTrustBanner";
 import {
   WebConditionSettings,
   checkIsCategoryUnderMaintenance,
@@ -201,6 +203,9 @@ export default function ProductCustomizerClient({
   // Mobile Pop-up Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Pre-Checkout Nickname & Order Confirmation Modal
+  const [isConfirmOrderOpen, setIsConfirmOrderOpen] = useState(false);
+
   // Payment Maintenance Modal State
   const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
 
@@ -363,13 +368,6 @@ export default function ProductCustomizerClient({
       return;
     }
 
-    if (nicknameStatus === "INVALID") {
-      const proceed = window.confirm(
-        "Peringatan: Akun game tidak ditemukan dengan User ID & Server yang Anda masukkan. Apakah Anda yakin data akun sudah benar dan ingin tetap melanjutkan?"
-      );
-      if (!proceed) return;
-    }
-
     const isUnderMaintenance = checkIsCategoryUnderMaintenance(condition, product.categorySlug);
     if (isUnderMaintenance) {
       if (isModalOpen) setIsModalOpen(false);
@@ -395,6 +393,18 @@ export default function ProductCustomizerClient({
       setCustomerEmail(effectiveEmail);
     }
 
+    // Close mobile modal if open and show Pop-up Konfirmasi Data & Nickname
+    if (isModalOpen) setIsModalOpen(false);
+    setIsConfirmOrderOpen(true);
+  };
+
+  const handleExecuteOrder = async () => {
+    setErrorMessage("");
+
+    const effectiveEmail =
+      customerEmail.trim() ||
+      (targetUserId.includes("@") ? targetUserId.trim() : "");
+
     setIsSubmitting(true);
 
     try {
@@ -409,13 +419,14 @@ export default function ProductCustomizerClient({
       });
 
       if (res.success && res.invoiceNumber) {
+        setIsConfirmOrderOpen(false);
         router.push(`/transaksi/${res.invoiceNumber}`);
       } else {
         setErrorMessage(res.error || "Gagal memproses pesanan.");
         setIsSubmitting(false);
       }
     } catch (err: any) {
-      console.error("[handleSubmit] Order error:", err);
+      console.error("[handleExecuteOrder] Order error:", err);
       const errMsg = String(err?.message || "");
       if (
         errMsg.includes("Server Action") ||
@@ -1011,6 +1022,8 @@ export default function ProductCustomizerClient({
               <p>🔒 Transaksi Resmi & Terverifikasi Gateway</p>
               <p>⚡ Proses otomatis langsung terhubung ke sistem supplier</p>
             </div>
+
+            <SecurityTrustBanner compact />
           </div>
         </div>
       </div>
@@ -1301,6 +1314,195 @@ export default function ProductCustomizerClient({
         secondaryText={condition.secondaryText}
         estimatedTime={condition.estimatedTime}
       />
+
+      {/* 
+        ============================================================
+        POP-UP KONFIRMASI NICKNAME GAME & DATA PESANAN OTOMATIS
+        Modal validasi pre-checkout dengan styling Neo-Brutalist
+        ============================================================
+      */}
+      {isConfirmOrderOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Konfirmasi Data Akun & Pesanan"
+          onKeyDown={(e) => {
+            if (e.key === "Escape" && !isSubmitting) setIsConfirmOrderOpen(false);
+          }}
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
+        >
+          <div className="w-full max-w-md bg-white dark:bg-[#161622] rounded-3xl ink-border-thick dark:border-[#38384a] p-5 sm:p-6 shadow-[6px_6px_0px_0px_#000000] max-h-[92vh] overflow-y-auto space-y-4 animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between pb-3 border-b-2 border-carbon dark:border-[#38384a]">
+              <div>
+                <span className="text-[10px] font-black uppercase text-[#fb4903] bg-[#fb4903]/10 px-2 py-0.5 rounded ink-border inline-block tracking-wider">
+                  VERIFIKASI PRE-CHECKOUT
+                </span>
+                <h3 className="font-[var(--font-bricolage)] text-lg sm:text-xl font-black uppercase text-carbon dark:text-white leading-tight mt-1">
+                  Konfirmasi Akun Game
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => !isSubmitting && setIsConfirmOrderOpen(false)}
+                disabled={isSubmitting}
+                className="w-8 h-8 rounded-full bg-[#f3f4f6] dark:bg-[#252538] hover:bg-[#ffdad6] active:scale-90 ink-border dark:border-[#38384a] flex items-center justify-center text-carbon dark:text-white transition-all cursor-pointer disabled:opacity-50"
+                aria-label="Tutup modal"
+              >
+                <X className="w-4 h-4 stroke-[2.5]" />
+              </button>
+            </div>
+
+            {/* In-Game Nickname Highlight Card */}
+            {(product.categorySlug === "game-topup" || product.requiresServer || checkedNickname) && (
+              <div className="rounded-2xl ink-border p-3.5 space-y-2 bg-gradient-to-br from-[#f8f9fa] to-[#edf2f7] dark:from-[#1a1a2e] dark:to-[#131320] shadow-[2px_2px_0px_#000000]">
+                <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <span className="flex items-center gap-1.5">
+                    <Gamepad2 className="w-3.5 h-3.5 text-[#fb4903]" />
+                    <span>Data Akun Pemain</span>
+                  </span>
+                  {checkedNickname && (
+                    <span className="px-2 py-0.5 bg-[#22c55e] text-white text-[9px] font-black rounded-full ink-border flex items-center gap-1">
+                      <CheckCircle2 className="w-2.5 h-2.5" />
+                      <span>TERVERIFIKASI</span>
+                    </span>
+                  )}
+                </div>
+
+                {checkedNickname ? (
+                  <div className="p-3 bg-[#22c55e]/15 border-2 border-[#16a34a] rounded-xl flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-black uppercase text-[#16a34a] block">
+                        Nickname In-Game:
+                      </span>
+                      <span className="text-base sm:text-lg font-black text-carbon dark:text-white font-[var(--font-bricolage)]">
+                        {checkedNickname}
+                      </span>
+                    </div>
+                    <span className="text-2xl">🎮</span>
+                  </div>
+                ) : nicknameStatus === "CHECKING" ? (
+                  <div className="p-3 bg-[#ffd731]/20 border-2 border-black rounded-xl flex items-center gap-2 text-xs font-bold text-carbon dark:text-white">
+                    <Clock className="w-4 h-4 animate-spin text-[#fb4903]" />
+                    <span>Sedang memverifikasi Nickname Akun...</span>
+                  </div>
+                ) : nicknameStatus === "INVALID" ? (
+                  <div className="p-3 bg-[#ef4444]/15 border-2 border-[#dc2626] rounded-xl text-xs space-y-1">
+                    <div className="flex items-center gap-1.5 font-black text-[#dc2626]">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      <span>Nickname Tidak Ditemukan!</span>
+                    </div>
+                    <p className="text-[11px] text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+                      Pastikan User ID dan Server yang Anda masukkan sudah benar agar diamond terkirim ke akun Anda.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-2.5 bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-600 rounded-xl text-xs font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 shrink-0" />
+                    <span>Format User ID tersimpan dan siap diproses sistem.</span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-2 pt-1 text-xs font-bold">
+                  <div className="p-2 bg-white dark:bg-[#161622] rounded-lg border border-gray-300 dark:border-gray-700">
+                    <span className="text-[9px] text-gray-500 block uppercase font-black">User ID:</span>
+                    <span className="font-mono font-black text-carbon dark:text-white truncate block">
+                      {targetUserId}
+                    </span>
+                  </div>
+                  {product.requiresServer && (
+                    <div className="p-2 bg-white dark:bg-[#161622] rounded-lg border border-gray-300 dark:border-gray-700">
+                      <span className="text-[9px] text-gray-500 block uppercase font-black">Server / Zone:</span>
+                      <span className="font-mono font-black text-carbon dark:text-white truncate block">
+                        {targetZoneId || "—"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Ringkasan Item & Pembayaran */}
+            <div className="bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-2xl p-3.5 space-y-2 text-xs font-bold shadow-[2px_2px_0px_#000000]">
+              <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                <span className="text-gray-500 dark:text-gray-400">Produk:</span>
+                <span className="font-black text-carbon dark:text-white text-right">{product.name}</span>
+              </div>
+              <div className="flex justify-between items-center py-1 border-b border-gray-200 dark:border-gray-800">
+                <span className="text-gray-500 dark:text-gray-400">Nominal:</span>
+                <span className="font-black text-carbon dark:text-white text-right">{selectedItem?.name}</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                <span className="text-gray-500 dark:text-gray-400">Email Struk:</span>
+                <span className="font-black text-carbon dark:text-white truncate max-w-[200px]">
+                  {customerEmail || targetUserId}
+                </span>
+              </div>
+              {customerPhone && (
+                <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                  <span className="text-gray-500 dark:text-gray-400">No. WhatsApp:</span>
+                  <span className="font-black text-carbon dark:text-white">{customerPhone}</span>
+                </div>
+              )}
+
+              {/* Total Price Box */}
+              <div className="p-3 bg-[#ffd731] ink-border rounded-xl flex items-center justify-between mt-2">
+                <div>
+                  <span className="text-[10px] font-black uppercase text-black block">Total Bayar:</span>
+                  <span className="text-[10px] text-black/80 font-bold block">+ kode unik sistem</span>
+                </div>
+                <div className="text-xl font-black text-black font-[var(--font-bricolage)]">
+                  Rp {finalPrice.toLocaleString("id-ID")}
+                </div>
+              </div>
+            </div>
+
+            {/* Error Message if any */}
+            {errorMessage && (
+              <div className="p-3 bg-[#ffdad6] dark:bg-[#3d141a] ink-border dark:border-[#5c1d28] rounded-xl text-xs font-black text-[#93000a] dark:text-[#fca5a5] animate-in fade-in">
+                ⚠️ {errorMessage}
+              </div>
+            )}
+
+            {/* Disclaimer Alert */}
+            <div className="p-2.5 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-300 dark:border-yellow-700/50 rounded-xl text-[10px] font-bold text-yellow-900 dark:text-yellow-200 leading-relaxed">
+              ⚠️ <strong>Penting:</strong> Pesanan langsung diinjeksi ke akun ID di atas setelah pembayaran QRIS lunas. Transaksi yang salah input ID tidak dapat dibatalkan atau ditarik kembali.
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setIsConfirmOrderOpen(false)}
+                disabled={isSubmitting}
+                className="py-3 px-4 rounded-xl ink-border bg-gray-100 hover:bg-gray-200 dark:bg-[#252535] dark:hover:bg-[#2d2d40] text-carbon dark:text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 text-center"
+              >
+                Ubah Data
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExecuteOrder}
+                disabled={isSubmitting}
+                className="py-3 px-4 rounded-xl ink-border bg-[#ffd731] hover:bg-[#ffe266] text-black text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-center"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Clock className="w-3.5 h-3.5 animate-spin" />
+                    <span>Memproses...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Bayar Sekarang</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

@@ -72,7 +72,7 @@ export default function FlashSaleBanner() {
           </div>
 
           <Link
-            href="/katalog"
+            href={pathname === "/" ? "#flash-sale" : "/#flash-sale"}
             className="inline-flex items-center gap-1 px-3 py-1 bg-white hover:bg-gray-100 text-black font-black text-[11px] uppercase rounded-full ink-border shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all"
           >
             <span>Serbu Promo</span>

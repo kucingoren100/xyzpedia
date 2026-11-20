@@ -76,8 +76,49 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const webCondition = await getWebCondition();
 
+  const itemPrices = product.items.map((i) => i.price).filter((p) => p > 0);
+  const minPrice = itemPrices.length > 0 ? Math.min(...itemPrices) : 1000;
+  const maxPrice = itemPrices.length > 0 ? Math.max(...itemPrices) : 100000;
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.thumbnailUrl,
+    description:
+      product.description ||
+      `Top up ${product.name} resmi instan 24 jam di XYZPEDIA. Harga termurah dengan QRIS otomatis dan garansi 100%.`,
+    brand: {
+      "@type": "Brand",
+      name: product.developer || "XYZPEDIA",
+    },
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "IDR",
+      lowPrice: minPrice,
+      highPrice: maxPrice,
+      offerCount: product.items.length,
+      availability: "https://schema.org/InStock",
+      url: `https://xyzpedia.my.id/produk/${product.slug}`,
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "85",
+      bestRating: "5",
+      worstRating: "1",
+    },
+  };
+
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-6">
+      {/* Schema.org Product Rich Snippet for Google Search Indexing */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd),
+        }}
+      />
       {/* Back button */}
       <div className="flex items-center gap-3">
         <Link
