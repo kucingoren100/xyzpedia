@@ -229,7 +229,7 @@ export default function ProductCustomizerClient({
     return Math.max(100, selectedItem.price - discountAmount);
   }, [selectedItem, discountAmount]);
 
-  const handleApplyPromo = () => {
+  const handleApplyPromo = async (overridePrice?: number) => {
     if (!selectedItem) return;
     const code = promoInput.trim().toUpperCase();
     if (!code) {
@@ -239,30 +239,41 @@ export default function ProductCustomizerClient({
       return;
     }
 
-    if (code === "XYZPEDIA") {
-      const disc = Math.min(1500, Math.floor(selectedItem.price * 0.3));
-      setAppliedPromo("XYZPEDIA");
-      setDiscountAmount(disc);
-      setPromoMessage(`Kupon XYZPEDIA aktif (-Rp ${disc.toLocaleString("id-ID")})! 🎉`);
-    } else if (code === "HEMAT5") {
-      const disc = Math.min(5000, Math.round(selectedItem.price * 0.05));
-      setAppliedPromo("HEMAT5");
-      setDiscountAmount(disc);
-      setPromoMessage(`Kupon HEMAT5 aktif (-Rp ${disc.toLocaleString("id-ID")})! 🎉`);
-    } else if (code === "NEWUSER") {
-      if (selectedItem.price < 10000) {
-        setPromoMessage("Kupon NEWUSER minimal transaksi Rp 10.000.");
-        return;
+    const priceToCheck = overridePrice !== undefined ? overridePrice : selectedItem.price;
+
+    try {
+      const res = await fetch("/api/coupon/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          itemPrice: priceToCheck,
+          supplierPrice: 0,
+        }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setAppliedPromo(data.code || code);
+        setDiscountAmount(data.discountAmount);
+        setPromoMessage(`Kupon ${data.code || code} aktif (-Rp ${data.discountAmount.toLocaleString("id-ID")})! 🎉`);
+      } else {
+        setAppliedPromo(null);
+        setDiscountAmount(0);
+        setPromoMessage(data.message || "Kode promo tidak valid atau telah berakhir.");
       }
-      setAppliedPromo("NEWUSER");
-      setDiscountAmount(2000);
-      setPromoMessage("Kupon Pengguna Baru aktif (-Rp 2.000)! 🎉");
-    } else {
-      setPromoMessage("Kode promo tidak valid atau telah berakhir.");
+    } catch {
       setAppliedPromo(null);
       setDiscountAmount(0);
+      setPromoMessage("Gagal memeriksa kode promo.");
     }
   };
+
+  // Re-calculate coupon discount if buyer changes selected item while coupon is applied
+  useEffect(() => {
+    if (appliedPromo && selectedItem) {
+      handleApplyPromo(selectedItem.price);
+    }
+  }, [selectedItemId]);
   const isNonGame =
     product.categorySlug === "akun-premium" ||
     product.categorySlug === "voucher-digital" ||
@@ -798,17 +809,19 @@ export default function ProductCustomizerClient({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                <label htmlFor="customer-email-desktop" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
                   <span>Alamat Email</span>
                   <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="customer-email-desktop"
                   type="email"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
                   placeholder="Contoh: emailmu@gmail.com"
                   className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
+                  required
                 />
               </div>
 
@@ -843,7 +856,7 @@ export default function ProductCustomizerClient({
                 />
                 <button
                   type="button"
-                  onClick={handleApplyPromo}
+                  onClick={() => handleApplyPromo()}
                   className="px-4 py-2 bg-black hover:bg-gray-800 text-white dark:bg-[#ffd731] dark:text-black font-black text-xs uppercase rounded-xl ink-border cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all"
                 >
                   Terapkan
@@ -973,9 +986,9 @@ export default function ProductCustomizerClient({
             </button>
 
             {/* Trust Footer */}
-            <div className="pt-2 text-center text-[11px] font-bold text-gray-500 dark:text-gray-400 space-y-1">
-              <p>🔒 Transaksi 100% Aman & Terenkripsi</p>
-              <p>⚡ Proses otomatis masuk dalam hitungan detik</p>
+            <div className="pt-2 text-center text-xs font-semibold text-gray-600 dark:text-gray-400 space-y-1">
+              <p>🔒 Transaksi Resmi & Terverifikasi Gateway</p>
+              <p>⚡ Proses otomatis langsung terhubung ke sistem supplier</p>
             </div>
           </div>
         </div>
@@ -1026,7 +1039,15 @@ export default function ProductCustomizerClient({
         ============================================================
       */}
       {isModalOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Konfirmasi dan Pembayaran"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setIsModalOpen(false);
+          }}
+          className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+        >
           
           {/* Modal Container */}
           <div className="w-full max-w-lg bg-white dark:bg-[#161622] rounded-t-3xl sm:rounded-3xl ink-border-thick dark:border-[#38384a] p-5 sm:p-6 shadow-[6px_6px_0px_0px_#000000] max-h-[92vh] overflow-y-auto space-y-5 animate-in slide-in-from-bottom duration-300">
@@ -1088,7 +1109,7 @@ export default function ProductCustomizerClient({
                   </span>
                 </div>
                 <div className="text-xl font-black text-black font-[var(--font-bricolage)]">
-                  {selectedItem ? `Rp ${selectedItem.price.toLocaleString("id-ID")}` : "Rp 0"}
+                  Rp {finalPrice.toLocaleString("id-ID")}
                 </div>
               </div>
             </div>
@@ -1189,7 +1210,7 @@ export default function ProductCustomizerClient({
                   />
                   <button
                     type="button"
-                    onClick={handleApplyPromo}
+                    onClick={() => handleApplyPromo()}
                     className="px-3 py-2 bg-black text-white dark:bg-[#ffd731] dark:text-black font-black text-xs uppercase rounded-xl ink-border cursor-pointer shadow-[2px_2px_0px_#000000]"
                   >
                     Terapkan
