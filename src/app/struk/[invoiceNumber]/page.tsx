@@ -17,19 +17,13 @@ export default async function StrukPage({ params }: StrukPageProps) {
     notFound();
   }
 
-  // 1. Try extracting nickname from order notes / SN
+  // 1. Try extracting nickname from SN or notes
   let nickname: string | null = null;
-  if (order.notes) {
-    const snMatch = order.notes.match(/SN:\s*(.+?)(?:\s*\||\n|$)/i);
-    const snText = snMatch ? snMatch[1].trim() : order.notes;
-    const nickMatch = snText.match(/^([^\.\n]+)\.\s*Refid/i);
+  const rawSn = (order as any).sn;
+  if (rawSn && typeof rawSn === "string") {
+    const nickMatch = rawSn.match(/^([^\.\n]+)\.\s*Refid/i);
     if (nickMatch) {
       nickname = nickMatch[1].trim();
-    } else {
-      const directNickMatch = order.notes.match(/Nickname:\s*([^\s|]+)/i);
-      if (directNickMatch) {
-        nickname = directNickMatch[1].trim();
-      }
     }
   }
 

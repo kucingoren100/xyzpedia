@@ -264,7 +264,7 @@ export async function getOrderDetails(invoiceNumber: string) {
       productItem: order.productItem,
       sn: (order as any).sn || null,
       supplierStatus: (order as any).supplierStatus || null,
-      notes: order.notes, // Used internally by client fallback if structured sn is not yet populated
+      notes: null as string | null, // Sanitized: internal notes stripped from public client
     };
   } catch (error) {
     console.error("Get order details error:", error);

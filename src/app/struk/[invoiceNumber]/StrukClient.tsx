@@ -60,23 +60,19 @@ export default function StrukClient({
   const isSuccess = order.status === "SUCCESS" || order.status === "PAID";
   const paymentMethod = "QRIS Real-time";
 
-  // Parse SN and Nickname from notes or SN string
+  const isAkunPremium = order.product.categorySlug === "akun-premium";
+
+  // Parse SN and Nickname from structured order.sn or nickname lookup
   const { sn, nickname } = useMemo(() => {
-    let rawSn: string | null = null;
+    let rawSn: string | null = (order as any).sn || null;
     let rawNick: string | null = initialNickname || null;
 
-    if (order.notes) {
-      // 1. Extract SN from notes
-      const snMatch = order.notes.match(/SN:\s*(.+?)(?:\s*\||\n|$)/i);
-      if (snMatch) {
-        rawSn = snMatch[1].trim();
-      } else if (!order.notes.startsWith("Settled via") && !order.notes.startsWith("Pembayaran terverifikasi")) {
-        rawSn = order.notes.trim();
-      }
+    // Filter out any internal supplier notes / balance leak
+    if (rawSn && /saldo|waroengkuy\s*order|digiflazz\s*ref/i.test(rawSn)) {
+      rawSn = null;
     }
 
-    // 2. Extract Nickname from SN string
-    // Format Waroengkuy PPOB: "Nawii. Refid: 49307976 Successful Purchase..."
+    // Extract Nickname from game SN string if present
     if (rawSn) {
       const nickMatch = rawSn.match(/^([^\.\n]+)\.\s*Refid/i);
       if (nickMatch) {
@@ -88,7 +84,7 @@ export default function StrukClient({
       sn: rawSn,
       nickname: rawNick,
     };
-  }, [order.notes]);
+  }, [order, initialNickname]);
 
   // Clean item name (e.g. if item name repeats product name)
   const cleanItemName = useMemo(() => {
@@ -425,50 +421,52 @@ export default function StrukClient({
               ))}
             </div>
 
-            {/* 2. Serial Number (SN) / Bukti Pengiriman Box */}
-            <div
-              style={{
-                background: "#0f172a",
-                color: "#ffffff",
-                border: "2px solid #000000",
-                borderRadius: 12,
-                padding: "14px 16px",
-                marginBottom: 18,
-              }}
-            >
+            {/* 2. Serial Number (SN) / Bukti Pengiriman Box (Disembunyikan untuk Akun Premium) */}
+            {!isAkunPremium && sn && (
               <div
                 style={{
-                  fontSize: 10,
-                  fontWeight: 900,
-                  letterSpacing: 1.5,
-                  textTransform: "uppercase",
-                  color: "#38bdf8",
-                  marginBottom: 6,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
+                  background: "#0f172a",
+                  color: "#ffffff",
+                  border: "2px solid #000000",
+                  borderRadius: 12,
+                  padding: "14px 16px",
+                  marginBottom: 18,
                 }}
               >
-                <span>📦 Serial Number (SN) / Bukti Pengiriman Server</span>
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 900,
+                    letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                    color: "#38bdf8",
+                    marginBottom: 6,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <span>📦 Serial Number (SN) / Bukti Pengiriman Server</span>
+                </div>
+                <div
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "#4ade80",
+                    wordBreak: "break-all",
+                    whiteSpace: "pre-wrap",
+                    lineHeight: 1.5,
+                    background: "#1e293b",
+                    padding: "8px 12px",
+                    borderRadius: 8,
+                    border: "1px solid #334155",
+                  }}
+                >
+                  {sn}
+                </div>
               </div>
-              <div
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "#4ade80",
-                  wordBreak: "break-all",
-                  whiteSpace: "pre-wrap",
-                  lineHeight: 1.5,
-                  background: "#1e293b",
-                  padding: "8px 12px",
-                  borderRadius: 8,
-                  border: "1px solid #334155",
-                }}
-              >
-                {sn || (isSuccess ? "Berhasil dikirim dan diverifikasi server publisher" : "Menunggu pembayaran")}
-              </div>
-            </div>
+            )}
 
             {/* 3. Financial Summary */}
             <div

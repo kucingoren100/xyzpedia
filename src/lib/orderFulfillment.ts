@@ -187,7 +187,7 @@ export async function startFulfillment(orderId: string) {
         data: {
           status: nextStatus,
           fulfilledAt: isDone ? new Date() : null,
-          notes: `Waroengkuy: ${data.order.ref || data.order.id} | Status: ${data.order.status} | Saldo: ${data.balance ?? "-"}`,
+          notes: `Waroengkuy: ${data.order.ref || data.order.id} | Status: ${data.order.status}`,
           supplierRef: data.order.ref || String(data.order.id),
           sn: snResult,
           supplierStatus: data.order.status,
