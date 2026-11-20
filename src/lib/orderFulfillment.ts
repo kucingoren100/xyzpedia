@@ -1,31 +1,75 @@
 import { prisma } from "./prisma";
 import { createDigiflazzTransaction } from "./digiflazz";
-
-interface FulfillOrderInput {
-  id: string;
-  invoiceNumber: string;
-  targetUserId: string;
-  targetZoneId: string | null;
-  product: {
-    categorySlug: string;
-    requiresServer: boolean;
-    name: string;
-  };
-  productItem: {
-    sku: string;
-    name: string;
-  };
-}
+import { OrderStatus, canTransition } from "./orderStatus";
+import { dispatchNotificationEvent } from "./notifications";
 
 /**
- * Automate supplier order execution (H2H) to Digiflazz or Waroengkuy
+ * Universal timeout-safe fulfillment engine (15s limit).
+ * Automatically claims atomicity, transitions status via state machine,
+ * and records supplierRef, sn, and supplierStatus.
  */
-export async function fulfillOrderWithSupplier(order: FulfillOrderInput) {
-  const sku = order.productItem.sku;
-  const isNumericSku = /^\d+$/.test(sku);
+export async function startFulfillment(orderId: string) {
+  // 1. Atomic claim: transition from PAID to PROCESSING
+  const claimed = await prisma.order.updateMany({
+    where: {
+      id: orderId,
+      status: OrderStatus.PAID,
+      fulfillmentStartedAt: null,
+    },
+    data: {
+      status: OrderStatus.PROCESSING,
+      fulfillmentStartedAt: new Date(),
+      fulfillmentAttempts: { increment: 1 },
+    },
+  });
 
-  // 0. DIGIFLAZZ INJECTION (Mobile Legends, Free Fire, dll)
+  if (claimed.count === 0) {
+    return { success: false, reason: "Order not in claimable PAID state or fulfillment already started" };
+  }
+
+  const order = await prisma.order.findUniqueOrThrow({
+    where: { id: orderId },
+    include: { product: true, productItem: true },
+  });
+
+  // Check if manual category
+  const isManual =
+    order.product.categorySlug === "akun-premium" ||
+    order.productItem.sku.startsWith("CUSTOM-") ||
+    (order.productItem as any).supplier === "MANUAL";
+
+  if (isManual) {
+    // Keep order in PAID / PROCESSING state waiting for admin manual handover
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        status: OrderStatus.PAID,
+        notes: `Pesanan Manual: menunggu admin menyerahkan kredensial / akses ke pelanggan.`,
+      },
+    });
+
+    // Alert admin for manual fulfillment required
+    try {
+      await dispatchNotificationEvent("notifyNewOrder", {
+        invoice: order.invoiceNumber,
+        productName: `${order.product.name} (PERLU PROSES MANUAL)`,
+        variantName: order.productItem.name,
+        targetUser: order.targetUserId + (order.targetZoneId ? ` (${order.targetZoneId})` : ""),
+        totalAmount: order.totalAmount,
+        paymentMethod: order.paymentMethod,
+        customerPhone: order.customerPhone || undefined,
+        customerEmail: order.customerEmail,
+      });
+    } catch (e) {
+      console.error("[startFulfillment] Error notifying manual order:", e);
+    }
+
+    return { success: true, manual: true };
+  }
+
+  const sku = order.productItem.sku;
   const isDigiflazz =
+    (order.productItem as any).supplier === "DIGIFLAZZ" ||
     sku.startsWith("ml") ||
     sku.startsWith("ff") ||
     sku.startsWith("pre359") ||
@@ -35,192 +79,187 @@ export async function fulfillOrderWithSupplier(order: FulfillOrderInput) {
     sku.startsWith("ovo") ||
     sku.startsWith("shopee");
 
-  if (isDigiflazz) {
-    const target = order.targetZoneId
-      ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
-      : order.targetUserId.trim();
+  // 15s Abort Controller
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    console.log(
-      `[Fulfillment] Mengirim pesanan ${order.invoiceNumber} ke Digiflazz (sku: ${sku}, target: ${target})...`
-    );
+  try {
+    if (isDigiflazz) {
+      const target = order.targetZoneId
+        ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
+        : order.targetUserId.trim();
 
-    try {
       const digiRes = await createDigiflazzTransaction({
         buyerSkuCode: sku,
         customerNo: target,
         refId: order.invoiceNumber,
       });
 
-      const noteText = `Digiflazz Ref: ${digiRes.refId} | Status: ${digiRes.status} | SN: ${
-        digiRes.sn || digiRes.message || "Diproses Digiflazz"
-      }`;
+      clearTimeout(timeoutId);
+
+      const isDone = digiRes.status === "SUCCESS" && !!digiRes.sn;
+      const isFailed = digiRes.status === "FAILED";
+      const nextStatus = isDone
+        ? OrderStatus.SUCCESS
+        : isFailed
+        ? OrderStatus.FAILED
+        : OrderStatus.PROCESSING;
 
       await prisma.order.update({
         where: { id: order.id },
         data: {
-          fulfilledAt: new Date(),
-          notes: noteText,
-          status:
-            digiRes.status === "SUCCESS"
-              ? "SUCCESS"
-              : digiRes.status === "FAILED"
-              ? "FAILED"
-              : "PROCESSING",
+          status: nextStatus,
+          fulfilledAt: isDone ? new Date() : null,
+          notes: `Digiflazz Ref: ${digiRes.refId} | Status: ${digiRes.status} | SN: ${
+            digiRes.sn || digiRes.message || "Diproses"
+          }`,
+          supplierRef: digiRes.refId,
+          sn: digiRes.sn || null,
+          supplierStatus: digiRes.status,
+          fulfillmentError: isFailed ? digiRes.message || "Supplier report failed" : null,
         },
       });
+
+      if (nextStatus === OrderStatus.SUCCESS) {
+        await dispatchSuccess(order, digiRes.sn, digiRes.refId);
+      } else if (nextStatus === OrderStatus.FAILED) {
+        await dispatchFailed(order, digiRes.message || "Digiflazz failed");
+      }
 
       return {
         success: digiRes.success,
         supplierRef: digiRes.refId,
-        status: digiRes.status,
-        sn:
-          digiRes.sn ||
-          digiRes.message ||
-          "Diproses langsung ke server akun in-game",
+        status: nextStatus,
+        sn: digiRes.sn,
       };
-    } catch (err: any) {
-      console.error(
-        "[Fulfillment] Error connecting to Digiflazz:",
-        err.message || err
-      );
-      return { success: false, error: err.message };
     }
-  }
 
-  const apiKey = process.env.WAROENGKUY_API_KEY || "";
-  const baseUrl = (
-    process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1"
-  ).replace(/\/$/, "");
+    // Waroengkuy PPOB
+    const apiKey = process.env.WAROENGKUY_API_KEY || "";
+    const baseUrl = (process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1").replace(/\/$/, "");
 
-  if (!apiKey) {
-    console.warn("[Fulfillment] WAROENGKUY_API_KEY tidak tersedia.");
-    return { success: false, reason: "No API Key" };
-  }
+    if (!apiKey) {
+      clearTimeout(timeoutId);
+      await markFailed(order.id, "Waroengkuy API Key not set");
+      return { success: false, reason: "No API Key" };
+    }
 
-  // 1. PPOB / GAME / PULSA / VOUCHER INJECTION
-  if (
-    isNumericSku &&
-    (order.product.categorySlug === "game-topup" ||
-      order.product.categorySlug === "pulsa-ewallet" ||
-      order.product.categorySlug === "voucher-digital")
-  ) {
     const variantId = parseInt(sku, 10);
-    // Combine target and zone ID for games that require server zone (e.g. MLBB, Magic Chess)
     const target = order.targetZoneId
       ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
       : order.targetUserId.trim();
 
-    console.log(
-      `[Fulfillment] Mengirim pesanan ${order.invoiceNumber} ke Waroengkuy PPOB (variant_id: ${variantId}, target: ${target})...`
-    );
+    const res = await fetch(`${baseUrl}/ppob/orders`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        variant_id: variantId,
+        target,
+        ref_id: order.invoiceNumber,
+      }),
+      signal: controller.signal,
+    });
 
-    try {
-      const res = await fetch(`${baseUrl}/ppob/orders`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          variant_id: variantId,
-          target,
-          ref_id: order.invoiceNumber,
-        }),
-      });
+    clearTimeout(timeoutId);
+    const data = await res.json().catch(() => ({}));
 
-      const data = await res.json().catch(() => ({}));
+    if (data.ok && data.order) {
+      const isDone = data.order.status === "SUCCESS" && !!data.order.sn;
+      const nextStatus = isDone ? OrderStatus.SUCCESS : OrderStatus.PROCESSING;
 
-      if (data.ok && data.order) {
-        console.log(
-          `[Fulfillment] Injeksi berhasil dikirim! Ref: ${data.order.ref}, Status: ${data.order.status}`
-        );
-
-        let finalStatus = data.order.status;
-        let sn = data.order.sn;
-
-        // Poll for SN if processing (up to 3 quick attempts of 2s each)
-        if (!sn && data.order.id) {
-          for (let attempt = 0; attempt < 3; attempt++) {
-            await new Promise((r) => setTimeout(r, 2000));
-            try {
-              const checkRes = await fetch(`${baseUrl}/ppob/orders/${data.order.id}`, {
-                headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
-              });
-              const checkData = await checkRes.json();
-              if (checkData.ok && checkData.order) {
-                finalStatus = checkData.order.status;
-                if (checkData.order.sn) {
-                  sn = checkData.order.sn;
-                  break;
-                }
-              }
-            } catch {
-              // Ignore polling check error
-            }
-          }
-        }
-
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            fulfilledAt: new Date(),
-            notes: `Injeksi PPOB: ${data.order.ref} | Status: ${finalStatus} | SN: ${sn || "Dalam antrean Moonton/Publisher"}`,
-          },
-        });
-
-        return {
-          success: true,
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: nextStatus,
+          fulfilledAt: isDone ? new Date() : null,
+          notes: `Injeksi PPOB: ${data.order.ref} | Status: ${data.order.status} | SN: ${data.order.sn || "Dalam proses"}`,
           supplierRef: data.order.ref,
-          status: finalStatus,
-          sn: sn || "Sedang diproses langsung ke server akun in-game",
-        };
-      } else {
-        console.error(
-          `[Fulfillment] Gagal kirim ke Waroengkuy:`,
-          data.error || res.statusText
-        );
-        return { success: false, error: data.error || `HTTP ${res.status}` };
-      }
-    } catch (err: any) {
-      console.error(`[Fulfillment] Error connecting to supplier:`, err.message || err);
-      return { success: false, error: err.message };
-    }
-  }
-
-  // 2. AKUN PREMIUM INSTAN (Jika produk instan Waroengkuy)
-  if (isNumericSku && order.product.categorySlug === "akun-premium") {
-    const variantId = parseInt(sku, 10);
-    try {
-      const res = await fetch(`${baseUrl}/orders`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+          sn: data.order.sn || null,
+          supplierStatus: data.order.status,
         },
-        body: JSON.stringify({
-          variant_id: variantId,
-          qty: 1,
-          ref_id: order.invoiceNumber,
-        }),
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (data.ok && data.order) {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            fulfilledAt: new Date(),
-            notes: `Akun Premium Ref: ${data.order.ref} | Status: ${data.order.status}`,
-          },
-        });
-        return { success: true, supplierRef: data.order.ref };
+      if (nextStatus === OrderStatus.SUCCESS) {
+        await dispatchSuccess(order, data.order.sn, data.order.ref);
       }
-    } catch (err: any) {
-      console.error(`[Fulfillment] Error ordering premium account:`, err.message || err);
-    }
-  }
 
-  return { success: false, reason: "Manual product or non-API item" };
+      return { success: true, supplierRef: data.order.ref, status: nextStatus, sn: data.order.sn };
+    } else {
+      await markFailed(order.id, data.error || `HTTP ${res.status}`);
+      return { success: false, error: data.error };
+    }
+  } catch (err: any) {
+    clearTimeout(timeoutId);
+    console.error("[startFulfillment] Error connecting to supplier:", err.message || err);
+    await markFailed(order.id, err.message || "Timeout connecting to supplier");
+    return { success: false, error: err.message };
+  }
+}
+
+async function markFailed(orderId: string, errorReason: string) {
+  try {
+    const updated = await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        status: OrderStatus.FAILED,
+        fulfillmentError: errorReason,
+      },
+      include: { product: true, productItem: true },
+    });
+    await dispatchFailed(updated, errorReason);
+  } catch (e) {
+    console.error("[markFailed] error updating order:", e);
+  }
+}
+
+async function dispatchSuccess(order: any, sn?: string | null, supplierRef?: string | null) {
+  try {
+    const profit = Math.max(
+      0,
+      order.totalAmount - (order.productItem.supplierPrice || order.productItem.price * 0.8)
+    );
+    await dispatchNotificationEvent("notifySuccessOrder", {
+      invoice: order.invoiceNumber,
+      productName: order.product.name,
+      variantName: order.productItem.name,
+      targetUser: order.targetUserId + (order.targetZoneId ? ` (${order.targetZoneId})` : ""),
+      totalAmount: order.totalAmount,
+      profit: Math.round(profit),
+      paymentMethod: order.paymentMethod || "QRIS",
+      deliveryType: order.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT",
+      customerPhone: order.customerPhone || undefined,
+      customerEmail: order.customerEmail,
+      sn: sn || "Selesai diproses",
+      supplierRef: supplierRef || undefined,
+    });
+  } catch (e) {
+    console.error("[dispatchSuccess] notification error:", e);
+  }
+}
+
+async function dispatchFailed(order: any, reason: string) {
+  try {
+    await dispatchNotificationEvent("notifyFailedOrder", {
+      invoice: order.invoiceNumber,
+      productName: order.product.name,
+      variantName: order.productItem.name,
+      totalAmount: order.totalAmount,
+      reason: reason || "Kendala supplier",
+      customerPhone: order.customerPhone || undefined,
+      customerEmail: order.customerEmail,
+    });
+  } catch (e) {
+    console.error("[dispatchFailed] notification error:", e);
+  }
+}
+
+/**
+ * Backward compatibility alias for existing callers
+ */
+export async function fulfillOrderWithSupplier(order: { id: string }) {
+  return await startFulfillment(order.id);
 }

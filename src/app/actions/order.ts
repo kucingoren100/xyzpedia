@@ -254,9 +254,25 @@ export async function checkPaymentStatus(invoiceNumber: string) {
       return { success: false, error: "Pesanan tidak ditemukan." };
     }
 
-    if (order.status === "SUCCESS" || order.status === "PAID") {
+    if (order.status === "SUCCESS" || order.status === "PAID" || order.status === "PROCESSING") {
       return { success: true, isPaid: true, order };
     }
+
+    // Rate-limit check to QiosPay: limit to once every 5 seconds per invoice if lastPaymentCheckAt exists
+    const lastCheck = (order as any).lastPaymentCheckAt
+      ? new Date((order as any).lastPaymentCheckAt).getTime()
+      : 0;
+    if (Date.now() - lastCheck < 5000) {
+      return { success: true, isPaid: false, order };
+    }
+
+    // Update last payment check timestamp
+    await prisma.order.update({
+      where: { invoiceNumber },
+      data: {
+        lastPaymentCheckAt: new Date(),
+      } as any,
+    }).catch(() => {});
 
     // Check with QiosPay API
     try {
@@ -272,70 +288,21 @@ export async function checkPaymentStatus(invoiceNumber: string) {
         status === "COMPLETED";
 
       if (isPaid) {
-        const hasExistingSn = order.notes?.includes("SN:");
+        // Enforce markOrderPaid atomic flow (never transition directly to SUCCESS from here)
+        const paidAmount = Number(data?.amount || order.totalAmount);
+        const { markOrderPaid } = await import("@/lib/orderStatus");
+        const paidRes = await markOrderPaid(invoiceNumber, "QiosPay checkStatus", paidAmount);
 
-        // Atomic claim: only update if still PENDING (prevents double-fulfillment race condition)
-        const claimed = await prisma.order.updateMany({
-          where: { invoiceNumber, status: { in: ["PENDING", "PROCESSING"] } },
-          data: {
-            status: "SUCCESS",
-            paidAt: order.paidAt || new Date(),
-            fulfilledAt: order.fulfilledAt || new Date(),
-            ...(hasExistingSn ? {} : { notes: `Pembayaran terverifikasi via QiosPay API Status: ${status}` }),
-          },
-        });
+        revalidatePath(`/transaksi/${invoiceNumber}`);
+        revalidatePath("/cek-transaksi");
 
-        if (claimed.count === 0) {
-          // Already handled by webhook, just return current state
-          const current = await prisma.order.findUnique({ where: { invoiceNumber }, include: { product: true, productItem: true } });
-          return { success: true, isPaid: true, order: current! };
+        if (paidRes.success && paidRes.order) {
+          return { success: true, isPaid: true, order: paidRes.order };
         }
-
-        const updated = await prisma.order.findUniqueOrThrow({
-          where: { invoiceNumber },
-          include: { product: true, productItem: true },
-        });
-
-          revalidatePath(`/transaksi/${invoiceNumber}`);
-          revalidatePath("/cek-transaksi");
-
-          // Automatically trigger supplier injection
-          let fulfillResult: any = null;
-          try {
-            fulfillResult = await fulfillOrderWithSupplier(updated);
-          } catch (fulfillErr) {
-            console.error("[checkPaymentStatus] Auto-fulfillment error:", fulfillErr);
-          }
-
-          // Dispatch notification
-          try {
-            const profit = Math.max(
-              0,
-              updated.totalAmount - (updated.productItem.supplierPrice || updated.productItem.price * 0.8)
-            );
-            await dispatchNotificationEvent("notifySuccessOrder", {
-              invoice: updated.invoiceNumber,
-              productName: updated.product.name,
-              variantName: updated.productItem.name,
-              targetUser: updated.targetUserId + (updated.targetZoneId ? ` (${updated.targetZoneId})` : ""),
-              totalAmount: updated.totalAmount,
-              profit: Math.round(profit),
-              paymentMethod: updated.paymentMethod || "QRIS Real-time",
-              deliveryType: (updated.product as any).deliveryType || (updated.product.categorySlug === "akun-premium" ? "MANUAL" : "INSTANT"),
-              customerPhone: updated.customerPhone || undefined,
-              customerEmail: updated.customerEmail || undefined,
-              sn: fulfillResult?.sn || "Sedang diverifikasi oleh publisher",
-              supplierRef: fulfillResult?.supplierRef,
-            });
-          } catch (notifErr) {
-            console.error("Gagal dispatch notifikasi checkStatus:", notifErr);
-          }
-
-          return { success: true, isPaid: true, order: updated };
-        }
-      } catch (checkErr) {
-        console.warn("QiosPay checkStatus error:", checkErr);
       }
+    } catch (checkErr) {
+      console.warn("QiosPay checkStatus error:", checkErr);
+    }
 
     return { success: true, isPaid: false, order };
   } catch (error: any) {

@@ -36,12 +36,12 @@ export default async function AdminDashboardPage() {
     prisma.order.aggregate({
       where: {
         createdAt: { gte: startOfToday },
-        status: "SUCCESS",
+        status: { in: ["PAID", "PROCESSING", "SUCCESS"] },
       },
       _sum: { totalAmount: true },
     }),
     prisma.order.aggregate({
-      where: { status: "SUCCESS" },
+      where: { status: { in: ["PAID", "PROCESSING", "SUCCESS"] } },
       _sum: { totalAmount: true },
     }),
     prisma.order.findMany({
