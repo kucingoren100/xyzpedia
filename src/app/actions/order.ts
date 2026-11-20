@@ -323,6 +323,71 @@ function maskPhone(phone: string): string {
   return `${phone.slice(0, 3)}****${phone.slice(-3)}`;
 }
 
+export async function requestOrderLookup(email: string) {
+  try {
+    const trimmed = email.trim().toLowerCase();
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+
+    // Rate limiting: 5 requests per 10 minutes per IP
+    const reqHeaders = await headers();
+    const clientIp = getClientIpFromHeaders(reqHeaders);
+    const rl = checkRateLimit(`magic-lookup:${clientIp}`, {
+      intervalMs: 10 * 60_000,
+      max: 5,
+    });
+    if (!rl.success) {
+      return {
+        success: true,
+        message: "Jika email Anda terdaftar dalam pesanan, tautan akses telah dikirimkan ke kotak masuk Anda.",
+      };
+    }
+
+    if (!isEmail) {
+      return {
+        success: true,
+        message: "Jika email Anda terdaftar dalam pesanan, tautan akses telah dikirimkan ke kotak masuk Anda.",
+      };
+    }
+
+    // Check if any order exists
+    const orderCount = await prisma.order.count({
+      where: { customerEmail: { equals: trimmed, mode: "insensitive" } },
+    });
+
+    if (orderCount > 0) {
+      const secret = process.env.ORDER_ACCESS_SECRET || process.env.ADMIN_JWT_SECRET || "default_order_secret";
+      const crypto = await import("crypto");
+      const payload = JSON.stringify({
+        email: trimmed,
+        exp: Date.now() + 30 * 60 * 1000, // 30 min
+        nonce: crypto.randomBytes(8).toString("hex"),
+      });
+      const encoded = Buffer.from(payload).toString("base64url");
+      const sig = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
+      const token = `${encoded}.${sig}`;
+
+      // In production/dev, we can trigger an email or provide direct lookup url
+      const { sendEmailMessage, getPublicAppUrl } = await import("@/lib/notifications");
+      const magicUrl = `${getPublicAppUrl()}/cek-transaksi/akses?token=${token}`;
+      await sendEmailMessage(
+        trimmed,
+        "Tautan Akses Riwayat Pesanan XYZPEDIA",
+        `<p>Halo,</p><p>Klik tautan di bawah ini untuk melihat daftar pesanan Anda (berlaku 30 menit):</p><p><a href="${magicUrl}">${magicUrl}</a></p>`
+      ).catch(() => {});
+    }
+
+    return {
+      success: true,
+      message: "Jika email Anda terdaftar dalam pesanan, tautan akses telah dikirimkan ke kotak masuk Anda.",
+    };
+  } catch {
+    return {
+      success: true,
+      message: "Jika email Anda terdaftar dalam pesanan, tautan akses telah dikirimkan ke kotak masuk Anda.",
+    };
+  }
+}
+
 export async function searchOrders(query: string) {
   try {
     const trimmed = query.trim();
@@ -341,17 +406,14 @@ export async function searchOrders(query: string) {
     }
 
     const isInvoice = /^INV-XYZ-[a-zA-Z0-9-]+$/i.test(trimmed);
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
 
-    // Prevent open enumeration / broad queries (e.g. searching "@", "gmail", etc.)
-    if (!isInvoice && !isEmail) {
+    // Only allow direct search with full invoice number (prevent email enumeration)
+    if (!isInvoice) {
       return [];
     }
 
     const orders = await prisma.order.findMany({
-      where: isInvoice
-        ? { invoiceNumber: { equals: trimmed, mode: "insensitive" } }
-        : { customerEmail: { equals: trimmed.toLowerCase(), mode: "insensitive" } },
+      where: { invoiceNumber: { equals: trimmed, mode: "insensitive" } },
       include: {
         product: {
           select: {
@@ -365,15 +427,20 @@ export async function searchOrders(query: string) {
           },
         },
       },
-      orderBy: { createdAt: "desc" },
-      take: 10,
+      take: 1,
     });
 
     // Mask sensitive PII before sending to client
     return orders.map((o) => ({
-      ...o,
+      id: o.id,
+      invoiceNumber: o.invoiceNumber,
+      status: o.status,
+      totalAmount: o.totalAmount,
+      createdAt: o.createdAt,
       customerEmail: maskEmail(o.customerEmail),
       customerPhone: o.customerPhone ? maskPhone(o.customerPhone) : null,
+      product: o.product,
+      productItem: o.productItem,
     }));
   } catch (error) {
     console.error("Search orders error:", error);
