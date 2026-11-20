@@ -8,6 +8,41 @@ import { dispatchNotificationEvent } from "@/lib/notifications";
 import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 import { getWebCondition, checkIsCategoryUnderMaintenance } from "@/lib/webCondition";
 import { checkRateLimit, getClientIpFromHeaders } from "@/lib/rateLimit";
+import { z } from "zod";
+
+const createOrderSchema = z.object({
+  productSlug: z.string().trim().min(1, "Produk wajib dipilih.").max(100),
+  itemId: z.string().trim().min(1, "Varian item wajib dipilih.").max(100),
+  targetUserId: z
+    .string()
+    .trim()
+    .min(1, "User ID / Kontak Akun wajib diisi.")
+    .max(100, "User ID terlalu panjang (maks 100 karakter)."),
+  targetZoneId: z
+    .string()
+    .trim()
+    .max(50, "Zone/Server ID terlalu panjang.")
+    .optional(),
+  customerEmail: z
+    .string()
+    .trim()
+    .email("Format email tidak valid (contoh: akun@gmail.com).")
+    .max(120, "Alamat email terlalu panjang."),
+  customerPhone: z
+    .string()
+    .trim()
+    .max(25, "Nomor WhatsApp terlalu panjang.")
+    .regex(/^(?:\+?62|08)[0-9]{8,14}$/, "Format nomor WhatsApp tidak valid (contoh: 081234567890).")
+    .optional()
+    .or(z.literal("")),
+  promoCode: z
+    .string()
+    .trim()
+    .max(30, "Kode kupon terlalu panjang.")
+    .regex(/^[A-Za-z0-9_-]*$/, "Format kode kupon hanya boleh huruf, angka, dash, underscore.")
+    .optional()
+    .or(z.literal("")),
+});
 
 export interface CreateOrderInput {
   productSlug: string;
@@ -34,8 +69,16 @@ export async function createOrder(data: CreateOrderInput) {
         error: "Terlalu banyak permintaan pembuatan pesanan. Silakan tunggu 1 menit.",
       };
     }
+
+    // Input validation via Zod
+    const parsed = createOrderSchema.safeParse(data);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0]?.message || "Data formulir pesanan tidak valid.";
+      return { success: false, error: firstIssue };
+    }
+    const validData = parsed.data;
     const product = await prisma.product.findUnique({
-      where: { slug: data.productSlug },
+      where: { slug: validData.productSlug },
       include: { items: true },
     });
 
@@ -51,7 +94,7 @@ export async function createOrder(data: CreateOrderInput) {
       };
     }
 
-    const item = product.items.find((i) => i.id === data.itemId);
+    const item = product.items.find((i) => i.id === validData.itemId);
     if (!item) {
       return { success: false, error: "Varian item tidak ditemukan." };
     }
@@ -63,18 +106,11 @@ export async function createOrder(data: CreateOrderInput) {
       };
     }
 
-    // Validation
-    if (!data.targetUserId.trim()) {
-      return { success: false, error: `${product.targetInputLabel} wajib diisi.` };
+    if (product.requiresServer && !validData.targetZoneId?.trim()) {
+      return { success: false, error: "Server / Zone ID wajib diisi untuk game ini." };
     }
 
-    if (product.requiresServer && !data.targetZoneId?.trim()) {
-      return { success: false, error: "Server / Zone ID wajib diisi." };
-    }
-
-    const finalCustomerEmail =
-      data.customerEmail?.trim() ||
-      (data.targetUserId?.includes("@") ? data.targetUserId.trim() : "");
+    const finalCustomerEmail = validData.customerEmail;
 
     if (!finalCustomerEmail || !finalCustomerEmail.includes("@")) {
       return { success: false, error: "Alamat email valid wajib diisi untuk bukti pesanan." };
@@ -89,7 +125,7 @@ export async function createOrder(data: CreateOrderInput) {
     // Calculate Promo Discount via validateCoupon
     const { validateCoupon } = await import("@/lib/couponHelper");
     const couponRes = await validateCoupon(
-      data.promoCode,
+      validData.promoCode,
       item.price,
       item.supplierPrice || 0
     );
@@ -108,9 +144,9 @@ export async function createOrder(data: CreateOrderInput) {
         orderId: invoiceNumber,
         amount: discountedPrice,
         description: `Pembayaran ${item.name} (${product.name}) - ${invoiceNumber}`,
-        customerName: data.targetUserId.trim(),
+        customerName: validData.targetUserId.trim(),
         customerEmail: finalCustomerEmail,
-        customerPhone: data.customerPhone?.trim(),
+        customerPhone: validData.customerPhone?.trim(),
         expiredMinutes: 15,
       });
 
@@ -136,10 +172,10 @@ export async function createOrder(data: CreateOrderInput) {
     const order = await prisma.order.create({
       data: {
         invoiceNumber,
-        targetUserId: data.targetUserId.trim(),
-        targetZoneId: data.targetZoneId?.trim() || null,
+        targetUserId: validData.targetUserId.trim(),
+        targetZoneId: validData.targetZoneId?.trim() || null,
         customerEmail: finalCustomerEmail,
-        customerPhone: data.customerPhone?.trim() || null,
+        customerPhone: validData.customerPhone?.trim() || null,
         productId: product.id,
         productItemId: item.id,
         basePrice: item.price,
@@ -162,10 +198,10 @@ export async function createOrder(data: CreateOrderInput) {
           invoice: order.invoiceNumber,
           productName: product.name,
           variantName: item.name,
-          targetUser: data.targetUserId + (data.targetZoneId ? ` (${data.targetZoneId})` : ""),
+          targetUser: validData.targetUserId + (validData.targetZoneId ? ` (${validData.targetZoneId})` : ""),
           totalAmount: order.totalAmount,
           paymentMethod: order.paymentMethod,
-          customerPhone: data.customerPhone || undefined,
+          customerPhone: validData.customerPhone || undefined,
           customerEmail: finalCustomerEmail,
         });
       } catch (err) {
