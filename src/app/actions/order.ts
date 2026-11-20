@@ -87,16 +87,15 @@ export async function createOrder(data: CreateOrderInput) {
     const randomSuffix = randomBytes(5).toString("hex").toUpperCase();
     const invoiceNumber = `INV-XYZ-${dateStr}-${randomSuffix}`;
 
-    // Calculate Promo Discount
-    let discountAmount = 0;
-    const cleanPromo = data.promoCode?.trim().toUpperCase();
-    if (cleanPromo === "XYZPEDIA") {
-      discountAmount = Math.min(1500, Math.floor(item.price * 0.3));
-    } else if (cleanPromo === "HEMAT5") {
-      discountAmount = Math.min(5000, Math.round(item.price * 0.05));
-    } else if (cleanPromo === "NEWUSER" && item.price >= 10000) {
-      discountAmount = 2000;
-    }
+    // Calculate Promo Discount via validateCoupon
+    const { validateCoupon } = await import("@/lib/couponHelper");
+    const couponRes = await validateCoupon(
+      data.promoCode,
+      item.price,
+      item.supplierPrice || 0
+    );
+    const discountAmount = couponRes.discountAmount || 0;
+    const couponCode = couponRes.valid ? couponRes.code : null;
 
     const discountedPrice = Math.max(100, item.price - discountAmount);
     let totalAmount = discountedPrice;
@@ -135,10 +134,6 @@ export async function createOrder(data: CreateOrderInput) {
       };
     }
 
-    const orderNotes = cleanPromo && discountAmount > 0
-      ? `Kupon Promo: ${cleanPromo} (-Rp ${discountAmount.toLocaleString("id-ID")})`
-      : null;
-
     const order = await prisma.order.create({
       data: {
         invoiceNumber,
@@ -155,8 +150,10 @@ export async function createOrder(data: CreateOrderInput) {
         status: "PENDING",
         qrisString,
         paymentMethod: "QRIS",
-        notes: orderNotes,
-      },
+        notes: null, // No longer store coupon text in notes
+        couponCode: couponCode,
+        discountAmount: discountAmount,
+      } as any,
     });
 
     // Dispatch async notification for new pending order
