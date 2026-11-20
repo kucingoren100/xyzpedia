@@ -39,7 +39,7 @@ export interface WarrantyClaimWithOrder {
 
 const ISSUE_LABELS: Record<string, string> = {
   ITEM_BELUM_MASUK: "💎 Diamond / Item Belum Masuk",
-  AKUN_LOGIN_GAGAL: "🔑 Akun Tidak Bisa Login / Salah Sandi",
+  AKUN_LOGIN_GAGAL: "🔑 Kendala Kredensial / Akses Akun",
   RESET_PROFIL: "🔄 Profil / Masa Aktif Berkurang",
   SALAH_NOMINAL: "💳 Kendala Pembayaran / Saldo Terpotong",
   LAINNYA: "❓ Kendala Lainnya",

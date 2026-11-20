@@ -31,13 +31,12 @@ interface WarrantyClaim {
 interface WarrantyClaimWidgetProps {
   invoiceNumber: string;
   customerPhone?: string | null;
-  customerEmail?: string | null;
   productName: string;
 }
 
 const ISSUE_OPTIONS = [
   { id: "ITEM_BELUM_MASUK", label: "💎 Diamond / Item Belum Masuk" },
-  { id: "AKUN_LOGIN_GAGAL", label: "🔑 Akun Tidak Bisa Login / Salah Password" },
+  { id: "AKUN_LOGIN_GAGAL", label: "🔑 Kendala Kredensial / Akses Akun" },
   { id: "RESET_PROFIL", label: "🔄 Profil / Masa Aktif Berkurang" },
   { id: "SALAH_NOMINAL", label: "💳 Kendala Pembayaran / Saldo Terpotong" },
   { id: "LAINNYA", label: "❓ Kendala Lainnya" },
@@ -46,7 +45,6 @@ const ISSUE_OPTIONS = [
 export default function WarrantyClaimWidget({
   invoiceNumber,
   customerPhone,
-  customerEmail,
   productName,
 }: WarrantyClaimWidgetProps) {
   const [claims, setClaims] = useState<WarrantyClaim[]>([]);
@@ -104,7 +102,6 @@ export default function WarrantyClaimWidget({
         body: JSON.stringify({
           invoiceNumber,
           customerPhone: phone.trim(),
-          customerEmail: customerEmail || undefined,
           issueType,
           description: description.trim(),
           proofImageUrl: proofUrl.trim() || undefined,

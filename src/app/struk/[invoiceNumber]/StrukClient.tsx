@@ -550,7 +550,7 @@ export default function StrukClient({
             </div>
 
             {/* 4. Customer Contact Note */}
-            {(order.customerEmail || order.customerPhone) && (
+            {order.customerPhone && (
               <div
                 style={{
                   fontSize: 11,
@@ -561,9 +561,9 @@ export default function StrukClient({
                   padding: "0 4px",
                 }}
               >
-                <span>Email / Kontak Pembeli:</span>
+                <span>WhatsApp Pembeli:</span>
                 <span style={{ color: "#0f172a", fontWeight: 800 }}>
-                  {[order.customerEmail, order.customerPhone].filter(Boolean).join(" • ")}
+                  {order.customerPhone}
                 </span>
               </div>
             )}
@@ -599,7 +599,6 @@ export default function StrukClient({
         <WarrantyClaimWidget
           invoiceNumber={order.invoiceNumber}
           customerPhone={order.customerPhone}
-          customerEmail={order.customerEmail}
           productName={order.product.name}
         />
 

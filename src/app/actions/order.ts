@@ -26,8 +26,9 @@ const createOrderSchema = z.object({
   customerEmail: z
     .string()
     .trim()
-    .email("Format email tidak valid (contoh: akun@gmail.com).")
-    .max(120, "Alamat email terlalu panjang."),
+    .max(120)
+    .optional()
+    .or(z.literal("")),
   customerPhone: z
     .string()
     .trim()
@@ -49,7 +50,7 @@ export interface CreateOrderInput {
   itemId: string;
   targetUserId: string;
   targetZoneId?: string;
-  customerEmail: string;
+  customerEmail?: string;
   customerPhone?: string;
   promoCode?: string;
 }
@@ -110,11 +111,13 @@ export async function createOrder(data: CreateOrderInput) {
       return { success: false, error: "Server / Zone ID wajib diisi untuk game ini." };
     }
 
-    const finalCustomerEmail = validData.customerEmail;
-
-    if (!finalCustomerEmail || !finalCustomerEmail.includes("@")) {
-      return { success: false, error: "Alamat email valid wajib diisi untuk bukti pesanan." };
-    }
+    const cleanPhone = validData.customerPhone?.trim() || "";
+    const finalCustomerEmail =
+      validData.customerEmail && validData.customerEmail.includes("@")
+        ? validData.customerEmail.trim()
+        : cleanPhone
+        ? `${cleanPhone.replace(/[^0-9]/g, "")}@customer.xyzpedia.my.id`
+        : `guest-${validData.targetUserId.replace(/[^a-zA-Z0-9]/g, "").slice(0, 15) || "user"}-${Date.now().toString().slice(-4)}@customer.xyzpedia.my.id`;
 
     // Generate Invoice Number: INV-XYZ-YYYYMMDD-XXXXXXXXXX (10 hex chars = 16^10 combinations)
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
