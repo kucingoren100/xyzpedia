@@ -31,12 +31,13 @@ interface WarrantyClaim {
 interface WarrantyClaimWidgetProps {
   invoiceNumber: string;
   customerPhone?: string | null;
+  customerEmail?: string | null;
   productName: string;
 }
 
 const ISSUE_OPTIONS = [
   { id: "ITEM_BELUM_MASUK", label: "💎 Diamond / Item Belum Masuk" },
-  { id: "AKUN_LOGIN_GAGAL", label: "🔑 Kendala Kredensial / Akses Akun" },
+  { id: "AKUN_LOGIN_GAGAL", label: "🔑 Kendala Kredensial / Akses Akun Bermasalah" },
   { id: "RESET_PROFIL", label: "🔄 Profil / Masa Aktif Berkurang" },
   { id: "SALAH_NOMINAL", label: "💳 Kendala Pembayaran / Saldo Terpotong" },
   { id: "LAINNYA", label: "❓ Kendala Lainnya" },
@@ -45,6 +46,7 @@ const ISSUE_OPTIONS = [
 export default function WarrantyClaimWidget({
   invoiceNumber,
   customerPhone,
+  customerEmail,
   productName,
 }: WarrantyClaimWidgetProps) {
   const [claims, setClaims] = useState<WarrantyClaim[]>([]);
@@ -102,6 +104,7 @@ export default function WarrantyClaimWidget({
         body: JSON.stringify({
           invoiceNumber,
           customerPhone: phone.trim(),
+          customerEmail: customerEmail || undefined,
           issueType,
           description: description.trim(),
           proofImageUrl: proofUrl.trim() || undefined,
@@ -353,7 +356,7 @@ export default function WarrantyClaimWidget({
                 <textarea
                   required
                   rows={3}
-                  placeholder="Contoh: Saya sudah bayar 30 menit lalu tapi diamond belum bertambah di akun, atau email/password akun tidak bisa digunakan..."
+                  placeholder="Contoh: Saya sudah bayar 30 menit lalu tapi diamond belum bertambah di akun, atau akses akun mengalami kendala..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full p-3 bg-white dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl text-carbon dark:text-white font-medium outline-none focus:ring-2 focus:ring-[#ffd731]"

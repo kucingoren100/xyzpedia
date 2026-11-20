@@ -380,6 +380,19 @@ export default function ProductCustomizerClient({
       return;
     }
 
+    const effectiveEmail =
+      customerEmail.trim() ||
+      (targetUserId.includes("@") ? targetUserId.trim() : "");
+
+    if (!effectiveEmail || !effectiveEmail.includes("@")) {
+      setErrorMessage("Mohon masukkan alamat email yang valid untuk bukti transaksi.");
+      return;
+    }
+
+    if (!customerEmail && effectiveEmail) {
+      setCustomerEmail(effectiveEmail);
+    }
+
     // Close mobile modal if open and show Pop-up Konfirmasi Data & Nickname
     if (isModalOpen) setIsModalOpen(false);
     setIsConfirmOrderOpen(true);
@@ -387,6 +400,11 @@ export default function ProductCustomizerClient({
 
   const handleExecuteOrder = async () => {
     setErrorMessage("");
+
+    const effectiveEmail =
+      customerEmail.trim() ||
+      (targetUserId.includes("@") ? targetUserId.trim() : "");
+
     setIsSubmitting(true);
 
     try {
@@ -395,6 +413,7 @@ export default function ProductCustomizerClient({
         itemId: selectedItemId,
         targetUserId: targetUserId.trim(),
         targetZoneId: targetZoneId.trim() || undefined,
+        customerEmail: effectiveEmail,
         customerPhone: customerPhone.trim() || undefined,
         promoCode: appliedPromo || undefined,
       });
@@ -813,28 +832,44 @@ export default function ProductCustomizerClient({
                   4
                 </span>
                 <h3 className="font-[var(--font-bricolage)] text-lg font-black uppercase text-carbon dark:text-white">
-                  4. Kontak Notifikasi (Opsional)
+                  4. Kontak Pengiriman Invoice
                 </h3>
               </div>
-              <span className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400">Tanpa Akun / Tanpa Login</span>
+              <span className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400">Tanpa Login</span>
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="customer-phone-desktop" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5" />
-                <span>Nomor WhatsApp (Opsional)</span>
-              </label>
-              <input
-                id="customer-phone-desktop"
-                type="tel"
-                value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
-                placeholder="Contoh: 08123456789 (Boleh dikosongkan)"
-                className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
-              />
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">
-                ℹ️ Notifikasi status pesanan & link struk otomatis dikirimkan ke WhatsApp Anda jika diisi.
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label htmlFor="customer-email-desktop" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Alamat Email</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="customer-email-desktop"
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  placeholder="Contoh: emailmu@gmail.com"
+                  className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="customer-phone-desktop" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>Nomor WhatsApp (Opsional)</span>
+                </label>
+                <input
+                  id="customer-phone-desktop"
+                  type="tel"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  placeholder="Contoh: 08123456789"
+                  className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
+                />
+              </div>
             </div>
 
             {/* Promo Code Box */}
@@ -1147,7 +1182,7 @@ export default function ProductCustomizerClient({
               </div>
             </div>
 
-            {/* 3. Tahap 4: Kontak Bukti Invoice */}
+            {/* 3. Tahap 4: Kontak Pengiriman Invoice */}
             <div className="bg-white dark:bg-[#1a1a26] ink-border dark:border-[#38384a] rounded-2xl p-4 space-y-3 shadow-[2px_2px_0px_0px_#000000]">
               <div className="flex items-center justify-between pb-2 border-b border-carbon dark:border-[#38384a]">
                 <div className="flex items-center gap-2">
@@ -1155,12 +1190,29 @@ export default function ProductCustomizerClient({
                     4
                   </span>
                   <span className="font-[var(--font-bricolage)] text-xs font-black uppercase text-carbon dark:text-white">
-                    Kontak Notifikasi (Opsional)
+                    Kontak Bukti Invoice
                   </span>
                 </div>
                 <span className="text-[9px] font-black uppercase text-gray-500 dark:text-gray-400">
                   TANPA LOGIN
                 </span>
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="customer-email-mobile" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Alamat Email</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="customer-email-mobile"
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  placeholder="Contoh: emailmu@gmail.com"
+                  className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
+                  required
+                />
               </div>
 
               <div className="space-y-1.5">
@@ -1173,12 +1225,9 @@ export default function ProductCustomizerClient({
                   type="tel"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  placeholder="Contoh: 08123456789 (Boleh dikosongkan)"
+                  placeholder="Contoh: 08123456789"
                   className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
                 />
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">
-                  ℹ️ Notifikasi status pesanan & link struk otomatis dikirimkan ke WhatsApp Anda jika diisi.
-                </p>
               </div>
 
               {/* Promo Code Box (Mobile Modal) */}
@@ -1383,6 +1432,12 @@ export default function ProductCustomizerClient({
               <div className="flex justify-between items-center py-1 border-b border-gray-200 dark:border-gray-800">
                 <span className="text-gray-500 dark:text-gray-400">Nominal:</span>
                 <span className="font-black text-carbon dark:text-white text-right">{selectedItem?.name}</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                <span className="text-gray-500 dark:text-gray-400">Email Struk:</span>
+                <span className="font-black text-carbon dark:text-white truncate max-w-[200px]">
+                  {customerEmail || targetUserId}
+                </span>
               </div>
               {customerPhone && (
                 <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">

@@ -15,7 +15,7 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
           </span>
         </div>
         <p className="text-[11px] text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-          XYZPEDIA <strong>tidak membutuhkan pendaftaran akun, email, ataupun password pembeli</strong>. Seluruh transaksi 100% instan langsung via QRIS resmi di website ini. Garansi 100% uang kembali jika pesanan gagal.
+          XYZPEDIA <strong>tidak pernah meminta password atau kode OTP</strong>. Pembayaran hanya sah via QRIS resmi di website ini. Garansi 100% uang kembali jika pesanan gagal.
         </p>
       </div>
     );
@@ -39,7 +39,7 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
               </span>
             </div>
             <p className="text-xs sm:text-[13px] font-bold text-white/95 mt-1 leading-snug">
-              XYZPEDIA <strong>TIDAK PERNAH</strong> meminta registrasi email/password akun, kode OTP, ataupun transfer manual ke rekening pribadi. Seluruh pembayaran resmi hanya melalui QRIS otomatis di website ini!
+              XYZPEDIA <strong>TIDAK PERNAH</strong> meminta password akun, kode OTP, ataupun transfer manual ke rekening pribadi. Seluruh pembayaran resmi hanya melalui QRIS otomatis di website ini!
             </p>
           </div>
         </div>
