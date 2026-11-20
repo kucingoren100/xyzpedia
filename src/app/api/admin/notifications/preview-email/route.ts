@@ -116,7 +116,7 @@ export async function GET(req: Request) {
         totalOmset,
         totalProfit,
         dateRange: `${dateRangeStr} (DATA CONTOH)`,
-        conversionRate: totalOrders > 0 ? ((successOrders / totalOrders) * 100).toFixed(1) : undefined,
+        conversionRate: totalOrders > 0 ? Number(((successOrders / totalOrders) * 100).toFixed(1)) : undefined,
         topProduct: `${topProd} (CONTOH)`,
         storeName: "XYZPEDIA (CONTOH PREVIEW)",
         adminUrl: "/admin",
