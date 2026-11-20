@@ -38,6 +38,21 @@ export default function MobileFloatingDock() {
     setIsMoreOpen(false);
   }, [pathname]);
 
+  // Dispatch event so overlapping floating elements (like WhatsApp button) auto-hide when dock menu is open
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("xyzpedia:dock-menu", { detail: { open: isMoreOpen } })
+    );
+  }, [isMoreOpen]);
+
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(
+        new CustomEvent("xyzpedia:dock-menu", { detail: { open: false } })
+      );
+    };
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
