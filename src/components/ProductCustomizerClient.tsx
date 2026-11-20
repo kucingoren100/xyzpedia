@@ -62,6 +62,24 @@ interface Product {
   items: ProductItem[];
 }
 
+function isRealBonusBadge(text?: string | null): boolean {
+  if (!text) return false;
+  const clean = text.trim();
+  if (clean.length > 12) return false;
+  const lower = clean.toLowerCase();
+  if (
+    lower.includes("pelanggan") ||
+    lower.includes("gabungan") ||
+    lower.includes("user") ||
+    lower.includes("zone") ||
+    lower.includes("masuk") ||
+    lower.includes("server")
+  ) {
+    return false;
+  }
+  return true;
+}
+
 export default function ProductCustomizerClient({
   product,
   initialCondition,
@@ -654,8 +672,8 @@ export default function ProductCustomizerClient({
                         : "bg-[#f3f4f6]/90 dark:bg-[#151520] dark:border-[#2d2d3a] hover:bg-[#fee2e2]/40 shadow-[1px_1px_0px_0px_#000000]"
                     }`}
                   >
-                    {item.bonusText && isAvailable && (
-                      <span className="absolute top-1.5 right-1.5 px-1.5 py-0.2 bg-[#fb4903] text-white text-[9px] font-black uppercase rounded ink-border">
+                    {item.bonusText && isAvailable && isRealBonusBadge(item.bonusText) && (
+                      <span className="absolute top-1.5 right-1.5 px-1.5 py-0.2 bg-[#fb4903] text-white text-[9px] font-black uppercase rounded ink-border z-10">
                         {item.bonusText}
                       </span>
                     )}
