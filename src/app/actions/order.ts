@@ -479,3 +479,63 @@ export async function searchOrders(query: string) {
     return [];
   }
 }
+
+export async function verifyOrderAccessToken(token: string): Promise<{ valid: boolean; email?: string }> {
+  try {
+    if (!token || !token.includes(".")) return { valid: false };
+    const [encoded, sig] = token.split(".");
+    const secret = process.env.ORDER_ACCESS_SECRET || process.env.ADMIN_JWT_SECRET || "default_order_secret";
+    const crypto = await import("crypto");
+    const expectedSig = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
+
+    const bufA = Buffer.from(sig);
+    const bufB = Buffer.from(expectedSig);
+    if (bufA.length !== bufB.length || !crypto.timingSafeEqual(bufA, bufB)) {
+      return { valid: false };
+    }
+
+    const payload = JSON.parse(Buffer.from(encoded, "base64url").toString("utf8"));
+    if (Date.now() > payload.exp) {
+      return { valid: false };
+    }
+
+    return { valid: true, email: payload.email };
+  } catch {
+    return { valid: false };
+  }
+}
+
+export async function getOrdersByAccessToken(token: string) {
+  const verified = await verifyOrderAccessToken(token);
+  if (!verified.valid || !verified.email) {
+    return { success: false, error: "Tautan akses tidak valid atau telah kedaluwarsa (berlaku 30 menit)." };
+  }
+
+  try {
+    const orders = await prisma.order.findMany({
+      where: { customerEmail: { equals: verified.email, mode: "insensitive" } },
+      include: {
+        product: { select: { name: true, thumbnailUrl: true } },
+        productItem: { select: { name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+
+    const safeOrders = orders.map((o) => ({
+      id: o.id,
+      invoiceNumber: o.invoiceNumber,
+      status: o.status,
+      totalAmount: o.totalAmount,
+      createdAt: o.createdAt,
+      customerEmail: maskEmail(o.customerEmail),
+      customerPhone: o.customerPhone ? maskPhone(o.customerPhone) : null,
+      product: o.product,
+      productItem: o.productItem,
+    }));
+
+    return { success: true, email: maskEmail(verified.email), orders: safeOrders };
+  } catch (error: any) {
+    return { success: false, error: "Gagal memuat riwayat pesanan." };
+  }
+}
