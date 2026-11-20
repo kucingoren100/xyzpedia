@@ -437,12 +437,13 @@ export default function ProductCustomizerClient({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                <label htmlFor="target-user-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5" />
                   <span>{product.targetInputLabel}</span>
                   <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="target-user-id"
                   type="text"
                   value={targetUserId}
                   onChange={(e) => {
@@ -460,12 +461,13 @@ export default function ProductCustomizerClient({
 
               {product.requiresServer && (
                 <div className="space-y-1.5">
-                  <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                  <label htmlFor="target-zone-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                     <Server className="w-3.5 h-3.5" />
                     <span>Zone / Server ID</span>
                     <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="target-zone-id"
                     type="text"
                     value={targetZoneId}
                     onChange={(e) => setTargetZoneId(e.target.value)}
@@ -826,11 +828,12 @@ export default function ProductCustomizerClient({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                <label htmlFor="customer-phone-desktop" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />
                   <span>Nomor WhatsApp (Opsional)</span>
                 </label>
                 <input
+                  id="customer-phone-desktop"
                   type="tel"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
@@ -1165,12 +1168,13 @@ export default function ProductCustomizerClient({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                <label htmlFor="customer-email-mobile" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
                   <span>Alamat Email</span>
                   <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="customer-email-mobile"
                   type="email"
                   value={customerEmail}
                   onChange={(e) => setCustomerEmail(e.target.value)}
@@ -1181,11 +1185,12 @@ export default function ProductCustomizerClient({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                <label htmlFor="customer-phone-mobile" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />
                   <span>Nomor WhatsApp (Opsional)</span>
                 </label>
                 <input
+                  id="customer-phone-mobile"
                   type="tel"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}

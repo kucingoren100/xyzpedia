@@ -176,11 +176,14 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
   const parsedDelivery = parseSupplierDelivery(order.notes);
   const effectiveSn = order.sn || parsedDelivery.sn;
 
-  const isPending = order.status === "PENDING";
+  const isPending = order.status === "PENDING" && timeLeft > 0;
   const isPaidOrProcessing = order.status === "PAID" || order.status === "PROCESSING";
   const isSuccess = order.status === "SUCCESS";
   const isFailed = order.status === "FAILED";
-  const isExpiredOrCancelled = order.status === "EXPIRED" || order.status === "CANCELLED";
+  const isExpiredOrCancelled =
+    order.status === "EXPIRED" ||
+    order.status === "CANCELLED" ||
+    (order.status === "PENDING" && timeLeft <= 0);
 
   const isAkunPremium = order.product.categorySlug === "akun-premium";
 

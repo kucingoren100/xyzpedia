@@ -1398,7 +1398,7 @@ export default function AdminProdukClient({
                     <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                     <div className="space-y-1">
                       <h5 className="text-xs font-black uppercase text-carbon dark:text-white">
-                        Produk Disuplai Oleh API Supplier Resmi (Waroengkuy)
+                        Produk Disuplai Oleh API Supplier Resmi (Digiflazz / H2H Direct)
                       </h5>
                       <p className="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed font-semibold">
                         Denominasi produk ini disuplai otomatis dari sistem supplier. Sebagai seller, Anda dapat bebas mengatur harga modal supplier, harga jual toko, harga coret diskon, dan ketersediaan stok (Tersedia / Stok Habis) pada tabel di atas. Jika ingin membuat produk baru dengan paket custom sendiri, gunakan tombol <strong>+ Tambah Produk Baru</strong> pada halaman utama.

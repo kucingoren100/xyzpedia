@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
 import { WaroengkuyClient } from "@/lib/waroengkuy";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +81,8 @@ export async function POST(req?: Request) {
 
   try {
     const body = req ? await req.json().catch(() => ({})) : {};
+    const confirm = body?.confirm === true;
+    const isDryRun = !confirm || body?.dryRun === true;
     const forceUpdateSellingPrice = body?.updateSellingPrice ?? true;
 
     const client = new WaroengkuyClient();
@@ -264,10 +267,11 @@ export async function POST(req?: Request) {
           categoryStats[cat].matched++;
           const realSupplierPrice = Math.round(matchedApiItem.price);
 
+          const finalSku = item.sku ? item.sku : (matchedApiItem.variant_id || item.sku);
           const updateData: any = {
             supplierPrice: realSupplierPrice,
             stockStatus: matchedApiItem.available ? "AVAILABLE" : "OUT_OF_STOCK",
-            sku: matchedApiItem.variant_id || item.sku,
+            sku: finalSku,
             price: item.price,
             originalPrice: item.originalPrice,
             discountPercent: item.discountPercent,
@@ -285,28 +289,30 @@ export async function POST(req?: Request) {
             updateData.discountPercent = newDiscount;
           }
 
-          // Update product item cleanly with Prisma
-          await prisma.productItem.update({
-            where: { id: item.id },
-            data: {
-              supplierPrice: realSupplierPrice,
-              stockStatus: updateData.stockStatus,
-              price: updateData.price,
-              originalPrice: updateData.originalPrice,
-              discountPercent: updateData.discountPercent,
-              sku: updateData.sku,
-            },
-          });
-
-          // Synchronize Instan vs Manual label for Akun Premium based on Waroengkuy type
-          if (cat === "akun-premium" && matchedApiItem.type) {
-            const waroengLabel = matchedApiItem.type === "manual" ? "Manual" : "Instan";
-            await prisma.product.update({
-              where: { id: prod.id },
+          if (!isDryRun) {
+            // Update product item cleanly with Prisma only when confirmed
+            await prisma.productItem.update({
+              where: { id: item.id },
               data: {
-                developer: waroengLabel,
+                supplierPrice: realSupplierPrice,
+                stockStatus: updateData.stockStatus,
+                price: updateData.price,
+                originalPrice: updateData.originalPrice,
+                discountPercent: updateData.discountPercent,
+                sku: updateData.sku,
               },
             });
+
+            // Synchronize Instan vs Manual label for Akun Premium based on supplier type
+            if (cat === "akun-premium" && matchedApiItem.type) {
+              const supplierLabel = matchedApiItem.type === "manual" ? "Manual" : "Instan";
+              await prisma.product.update({
+                where: { id: prod.id },
+                data: {
+                  developer: supplierLabel,
+                },
+              });
+            }
           }
 
           totalUpdated++;
@@ -327,8 +333,18 @@ export async function POST(req?: Request) {
       }
     }
 
+    if (!isDryRun && totalUpdated > 0) {
+      await logAuditEvent({
+        actor: session.username,
+        action: "sync_prices_confirmed",
+        target: "catalog",
+        summary: `Admin mensinkronkan harga modal & ketersediaan stok (${totalUpdated} item diperbarui)`,
+      });
+    }
+
     return NextResponse.json({
       success: true,
+      dryRun: isDryRun,
       ppobItemsCount: ppobItems.length,
       catalogItemsCount: catalogItems.length,
       totalApiItems: unifiedApiItems.length,
@@ -336,7 +352,9 @@ export async function POST(req?: Request) {
       totalUpdated,
       categoryStats,
       sampleUpdates,
-      message: `Sinkronisasi menyeluruh berhasil! Sebanyak ${totalUpdated} harga modal supplier (Game, Akun Premium, Pulsa & E-Wallet, Voucher) kini 100% presisi dengan API resmi Waroengkuy.`,
+      message: isDryRun
+        ? `Mode Pratinjau (Dry Run): Ditemukan ${totalUpdated} perubahan harga modal supplier. Kirimkan { confirm: true } untuk menerapkan.`
+        : `Sinkronisasi harga berhasil! Sebanyak ${totalUpdated} harga modal supplier dan status stok telah diperbarui.`,
     });
   } catch (error: any) {
     console.error("Gagal sinkron harga supplier API:", error);

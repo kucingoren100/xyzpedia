@@ -32,11 +32,14 @@ export async function startFulfillment(orderId: string) {
     include: { product: true, productItem: true },
   });
 
+  const supplier = (order.productItem as any).supplier || "DIGIFLAZZ";
+  const sku = order.productItem.sku;
+
   // Check if manual category
   const isManual =
+    supplier === "MANUAL" ||
     order.product.categorySlug === "akun-premium" ||
-    order.productItem.sku.startsWith("CUSTOM-") ||
-    (order.productItem as any).supplier === "MANUAL";
+    sku.startsWith("CUSTOM-");
 
   if (isManual) {
     // Keep order in PAID / PROCESSING state waiting for admin manual handover
@@ -67,17 +70,8 @@ export async function startFulfillment(orderId: string) {
     return { success: true, manual: true };
   }
 
-  const sku = order.productItem.sku;
-  const isDigiflazz =
-    (order.productItem as any).supplier === "DIGIFLAZZ" ||
-    sku.startsWith("ml") ||
-    sku.startsWith("ff") ||
-    sku.startsWith("pre359") ||
-    sku.startsWith("pln") ||
-    sku.startsWith("dana") ||
-    sku.startsWith("go") ||
-    sku.startsWith("ovo") ||
-    sku.startsWith("shopee");
+  // Routing supplier based on ProductItem.supplier
+  const isDigiflazz = supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY;
 
   // 15s Abort Controller
   const controller = new AbortController();

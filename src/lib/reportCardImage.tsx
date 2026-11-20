@@ -16,11 +16,11 @@ export interface ReportCardData {
 }
 
 export async function generateReportCardPng(data: ReportCardData): Promise<Buffer> {
-  const store = data.storeName || "Waroengkuy";
-  const subStore = data.subStoreName || "TokoKaryawan";
-  const visits = data.visits ?? 42;
-  const convRate = data.conversionRate ?? "4,8%";
-  const topProduct = data.topProduct || "Canva — 1 Tahun";
+  const store = data.storeName || "XYZPEDIA";
+  const subStore = data.subStoreName || "Panel Kontrol Admin";
+  const visits = data.visits;
+  const convRate = data.conversionRate ? `${data.conversionRate}%` : (data.totalOrders > 0 ? "100%" : "0%");
+  const topProduct = data.topProduct || "Semua Layanan";
   const now = new Date();
   const dateStr =
     data.dateStr ||
@@ -36,7 +36,7 @@ export async function generateReportCardPng(data: ReportCardData): Promise<Buffe
       hour: "2-digit",
       minute: "2-digit",
     }) + " WIB";
-  const siteUrl = data.siteUrl || "xyzpedia.com";
+  const siteUrl = data.siteUrl || "xyzpedia.my.id";
 
   const imageResponse = new ImageResponse(
     (
@@ -160,18 +160,20 @@ export async function generateReportCardPng(data: ReportCardData): Promise<Buffe
               <span style={{ color: "#0f172a", fontWeight: 800 }}>{data.totalOrders}</span>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "8px 0",
-                borderBottom: "1px solid #f1f5f9",
-                fontSize: 13,
-              }}
-            >
-              <span style={{ color: "#64748b", fontWeight: 500 }}>Kunjungan</span>
-              <span style={{ color: "#0f172a", fontWeight: 800 }}>{visits}</span>
-            </div>
+            {visits !== undefined && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "8px 0",
+                  borderBottom: "1px solid #f1f5f9",
+                  fontSize: 13,
+                }}
+              >
+                <span style={{ color: "#64748b", fontWeight: 500 }}>Kunjungan</span>
+                <span style={{ color: "#0f172a", fontWeight: 800 }}>{visits}</span>
+              </div>
+            )}
 
             <div
               style={{
