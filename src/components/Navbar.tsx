@@ -5,7 +5,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect, useRef } from "react";
 import { Truck } from "lucide-react";
 import TopMarquee from "./TopMarquee";
-import FlashSaleBanner from "./FlashSaleBanner";
 import BrandLogo from "./BrandLogo";
 import { ThemeToggle } from "./ThemeProvider";
 
@@ -152,13 +151,10 @@ export default function Navbar() {
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      {/* 1. Flash Sale Countdown Banner */}
-      <FlashSaleBanner />
-
-      {/* 2. Top Marquee Announcement */}
+      {/* 1. Top Marquee Announcement */}
       <TopMarquee />
 
-      {/* 3. Top Navigation Bar */}
+      {/* 2. Top Navigation Bar */}
       <header className="bg-[#ffffff] dark:bg-[#181824] border-b border-[#000000] dark:border-[#38384a]">
         <div className="flex justify-between items-center w-full px-4 md:px-8 py-2.5 sm:py-3.5 max-w-[1440px] mx-auto gap-4">
           

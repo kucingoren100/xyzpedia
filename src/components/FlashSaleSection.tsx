@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Flame, ArrowRight } from "lucide-react";
+import { Flame, Clock, ArrowRight } from "lucide-react";
 
 interface FlashSaleProductItem {
   id: string;
@@ -24,7 +24,42 @@ interface FlashSaleProduct {
 }
 
 export default function FlashSaleSection({ products }: { products: FlashSaleProduct[] }) {
-  // Pick top 6 products for flash sale to fill a 6-col grid cleanly
+  // Live Countdown Timer (Ticks every 1 second, resets daily at 23:59:59)
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 3,
+    minutes: 42,
+    seconds: 18,
+  });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      // Calculate remaining time until next 4-hour flash sale block
+      const currentHour = now.getHours();
+      const nextBlockHour = Math.ceil((currentHour + 1) / 4) * 4;
+      const targetTime = new Date(now);
+      targetTime.setHours(nextBlockHour, 0, 0, 0);
+
+      const diff = Math.max(0, targetTime.getTime() - now.getTime());
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      return { hours, minutes, seconds };
+    };
+
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  // Pick top 6 products for flash sale to fill a 6-col catalog grid cleanly
   const flashSaleItems = useMemo(() => {
     const list: Array<{
       product: FlashSaleProduct;
@@ -91,27 +126,54 @@ export default function FlashSaleSection({ products }: { products: FlashSaleProd
   if (flashSaleItems.length === 0) return null;
 
   return (
-    <section id="flash-sale" className="w-full scroll-mt-28 space-y-3 sm:space-y-4">
-      {/* Sleek Neo-Brutalist Section Title Row */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-[#ff4d4d] ink-border animate-pulse" />
-          <h2 className="text-xl sm:text-2xl font-black text-carbon dark:text-white font-[var(--font-bricolage)] uppercase flex items-center gap-2">
-            <span>Flash Sale Hari Ini</span>
-            <span className="px-2 py-0.5 bg-[#ffd731] text-black text-[10px] font-black uppercase rounded-lg ink-border shadow-[1px_1px_0px_#000] hidden sm:inline-flex items-center gap-1">
-              <Flame className="w-3 h-3 fill-current" />
-              <span>KUOTA TERBATAS</span>
-            </span>
-          </h2>
-        </div>
+    <section id="flash-sale" className="w-full scroll-mt-24 space-y-4">
+      {/* Neo-Brutalist Flash Sale Header Banner */}
+      <div className="bg-gradient-to-r from-[#ff4d4d] via-[#fb4903] to-[#ff2b2b] text-white ink-border-thick rounded-3xl p-4 sm:p-6 shadow-[5px_5px_0px_0px_#000000] relative overflow-hidden">
+        {/* Background Decorative Sparks */}
+        <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-white/10 -skew-x-12 pointer-events-none" />
 
-        <Link
-          href="/katalog"
-          className="text-xs font-black uppercase text-[#fb4903] hover:underline flex items-center gap-1"
-        >
-          <span>Lihat Semua Promo</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 bg-[#ffd731] text-black font-[var(--font-bricolage)] font-black text-xs uppercase rounded-lg ink-border flex items-center gap-1 shadow-[2px_2px_0px_#000] animate-pulse">
+                <Flame className="w-3.5 h-3.5 fill-black stroke-black" />
+                <span>FLASH SALE REAL-TIME</span>
+              </span>
+              <span className="text-[11px] font-black uppercase text-white/90 hidden sm:inline">
+                • Kuota Slot Terbatas
+              </span>
+            </div>
+            <h2 className="font-[var(--font-bricolage)] text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-white drop-shadow-sm">
+              Serbu Diskon Spesial Hari Ini!
+            </h2>
+            <p className="text-xs sm:text-[13px] font-bold text-white/90">
+              Harga termurah langsung aktif. Dapatkan diamond game & akun streaming resmi sebelum kehabisan slot.
+            </p>
+          </div>
+
+          {/* Countdown Clock Display */}
+          <div className="bg-black/90 text-white rounded-2xl ink-border p-3 sm:p-4 flex items-center gap-2 sm:gap-3 shrink-0 shadow-[3px_3px_0px_#ffd731]">
+            <Clock className="w-5 h-5 text-[#ffd731] animate-spin" />
+            <div className="flex flex-col">
+              <span className="text-[9px] font-black uppercase tracking-wider text-gray-300">
+                BERAKHIR DALAM:
+              </span>
+              <div className="flex items-center gap-1.5 font-mono font-black text-base sm:text-lg">
+                <span className="px-2 py-0.5 bg-[#1f1f2e] text-[#ffd731] rounded-lg ink-border border-white/20">
+                  {pad(timeLeft.hours)}
+                </span>
+                <span className="text-[#ffd731]">:</span>
+                <span className="px-2 py-0.5 bg-[#1f1f2e] text-[#ffd731] rounded-lg ink-border border-white/20">
+                  {pad(timeLeft.minutes)}
+                </span>
+                <span className="text-[#ffd731]">:</span>
+                <span className="px-2 py-0.5 bg-[#1f1f2e] text-[#ffd731] rounded-lg ink-border border-white/20">
+                  {pad(timeLeft.seconds)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Grid of Flash Sale Product Cards - 100% Matching Catalog Card Size */}
