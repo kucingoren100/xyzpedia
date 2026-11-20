@@ -5,6 +5,7 @@ import { cache } from "react";
 import type { Metadata } from "next";
 import ProductCustomizerClient from "@/components/ProductCustomizerClient";
 import RelatedProductsSection from "@/components/RelatedProductsSection";
+import ProductReviewsSection from "@/components/ProductReviewsSection";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getWebCondition } from "@/lib/webCondition";
@@ -177,6 +178,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       {/* Main Checkout Experience */}
       <ProductCustomizerClient product={product} initialCondition={webCondition} />
+
+      {/* Verified Customer Reviews */}
+      <ProductReviewsSection productId={product.id} productName={product.name} />
 
       {/* Produk Terkait / Produk Lainnya di XYZPEDIA */}
       <RelatedProductsSection

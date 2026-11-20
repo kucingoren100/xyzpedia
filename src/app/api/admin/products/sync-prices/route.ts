@@ -277,10 +277,12 @@ export async function POST(req?: Request) {
             discountPercent: item.discountPercent,
           };
 
-          // Atur harga jual agar selalu menghasilkan margin profit sehat jika harga jual <= modal supplier
-          if (forceUpdateSellingPrice && item.price <= realSupplierPrice) {
-            const markupPercent = 0.055; // 5.5% margin
-            const newSellPrice = Math.ceil((realSupplierPrice * (1 + markupPercent)) / 100) * 100;
+          // Atur harga jual agar selalu menghasilkan margin profit sehat (proteksi margin minimum Rp 500 atau 5.5%)
+          const minProfit = Math.max(500, Math.ceil(realSupplierPrice * 0.055));
+          const minSafeSellPrice = Math.ceil((realSupplierPrice + minProfit) / 100) * 100;
+
+          if (forceUpdateSellingPrice && item.price < minSafeSellPrice) {
+            const newSellPrice = minSafeSellPrice;
             const newOriginalPrice = Math.round(newSellPrice * 1.15);
             const newDiscount = Math.max(0, Math.round(((newOriginalPrice - newSellPrice) / newOriginalPrice) * 100));
 

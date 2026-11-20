@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import Link from "next/link";
+import ReviewWidget from "@/components/ReviewWidget";
 import { ArrowLeft, Printer } from "lucide-react";
 
 interface Order {
@@ -587,11 +588,20 @@ export default function StrukClient({
               dan pengiriman resmi yang sah.
             </div>
             <div style={{ marginTop: 6, color: "#cbd5e1", fontWeight: 700 }}>
-              Website: <span style={{ color: "#38bdf8" }}>https://xyzpedia.vercel.app</span> · WhatsApp CS:{" "}
-              <span style={{ color: "#4ade80" }}>+62 896-4666-1132</span>
+              Website: <span style={{ color: "#38bdf8" }}>https://xyzpedia.my.id</span> · WhatsApp CS:{" "}
+              <span style={{ color: "#4ade80" }}>+62 895-1736-7660</span>
             </div>
           </div>
         </div>
+
+        {/* Customer Review & Rating Widget (Hidden in print) */}
+        {isSuccess && (
+          <ReviewWidget
+            invoiceNumber={order.invoiceNumber}
+            productName={order.product.name}
+            defaultName={order.customerEmail ? order.customerEmail.split("@")[0] : ""}
+          />
+        )}
 
         {/* Print instructions tip (Hidden in print) */}
         <div

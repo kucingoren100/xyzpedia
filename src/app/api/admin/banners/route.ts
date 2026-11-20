@@ -1,0 +1,61 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getAdminSession } from "@/lib/adminAuth";
+
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const banners = await prisma.banner.findMany({
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    });
+
+    return NextResponse.json({ success: true, banners });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { title, subtitle, imageUrl, linkUrl, badgeText, order, isActive } = body;
+
+    if (!title || !imageUrl) {
+      return NextResponse.json(
+        { success: false, message: "Judul dan Gambar Banner wajib diisi." },
+        { status: 400 }
+      );
+    }
+
+    const banner = await prisma.banner.create({
+      data: {
+        title: String(title).trim(),
+        subtitle: subtitle ? String(subtitle).trim() : null,
+        imageUrl: String(imageUrl).trim(),
+        linkUrl: linkUrl ? String(linkUrl).trim() : "/katalog",
+        badgeText: badgeText ? String(badgeText).trim().toUpperCase() : "PROMO",
+        order: Number(order) || 0,
+        isActive: isActive !== undefined ? Boolean(isActive) : true,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Banner promo berhasil ditambahkan.",
+      banner,
+    });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  }
+}

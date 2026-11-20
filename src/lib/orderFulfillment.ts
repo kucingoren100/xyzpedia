@@ -2,6 +2,7 @@ import { prisma } from "./prisma";
 import { createDigiflazzTransaction } from "./digiflazz";
 import { OrderStatus, canTransition } from "./orderStatus";
 import { dispatchNotificationEvent } from "./notifications";
+import { notifyBuyerOrderSuccess } from "./whatsapp";
 
 /**
  * Universal timeout-safe fulfillment engine (15s limit).
@@ -247,6 +248,21 @@ async function dispatchSuccess(order: any, sn?: string | null, supplierRef?: str
       sn: sn || "Selesai diproses",
       supplierRef: supplierRef || undefined,
     });
+
+    if (order.customerPhone) {
+      await notifyBuyerOrderSuccess({
+        invoiceNumber: order.invoiceNumber,
+        customerPhone: order.customerPhone,
+        customerEmail: order.customerEmail,
+        totalAmount: order.totalAmount,
+        product: order.product,
+        productItem: order.productItem,
+        targetUserId: order.targetUserId,
+        targetZoneId: order.targetZoneId,
+        status: order.status,
+        sn: sn || order.sn,
+      }).catch((waErr) => console.error("[dispatchSuccess] WhatsApp notification error:", waErr));
+    }
   } catch (e) {
     console.error("[dispatchSuccess] notification error:", e);
   }

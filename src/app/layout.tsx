@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import StoreAnnouncementModal from "@/components/StoreAnnouncementModal";
 import NavigationProgressBar from "@/components/NavigationProgressBar";
+import RecentOrdersTicker from "@/components/RecentOrdersTicker";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -79,6 +80,7 @@ export default function RootLayout({
           <MobileFloatingDock />
           <FloatingWhatsApp />
           <StoreAnnouncementModal />
+          <RecentOrdersTicker />
         </ThemeProvider>
       </body>
     </html>

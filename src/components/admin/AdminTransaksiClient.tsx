@@ -120,56 +120,73 @@ export default function AdminTransaksiClient({
     fetchOrders(currentStatus, searchQuery);
   };
 
-  // Export current list to CSV file
-  const handleExportCsv = () => {
-    if (orders.length === 0) {
-      alert("Tidak ada data transaksi untuk diekspor.");
-      return;
+  // Export CSV Handler (calls server export API with complete columns & profit)
+  const handleExportCsv = async () => {
+    try {
+      const url = `/api/admin/orders/export?status=${encodeURIComponent(currentStatus)}&search=${encodeURIComponent(searchQuery)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Gagal mengunduh laporan dari server");
+
+      const blob = await res.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `laporan-keuangan-xyzpedia-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
+    } catch {
+      // Client-side fallback if server fails
+      if (orders.length === 0) {
+        alert("Tidak ada data transaksi untuk diekspor.");
+        return;
+      }
+
+      const headers = [
+        "No. Invoice",
+        "Waktu Transaksi",
+        "Produk",
+        "Varian",
+        "Target Akun",
+        "No. WhatsApp",
+        "Email",
+        "Status",
+        "Metode Bayar",
+        "Total Bayar (Rp)",
+      ];
+
+      const rows = orders.map((o) => {
+        const dateStr = new Date(o.createdAt).toLocaleString("id-ID");
+        const target = o.targetZoneId ? `${o.targetUserId} (${o.targetZoneId})` : o.targetUserId;
+        return [
+          `"${o.invoiceNumber}"`,
+          `"${dateStr}"`,
+          `"${(o.product?.name || "").replace(/"/g, '""')}"`,
+          `"${(o.productItem?.name || "").replace(/"/g, '""')}"`,
+          `"${String(target).replace(/"/g, '""')}"`,
+          `"${(o.customerPhone || "-").replace(/"/g, '""')}"`,
+          `"${(o.customerEmail || "-").replace(/"/g, '""')}"`,
+          `"${o.status}"`,
+          `"${(o.paymentMethod || "QRIS").replace(/"/g, '""')}"`,
+          o.totalAmount,
+        ].join(",");
+      });
+
+      const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", downloadUrl);
+      link.setAttribute(
+        "download",
+        `laporan-transaksi-xyzpedia-${new Date().toISOString().slice(0, 10)}.csv`
+      );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
     }
-
-    const headers = [
-      "No. Invoice",
-      "Waktu Transaksi",
-      "Produk",
-      "Varian",
-      "Target Akun",
-      "No. WhatsApp",
-      "Email",
-      "Status",
-      "Metode Bayar",
-      "Total Bayar (Rp)",
-    ];
-
-    const rows = orders.map((o) => {
-      const dateStr = new Date(o.createdAt).toLocaleString("id-ID");
-      const target = o.targetZoneId ? `${o.targetUserId} (${o.targetZoneId})` : o.targetUserId;
-      return [
-        `"${o.invoiceNumber}"`,
-        `"${dateStr}"`,
-        `"${(o.product?.name || "").replace(/"/g, '""')}"`,
-        `"${(o.productItem?.name || "").replace(/"/g, '""')}"`,
-        `"${String(target).replace(/"/g, '""')}"`,
-        `"${(o.customerPhone || "-").replace(/"/g, '""')}"`,
-        `"${(o.customerEmail || "-").replace(/"/g, '""')}"`,
-        `"${o.status}"`,
-        `"${(o.paymentMethod || "QRIS").replace(/"/g, '""')}"`,
-        o.totalAmount,
-      ].join(",");
-    });
-
-    const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `laporan-transaksi-xyzpedia-${new Date().toISOString().slice(0, 10)}.csv`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   };
 
   // Open Manage Modal

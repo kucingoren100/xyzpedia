@@ -52,10 +52,13 @@ const BRAND_TO_PRODUCT_SLUG: Record<string, string> = {
 
 /**
  * Calculate retail selling price from supplier price with margin and neat rounding
+ * Enforces a minimum profit margin (default Rp 500) to protect against underpricing on micro transactions
  */
-export function calculateSellingPrice(supplierPrice: number, markupPercent = 8): number {
+export function calculateSellingPrice(supplierPrice: number, markupPercent = 8, minMargin = 500): number {
   if (!supplierPrice || supplierPrice <= 0) return 0;
-  const rawPrice = supplierPrice * (1 + markupPercent / 100);
+  const percentMargin = (supplierPrice * markupPercent) / 100;
+  const safeMargin = Math.max(minMargin, percentMargin);
+  const rawPrice = supplierPrice + safeMargin;
   // Round to nearest hundred upwards (e.g. 10847 -> 11800)
   return Math.ceil(rawPrice / 100) * 100;
 }

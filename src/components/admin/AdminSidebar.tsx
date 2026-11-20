@@ -18,6 +18,7 @@ import {
   Ticket,
   ScrollText,
   Users,
+  Image as ImageIcon,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/components/ThemeProvider";
@@ -65,6 +66,14 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       href: "/admin/produk",
       icon: Package,
       active: pathname.startsWith("/admin/produk"),
+    },
+    {
+      label: "Banner Promo",
+      href: "/admin/banner",
+      icon: ImageIcon,
+      active: pathname.startsWith("/admin/banner"),
+      badge: "Dinamis",
+      badgeColor: "bg-[#ffd731] text-black",
     },
     {
       label: "Cek Stok Server",
