@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
 import { checkDigiflazzBalance, getDigiflazzPriceList, createDigiflazzTransaction } from "@/lib/digiflazz";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -201,6 +202,13 @@ export async function POST(req: Request) {
         updatedToAvailable++;
       }
     }
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "SYNC_STOCK",
+      target: "Digiflazz H2H",
+      summary: `Admin menjalankan sinkronisasi stok: ${updatedToOutOfStock} item dinonaktifkan, ${updatedToAvailable} item diaktifkan kembali.`,
+    });
 
     return NextResponse.json({
       success: true,

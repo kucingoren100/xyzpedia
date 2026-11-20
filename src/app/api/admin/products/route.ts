@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -203,6 +204,13 @@ export async function POST(req: Request) {
         },
       });
     }
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "CREATE_PRODUCT",
+      target: newProduct.name,
+      summary: `Admin membuat produk baru "${newProduct.name}" (Slug: ${newProduct.slug}, Kategori: ${newProduct.categorySlug}).`,
+    });
 
     return NextResponse.json({
       success: true,

@@ -4,6 +4,7 @@ import {
   getNotificationSettings,
   saveNotificationSettings,
 } from "@/lib/notifications";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,13 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const updated = await saveNotificationSettings(body);
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "UPDATE_NOTIFICATIONS",
+      target: "Notifikasi Telegram & Email",
+      summary: `Admin memperbarui konfigurasi gateway notifikasi Telegram & Email.`,
+    });
 
     return NextResponse.json({
       success: true,

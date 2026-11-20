@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Ticket, Plus, RefreshCw, CheckCircle2, AlertCircle, Percent, DollarSign } from "lucide-react";
+import AdminTopbar from "./AdminTopbar";
 
 interface Coupon {
   id?: string;
@@ -74,9 +75,15 @@ export default function AdminKuponClient({ session }: { session: any }) {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+    <div className="flex-1 flex flex-col min-w-0">
+      <AdminTopbar
+        title="Kupon Promo & Diskon"
+        subtitle="Kelola kode voucher diskon dengan batas harga modal otomatis"
+      />
+
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
+        {/* Header Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-[#ffd731] text-black rounded-2xl ink-border shadow-[3px_3px_0px_#000000]">
             <Ticket className="w-6 h-6" />
@@ -267,6 +274,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
           </div>
         </div>
       )}
+      </main>
     </div>
   );
 }

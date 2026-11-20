@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,13 @@ export async function PATCH(
       data: updateData,
     });
 
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "UPDATE_BANNER",
+      target: updated.title,
+      summary: `Admin mengubah data/status banner "${updated.title}" (${updated.isActive ? "ONLINE" : "NONAKTIF"}).`,
+    });
+
     return NextResponse.json({
       success: true,
       message: "Banner berhasil diperbarui.",
@@ -54,7 +62,19 @@ export async function DELETE(
     }
 
     const { id } = await params;
+    const existing = await prisma.banner.findUnique({
+      where: { id },
+      select: { id: true, title: true, order: true },
+    });
+
     await prisma.banner.delete({ where: { id } });
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "DELETE_BANNER",
+      target: existing?.title || id,
+      summary: `Admin menghapus banner "${existing?.title || id}" (Urutan #${existing?.order || "-"}).`,
+    });
 
     return NextResponse.json({
       success: true,

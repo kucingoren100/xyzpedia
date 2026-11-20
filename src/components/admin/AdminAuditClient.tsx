@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { ScrollText, RefreshCw, Shield, Clock, User, Target } from "lucide-react";
+import AdminTopbar from "./AdminTopbar";
 
 interface AuditLogItem {
   id: string;
@@ -38,9 +39,15 @@ export default function AdminAuditClient({ session }: { session: any }) {
   }, []);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+    <div className="flex-1 flex flex-col min-w-0">
+      <AdminTopbar
+        title="Audit Log Aktivitas"
+        subtitle="Catatan riwayat tindakan keamanan, transaksi, dan perubahan konfigurasi sistem"
+      />
+
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
+        {/* Header Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-[#ffd731] text-black rounded-2xl ink-border shadow-[3px_3px_0px_#000000]">
             <ScrollText className="w-6 h-6" />
@@ -135,6 +142,7 @@ export default function AdminAuditClient({ session }: { session: any }) {
           </div>
         )}
       </div>
+      </main>
     </div>
   );
 }

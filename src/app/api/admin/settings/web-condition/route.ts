@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/adminAuth";
 import { getWebCondition, saveWebCondition } from "@/lib/webCondition";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,13 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const updated = await saveWebCondition(body);
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "UPDATE_WEB_CONDITION",
+      target: "Status Pemeliharaan Web",
+      summary: `Admin memperbarui status website: Full Site Lock ${updated.fullSiteLock ? "AKTIF" : "OFF"}, Payment Maintenance ${updated.paymentMaintenance ? "AKTIF" : "OFF"}, Judul: "${updated.title || "-"}"`,
+    });
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +51,13 @@ export async function POST(req: Request) {
         order: Number(order) || 0,
         isActive: isActive !== undefined ? Boolean(isActive) : true,
       },
+    });
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "CREATE_BANNER",
+      target: cleanTitle,
+      summary: `Admin menambahkan banner promo baru urutan #${banner.order} dengan link ${banner.linkUrl}.`,
     });
 
     return NextResponse.json({

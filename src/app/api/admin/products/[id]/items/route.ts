@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function POST(
   req: Request,
@@ -47,6 +48,13 @@ export async function POST(
         bonusText: bonusText?.trim() || null,
         stockStatus: stockStatus || "AVAILABLE",
       },
+    });
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "ADD_PRODUCT_ITEM",
+      target: newItem.name,
+      summary: `Admin menambahkan varian "${newItem.name}" (SKU: ${newItem.sku}, Harga: Rp ${numPrice.toLocaleString("id-ID")}) ke produk ID ${productId}.`,
     });
 
     return NextResponse.json({

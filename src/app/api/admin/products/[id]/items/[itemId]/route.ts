@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function PATCH(
   req: Request,
@@ -42,6 +43,13 @@ export async function PATCH(
       data: updateData,
     });
 
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "UPDATE_PRODUCT_ITEM",
+      target: updated.name,
+      summary: `Admin mengubah varian "${updated.name}" (Harga: Rp ${updated.price.toLocaleString("id-ID")}, Stok: ${updated.stockStatus}).`,
+    });
+
     return NextResponse.json({
       success: true,
       message: `Varian "${updated.name}" berhasil diupdate.`,
@@ -67,9 +75,20 @@ export async function DELETE(
     }
 
     const { itemId } = await params;
+    const existing = await prisma.productItem.findUnique({
+      where: { id: itemId },
+      select: { id: true, name: true, sku: true },
+    });
 
     await prisma.productItem.delete({
       where: { id: itemId },
+    });
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "DELETE_PRODUCT_ITEM",
+      target: existing?.name || itemId,
+      summary: `Admin menghapus varian "${existing?.name || itemId}" (SKU: ${existing?.sku || "-"}).`,
     });
 
     return NextResponse.json({

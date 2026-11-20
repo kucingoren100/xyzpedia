@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function PATCH(
   req: Request,
@@ -64,6 +65,13 @@ export async function PATCH(
       },
     });
 
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "UPDATE_PRODUCT",
+      target: updated.name,
+      summary: `Admin memperbarui data produk "${updated.name}" (${updated.isActive ? "ONLINE" : "OFFLINE"}).`,
+    });
+
     return NextResponse.json({
       success: true,
       message: `Produk "${updated.name}" berhasil diperbarui.`,
@@ -103,6 +111,13 @@ export async function DELETE(
       await tx.order.deleteMany({ where: { productId: id } });
       await tx.productItem.deleteMany({ where: { productId: id } });
       await tx.product.delete({ where: { id } });
+    });
+
+    await logAuditEvent({
+      actor: session.username || "admin",
+      action: "DELETE_PRODUCT",
+      target: existing.name,
+      summary: `Admin menghapus permanen produk "${existing.name}" (ID: ${id}) berserta seluruh varian dan relasinya.`,
     });
 
     return NextResponse.json({
