@@ -45,22 +45,21 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
 
   return (
     <div
-      className="relative w-full my-1 sm:my-2"
+      className="relative w-full my-2 sm:my-3 group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Clean Full-Bleed Clickable Neo-Brutalist Banner */}
-      <div className="relative w-full h-[120px] xs:h-[145px] sm:h-[180px] md:h-[210px] lg:h-[230px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
+      {/* 100% Clean Clickable Graphic Banner (Zero Text, Zero Overlays) */}
+      <div className="relative w-full h-[120px] xs:h-[145px] sm:h-[180px] md:h-[210px] lg:h-[235px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
         <Link
           href={current.linkUrl || "/katalog"}
-          className="block relative w-full h-full group cursor-pointer overflow-hidden"
-          title={current.title}
+          className="block w-full h-full cursor-pointer overflow-hidden"
+          title={`Buka Promo (${current.linkUrl || "/katalog"})`}
         >
-          {/* 100% Clean Image Artwork (No text / button overlays) */}
           <img
             src={current.imageUrl}
-            alt={current.title}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            alt="Promo Banner"
+            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.01]"
             onError={(e: any) => {
               e.currentTarget.src =
                 "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200";
@@ -68,29 +67,29 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
           />
         </Link>
 
-        {/* Carousel Navigation Arrows (Clean & Subtle) */}
+        {/* Carousel Navigation Arrows — Only visible on mouse hover */}
         {total > 1 && (
           <>
             <button
               type="button"
               onClick={handlePrev}
-              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center active:scale-95 transition-all cursor-pointer z-10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10"
               aria-label="Banner Sebelumnya"
             >
-              <ArrowLeft className="w-3.5 h-3.5 stroke-[3]" />
+              <ArrowLeft className="w-4 h-4 stroke-[3]" />
             </button>
 
             <button
               type="button"
               onClick={handleNext}
-              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center active:scale-95 transition-all cursor-pointer z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10"
               aria-label="Banner Selanjutnya"
             >
-              <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
             </button>
 
-            {/* Dot Indicators */}
-            <div className="absolute bottom-2 sm:bottom-3 right-4 sm:right-6 flex items-center gap-1.5 z-10 bg-black/40 px-2 py-1 rounded-full backdrop-blur-xs">
+            {/* Indicator Dots — Subtle, visible on hover */}
+            <div className="absolute bottom-2.5 right-4 flex items-center gap-1.5 z-10 bg-black/50 px-2 py-1 rounded-full backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               {banners.map((_, idx) => (
                 <button
                   key={idx}
@@ -98,8 +97,8 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
                   onClick={() => setCurrentIndex(idx)}
                   className={`h-1.5 rounded-full transition-all cursor-pointer ${
                     currentIndex === idx
-                      ? "w-5 sm:w-6 bg-[#ffd731]"
-                      : "w-1.5 bg-white/70 hover:bg-white"
+                      ? "w-5 bg-[#ffd731]"
+                      : "w-1.5 bg-white/60 hover:bg-white"
                   }`}
                   aria-label={`Slide ${idx + 1}`}
                 />

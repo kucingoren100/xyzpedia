@@ -31,20 +31,22 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { title, subtitle, imageUrl, linkUrl, badgeText, order, isActive } = body;
 
-    if (!title || !imageUrl) {
+    if (!imageUrl) {
       return NextResponse.json(
-        { success: false, message: "Judul dan Gambar Banner wajib diisi." },
+        { success: false, message: "Gambar Banner wajib diisi atau diupload." },
         { status: 400 }
       );
     }
 
+    const cleanTitle = title ? String(title).trim() : `Banner #${Number(order) || 1}`;
+
     const banner = await prisma.banner.create({
       data: {
-        title: String(title).trim(),
+        title: cleanTitle,
         subtitle: subtitle ? String(subtitle).trim() : null,
         imageUrl: String(imageUrl).trim(),
         linkUrl: linkUrl ? String(linkUrl).trim() : "/katalog",
-        badgeText: badgeText ? String(badgeText).trim().toUpperCase() : "PROMO",
+        badgeText: badgeText ? String(badgeText).trim().toUpperCase() : null,
         order: Number(order) || 0,
         isActive: isActive !== undefined ? Boolean(isActive) : true,
       },

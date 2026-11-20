@@ -7,12 +7,8 @@ import {
   Plus,
   Trash2,
   ExternalLink,
-  CheckCircle2,
-  XCircle,
-  Eye,
   ArrowUp,
   ArrowDown,
-  Sparkles,
   RefreshCw,
   X,
   Edit2,
@@ -42,25 +38,19 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Create / Edit Modal
+  // Create / Edit Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
 
-  // Form State
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
+  // Streamlined Form State (Only Image, Link, Order & Active)
   const [imageUrl, setImageUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("/katalog");
-  const [badgeText, setBadgeText] = useState("PROMO SPESIAL");
   const [orderNum, setOrderNum] = useState(1);
   const [isActive, setIsActive] = useState(true);
 
   const resetForm = () => {
-    setTitle("");
-    setSubtitle("");
     setImageUrl("");
     setLinkUrl("/katalog");
-    setBadgeText("PROMO SPESIAL");
     setOrderNum(banners.length + 1);
     setIsActive(true);
     setEditingBanner(null);
@@ -73,11 +63,8 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
 
   const openEditModal = (b: Banner) => {
     setEditingBanner(b);
-    setTitle(b.title);
-    setSubtitle(b.subtitle || "");
     setImageUrl(b.imageUrl);
     setLinkUrl(b.linkUrl || "/katalog");
-    setBadgeText(b.badgeText || "PROMO SPESIAL");
     setOrderNum(b.order);
     setIsActive(b.isActive);
     setIsModalOpen(true);
@@ -116,10 +103,12 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!imageUrl) {
-      alert("Silakan upload file gambar atau isi URL gambar banner terlebih dahulu!");
+      alert("Silakan pilih file gambar banner dari perangkat atau masukkan URL gambar!");
       return;
     }
     setLoading(true);
+
+    const autoTitle = editingBanner ? editingBanner.title : `Banner #${orderNum}`;
 
     try {
       if (editingBanner) {
@@ -128,11 +117,9 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title,
-            subtitle,
+            title: autoTitle,
             imageUrl,
             linkUrl,
-            badgeText,
             order: orderNum,
             isActive,
           }),
@@ -142,7 +129,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
           setBanners((prev) =>
             prev.map((b) => (b.id === editingBanner.id ? data.banner : b))
           );
-          setActionMsg("Banner berhasil diperbarui!");
+          setActionMsg("Gambar banner promo berhasil diperbarui!");
           setIsModalOpen(false);
         } else {
           alert("Gagal menyimpan: " + (data.error || data.message));
@@ -153,11 +140,9 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title,
-            subtitle,
+            title: autoTitle,
             imageUrl,
             linkUrl,
-            badgeText,
             order: orderNum,
             isActive,
           }),
@@ -179,14 +164,14 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
   };
 
   const handleDelete = async (b: Banner) => {
-    if (!confirm(`Hapus banner "${b.title}" secara permanen?`)) return;
+    if (!confirm(`Hapus banner urutan #${b.order} secara permanen?`)) return;
 
     try {
       const res = await fetch(`/api/admin/banners/${b.id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setBanners((prev) => prev.filter((item) => item.id !== b.id));
-        setActionMsg(`Banner "${b.title}" berhasil dihapus.`);
+        setActionMsg(`Banner berhasil dihapus.`);
       } else {
         alert("Gagal menghapus: " + data.message);
       }
@@ -241,7 +226,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
     <div className="flex-1 flex flex-col min-w-0">
       <AdminTopbar
         title="Kelola Banner Promo Beranda"
-        subtitle="Atur gambar slide banner promo, judul, deskripsi, dan link tujuan di storefront pembeli"
+        subtitle="Atur foto banner promo beranda, ganti gambar, urutan tampil, dan link tujuan saat diklik pembeli"
       />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
@@ -289,12 +274,12 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
               {/* Banner Image Preview */}
               <div
                 onClick={() => openEditModal(b)}
-                className="group relative aspect-[16/7] w-full bg-gray-100 dark:bg-[#12121a] overflow-hidden border-b-2 border-black cursor-pointer"
-                title="Klik untuk mengedit atau mengganti gambar banner"
+                className="group relative aspect-[16/7] w-full bg-black overflow-hidden border-b-2 border-black cursor-pointer"
+                title="Klik untuk mengganti gambar banner ini"
               >
                 <img
                   src={b.imageUrl}
-                  alt={b.title}
+                  alt={`Banner #${b.order}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e: any) => {
                     e.currentTarget.src =
@@ -303,12 +288,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                 />
 
                 <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                  {b.badgeText && (
-                    <span className="px-2 py-0.5 bg-[#ffd731] text-black text-[9px] font-black uppercase ink-border rounded-md shadow-[1px_1px_0px_#000]">
-                      {b.badgeText}
-                    </span>
-                  )}
-                  <span className="px-2 py-0.5 bg-black text-white text-[9px] font-black uppercase ink-border rounded-md">
+                  <span className="px-2.5 py-0.5 bg-[#ffd731] text-black text-[10px] font-black uppercase ink-border rounded-md shadow-[1px_1px_0px_#000]">
                     Urutan #{b.order}
                   </span>
                 </div>
@@ -331,26 +311,21 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                 </div>
 
                 {/* Hover overlay hint */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white font-black text-xs uppercase tracking-wider">
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white font-black text-xs uppercase tracking-wider">
                   <Camera className="w-4 h-4" />
                   <span>Klik untuk Ganti Gambar</span>
                 </div>
               </div>
 
-              {/* Card Content Info */}
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                <div className="space-y-1">
-                  <h4 className="font-[var(--font-bricolage)] text-sm font-extrabold text-carbon dark:text-white uppercase line-clamp-1">
-                    {b.title}
-                  </h4>
-                  {b.subtitle && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                      {b.subtitle}
-                    </p>
-                  )}
-                  <p className="text-[11px] font-mono text-gray-400 truncate">
+              {/* Card Footer Info */}
+              <div className="p-3.5 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-gray-600 dark:text-gray-300">
+                  <span className="text-[11px] font-mono text-gray-500 truncate max-w-[200px]">
                     Link: {b.linkUrl || "/katalog"}
-                  </p>
+                  </span>
+                  <span className="text-[10px] uppercase font-black text-gray-400">
+                    {b.isActive ? "Aktif" : "Nonaktif"}
+                  </span>
                 </div>
 
                 {/* Actions Toolbar */}
@@ -379,10 +354,10 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                   <button
                     type="button"
                     onClick={() => openEditModal(b)}
-                    className="flex-1 py-1.5 px-3 bg-white dark:bg-[#20202e] hover:bg-gray-100 dark:hover:bg-[#2a2a3c] text-carbon dark:text-white rounded-xl ink-border text-xs font-black uppercase flex items-center justify-center gap-1 shadow-[1.5px_1.5px_0px_#000] cursor-pointer"
+                    className="flex-1 py-1.5 px-3 bg-white dark:bg-[#20202e] hover:bg-gray-100 dark:hover:bg-[#2a2a3c] text-carbon dark:text-white rounded-xl ink-border text-xs font-black uppercase flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_#000] cursor-pointer"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
-                    <span>Edit / Ganti Foto</span>
+                    <span>Ganti Gambar</span>
                   </button>
 
                   {b.linkUrl && (
@@ -417,12 +392,12 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
               Belum Ada Banner Promo
             </h3>
             <p className="text-xs text-gray-500 max-w-sm mx-auto">
-              Tambahkan banner untuk menampilkan promo spesial, diskon game, atau event musiman di beranda toko.
+              Tambahkan gambar banner untuk menampilkan event atau promo di beranda toko.
             </p>
           </div>
         )}
 
-        {/* Create / Edit Modal */}
+        {/* Simplified Create / Edit Modal (Only Image, Link, Order & Active) */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
             <div className="bg-white dark:bg-[#181824] ink-border-thick rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-[6px_6px_0px_#000] space-y-5 animate-in slide-in-from-bottom duration-200">
@@ -430,7 +405,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                 <div className="flex items-center gap-2">
                   <ImageIcon className="w-5 h-5 text-amber-500" />
                   <h3 className="font-[var(--font-bricolage)] text-base font-black uppercase text-carbon dark:text-white">
-                    {editingBanner ? "Edit Banner Promo" : "Tambah Banner Baru"}
+                    {editingBanner ? "Ganti Gambar Banner Promo" : "Tambah Banner Promo Baru"}
                   </h3>
                 </div>
                 <button
@@ -443,38 +418,11 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block mb-1">
-                    Judul Banner *:
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Contoh: Promo Spesial Mobile Legends 2026"
-                    className="w-full px-3 py-2 bg-[#f9fafb] dark:bg-[#12121a] rounded-xl ink-border text-xs font-bold text-carbon dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block mb-1">
-                    Deskripsi Singkat (Internal / Catatan):
-                  </label>
-                  <input
-                    type="text"
-                    value={subtitle}
-                    onChange={(e) => setSubtitle(e.target.value)}
-                    placeholder="Contoh: Diskon khusus minggu ini, event MPL"
-                    className="w-full px-3 py-2 bg-[#f9fafb] dark:bg-[#12121a] rounded-xl ink-border text-xs font-bold text-carbon dark:text-white"
-                  />
-                </div>
-
-                {/* Upload & Image Selector */}
+                {/* 1. Upload & Select Image */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block">
-                      Gambar Banner (Rasio 16:9 / Landscape) *:
+                      Pilih Gambar Banner *:
                     </label>
                     <span className="text-[10px] font-bold text-gray-400">JPG, PNG, WEBP (Maks. 5MB)</span>
                   </div>
@@ -496,7 +444,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="w-full py-2.5 px-4 bg-[#ffd731] hover:bg-[#ffe366] text-black font-black text-xs uppercase tracking-wider rounded-xl ink-border flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] cursor-pointer active:translate-x-0.5 active:translate-y-0.5 transition-all"
+                    className="w-full py-3 px-4 bg-[#ffd731] hover:bg-[#ffe366] text-black font-black text-xs uppercase tracking-wider rounded-xl ink-border flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] cursor-pointer active:translate-x-0.5 active:translate-y-0.5 transition-all"
                   >
                     {isUploading ? (
                       <>
@@ -506,7 +454,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                     ) : (
                       <>
                         <UploadCloud className="w-4 h-4 stroke-[2.5]" />
-                        <span>{imageUrl ? "Ganti File Gambar dari Perangkat" : "Upload File Gambar dari Perangkat"}</span>
+                        <span>{imageUrl ? "Ganti File Gambar dari Perangkat" : "Pilih File Gambar dari Perangkat"}</span>
                       </>
                     )}
                   </button>
@@ -530,7 +478,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                   {imageUrl && (
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="group relative mt-2 aspect-[16/7] rounded-xl overflow-hidden ink-border bg-gray-100 dark:bg-black cursor-pointer shadow-[2px_2px_0px_#000]"
+                      className="group relative mt-2 aspect-[16/7] rounded-xl overflow-hidden ink-border bg-black cursor-pointer shadow-[2px_2px_0px_#000]"
                       title="Klik untuk memilih file gambar baru dari perangkat"
                     >
                       <img
@@ -546,38 +494,28 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block mb-1">
-                      Link Tujuan (Redirect):
-                    </label>
-                    <input
-                      type="text"
-                      value={linkUrl}
-                      onChange={(e) => setLinkUrl(e.target.value)}
-                      placeholder="/produk/mobile-legends"
-                      className="w-full px-3 py-2 bg-[#f9fafb] dark:bg-[#12121a] rounded-xl ink-border text-xs font-bold text-carbon dark:text-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block mb-1">
-                      Badge Label:
-                    </label>
-                    <input
-                      type="text"
-                      value={badgeText}
-                      onChange={(e) => setBadgeText(e.target.value)}
-                      placeholder="PROMO / TERLARIS"
-                      className="w-full px-3 py-2 bg-[#f9fafb] dark:bg-[#12121a] rounded-xl ink-border text-xs font-bold text-carbon dark:text-white"
-                    />
-                  </div>
+                {/* 2. Link Tujuan (Redirect) */}
+                <div>
+                  <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block mb-1">
+                    Link Tujuan Ketika Banner Diklik:
+                  </label>
+                  <input
+                    type="text"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    placeholder="Contoh: /katalog atau /produk/mobile-legends"
+                    className="w-full px-3 py-2 bg-[#f9fafb] dark:bg-[#12121a] rounded-xl ink-border text-xs font-bold text-carbon dark:text-white"
+                  />
+                  <span className="text-[10px] text-gray-400 block mt-1">
+                    Saat pembeli klik banner di beranda, mereka langsung diarahkan ke link ini.
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                {/* 3. Nomor Urutan & Status Aktif */}
+                <div className="grid grid-cols-2 gap-3 pt-1">
                   <div>
                     <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block mb-1">
-                      Nomor Urutan Tampil:
+                      Nomor Urutan Slide:
                     </label>
                     <input
                       type="number"
@@ -605,6 +543,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                   </div>
                 </div>
 
+                {/* Buttons */}
                 <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200 dark:border-gray-800">
                   <button
                     type="button"
@@ -624,7 +563,7 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                         <span>Menyimpan...</span>
                       </>
                     ) : (
-                      <span>Simpan Perubahan</span>
+                      <span>Simpan Banner</span>
                     )}
                   </button>
                 </div>
