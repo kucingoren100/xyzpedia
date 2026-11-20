@@ -21,12 +21,13 @@ const CITIES = [
 
 export async function GET() {
   try {
+    // Only fetch 100% genuine paid/successful orders from database
     const realOrders = await prisma.order.findMany({
       where: {
         status: { in: ["SUCCESS", "PAID"] },
       },
       orderBy: { createdAt: "desc" },
-      take: 8,
+      take: 10,
       include: {
         product: { select: { name: true, slug: true, thumbnailUrl: true } },
         productItem: { select: { name: true } },
@@ -39,7 +40,7 @@ export async function GET() {
         ? `${o.customerEmail.slice(0, 3)}***`
         : o.customerPhone
         ? `${o.customerPhone.slice(0, 4)}****`
-        : "Gamers";
+        : "Pembeli";
 
       const diffMinutes = Math.max(
         1,
@@ -63,51 +64,11 @@ export async function GET() {
       };
     });
 
-    // If fewer than 4 real orders, add realistic fallback items
-    if (items.length < 4) {
-      const fallbacks = [
-        {
-          id: "fb-1",
-          productName: "Mobile Legends",
-          variantName: "Weekly Diamond Pass",
-          city: "Jakarta",
-          buyerName: "Dim***",
-          timeAgo: "2 menit lalu",
-          thumbnailUrl: "/images/games/mlbb.webp",
-        },
-        {
-          id: "fb-2",
-          productName: "Free Fire",
-          variantName: "140 Diamonds",
-          city: "Surabaya",
-          buyerName: "Riz***",
-          timeAgo: "5 menit lalu",
-          thumbnailUrl: "/images/games/free-fire.webp",
-        },
-        {
-          id: "fb-3",
-          productName: "Wink VIP",
-          variantName: "14 Hari · VIP+",
-          city: "Bandung",
-          buyerName: "Siti***",
-          timeAgo: "8 menit lalu",
-          thumbnailUrl: "https://waroengkuy.com/api/store-image/8?v=1793399279&sq=1",
-        },
-        {
-          id: "fb-4",
-          productName: "Honor of Kings",
-          variantName: "80 Tokens",
-          city: "Yogyakarta",
-          buyerName: "Fik***",
-          timeAgo: "11 menit lalu",
-          thumbnailUrl: "/images/games/hok.webp",
-        },
-      ];
-      items.push(...fallbacks.slice(0, 4 - items.length));
-    }
-
-    return NextResponse.json({ success: true, orders: items });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({
+      success: true,
+      orders: items,
+    });
+  } catch (err: any) {
+    return NextResponse.json({ success: false, orders: [] }, { status: 500 });
   }
 }

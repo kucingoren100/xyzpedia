@@ -129,15 +129,16 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Sidebar Container: Fixed height, strictly within viewport */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-white dark:bg-[#161622] border-r-2 border-carbon dark:border-[#38384a] flex flex-col justify-between p-4 sm:p-5 transition-transform duration-300 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 h-screen max-h-screen bg-white dark:bg-[#161622] border-r-2 border-carbon dark:border-[#38384a] flex flex-col transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="space-y-6">
+        {/* Top Header & Admin Role Badge (Fixed shrink-0) */}
+        <div className="shrink-0 p-4 pb-2 space-y-3">
           {/* Header Brand */}
-          <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
             <Link href="/admin" className="flex items-center gap-2">
               <BrandLogo />
             </Link>
@@ -153,7 +154,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           </div>
 
           {/* Admin Role Pill */}
-          <div className="p-3 bg-[#ffd731] ink-border rounded-xl flex items-center justify-between shadow-[2px_2px_0px_0px_#000000]">
+          <div className="p-2.5 bg-[#ffd731] ink-border rounded-xl flex items-center justify-between shadow-[2px_2px_0px_0px_#000000]">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-black shrink-0" />
               <div>
@@ -165,10 +166,12 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             </div>
             <span className="w-2 h-2 rounded-full bg-[#55db9c] ink-border animate-pulse" />
           </div>
+        </div>
 
-          {/* Navigation Links */}
-          <nav className="space-y-1.5">
-            <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 px-3 pb-1">
+        {/* Scrollable Navigation Links (Middle flex-1 min-h-0) */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 py-1 custom-scrollbar">
+          <nav className="space-y-1">
+            <p className="text-[10px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 px-2 pb-1">
               Menu Navigasi
             </p>
             {navItems.map((item) => {
@@ -179,9 +182,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                   href={item.href}
                   prefetch={true}
                   onClick={onClose}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl ink-border text-xs font-black uppercase tracking-wider transition-all duration-150 ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl ink-border text-xs font-black uppercase tracking-wider transition-all duration-150 ${
                     item.active
-                      ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[3px_3px_0px_0px_#ffd731] -translate-x-0.5 -translate-y-0.5"
+                      ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_0px_#ffd731] -translate-x-0.5 -translate-y-0.5"
                       : "bg-[#fbfbfd] text-carbon hover:bg-gray-100 dark:bg-[#1f1f2e] dark:text-gray-200 dark:hover:bg-[#28283c] dark:border-[#38384a]"
                   }`}
                 >
@@ -202,8 +205,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           </nav>
         </div>
 
-        {/* Footer Area */}
-        <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-800">
+        {/* Fixed Footer Area (Never pushed off screen) */}
+        <div className="shrink-0 p-4 pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2 bg-white dark:bg-[#161622]">
           {/* Quick storefront link */}
           <Link
             href="/"

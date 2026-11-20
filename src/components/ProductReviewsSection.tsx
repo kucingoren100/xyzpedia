@@ -17,7 +17,7 @@ export default async function ProductReviewsSection({ productId, productName }: 
   const avgRating = (reviews.reduce((acc, r) => acc + r.rating, 0) / count).toFixed(1);
 
   return (
-    <div className="bg-white dark:bg-[#181824] ink-border rounded-3xl p-6 md:p-8 shadow-[4px_4px_0px_#000] space-y-6">
+    <div className="bg-white dark:bg-[#181824] ink-border rounded-3xl p-4 sm:p-6 md:p-8 shadow-[4px_4px_0px_#000] space-y-5 sm:space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-800 pb-4">
         <div>
           <h3 className="font-[var(--font-bricolage)] text-lg md:text-xl font-extrabold uppercase text-carbon dark:text-white flex items-center gap-2">
