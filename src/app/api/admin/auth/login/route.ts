@@ -31,9 +31,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const isValid = await verifyAdminCredentials(username.trim(), password);
+    const authResult = await verifyAdminCredentials(username.trim(), password);
 
-    if (!isValid) {
+    if (!authResult || !authResult.valid) {
       return NextResponse.json(
         { success: false, message: "Username atau password admin salah." },
         { status: 401 }
@@ -42,8 +42,8 @@ export async function POST(req: Request) {
 
     const token = signAdminToken({
       username: username.trim(),
-      name: "XYZPEDIA Admin",
-      role: "SUPERADMIN",
+      name: authResult.name || "XYZPEDIA Admin",
+      role: authResult.role || "ADMIN",
     });
 
     const response = NextResponse.json({
@@ -51,8 +51,8 @@ export async function POST(req: Request) {
       message: "Login admin berhasil.",
       admin: {
         username: username.trim(),
-        name: "XYZPEDIA Admin",
-        role: "SUPERADMIN",
+        name: authResult.name || "XYZPEDIA Admin",
+        role: authResult.role || "ADMIN",
       },
     });
 

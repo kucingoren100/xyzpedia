@@ -69,18 +69,23 @@ export function checkRateLimit(
 }
 
 /**
- * Extract client IP with Cloudflare priority
+ * Extract client IP respecting TRUSTED_PROXY env ("cloudflare", "vercel", or "none")
  */
 export function getClientIp(req: Request): string {
   const headers = req.headers;
-  // Cloudflare Connecting IP is trusted when proxied
-  const cfIp = headers.get("cf-connecting-ip");
-  if (cfIp) return cfIp.trim();
+  const proxyMode = (process.env.TRUSTED_PROXY || "cloudflare").toLowerCase();
 
-  const forwarded = headers.get("x-forwarded-for");
-  if (forwarded) {
-    const firstIp = forwarded.split(",")[0]?.trim();
-    if (firstIp) return firstIp;
+  if (proxyMode === "cloudflare") {
+    const cfIp = headers.get("cf-connecting-ip");
+    if (cfIp) return cfIp.trim();
+  }
+
+  if (proxyMode === "vercel" || proxyMode === "cloudflare") {
+    const forwarded = headers.get("x-forwarded-for");
+    if (forwarded) {
+      const firstIp = forwarded.split(",")[0]?.trim();
+      if (firstIp) return firstIp;
+    }
   }
 
   const realIp = headers.get("x-real-ip");
@@ -93,13 +98,19 @@ export function getClientIp(req: Request): string {
  * Extract client IP from Next.js ReadonlyHeaders (used in Server Actions)
  */
 export function getClientIpFromHeaders(headers: { get: (name: string) => string | null }): string {
-  const cfIp = headers.get("cf-connecting-ip");
-  if (cfIp) return cfIp.trim();
+  const proxyMode = (process.env.TRUSTED_PROXY || "cloudflare").toLowerCase();
 
-  const forwarded = headers.get("x-forwarded-for");
-  if (forwarded) {
-    const firstIp = forwarded.split(",")[0]?.trim();
-    if (firstIp) return firstIp;
+  if (proxyMode === "cloudflare") {
+    const cfIp = headers.get("cf-connecting-ip");
+    if (cfIp) return cfIp.trim();
+  }
+
+  if (proxyMode === "vercel" || proxyMode === "cloudflare") {
+    const forwarded = headers.get("x-forwarded-for");
+    if (forwarded) {
+      const firstIp = forwarded.split(",")[0]?.trim();
+      if (firstIp) return firstIp;
+    }
   }
 
   const realIp = headers.get("x-real-ip");

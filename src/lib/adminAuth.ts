@@ -6,6 +6,7 @@ export interface AdminSessionPayload {
   username: string;
   name: string;
   role: string;
+  sid?: string;
   exp: number;
 }
 
@@ -14,12 +15,54 @@ const AUTH_COOKIE_NAME = "xyz_admin_session";
 function getSecret(): string {
   const secret = process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET;
   if (!secret) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("ADMIN_JWT_SECRET environment variable is required in production.");
-    }
-    return "dev_secret_only_for_local_debugging_purposes";
+    throw new Error("ADMIN_JWT_SECRET environment variable is required.");
   }
   return secret;
+}
+
+/**
+ * Hash password using Node.js crypto.scrypt
+ */
+export async function hashPasswordScrypt(password: string): Promise<string> {
+  const salt = crypto.randomBytes(16).toString("hex");
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+      if (err) return reject(err);
+      resolve(`scrypt$${salt}$${derivedKey.toString("hex")}`);
+    });
+  });
+}
+
+/**
+ * Verify password against scrypt or legacy SHA-256
+ */
+export async function verifyPassword(password: string, storedHash: string): Promise<{ valid: boolean; needsUpgrade: boolean }> {
+  if (storedHash.startsWith("scrypt$")) {
+    const parts = storedHash.split("$");
+    if (parts.length !== 3) return { valid: false, needsUpgrade: false };
+    const salt = parts[1];
+    const hash = parts[2];
+
+    return new Promise((resolve) => {
+      crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+        if (err) return resolve({ valid: false, needsUpgrade: false });
+        const bufA = Buffer.from(hash, "hex");
+        const bufB = derivedKey;
+        const valid = bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+        resolve({ valid, needsUpgrade: false });
+      });
+    });
+  }
+
+  // Legacy SHA-256 fallback (auto-upgrade on success)
+  const legacyHash = crypto.createHash("sha256").update(password).digest("hex");
+  const bufA = Buffer.from(legacyHash);
+  const bufB = Buffer.from(storedHash);
+  if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
+    return { valid: true, needsUpgrade: true };
+  }
+
+  return { valid: false, needsUpgrade: false };
 }
 
 /**
@@ -71,16 +114,57 @@ export function verifyAdminToken(token: string): AdminSessionPayload | null {
 }
 
 /**
- * Get current admin session from server cookies
+ * Get current admin session from server cookies, verifying active session state
  */
 export async function getAdminSession(): Promise<AdminSessionPayload | null> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
     if (!token) return null;
-    return verifyAdminToken(token);
+    const payload = verifyAdminToken(token);
+    if (!payload) return null;
+
+    // If session id exists, verify not revoked in DB
+    if (payload.sid) {
+      try {
+        const session = await (prisma as any).adminSession.findUnique({
+          where: { id: payload.sid },
+        });
+        if (!session || session.revokedAt || new Date() > session.expiresAt) {
+          return null;
+        }
+      } catch {
+        // Fallback to token payload if AdminSession table not yet migrated
+      }
+    }
+
+    return payload;
   } catch {
     return null;
+  }
+}
+
+/**
+ * Revoke session on logout
+ */
+export async function revokeAdminSession() {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+    if (!token) return;
+    const payload = verifyAdminToken(token);
+    if (payload?.sid) {
+      try {
+        await (prisma as any).adminSession.update({
+          where: { id: payload.sid },
+          data: { revokedAt: new Date() },
+        });
+      } catch {
+        // Ignore if model does not exist
+      }
+    }
+  } catch {
+    // Ignore
   }
 }
 
@@ -88,40 +172,49 @@ export async function getAdminSession(): Promise<AdminSessionPayload | null> {
  * Verify admin credentials against environment variables or database.
  * Uses timing-safe comparison to prevent timing attacks on master password.
  */
-export async function verifyAdminCredentials(username: string, pass: string): Promise<boolean> {
+export async function verifyAdminCredentials(username: string, pass: string): Promise<{ valid: boolean; role: string; name: string } | null> {
   const masterUsername = process.env.ADMIN_USERNAME;
   const masterPassword = process.env.ADMIN_PASSWORD;
 
-  // Check master credentials with timing-safe comparison
+  // Check master credentials with timing-safe comparison -> OWNER role
   if (masterUsername && masterPassword && username === masterUsername) {
     const bufA = Buffer.from(pass);
     const bufB = Buffer.from(masterPassword);
     if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
-      return true;
+      return { valid: true, role: "OWNER", name: "Master Admin" };
     }
-    // Even if length differs, return false (don't short-circuit timing)
-    return false;
+    return null;
   }
 
-  // Check database Admin table with Prisma (safe from SQL injection)
+  // Check database Admin table with Prisma
   try {
     const dbAdmin = await prisma.admin.findUnique({
       where: { username },
     });
     if (dbAdmin) {
-      // Compare sha256 hash
-      const hashedInput = crypto.createHash("sha256").update(pass).digest("hex");
-      const bufA = Buffer.from(hashedInput);
-      const bufB = Buffer.from(dbAdmin.password);
-      if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
-        return true;
+      const { valid, needsUpgrade } = await verifyPassword(pass, dbAdmin.password);
+      if (valid) {
+        if (needsUpgrade) {
+          // Upgrade password hash to scrypt transparently
+          hashPasswordScrypt(pass).then((newHash) => {
+            prisma.admin.update({
+              where: { id: dbAdmin.id },
+              data: { password: newHash },
+            }).catch(() => {});
+          });
+        }
+        return {
+          valid: true,
+          role: (dbAdmin as any).role || "ADMIN",
+          name: dbAdmin.name,
+        };
       }
     }
   } catch {
-    // Ignore database lookup error; master credentials only
+    // Ignore
   }
 
-  return false;
+  return null;
 }
 
 export { AUTH_COOKIE_NAME };
