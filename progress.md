@@ -44,3 +44,12 @@
 - **Verifikasi & Testing:**
   - TypeScript typecheck `tsc --noEmit` sukses (0 error).
   - Vitest test suite lulus 100% (36/36 tests passed).
+
+### [2026-11-20 19:57 WIB]
+- **Perbaikan UI & Responsivitas Sesuai Masukan User:**
+  - **Banner Promo Beranda Dipangkas & Dibuat Sleek**: Tinggi dibatasi rapi (`h-[125px]` di HP hingga `h-[215px]` di desktop), tipografi disesuaikan, tombol navigasi & dot dibuat proporsional.
+  - **Perbaikan Layout Admin Sidebar**: Memperbaiki container sidebar dengan `h-screen max-h-screen`, `flex flex-col`, navigasi scrollable (`overflow-y-auto custom-scrollbar`), dan bagian footer (Buka Toko, Mode Gelap/Terang, Logout) dipin `shrink-0` di bawah sehingga tidak akan pernah terpotong atau mentok ke bawah layar lagi.
+  - **Pembersihan Data Dummy Live Ticker**: Menghapus seluruh fallback order tiruan di `/api/recent-orders`. Endpoint sekarang 100% murni membaca pesanan asli dari database (`SUCCESS` & `PAID`).
+- **Verifikasi**:
+  - `tsc --noEmit` bersih (0 errors).
+  - 36/36 Vitest tests lulus.

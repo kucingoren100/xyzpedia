@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface Banner {
   id: string;
@@ -45,63 +45,30 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
 
   return (
     <div
-      className="relative w-full my-1 sm:my-3"
+      className="relative w-full my-1 sm:my-2"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Compact Neo-brutalist Banner Card */}
-      <div className="relative w-full h-[125px] xs:h-[145px] sm:h-[175px] md:h-[200px] lg:h-[215px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-carbon dark:bg-[#12121a] text-white">
-        {/* Banner Link Wrapper */}
+      {/* Clean Full-Bleed Clickable Neo-Brutalist Banner */}
+      <div className="relative w-full h-[120px] xs:h-[145px] sm:h-[180px] md:h-[210px] lg:h-[230px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
         <Link
           href={current.linkUrl || "/katalog"}
-          className="block relative w-full h-full group overflow-hidden"
+          className="block relative w-full h-full group cursor-pointer overflow-hidden"
+          title={current.title}
         >
-          {/* Background Image with subtle zoom */}
+          {/* 100% Clean Image Artwork (No text / button overlays) */}
           <img
             src={current.imageUrl}
             alt={current.title}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
             onError={(e: any) => {
               e.currentTarget.src =
                 "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200";
             }}
           />
-
-          {/* Gradient Overlay for Crisp Text Legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-transparent flex flex-col justify-center px-4 sm:px-8 md:px-12 py-2 space-y-1 sm:space-y-1.5 max-w-[80%] sm:max-w-[70%]">
-            {/* Badge */}
-            {current.badgeText && (
-              <div>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#ffd731] text-black text-[9px] sm:text-[10px] font-black uppercase tracking-wider ink-border rounded-md shadow-[1.5px_1.5px_0px_#000]">
-                  <Sparkles className="w-2.5 h-2.5 fill-black shrink-0" />
-                  <span>{current.badgeText}</span>
-                </span>
-              </div>
-            )}
-
-            {/* Title */}
-            <h3 className="font-[var(--font-bricolage)] text-sm xs:text-base sm:text-xl md:text-2xl font-black uppercase tracking-tight text-white line-clamp-1 drop-shadow-[2px_2px_0px_#000]">
-              {current.title}
-            </h3>
-
-            {/* Subtitle */}
-            {current.subtitle && (
-              <p className="text-[10px] sm:text-xs font-semibold text-gray-200 line-clamp-1 drop-shadow hidden xs:block">
-                {current.subtitle}
-              </p>
-            )}
-
-            {/* CTA Pill */}
-            <div className="pt-0.5 sm:pt-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 bg-white text-carbon group-hover:bg-[#55db9c] group-hover:text-black rounded-lg sm:rounded-xl ink-border text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000] transition-colors">
-                <span>Lihat Promo</span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-              </span>
-            </div>
-          </div>
         </Link>
 
-        {/* Carousel Controls (Prev/Next) */}
+        {/* Carousel Navigation Arrows (Clean & Subtle) */}
         {total > 1 && (
           <>
             <button
@@ -123,16 +90,16 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
             </button>
 
             {/* Dot Indicators */}
-            <div className="absolute bottom-2 sm:bottom-3 right-4 sm:right-6 flex items-center gap-1.5 z-10">
+            <div className="absolute bottom-2 sm:bottom-3 right-4 sm:right-6 flex items-center gap-1.5 z-10 bg-black/40 px-2 py-1 rounded-full backdrop-blur-xs">
               {banners.map((_, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => setCurrentIndex(idx)}
-                  className={`h-1.5 rounded-full transition-all ink-border cursor-pointer ${
+                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
                     currentIndex === idx
                       ? "w-5 sm:w-6 bg-[#ffd731]"
-                      : "w-1.5 bg-white/60 hover:bg-white"
+                      : "w-1.5 bg-white/70 hover:bg-white"
                   }`}
                   aria-label={`Slide ${idx + 1}`}
                 />
