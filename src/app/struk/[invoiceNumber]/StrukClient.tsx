@@ -458,6 +458,7 @@ export default function StrukClient({
                   fontWeight: 700,
                   color: "#4ade80",
                   wordBreak: "break-all",
+                  whiteSpace: "pre-wrap",
                   lineHeight: 1.5,
                   background: "#1e293b",
                   padding: "8px 12px",

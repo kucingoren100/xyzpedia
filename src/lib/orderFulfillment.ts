@@ -35,11 +35,16 @@ export async function startFulfillment(orderId: string) {
   const supplier = (order.productItem as any).supplier || "DIGIFLAZZ";
   const sku = order.productItem.sku;
 
+  // Check if Waroengkuy digital product
+  const isWaroengkuy =
+    supplier === "WAROENGKUY" ||
+    (order.product.categorySlug === "akun-premium" && !!process.env.WAROENGKUY_API_KEY && !sku.startsWith("CUSTOM-"));
+
   // Check if manual category
   const isManual =
     supplier === "MANUAL" ||
-    order.product.categorySlug === "akun-premium" ||
-    sku.startsWith("CUSTOM-");
+    sku.startsWith("CUSTOM-") ||
+    (!isWaroengkuy && order.product.categorySlug === "akun-premium");
 
   if (isManual) {
     // Keep order in PAID / PROCESSING state waiting for admin manual handover
@@ -71,7 +76,7 @@ export async function startFulfillment(orderId: string) {
   }
 
   // Routing supplier based on ProductItem.supplier
-  const isDigiflazz = supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY;
+  const isDigiflazz = !isWaroengkuy && (supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY);
 
   // 15s Abort Controller
   const controller = new AbortController();
@@ -128,7 +133,7 @@ export async function startFulfillment(orderId: string) {
       };
     }
 
-    // Waroengkuy PPOB
+    // Waroengkuy Fulfillment (Digital Accounts or PPOB)
     const apiKey = process.env.WAROENGKUY_API_KEY || "";
     const baseUrl = (process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1").replace(/\/$/, "");
 
@@ -138,23 +143,28 @@ export async function startFulfillment(orderId: string) {
       return { success: false, reason: "No API Key" };
     }
 
-    const variantId = parseInt(sku, 10);
-    const target = order.targetZoneId
-      ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
-      : order.targetUserId.trim();
+    const isDigitalAccount = order.product.categorySlug === "akun-premium" || !order.targetZoneId;
+    const orderEndpoint = isDigitalAccount ? `${baseUrl}/orders` : `${baseUrl}/ppob/orders`;
+    const orderBody = isDigitalAccount
+      ? {
+          variant_id: sku,
+          qty: 1,
+          ref_id: order.invoiceNumber,
+        }
+      : {
+          variant_id: parseInt(sku, 10),
+          target: `${order.targetUserId.trim()}${order.targetZoneId ? order.targetZoneId.trim() : ""}`,
+          ref_id: order.invoiceNumber,
+        };
 
-    const res = await fetch(`${baseUrl}/ppob/orders`, {
+    const res = await fetch(orderEndpoint, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        variant_id: variantId,
-        target,
-        ref_id: order.invoiceNumber,
-      }),
+      body: JSON.stringify(orderBody),
       signal: controller.signal,
     });
 
@@ -162,7 +172,14 @@ export async function startFulfillment(orderId: string) {
     const data = await res.json().catch(() => ({}));
 
     if (data.ok && data.order) {
-      const isDone = data.order.status === "SUCCESS" && !!data.order.sn;
+      const rawAccounts = Array.isArray(data.order.accounts)
+        ? data.order.accounts.join("\n").trim()
+        : "";
+      const snResult = rawAccounts || data.order.sn || data.order.note || null;
+      const isDone =
+        data.order.status === "SUCCESS" ||
+        data.order.status === "success" ||
+        Boolean(rawAccounts);
       const nextStatus = isDone ? OrderStatus.SUCCESS : OrderStatus.PROCESSING;
 
       await prisma.order.update({
@@ -170,9 +187,9 @@ export async function startFulfillment(orderId: string) {
         data: {
           status: nextStatus,
           fulfilledAt: isDone ? new Date() : null,
-          notes: `Injeksi PPOB: ${data.order.ref} | Status: ${data.order.status} | SN: ${data.order.sn || "Dalam proses"}`,
-          supplierRef: data.order.ref,
-          sn: data.order.sn || null,
+          notes: `Waroengkuy: ${data.order.ref || data.order.id} | Status: ${data.order.status} | Saldo: ${data.balance ?? "-"}`,
+          supplierRef: data.order.ref || String(data.order.id),
+          sn: snResult,
           supplierStatus: data.order.status,
         },
       });

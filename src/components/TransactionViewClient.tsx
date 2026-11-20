@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   ExternalLink,
   XCircle,
+  Key,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -317,8 +318,53 @@ Status: ${order.status}`;
             </p>
           </div>
 
-          {/* Akun Premium manual flow */}
-          {isAkunPremium ? (
+          {/* 1A. Kredensial Langsung (Akun Premium / Voucher / Serial Number) */}
+          {effectiveSn ? (
+            <div className="border-2 border-carbon dark:border-[#38384a] rounded-3xl p-6 bg-[#dcfce7] dark:bg-[#12241a] text-left space-y-4 shadow-[4px_4px_0px_0px_#000000]">
+              <div className="flex items-center justify-between border-b border-carbon/20 pb-3">
+                <div className="flex items-center gap-2">
+                  <Key className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
+                  <h3 className="font-[var(--font-bricolage)] text-base font-black uppercase text-carbon dark:text-white">
+                    {isAkunPremium
+                      ? "Kredensial & Akses Akun"
+                      : order.product.categorySlug === "voucher-digital"
+                      ? "Kode Voucher / Serial Number"
+                      : "Serial Number Supplier"}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => copyText(effectiveSn, "sn")}
+                  className="px-3 py-1.5 bg-white dark:bg-[#1a1a28] hover:bg-gray-100 dark:hover:bg-[#252538] rounded-xl ink-border text-xs font-black uppercase flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform"
+                >
+                  {copiedKey === "sn" ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-green-600" />
+                      <span className="text-green-600">Tersalin</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Salin Semua</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="bg-white dark:bg-[#0b131a] p-4 rounded-2xl ink-border shadow-inner">
+                <pre className="font-mono text-xs sm:text-sm font-black text-carbon dark:text-emerald-300 whitespace-pre-wrap break-words select-all leading-relaxed">
+                  {effectiveSn}
+                </pre>
+              </div>
+
+              <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                {isAkunPremium
+                  ? "✓ Kredensial resmi telah terbit otomatis. Silakan gunakan data login di atas untuk masuk ke aplikasi."
+                  : "✓ Simpan bukti kode / Serial Number resmi di atas untuk keperluan transaksi."}
+              </p>
+            </div>
+          ) : isAkunPremium ? (
+            /* 1B. Akun Premium Manual Fallback (Jika stok supplier kosong / manual) */
             <div className="border-2 border-carbon dark:border-[#38384a] rounded-3xl p-6 bg-[#fff3d4] dark:bg-[#201d14] text-left space-y-4 shadow-[3px_3px_0px_0px_#000000]">
               <div className="flex items-center gap-2 border-b border-carbon/20 pb-3">
                 <Clock className="w-5 h-5 text-black" />
@@ -338,24 +384,6 @@ Status: ${order.status}`;
                 <ExternalLink className="w-4 h-4" />
                 <span>Hubungi Admin di WhatsApp</span>
               </a>
-            </div>
-          ) : effectiveSn ? (
-            <div className="border border-carbon dark:border-[#38384a] rounded-2xl p-5 bg-[#55db9c]/20 text-left space-y-2 shadow-[2px_2px_0px_0px_#000000]">
-              <span className="text-[10px] font-black uppercase text-gray-600 dark:text-gray-400 block">
-                {order.product.categorySlug === "voucher-digital" ? "Kode Voucher / Serial Number:" : "Serial Number Supplier:"}
-              </span>
-              <div className="flex items-center justify-between bg-white dark:bg-[#12121a] p-3 rounded-xl ink-border">
-                <span className="font-mono text-xs sm:text-sm font-black text-carbon dark:text-white select-all">
-                  {effectiveSn}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => copyText(effectiveSn, "sn")}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg ink-border"
-                >
-                  {copiedKey === "sn" ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
             </div>
           ) : null}
 
