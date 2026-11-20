@@ -78,7 +78,25 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Add Content-Security-Policy (Report-Only to avoid breaking third-party scripts)
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' blob: data: https:;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https:;
+    frame-src 'self' https://challenges.cloudflare.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+  `.replace(/\s{2,}/g, " ").trim();
+
+  response.headers.set("Content-Security-Policy-Report-Only", cspHeader);
+
+  return response;
 }
 
 export const config = {
