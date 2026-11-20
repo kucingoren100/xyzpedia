@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { signAdminToken, verifyAdminCredentials, AUTH_COOKIE_NAME } from "@/lib/adminAuth";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function POST(req: Request) {
   try {
@@ -44,6 +45,13 @@ export async function POST(req: Request) {
       username: username.trim(),
       name: authResult.name || "XYZPEDIA Admin",
       role: authResult.role || "ADMIN",
+    });
+
+    await logAuditEvent({
+      actor: username.trim(),
+      action: "admin_login",
+      target: "auth",
+      summary: `Admin ${username.trim()} (Role: ${authResult.role}) logged in from IP ${clientIp}`,
     });
 
     const response = NextResponse.json({

@@ -15,6 +15,9 @@ import {
   Sun,
   X,
   Activity,
+  Ticket,
+  ScrollText,
+  Users,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/components/ThemeProvider";
@@ -78,6 +81,26 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       active: pathname.startsWith("/admin/kondisi-web"),
       badge: "Kontrol",
       badgeColor: "bg-[#fb4903] text-white",
+    },
+    {
+      label: "Kupon Promo",
+      href: "/admin/kupon",
+      icon: Ticket,
+      active: pathname.startsWith("/admin/kupon"),
+    },
+    {
+      label: "Pengguna Admin",
+      href: "/admin/pengguna",
+      icon: Users,
+      active: pathname.startsWith("/admin/pengguna"),
+    },
+    {
+      label: "Audit Log",
+      href: "/admin/audit",
+      icon: ScrollText,
+      active: pathname.startsWith("/admin/audit"),
+      badge: "Log",
+      badgeColor: "bg-[#ffd731] text-black",
     },
     {
       label: "Pengaturan",

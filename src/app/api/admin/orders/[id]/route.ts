@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function GET(
   req: Request,
@@ -102,6 +103,13 @@ export async function PATCH(
         product: { select: { name: true, slug: true } },
         productItem: { select: { name: true, sku: true } },
       },
+    });
+
+    await logAuditEvent({
+      actor: session.username,
+      action: "order_update",
+      target: updatedOrder.invoiceNumber,
+      summary: `Admin updated order #${updatedOrder.invoiceNumber}: Status ${currentOrder.status} -> ${updatedOrder.status}${sn ? ` with SN: ${sn}` : ""}`,
     });
 
     return NextResponse.json({

@@ -221,6 +221,40 @@ export default function AdminTransaksiClient({
     }
   };
 
+  // Trigger Special Order Actions (Retry fulfillment, complete manual, refund)
+  const handleOrderAction = async (actionType: "retry" | "complete_manual" | "refund") => {
+    if (!selectedOrder) return;
+    setUpdatingStatus(true);
+    setActionSuccessMsg("");
+
+    try {
+      const res = await fetch(`/api/admin/orders/${selectedOrder.id}/actions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: actionType,
+          sn: adminNotes,
+          notes: adminNotes,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setActionSuccessMsg(data.message);
+        fetchOrders(currentStatus, searchQuery);
+        if (data.order) {
+          setSelectedOrder({ ...selectedOrder, ...data.order });
+        }
+      } else {
+        alert(data.message || "Gagal memproses aksi.");
+      }
+    } catch {
+      alert("Terjadi kesalahan jaringan.");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
   // Save Notes Only
   const handleSaveNotes = async () => {
     if (!selectedOrder) return;
@@ -674,6 +708,40 @@ export default function AdminTransaksiClient({
                   Rp {selectedOrder.totalAmount.toLocaleString("id-ID")}
                 </span>
               </div>
+
+              {/* Special Workflow Actions */}
+              <div className="pt-2 flex flex-wrap items-center gap-2">
+                {(selectedOrder.status === "FAILED" || selectedOrder.status === "PAID") && (
+                  <button
+                    type="button"
+                    onClick={() => handleOrderAction("retry")}
+                    disabled={updatingStatus}
+                    className="py-1.5 px-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg ink-border text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_#000000]"
+                  >
+                    🔁 Kirim Ulang ke Supplier (Retry)
+                  </button>
+                )}
+                {selectedOrder.status !== "SUCCESS" && (
+                  <button
+                    type="button"
+                    onClick={() => handleOrderAction("complete_manual")}
+                    disabled={updatingStatus}
+                    className="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg ink-border text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_#000000]"
+                  >
+                    📦 Selesai Manual (Gunakan Catatan sbg SN)
+                  </button>
+                )}
+                {selectedOrder.status !== "REFUNDED" && (
+                  <button
+                    type="button"
+                    onClick={() => handleOrderAction("refund")}
+                    disabled={updatingStatus}
+                    className="py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded-lg ink-border text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_#000000]"
+                  >
+                    💸 Catat Refund (REFUNDED)
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* 2. Status Actions (Change Status Buttons) */}
@@ -714,6 +782,40 @@ export default function AdminTransaksiClient({
                 >
                   ✕ Gagal
                 </button>
+              </div>
+
+              {/* Special Workflow Actions */}
+              <div className="pt-2 flex flex-wrap items-center gap-2">
+                {(selectedOrder.status === "FAILED" || selectedOrder.status === "PAID") && (
+                  <button
+                    type="button"
+                    onClick={() => handleOrderAction("retry")}
+                    disabled={updatingStatus}
+                    className="py-1.5 px-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg ink-border text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_#000000]"
+                  >
+                    🔁 Kirim Ulang ke Supplier (Retry)
+                  </button>
+                )}
+                {selectedOrder.status !== "SUCCESS" && (
+                  <button
+                    type="button"
+                    onClick={() => handleOrderAction("complete_manual")}
+                    disabled={updatingStatus}
+                    className="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg ink-border text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_#000000]"
+                  >
+                    📦 Selesai Manual (Gunakan Catatan sbg SN)
+                  </button>
+                )}
+                {selectedOrder.status !== "REFUNDED" && (
+                  <button
+                    type="button"
+                    onClick={() => handleOrderAction("refund")}
+                    disabled={updatingStatus}
+                    className="py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded-lg ink-border text-[10px] font-black uppercase shadow-[1.5px_1.5px_0px_#000000]"
+                  >
+                    💸 Catat Refund (REFUNDED)
+                  </button>
+                )}
               </div>
             </div>
 
