@@ -225,3 +225,14 @@ model WarrantyClaim {
   @@index([createdAt])
 }
 
+model MediaAsset {
+  id        String   @id @default(cuid())
+  fileName  String
+  mimeType  String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+

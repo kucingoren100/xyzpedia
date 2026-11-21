@@ -27,6 +27,7 @@ import {
   Clock,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
+import { compressImageClient } from "@/lib/imageCompressor";
 
 interface ProductItem {
   id: string;
@@ -392,8 +393,11 @@ export default function AdminProdukClient({
     file: File,
     target: "edit_thumbnail" | "edit_banner" | "new_product"
   ) => {
-    const formData = new FormData();
-    formData.append("file", file);
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      alert("Ukuran file gambar maksimal 8MB!");
+      return;
+    }
 
     if (target === "new_product") {
       setIsUploadingNewImage(true);
@@ -402,6 +406,11 @@ export default function AdminProdukClient({
     }
 
     try {
+      const maxDim = target === "edit_banner" ? 1600 : 800;
+      const optimizedFile = await compressImageClient(file, maxDim, maxDim, 0.88);
+      const formData = new FormData();
+      formData.append("file", optimizedFile);
+
       const res = await fetch("/api/admin/upload", {
         method: "POST",
         body: formData,

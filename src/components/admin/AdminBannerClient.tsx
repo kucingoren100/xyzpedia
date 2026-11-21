@@ -16,6 +16,7 @@ import {
   Camera,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
+import { compressImageClient } from "@/lib/imageCompressor";
 
 interface Banner {
   id: string;
@@ -72,16 +73,17 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
 
   const handleUploadBannerFile = async (file: File) => {
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Ukuran file gambar maksimal 5MB!");
+    if (file.size > 8 * 1024 * 1024) {
+      alert("Ukuran file gambar maksimal 8MB!");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     setIsUploading(true);
     try {
+      const optimizedFile = await compressImageClient(file, 1920, 1080, 0.88);
+      const formData = new FormData();
+      formData.append("file", optimizedFile);
+
       const res = await fetch("/api/admin/upload", {
         method: "POST",
         body: formData,
