@@ -14,6 +14,8 @@ import {
   Edit2,
   UploadCloud,
   Camera,
+  Info,
+  Sliders,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
 import { compressImageClient } from "@/lib/imageCompressor";
@@ -264,6 +266,35 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
           </button>
         </div>
 
+        {/* Format & Dimension Standard Guide Box */}
+        <div className="bg-amber-50 dark:bg-[#1f1d16] border-2 border-black dark:border-amber-500/50 rounded-2xl p-4 shadow-[3px_3px_0px_#000] flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div className="flex items-start sm:items-center gap-3">
+            <span className="p-2 bg-[#ffd731] text-black rounded-xl ink-border shrink-0 shadow-[1px_1px_0px_#000]">
+              <Sliders className="w-4 h-4 stroke-[2.5]" />
+            </span>
+            <div className="space-y-0.5">
+              <p className="font-black text-carbon dark:text-amber-200 uppercase tracking-wide flex items-center gap-2">
+                <span>Panduan Format & Ukuran Banner Promo</span>
+                <span className="px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 rounded text-[9px] font-bold">Penting</span>
+              </p>
+              <p className="text-[11px] text-gray-600 dark:text-gray-300">
+                Gunakan resolusi ideal <strong>1200 × 480 px</strong> (rasio <strong>2.5 : 1</strong> / Landscape) agar gambar tajam, pas, dan teks promo tidak terpotong di HP maupun desktop.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap shrink-0">
+            <span className="px-2.5 py-1 bg-white dark:bg-[#12121a] ink-border rounded-lg text-[10px] font-mono font-black text-carbon dark:text-white shadow-[1px_1px_0px_#000]">
+              📐 1200 × 480 px
+            </span>
+            <span className="px-2.5 py-1 bg-[#ffd731] text-black ink-border rounded-lg text-[10px] font-black shadow-[1px_1px_0px_#000]">
+              ⚖️ Rasio 2.5 : 1
+            </span>
+            <span className="px-2.5 py-1 bg-white dark:bg-[#12121a] ink-border rounded-lg text-[10px] font-black text-carbon dark:text-white shadow-[1px_1px_0px_#000]">
+              📁 JPG / PNG / WEBP
+            </span>
+          </div>
+        </div>
+
         {/* Banner Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {banners.map((b) => (
@@ -421,12 +452,29 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* 1. Upload & Select Image */}
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block">
                       Pilih Gambar Banner *:
                     </label>
-                    <span className="text-[10px] font-bold text-gray-400">JPG, PNG, WEBP (Maks. 5MB)</span>
+                    <span className="text-[10px] font-bold text-gray-400">JPG, PNG, WEBP (Maks. 8MB)</span>
+                  </div>
+
+                  {/* Format & Dimension Recommendation Guide */}
+                  <div className="p-3 bg-amber-50 dark:bg-[#201d14] ink-border rounded-xl space-y-1.5 shadow-[1px_1px_0px_#000]">
+                    <div className="flex items-center justify-between flex-wrap gap-1.5">
+                      <span className="text-[11px] font-black uppercase text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 stroke-[2.5]" />
+                        Ukuran Pas Gambar Banner:
+                      </span>
+                      <div className="flex items-center gap-1 font-mono text-[9px] font-black">
+                        <span className="px-1.5 py-0.5 bg-[#ffd731] text-black rounded ink-border">1200 × 480 px</span>
+                        <span className="px-1.5 py-0.5 bg-white dark:bg-black text-carbon dark:text-white rounded ink-border">Rasio 2.5 : 1</span>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-gray-600 dark:text-gray-300 leading-relaxed">
+                      Format ideal: <strong>1200 × 480 px</strong> (atau 1920 × 768 px). Taruh logo & tulisan promo di area tengah agar tidak terpotong saat dibuka di layar HP.
+                    </p>
                   </div>
 
                   {/* Hidden file input for native device upload */}
@@ -488,6 +536,9 @@ export default function AdminBannerClient({ initialBanners }: { initialBanners: 
                         alt="Preview"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
+                      <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-xs text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-md ink-border pointer-events-none">
+                        📐 Rasio Pas: 2.5 : 1
+                      </div>
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white font-black text-xs uppercase tracking-wider">
                         <Camera className="w-4 h-4" />
                         <span>Klik untuk Ganti Foto</span>

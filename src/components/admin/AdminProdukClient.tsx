@@ -1463,22 +1463,39 @@ export default function AdminProdukClient({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Thumbnail Management */}
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-gray-500 block">
-                        Gambar Thumbnail (Utama):
-                      </label>
+                    <div className="space-y-2.5 p-3 bg-white dark:bg-[#181824] rounded-xl ink-border">
+                      <div className="flex items-center justify-between flex-wrap gap-1">
+                        <label className="text-[10px] font-black uppercase text-carbon dark:text-white block">
+                          Gambar Thumbnail (Card Katalog):
+                        </label>
+                        <span className="text-[9px] font-black px-2 py-0.5 bg-[#ffd731] text-black rounded font-mono ink-border">
+                          1:1 Persegi (600 × 600 px)
+                        </span>
+                      </div>
+
+                      {/* Size Info Notice */}
+                      <div className="p-2 bg-amber-50 dark:bg-[#25221b] border border-amber-300 dark:border-amber-700/60 rounded-lg text-[10px] text-amber-900 dark:text-amber-200 flex items-start gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>Ukuran Pas:</strong> <strong>600 × 600 px</strong> (Rasio 1:1, format JPG/PNG/WEBP). Muncul sebagai ikon produk di grid Beranda & Katalog.
+                        </span>
+                      </div>
+
                       <div className="flex items-center gap-3">
-                        <img
-                          src={editProdThumbnail || "/images/games/mobile-legends.webp"}
-                          alt="Thumbnail Preview"
-                          className="w-16 h-16 rounded-xl object-cover ink-border bg-gray-100 shrink-0 shadow-[2px_2px_0px_#000000]"
-                        />
-                        <div className="space-y-1.5 flex-1">
+                        <div className="relative shrink-0">
+                          <img
+                            src={editProdThumbnail || "/images/games/mobile-legends.webp"}
+                            alt="Thumbnail Preview"
+                            className="w-16 h-16 rounded-xl object-cover ink-border bg-gray-100 shadow-[2px_2px_0px_#000000]"
+                          />
+                          <span className="absolute -bottom-1 -right-1 bg-black text-white text-[8px] font-mono px-1 rounded ink-border">1:1</span>
+                        </div>
+                        <div className="space-y-1.5 flex-1 min-w-0">
                           <input
                             type="file"
                             ref={fileInputRef}
                             className="hidden"
-                            accept="image/*"
+                            accept="image/png,image/jpeg,image/webp,image/gif"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (file) handleUploadImageFile(file, "edit_thumbnail");
@@ -1488,16 +1505,16 @@ export default function AdminProdukClient({
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={isUploadingImage}
-                            className="px-3 py-1.5 bg-[#ffd731] hover:bg-[#ffdf4a] text-black rounded-lg ink-border text-xs font-black uppercase flex items-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000]"
+                            className="w-full sm:w-auto px-3 py-1.5 bg-[#ffd731] hover:bg-[#ffdf4a] text-black rounded-lg ink-border text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000]"
                           >
                             <Upload className="w-3.5 h-3.5" />
-                            <span>{isUploadingImage ? "Mengupload..." : "Upload Gambar Baru"}</span>
+                            <span>{isUploadingImage ? "Mengupload..." : "Upload File Gambar (1:1)"}</span>
                           </button>
                           <input
                             type="text"
                             value={editProdThumbnail}
                             onChange={(e) => setEditProdThumbnail(e.target.value)}
-                            placeholder="/images/... atau https://..."
+                            placeholder="/images/... atau URL gambar"
                             className="w-full px-2.5 py-1.5 bg-white dark:bg-[#181824] rounded-lg ink-border text-xs font-bold text-carbon dark:text-white"
                           />
                         </div>
@@ -1505,22 +1522,39 @@ export default function AdminProdukClient({
                     </div>
 
                     {/* Banner Management */}
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-gray-500 block">
-                        Gambar Banner (Header Halaman):
-                      </label>
+                    <div className="space-y-2.5 p-3 bg-white dark:bg-[#181824] rounded-xl ink-border">
+                      <div className="flex items-center justify-between flex-wrap gap-1">
+                        <label className="text-[10px] font-black uppercase text-carbon dark:text-white block">
+                          Gambar Banner (Header Halaman):
+                        </label>
+                        <span className="text-[9px] font-black px-2 py-0.5 bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300 rounded font-mono ink-border">
+                          16:9 Landscape (1200 × 600 px)
+                        </span>
+                      </div>
+
+                      {/* Size Info Notice */}
+                      <div className="p-2 bg-blue-50 dark:bg-[#1a1f36] border border-blue-300 dark:border-blue-700/60 rounded-lg text-[10px] text-blue-900 dark:text-blue-200 flex items-start gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>Ukuran Pas:</strong> <strong>1200 × 600 px</strong> (Rasio 16:9 atau 2:1). Tampil sebagai banner lebar di atas halaman pemesanan produk.
+                        </span>
+                      </div>
+
                       <div className="flex items-center gap-3">
-                        <img
-                          src={editProdBanner || editProdThumbnail || "/images/games/mobile-legends.webp"}
-                          alt="Banner Preview"
-                          className="w-24 h-16 rounded-xl object-cover ink-border bg-gray-100 shrink-0 shadow-[2px_2px_0px_#000000]"
-                        />
-                        <div className="space-y-1.5 flex-1">
+                        <div className="relative shrink-0">
+                          <img
+                            src={editProdBanner || editProdThumbnail || "/images/games/mobile-legends.webp"}
+                            alt="Banner Preview"
+                            className="w-24 h-16 rounded-xl object-cover ink-border bg-gray-100 shadow-[2px_2px_0px_#000000]"
+                          />
+                          <span className="absolute -bottom-1 -right-1 bg-black text-white text-[8px] font-mono px-1 rounded ink-border">16:9</span>
+                        </div>
+                        <div className="space-y-1.5 flex-1 min-w-0">
                           <input
                             type="file"
                             ref={bannerInputRef}
                             className="hidden"
-                            accept="image/*"
+                            accept="image/png,image/jpeg,image/webp,image/gif"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (file) handleUploadImageFile(file, "edit_banner");
@@ -1530,16 +1564,16 @@ export default function AdminProdukClient({
                             type="button"
                             onClick={() => bannerInputRef.current?.click()}
                             disabled={isUploadingImage}
-                            className="px-3 py-1.5 bg-white dark:bg-[#20202e] text-carbon dark:text-white rounded-lg ink-border text-xs font-black uppercase flex items-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000]"
+                            className="w-full sm:w-auto px-3 py-1.5 bg-[#ffd731] hover:bg-[#ffdf4a] text-black rounded-lg ink-border text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000]"
                           >
                             <Upload className="w-3.5 h-3.5" />
-                            <span>Upload Banner</span>
+                            <span>Upload File Banner (16:9)</span>
                           </button>
                           <input
                             type="text"
                             value={editProdBanner}
                             onChange={(e) => setEditProdBanner(e.target.value)}
-                            placeholder="/images/... atau https://..."
+                            placeholder="/images/... atau URL gambar"
                             className="w-full px-2.5 py-1.5 bg-white dark:bg-[#181824] rounded-lg ink-border text-xs font-bold text-carbon dark:text-white"
                           />
                         </div>
@@ -1908,22 +1942,39 @@ export default function AdminProdukClient({
               </div>
 
               {/* Thumbnail Image Upload & Preview */}
-              <div className="p-3.5 bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border rounded-2xl space-y-2">
-                <label className="text-[10px] font-black uppercase text-gray-500 block">
-                  Gambar Thumbnail Produk:
-                </label>
+              <div className="p-3.5 bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border rounded-2xl space-y-2.5">
+                <div className="flex items-center justify-between flex-wrap gap-1">
+                  <label className="text-[10px] font-black uppercase text-carbon dark:text-white block">
+                    Gambar Thumbnail Produk:
+                  </label>
+                  <span className="text-[9px] font-black px-2 py-0.5 bg-[#ffd731] text-black rounded font-mono ink-border">
+                    1:1 Persegi (600 × 600 px)
+                  </span>
+                </div>
+
+                {/* Size guide notice */}
+                <div className="p-2 bg-amber-50 dark:bg-[#25221b] border border-amber-300 dark:border-amber-700/60 rounded-lg text-[10px] text-amber-900 dark:text-amber-200 flex items-start gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Ukuran Pas:</strong> Disarankan rasio <strong>1:1 (600 × 600 px)</strong>, format JPG/PNG/WEBP. Muncul pada kartu produk di Beranda dan Katalog.
+                  </span>
+                </div>
+
                 <div className="flex items-center gap-3">
-                  <img
-                    src={newProdThumbnail || "/images/games/mobile-legends.webp"}
-                    alt="Preview"
-                    className="w-14 h-14 rounded-xl object-cover ink-border bg-gray-100 shrink-0 shadow-[2px_2px_0px_#000000]"
-                  />
-                  <div className="space-y-1.5 flex-1">
+                  <div className="relative shrink-0">
+                    <img
+                      src={newProdThumbnail || "/images/games/mobile-legends.webp"}
+                      alt="Preview"
+                      className="w-14 h-14 rounded-xl object-cover ink-border bg-gray-100 shadow-[2px_2px_0px_#000000]"
+                    />
+                    <span className="absolute -bottom-1 -right-1 bg-black text-white text-[8px] font-mono px-1 rounded ink-border">1:1</span>
+                  </div>
+                  <div className="space-y-1.5 flex-1 min-w-0">
                     <input
                       type="file"
                       ref={newImageFileRef}
                       className="hidden"
-                      accept="image/*"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) handleUploadImageFile(file, "new_product");
@@ -1933,10 +1984,10 @@ export default function AdminProdukClient({
                       type="button"
                       onClick={() => newImageFileRef.current?.click()}
                       disabled={isUploadingNewImage}
-                      className="px-3 py-1.5 bg-[#ffd731] hover:bg-[#ffdf4a] text-black rounded-lg ink-border text-xs font-black uppercase flex items-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000]"
+                      className="w-full sm:w-auto px-3 py-1.5 bg-[#ffd731] hover:bg-[#ffdf4a] text-black rounded-lg ink-border text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000]"
                     >
                       <Upload className="w-3.5 h-3.5" />
-                      <span>{isUploadingNewImage ? "Mengupload..." : "Upload Gambar dari Komputer"}</span>
+                      <span>{isUploadingNewImage ? "Mengupload..." : "Upload Gambar (1:1)"}</span>
                     </button>
                     <input
                       type="text"
