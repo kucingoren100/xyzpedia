@@ -5,6 +5,14 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
+function calculateSellingPrice(supplierPrice: number, markupPercent = 8, minMargin = 500): number {
+  if (!supplierPrice || supplierPrice <= 0) return 0;
+  const percentMargin = (supplierPrice * markupPercent) / 100;
+  const safeMargin = Math.max(minMargin, percentMargin);
+  const rawPrice = supplierPrice + safeMargin;
+  return Math.ceil(rawPrice / 100) * 100;
+}
+
 const BRAND_TO_GAME_META: Record<
   string,
   {
@@ -334,9 +342,9 @@ export async function main() {
       const isAvailable = Boolean(it.buyer_product_status && it.seller_product_status);
       const stockStatus = isAvailable ? "AVAILABLE" : "OUT_OF_STOCK";
 
-      // Selling price is set directly to the price set in Digiflazz as requested
-      const retailPrice = digiPrice;
-      const originalPrice = Math.round(digiPrice * 1.12);
+      // Calculate selling price with profit margin
+      const retailPrice = calculateSellingPrice(digiPrice, 8, 500);
+      const originalPrice = Math.ceil((retailPrice * 1.15) / 100) * 100;
 
       await prisma.productItem.upsert({
         where: { sku },
