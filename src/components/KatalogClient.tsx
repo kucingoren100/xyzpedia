@@ -280,13 +280,8 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
           ],
           quickChips: [
             "Netflix",
-            "Spotify",
-            "YouTube",
-            "ChatGPT",
-            "Canva",
             "CapCut",
-            "HBO Max",
-            "Zoom",
+            "Viu",
           ],
           perks: ["🔒 Garansi 30 - 365 Hari", "⚡ Akses Kilat via Email", "🌟 Durasi Penuh Tanpa Jeda"],
         };

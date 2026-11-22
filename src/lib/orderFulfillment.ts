@@ -36,16 +36,16 @@ export async function startFulfillment(orderId: string) {
   const supplier = (order.productItem as any).supplier || "DIGIFLAZZ";
   const sku = order.productItem.sku;
 
-  // Check if Waroengkuy digital product
-  const isWaroengkuy =
-    supplier === "WAROENGKUY" ||
-    (order.product.categorySlug === "akun-premium" && !!process.env.WAROENGKUY_API_KEY && !sku.startsWith("CUSTOM-"));
-
-  // Check if manual category
+  // Akun premium is managed manually by admin (100% decoupled from Waroengkuy)
   const isManual =
     supplier === "MANUAL" ||
+    order.product.categorySlug === "akun-premium" ||
     sku.startsWith("CUSTOM-") ||
-    (!isWaroengkuy && order.product.categorySlug === "akun-premium");
+    sku.startsWith("SKU-") ||
+    sku.startsWith("MANUAL-");
+
+  // Check if Waroengkuy product (PPOB only, never akun-premium)
+  const isWaroengkuy = !isManual && supplier === "WAROENGKUY";
 
   if (isManual) {
     // Keep order in PAID / PROCESSING state waiting for admin manual handover
