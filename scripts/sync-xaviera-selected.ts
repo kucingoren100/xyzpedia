@@ -48,6 +48,26 @@ function calculateSellingPrice(supplierPrice: number): number {
   return Math.round((supplierPrice * 1.18) / 500) * 500;
 }
 
+/**
+ * Otomatis mendeteksi tipe pengiriman konsisten: hanya "INSTAN" atau "MANUAL"
+ */
+function detectDeliveryType(xavProduct: { name?: string; desc?: string; variants?: { name?: string }[] }): "INSTAN" | "MANUAL" {
+  const name = (xavProduct.name || "").toLowerCase();
+  const desc = (xavProduct.desc || "").toLowerCase();
+  const variantNames = (xavProduct.variants || []).map((v) => (v.name || "").toLowerCase()).join(" ");
+  const allText = `${name} ${desc} ${variantNames}`;
+
+  const isInvite = allText.includes("invite") || allText.includes("invit") || allText.includes("email buyer");
+  const isPO = allText.includes(" po") || allText.includes("preorder") || allText.includes("pre-order");
+  const isManual = allText.includes("manual") || allText.includes("jasa") || allText.includes("joki");
+
+  if (isInvite || isPO || isManual) {
+    return "MANUAL";
+  }
+
+  return "INSTAN";
+}
+
 async function fetchXavieraProducts(): Promise<XavieraProduct[]> {
   const res = await fetch(`${XAVIERA_BASE_URL}/products`, {
     headers: {
@@ -221,6 +241,12 @@ async function main() {
 
     console.log(`Found in Xaviera: "${xavProd.name}" (ID: ${xavProd.id})`);
 
+    // Deteksi otomatis label hanya: "INSTAN" atau "MANUAL"
+    const deliveryType = detectDeliveryType(xavProd);
+    const badgeColor = deliveryType === "MANUAL" ? "slate" : "electric-blue";
+    const developer = deliveryType === "MANUAL" ? "Manual" : "Instan";
+    console.log(`Auto-detected Delivery Type: [${deliveryType}]`);
+
     // 1. Cek atau Buat/Update Product di DB
     let dbProd = await prisma.product.findUnique({
       where: { slug: t.slug },
@@ -236,11 +262,11 @@ async function main() {
           slug: t.slug,
           tagline: t.tagline,
           description: t.description,
-          developer: t.developer,
+          developer,
           thumbnailUrl: t.thumbnailUrl,
           bannerUrl: t.bannerUrl || t.thumbnailUrl,
-          badgeText: t.badgeText,
-          badgeColor: t.badgeColor,
+          badgeText: deliveryType,
+          badgeColor,
           requiresServer: false,
           targetInputLabel: t.targetInputLabel,
           targetInputPlaceholder: t.targetInputPlaceholder,
@@ -260,10 +286,10 @@ async function main() {
           name: t.name,
           tagline: t.tagline,
           description: t.description,
-          developer: t.developer,
+          developer,
           thumbnailUrl: dbProd.thumbnailUrl || t.thumbnailUrl,
-          badgeText: t.badgeText,
-          badgeColor: t.badgeColor,
+          badgeText: deliveryType,
+          badgeColor,
           targetInputLabel: t.targetInputLabel,
           targetInputPlaceholder: t.targetInputPlaceholder,
           instructions: t.instructions,

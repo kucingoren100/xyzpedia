@@ -118,7 +118,8 @@ export default function ProductCard({ product, aspectRatio }: ProductCardProps) 
 
           {/* Developer / Badge Sticker (Specialized for Akun Premium: Instan vs Manual) */}
           {product.categorySlug === "akun-premium" ? (
-            (product.developer || "").toLowerCase() === "manual" ? (
+            (product.developer || "").toLowerCase() === "manual" ||
+            (product.badgeText || "").toUpperCase() === "MANUAL" ? (
               <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded text-[10px] font-black ink-border tracking-tight bg-[#4b5563] text-white flex items-center gap-1 shadow-[1px_1px_0px_#000000]">
                 <Clock className="w-2.5 h-2.5 shrink-0" />
                 <span>Manual</span>
