@@ -152,7 +152,6 @@ export async function syncDigiflazzToDatabase(options: SyncOptions = {}): Promis
           supplierPrice,
           ...(shouldUpdateSellingPrice ? { price: sellingPrice } : {}),
           stockStatus,
-          bonusText: item.desc ? String(item.desc).slice(0, 50) : null,
         },
         create: {
           productId: matchedProduct.id,
@@ -162,7 +161,7 @@ export async function syncDigiflazzToDatabase(options: SyncOptions = {}): Promis
           originalPrice: Math.round(sellingPrice * 1.15),
           supplierPrice,
           stockStatus,
-          bonusText: item.desc ? String(item.desc).slice(0, 50) : null,
+          bonusText: null,
           order: 99,
         },
       });

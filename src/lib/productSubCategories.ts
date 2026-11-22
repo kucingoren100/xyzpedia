@@ -11,10 +11,19 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
   // 1. Free Fire
   if (productSlug === "free-fire") {
     if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (
       name.includes("membership") ||
       name.includes("pass") ||
       name.includes("bp card") ||
-      name.includes("level up")
+      name.includes("level up") ||
+      name.includes("weekly") ||
+      name.includes("monthly")
     ) {
       return "Membership & Pass";
     }
@@ -27,12 +36,20 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
   // 2. Mobile Legends
   if (productSlug === "mobile-legends") {
     if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (
       name.includes("pass") ||
       name.includes("bundle") ||
       name.includes("twilight") ||
       name.includes("coupon") ||
       name.includes("wdp") ||
-      name.includes("weekly")
+      name.includes("weekly") ||
+      name.includes("starlight")
     ) {
       return "Pass & Bundle";
     }
@@ -44,6 +61,13 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
 
   // 3. Honor of Kings
   if (productSlug === "honor-of-kings") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
     if (name.includes("card") || name.includes("pass") || name.includes("weekly")) {
       return "Weekly Card";
     }
@@ -55,22 +79,49 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
 
   // 4. Arena Breakout
   if (productSlug === "arena-breakout") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (name.includes("pass") || name.includes("paket") || name.includes("bundle")) {
+      return "Pass & Paket";
+    }
     if (name.includes("bond")) {
       return "Bonds";
     }
-    return "Pass & Paket";
+    return "Bonds";
   }
 
   // 5. Delta Force Mobile
   if (productSlug === "delta-force-mobile") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (name.includes("pass") || name.includes("supply") || name.includes("supplies")) {
+      return "Supplies & Pass";
+    }
     if (name.includes("coin")) {
       return "Delta Coins";
     }
-    return "Supplies & Pass";
+    return "Delta Coins";
   }
 
   // 6. Magic Chess: Go Go
   if (productSlug === "magic-chess-go-go") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
     if (name.includes("card") || name.includes("pass") || name.includes("weekly")) {
       return "Weekly Card";
     }
@@ -82,31 +133,82 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
 
   // 7. PUBG Mobile
   if (productSlug === "pubg-mobile") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
     if (name.includes("global")) {
       return "PUBG Global";
     }
-    if (name.includes("pass") || name.includes("royale")) {
+    if (name.includes("pass") || name.includes("royale") || name.includes("rp")) {
       return "Royale Pass";
     }
     if (name.includes("uc")) {
-      return "PUBG Indo";
+      return "UC Reguler";
     }
-    return "PUBG Indo";
+    return "UC Reguler";
   }
 
   // 8. Blood Strike
   if (productSlug === "blood-strike") {
-    if (name.includes("pass")) return "Strike Pass";
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (name.includes("pass") || name.includes("strike pass")) return "Strike Pass";
     return "Gold";
   }
 
   // 9. Call of Duty Mobile
   if (productSlug === "call-of-duty-mobile") {
-    if (name.includes("pass")) return "Battle Pass";
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (name.includes("pass") || name.includes("battle pass") || name.includes("bp")) return "Battle Pass";
     return "CP";
   }
 
-  // 10. Vidio Voucher
+  // 10. Point Blank Zepetto
+  if (productSlug === "point-blank") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (name.includes("pass") || name.includes("ticket") || name.includes("item")) {
+      return "Pass & Item";
+    }
+    return "PB Cash";
+  }
+
+  // 11. Arena of Valor
+  if (productSlug === "arena-of-valor") {
+    if (
+      name.includes("first recharge") ||
+      name.includes("first charge") ||
+      name.includes("first")
+    ) {
+      return "First Recharge";
+    }
+    if (name.includes("pass") || name.includes("codex")) {
+      return "Pass & Codex";
+    }
+    return "Vouchers";
+  }
+
+  // 12. Vidio Voucher
   if (productSlug === "vidio-voucher") {
     if (name.includes("diamond")) return "Diamond";
     if (name.includes("ultimate")) return "Ultimate";
@@ -114,7 +216,7 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
     return "Reguler";
   }
 
-  // 11. Pulsa Operators (Telkomsel, Indosat, XL, Axis, Tri, Smartfren, by.U)
+  // 13. Pulsa Operators (Telkomsel, Indosat, XL, Axis, Tri, Smartfren, by.U)
   if (productSlug.startsWith("pulsa-")) {
     if (name.includes("data") || name.includes("kuota") || name.includes("gb")) {
       return "Paket Data";
@@ -125,7 +227,7 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
     return "Pulsa Reguler";
   }
 
-  // 12. E-Wallet Multi-Types (GoPay, GrabPay, LinkAja, DANA, OVO, ShopeePay)
+  // 14. E-Wallet Multi-Types (GoPay, GrabPay, LinkAja, DANA, OVO, ShopeePay)
   if (productSlug.includes("gopay")) {
     if (name.includes("customer")) return "GoPay Customer";
     if (name.includes("pengemudi") || name.includes("driver")) return "GoPay Driver";
@@ -140,20 +242,33 @@ export function getItemSubCategory(itemName: string, productSlug: string): strin
     return "LinkAja Reguler";
   }
 
-  // 13. Akun Premium multi-device or multi-duration
-  if (name.includes("sendiri") || name.includes("private") || name.includes("invite")) {
+  // 15. Akun Premium multi-device or multi-duration
+  if (name.includes("semiprivat") || name.includes("semiprivate")) {
+    return "Akun Semi-Privat";
+  }
+  if (name.includes("sendiri") || name.includes("private") || name.includes("privat") || name.includes("invite")) {
     return "Akun Private";
   }
-  if (name.includes("sharing") || name.includes("toko") || name.includes("1p1u")) {
+  if (name.includes("sharing") || name.includes("toko") || name.includes("1p1u") || name.includes("1u1p") || name.includes("1p2u") || name.includes("profil")) {
     return "Akun Sharing";
   }
 
-  // 14. Generic Fallback
+  // 16. Generic Fallback
+  if (
+    name.includes("first recharge") ||
+    name.includes("first charge") ||
+    name.includes("first topup") ||
+    name.includes("first purchase")
+  ) {
+    return "First Recharge";
+  }
   if (
     name.includes("membership") ||
     name.includes("pass") ||
     name.includes("bundle") ||
-    name.includes("weekly card")
+    name.includes("weekly card") ||
+    name.includes("battle pass") ||
+    name.includes("royale pass")
   ) {
     return "Membership & Pass";
   }
@@ -199,11 +314,16 @@ export function getProductSubCategories(items: { name: string }[], productSlug: 
     "Bonds",
     "Delta Coins",
     "PUBG Indo",
+    "UC Reguler",
     "PUBG Global",
     "Gold",
     "CP",
+    "PB Cash",
     "Cash",
+    "Vouchers",
+    "First Recharge",
     "Akun Sharing",
+    "Akun Semi-Privat",
     "Akun Private",
     "Platinum",
     "Ultimate",
@@ -212,6 +332,8 @@ export function getProductSubCategories(items: { name: string }[], productSlug: 
     "Weekly Card",
     "Supplies & Pass",
     "Pass & Paket",
+    "Pass & Codex",
+    "Pass & Item",
     "Royale Pass",
     "Strike Pass",
     "Battle Pass",
