@@ -85,6 +85,22 @@ async function fetchXavieraProducts(): Promise<XavieraProduct[]> {
   return json.products || json.data || json || [];
 }
 
+interface TargetConfig {
+  targetKey: string;
+  xavieraId?: string;
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  thumbnailUrl: string;
+  bannerUrl?: string | null;
+  targetInputLabel: string;
+  targetInputPlaceholder: string;
+  instructions: string;
+  isPopular?: boolean;
+  forcedDeliveryType?: "INSTAN" | "MANUAL";
+}
+
 async function main() {
   console.log("=== SYNCHRONIZING SELECTED XAVIERA PREMIUM PRODUCTS ===");
 
@@ -100,18 +116,16 @@ async function main() {
   const xavieraProducts = await fetchXavieraProducts();
   console.log(`Fetched ${xavieraProducts.length} products from Xaviera.`);
 
-  const targets = [
+  const targets: TargetConfig[] = [
+    // --- BATCH 1 ---
     {
       targetKey: "iqiyi",
       name: "iQiyi Premium",
       slug: "iqiyi",
       tagline: "Streaming drama Asia, anime & film box office tanpa jeda iklan",
       description: "Langganan iQiyi VIP resmi untuk menonton drama Korea, drama China, anime & film Asia kualitas full HD.",
-      developer: "iQIYI International",
       thumbnailUrl: "/images/premium/iqiyi.svg",
       bannerUrl: "/images/premium/iqiyi.svg",
-      badgeText: "POPULER",
-      badgeColor: "mint-pop",
       targetInputLabel: "Email / No. HP Akun",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
       instructions: "Masukkan alamat email atau nomor HP aktif Anda untuk konfirmasi & aktivasi akun.",
@@ -123,11 +137,8 @@ async function main() {
       slug: "loklok",
       tagline: "Aplikasi streaming film blockbuster & series HD terlengkap",
       description: "Langganan Loklok VIP untuk menonton film bioskop terbaru, drama, dan anime bebas iklan.",
-      developer: "Loklok Team",
       thumbnailUrl: "/images/premium/loklok.svg",
       bannerUrl: "/images/premium/loklok.svg",
-      badgeText: "STREAMING",
-      badgeColor: "electric-blue",
       targetInputLabel: "Email / No. WhatsApp Akun",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
       instructions: "Masukkan email atau nomor WhatsApp untuk pengiriman detail akun VIP.",
@@ -139,11 +150,8 @@ async function main() {
       slug: "viu",
       tagline: "Nonton drakor, anime & film Asia favorit tanpa jeda iklan",
       description: "Langganan Viu Premium resmi kualitas Full HD, download offline bebas sepuasnya.",
-      developer: "PCCW Media",
-      thumbnailUrl: "/images/premium/01_netflix_premium.webp", // Fallback, we will retain existing banner
+      thumbnailUrl: "/images/premium/01_netflix_premium.webp",
       bannerUrl: null,
-      badgeText: "TERLARIS",
-      badgeColor: "sunflower",
       targetInputLabel: "Email / No. HP Akun Viu",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
       instructions: "Masukkan email atau nomor HP untuk pengiriman detail akun Viu Premium.",
@@ -155,11 +163,8 @@ async function main() {
       slug: "youtube-premium",
       tagline: "Nonton video & YouTube Music tanpa iklan, background play & download",
       description: "Upgrade akun YouTube ke Premium resmi untuk streaming video dan musik tanpa gangguan iklan.",
-      developer: "Google LLC",
       thumbnailUrl: "/images/premium/youtube-premium.webp",
       bannerUrl: "/images/premium/youtube-premium.webp",
-      badgeText: "NO ADS",
-      badgeColor: "ember",
       targetInputLabel: "Email Akun Google / YouTube",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com",
       instructions: "Masukkan email Google/Gmail akun YouTube Anda. Detail akses dikirimkan ke email.",
@@ -171,11 +176,8 @@ async function main() {
       slug: "crunchyroll",
       tagline: "Streaming anime simulcast terlengkap subtitle Indonesia",
       description: "Langganan Crunchyroll Mega Fan resmi untuk menonton anime terbaru hanya 1 jam setelah tayang di Jepang.",
-      developer: "Crunchyroll, LLC",
       thumbnailUrl: "/images/premium/crunchyroll.svg",
       bannerUrl: "/images/premium/crunchyroll.svg",
-      badgeText: "ANIME",
-      badgeColor: "ember",
       targetInputLabel: "Email Akun Crunchyroll",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com",
       instructions: "Masukkan email Anda untuk pengiriman akun Crunchyroll Premium.",
@@ -187,11 +189,8 @@ async function main() {
       slug: "canva-pro",
       tagline: "Akses jutaan template desain, AI magic tool & background remover",
       description: "Upgrade akun Canva ke Pro resmi untuk desain bebas tanpa batas watermarking dan akses 100M+ aset grafis.",
-      developer: "Canva Pty Ltd",
       thumbnailUrl: "/images/premium/canva-pro.webp",
       bannerUrl: "/images/premium/canva-pro.webp",
-      badgeText: "PRO DESAIN",
-      badgeColor: "mint-pop",
       targetInputLabel: "Email Akun Canva",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com",
       instructions: "Masukkan email Canva Anda. Link invite / akses tim Pro langsung dikirimkan ke email.",
@@ -203,15 +202,134 @@ async function main() {
       slug: "capcut-pro",
       tagline: "Edit video tanpa watermark, akses fitur Pro & cloud storage",
       description: "Langganan CapCut Pro resmi untuk creator TikTok, Instagram Reels, dan YouTube Shorts.",
-      developer: "Bytedance Pte. Ltd.",
       thumbnailUrl: "/images/premium/capcut-pro.webp",
-      bannerUrl: null, // Keep existing banner if exists
-      badgeText: "CREATOR",
-      badgeColor: "ember",
+      bannerUrl: null,
       targetInputLabel: "Email Akun CapCut",
       targetInputPlaceholder: "Contoh: akunmu@gmail.com",
       instructions: "Masukkan email CapCut Anda untuk pengiriman akses akun Pro.",
       isPopular: true,
+    },
+
+    // --- BATCH 2 ---
+    {
+      targetKey: "spotify",
+      xavieraId: "p_b05ff4eb84a45786",
+      name: "Spotify Premium",
+      slug: "spotify",
+      tagline: "Streaming musik, podcast & playlist favorit bebas iklan tanpa batas",
+      description: "Langganan Spotify Premium resmi untuk mendengarkan lagu bebas iklan, download offline, dan unlimited skip.",
+      thumbnailUrl: "/images/premium/spotify-premium.webp",
+      bannerUrl: "/images/premium/spotify-premium.webp",
+      targetInputLabel: "Email Akun Spotify",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com",
+      instructions: "Masukkan email akun Spotify Anda. Kredensial / akses akun dikirimkan secara instan.",
+      isPopular: true,
+      forcedDeliveryType: "INSTAN",
+    },
+    {
+      targetKey: "apple-music",
+      xavieraId: "p_dd267622235306b9",
+      name: "Apple Music",
+      slug: "apple-music",
+      tagline: "Streaming 100 juta lagu dengan Spatial Audio & Lossless Audio",
+      description: "Langganan Apple Music resmi kualitas Dolby Atmos & Lossless Audio tanpa iklan.",
+      thumbnailUrl: "/images/premium/apple-music.webp",
+      bannerUrl: "/images/premium/apple-music.webp",
+      targetInputLabel: "Apple ID / Email Akun Apple",
+      targetInputPlaceholder: "Contoh: akunmu@icloud.com / akunmu@gmail.com",
+      instructions: "Masukkan Apple ID atau email aktif Anda untuk aktivasi langganan Apple Music.",
+      isPopular: false,
+      forcedDeliveryType: "INSTAN",
+    },
+    {
+      targetKey: "meitu",
+      xavieraId: "p_e20162bbc8b0ca52",
+      name: "Meitu VIP",
+      slug: "meitu",
+      tagline: "Aplikasi edit foto & video AI estetis no watermark kualitas HD",
+      description: "Langganan Meitu VIP resmi untuk filter premium, AI retouch, dan fitur editing profesional tanpa watermark.",
+      thumbnailUrl: "/images/premium/meitu.webp",
+      bannerUrl: null,
+      targetInputLabel: "Email / No. HP Akun Meitu",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
+      instructions: "Masukkan email atau nomor HP untuk pengiriman detail akun Meitu VIP.",
+      isPopular: false,
+      forcedDeliveryType: "INSTAN",
+    },
+    {
+      targetKey: "zoom-pro",
+      xavieraId: "p_7b698b79e3ff3b3e",
+      name: "Zoom Pro",
+      slug: "zoom-pro",
+      tagline: "Meeting online tanpa batas waktu 40 menit hingga 100 partisipan",
+      description: "Upgrade akun Zoom ke lisensi Pro resmi untuk durasi meeting tak terbatas, cloud recording, dan fitur co-host.",
+      thumbnailUrl: "/images/premium/zoom-pro.svg",
+      bannerUrl: "/images/premium/zoom-pro.svg",
+      targetInputLabel: "Email Akun Zoom",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com",
+      instructions: "Masukkan email akun Zoom Anda untuk pengiriman lisensi/kredensial Zoom Pro.",
+      isPopular: false,
+      forcedDeliveryType: "INSTAN",
+    },
+    {
+      targetKey: "alight-motion",
+      xavieraId: "p_b50d50870cc4a64c",
+      name: "Alight Motion Pro",
+      slug: "alight-motion",
+      tagline: "Aplikasi motion graphics, visual effects & video compositing profesional",
+      description: "Langganan Alight Motion Pro resmi tanpa watermark, akses semua preset, efek premium & export XML.",
+      thumbnailUrl: "/images/premium/alight-motion.webp",
+      bannerUrl: "/images/premium/alight-motion.webp",
+      targetInputLabel: "Email Akun Google / Alight Motion",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com",
+      instructions: "Masukkan email akun Anda. Untuk varian Email Buyer, akun akan di-invite/diproses langsung ke email Anda.",
+      isPopular: false,
+      forcedDeliveryType: "MANUAL",
+    },
+    {
+      targetKey: "bstation",
+      xavieraId: "p_21e5b1a23b6f8fa5",
+      name: "Bstation (Bilibili) VIP",
+      slug: "bstation",
+      tagline: "Platform anime nomor 1 di Asia Tenggara dengan subtitle resmi",
+      description: "Langganan Bstation Premium / Bilibili VIP untuk menonton anime simulcast kualitas 4K & bebas iklan.",
+      thumbnailUrl: "/images/premium/bstation.svg",
+      bannerUrl: "/images/premium/bstation.svg",
+      targetInputLabel: "Email / No. HP Akun Bstation",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
+      instructions: "Masukkan email atau nomor HP untuk pengiriman detail akun Bstation VIP.",
+      isPopular: false,
+      forcedDeliveryType: "INSTAN",
+    },
+    {
+      targetKey: "wink",
+      xavieraId: "p_a893640a2707c2e8",
+      name: "Wink Premium",
+      slug: "wink-premium",
+      tagline: "AI video enhancement, 4K restoration & portrait beauty tool",
+      description: "Langganan Wink VIP resmi untuk perbaikan kualitas video hingga resolusi 4K dan fitur editing AI canggih.",
+      thumbnailUrl: "/images/premium/meitu.webp", // Fallback, will keep DB banner
+      bannerUrl: null,
+      targetInputLabel: "Email / No. HP Akun Wink",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
+      instructions: "Masukkan email atau nomor HP untuk pengiriman detail akun Wink Premium.",
+      isPopular: false,
+      forcedDeliveryType: "INSTAN",
+    },
+    {
+      targetKey: "wetv",
+      xavieraId: "p_79025547fd58dd84",
+      name: "WeTV VIP",
+      slug: "wetv",
+      tagline: "Nonton drama Asia, anime & variety show terpopuler tanpa iklan",
+      description: "Langganan WeTV VIP resmi untuk akses tayangan episode fast-track, kualitas Full HD/Blu-ray bebas iklan.",
+      thumbnailUrl: "/images/premium/01_netflix_premium.webp", // Fallback, will keep DB banner
+      bannerUrl: null,
+      targetInputLabel: "Email / No. HP Akun WeTV",
+      targetInputPlaceholder: "Contoh: akunmu@gmail.com / 08123456789",
+      instructions: "Masukkan email atau nomor HP untuk pengiriman detail akun WeTV VIP.",
+      isPopular: false,
+      forcedDeliveryType: "INSTAN",
     },
   ];
 
@@ -219,20 +337,26 @@ async function main() {
     console.log(`\n------------------------------------------------------------`);
     console.log(`Processing Target: ${t.name} (slug: ${t.slug})`);
 
-    // Cari produk di Xaviera
-    const xavProd = xavieraProducts.find((p) => {
-      const pName = (p.name || "").toLowerCase();
-      if (t.targetKey === "canva") {
-        return pName === "canva premium";
-      }
-      if (t.targetKey === "capcut") {
-        return pName === "capcut";
-      }
-      if (t.targetKey === "youtube") {
-        return pName === "youtube";
-      }
-      return pName.includes(t.targetKey);
-    });
+    // Cari produk di Xaviera berdasarkan xavieraId atau targetKey
+    let xavProd: XavieraProduct | undefined;
+    if (t.xavieraId) {
+      xavProd = xavieraProducts.find((p) => p.id === t.xavieraId);
+    }
+    if (!xavProd) {
+      xavProd = xavieraProducts.find((p) => {
+        const pName = (p.name || "").toLowerCase();
+        if (t.targetKey === "canva") {
+          return pName === "canva premium";
+        }
+        if (t.targetKey === "capcut") {
+          return pName === "capcut";
+        }
+        if (t.targetKey === "youtube") {
+          return pName === "youtube";
+        }
+        return pName.includes(t.targetKey);
+      });
+    }
 
     if (!xavProd) {
       console.warn(`[WARNING] Product ${t.targetKey} not found in Xaviera!`);
@@ -241,11 +365,11 @@ async function main() {
 
     console.log(`Found in Xaviera: "${xavProd.name}" (ID: ${xavProd.id})`);
 
-    // Deteksi otomatis label hanya: "INSTAN" atau "MANUAL"
-    const deliveryType = detectDeliveryType(xavProd);
+    // Deteksi otomatis label hanya: "INSTAN" atau "MANUAL" (atau gunakan override jika diset)
+    const deliveryType = t.forcedDeliveryType || detectDeliveryType(xavProd);
     const badgeColor = deliveryType === "MANUAL" ? "slate" : "electric-blue";
     const developer = deliveryType === "MANUAL" ? "Manual" : "Instan";
-    console.log(`Auto-detected Delivery Type: [${deliveryType}]`);
+    console.log(`Delivery Type: [${deliveryType}]`);
 
     // 1. Cek atau Buat/Update Product di DB
     let dbProd = await prisma.product.findUnique({
@@ -271,7 +395,7 @@ async function main() {
           targetInputLabel: t.targetInputLabel,
           targetInputPlaceholder: t.targetInputPlaceholder,
           instructions: t.instructions,
-          isPopular: t.isPopular,
+          isPopular: t.isPopular || false,
           isActive: true,
         },
         include: { items: true },
@@ -298,15 +422,24 @@ async function main() {
       });
     }
 
-    // 2. Bersihkan item manual lama jika ada instruksi ganti
-    if (t.slug === "viu" || t.slug === "capcut-pro" || dbProd.items.some((i) => i.supplier === "MANUAL" || i.supplier === "WAROENGKUY")) {
+    // 2. Bersihkan item manual/lama jika ada (misal viu, capcut-pro, meitu, wink-premium, wetv)
+    const hasOldItems =
+      t.slug === "viu" ||
+      t.slug === "capcut-pro" ||
+      t.slug === "meitu" ||
+      t.slug === "wink-premium" ||
+      t.slug === "wetv" ||
+      dbProd.items.some((i) => i.supplier === "MANUAL" || i.supplier === "WAROENGKUY");
+
+    if (hasOldItems) {
       const deleted = await prisma.productItem.deleteMany({
         where: {
           productId: dbProd.id,
           orders: { none: {} }, // Hapus yang belum memiliki relasi order
+          supplier: { not: "XAVIERA" },
         },
       });
-      console.log(`Deleted ${deleted.count} old unlinked items for ${t.name}`);
+      console.log(`Deleted ${deleted.count} old non-Xaviera items for ${t.name}`);
     }
 
     // 3. Masukkan varian-varian dari Xaviera Store
