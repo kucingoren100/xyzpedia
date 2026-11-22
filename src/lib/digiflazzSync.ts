@@ -14,9 +14,13 @@ const BRAND_TO_PRODUCT_SLUG: Record<string, string> = {
   "HONOR OF KINGS": "honor-of-kings",
   "ARENA OF VALOR": "arena-of-valor",
   "CALL OF DUTY MOBILE": "call-of-duty-mobile",
+  "CALL OF DUTY": "call-of-duty-mobile",
   "POINT BLANK": "point-blank",
   "BLOOD STRIKE": "blood-strike",
   "DELTA FORCE": "delta-force-mobile",
+  "ARENA BREAKOUT": "arena-breakout",
+  "GENSHIN IMPACT": "genshin-impact",
+  "VALORANT": "valorant",
 
   // Pulsa Operators
   "TELKOMSEL": "pulsa-telkomsel",
@@ -66,6 +70,7 @@ export function calculateSellingPrice(supplierPrice: number, markupPercent = 8, 
 export interface SyncOptions {
   markupPercent?: number;
   updateSellingPrice?: boolean;
+  useDirectPrice?: boolean;
 }
 
 export interface SyncResult {
@@ -131,7 +136,9 @@ export async function syncDigiflazzToDatabase(options: SyncOptions = {}): Promis
     }
 
     const supplierPrice = Math.round(Number(item.price) || 0);
-    const sellingPrice = calculateSellingPrice(supplierPrice, markup);
+    const sellingPrice = options.useDirectPrice
+      ? supplierPrice
+      : calculateSellingPrice(supplierPrice, markup);
     const isAvailable = Boolean(item.buyer_product_status && item.seller_product_status);
     const stockStatus = isAvailable ? "AVAILABLE" : "OUT_OF_STOCK";
 
