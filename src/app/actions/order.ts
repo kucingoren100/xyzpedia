@@ -321,7 +321,13 @@ export async function checkPaymentStatus(invoiceNumber: string) {
 
       if (isPaid) {
         // Enforce markOrderPaid atomic flow (never transition directly to SUCCESS from here)
-        const paidAmount = Number(data?.amount || order.totalAmount);
+        const paidAmount = Number(
+          data?.total_amount ||
+          data?.totalAmount ||
+          data?.paid_amount ||
+          data?.amount ||
+          order.totalAmount
+        );
         const { markOrderPaid } = await import("@/lib/orderStatus");
         const paidRes = await markOrderPaid(invoiceNumber, "QiosPay checkStatus", paidAmount);
 

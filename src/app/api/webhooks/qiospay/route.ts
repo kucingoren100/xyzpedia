@@ -67,7 +67,15 @@ export async function POST(req: NextRequest) {
     const status = String(rawStatus).toUpperCase();
 
     if (status === "PAID" || status === "INVOICE.PAID" || status === "SUCCESS") {
-      const webhookAmount = Number(eventData.amount || payload.amount || 0);
+      const webhookAmount = Number(
+        eventData.total_amount ??
+        eventData.totalAmount ??
+        eventData.paid_amount ??
+        eventData.amount ??
+        payload.total_amount ??
+        payload.amount ??
+        0
+      );
       if (!webhookAmount || webhookAmount <= 0) {
         return NextResponse.json(
           { error: "Missing or invalid amount in payload" },

@@ -53,8 +53,13 @@ export async function markOrderPaid(
     return { success: false, error: "Order not found" };
   }
 
-  // Strict exact amount comparison
-  if (paidAmount !== order.totalAmount) {
+  // Strict exact amount comparison (supports both full total amount and base price)
+  const matchesTotal = paidAmount === order.totalAmount;
+  const matchesBase =
+    paidAmount === order.basePrice ||
+    paidAmount === order.totalAmount - order.uniqueCode;
+
+  if (!matchesTotal && !matchesBase) {
     return {
       success: false,
       error: `Nominal tidak sesuai: dibayar Rp ${paidAmount}, tagihan Rp ${order.totalAmount}`,
