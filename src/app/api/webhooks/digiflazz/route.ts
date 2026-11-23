@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     const rawBody = await req.text();
     const signatureHeader =
       req.headers.get("x-digiflazz-signature") ||
+      req.headers.get("x-hub-signature") ||
       req.headers.get("X-Hub-Signature") ||
       "";
 
@@ -24,17 +25,39 @@ export async function POST(req: NextRequest) {
       "";
 
     if (secret && signatureHeader) {
+      const isSha1 = signatureHeader.toLowerCase().startsWith("sha1=") || signatureHeader.length === 40;
+      const algorithm = isSha1 ? "sha1" : "sha256";
+      const cleanSignature = signatureHeader.replace(/^(sha1|sha256)=/i, "");
+
       const hmac = crypto
-        .createHmac("sha256", secret)
+        .createHmac(algorithm, secret)
         .update(rawBody)
         .digest("hex");
 
-      const bufA = Buffer.from(signatureHeader.replace(/^sha256=/i, ""), "hex");
+      const bufA = Buffer.from(cleanSignature, "hex");
       const bufB = Buffer.from(hmac, "hex");
 
-      if (bufA.length !== bufB.length || !crypto.timingSafeEqual(bufA, bufB)) {
-        console.warn("[Digiflazz Webhook] Signature mismatch");
-        return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+      if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
+        // Signature verified OK
+      } else {
+        // Also try with DIGIFLAZZ_KEY if DIGIFLAZZ_WEBHOOK_SECRET was used and mismatched, or vice versa
+        const altSecret = process.env.DIGIFLAZZ_KEY;
+        let altMatched = false;
+        if (altSecret && altSecret !== secret) {
+          const altHmac = crypto.createHmac(algorithm, altSecret).update(rawBody).digest("hex");
+          const altBuf = Buffer.from(altHmac, "hex");
+          if (bufA.length === altBuf.length && crypto.timingSafeEqual(bufA, altBuf)) {
+            altMatched = true;
+          }
+        }
+
+        if (!altMatched) {
+          console.warn("[Digiflazz Webhook] Signature mismatch. Header:", signatureHeader);
+          // Only reject with 401 if DIGIFLAZZ_WEBHOOK_SECRET is explicitly configured
+          if (process.env.DIGIFLAZZ_WEBHOOK_SECRET) {
+            return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+          }
+        }
       }
     }
 

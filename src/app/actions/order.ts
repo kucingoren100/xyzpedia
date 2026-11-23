@@ -243,6 +243,21 @@ export async function getOrderDetails(invoiceNumber: string) {
 
     if (!order) return null;
 
+    // Auto-reconcile if order is currently PROCESSING (waiting supplier completion)
+    if (order.status === "PROCESSING") {
+      try {
+        const { reconcileSupplierOrder } = await import("@/lib/orderFulfillment");
+        const reconciled = await reconcileSupplierOrder(order.invoiceNumber);
+        if (reconciled) {
+          order.status = reconciled.status;
+          (order as any).sn = reconciled.sn;
+          (order as any).supplierStatus = reconciled.supplierStatus;
+        }
+      } catch (recErr) {
+        console.warn("[getOrderDetails] Reconcile error:", recErr);
+      }
+    }
+
     // Mask sensitive fields and remove raw notes or unused qris string
     return {
       id: order.id,
@@ -286,7 +301,21 @@ export async function checkPaymentStatus(invoiceNumber: string) {
       return { success: false, error: "Pesanan tidak ditemukan." };
     }
 
-    if (order.status === "SUCCESS" || order.status === "PAID" || order.status === "PROCESSING") {
+    if (order.status === "SUCCESS") {
+      return { success: true, isPaid: true, order };
+    }
+
+    if (order.status === "PROCESSING" || order.status === "PAID") {
+      // Reconcile status with supplier if still processing
+      try {
+        const { reconcileSupplierOrder } = await import("@/lib/orderFulfillment");
+        const reconciled = await reconcileSupplierOrder(order.invoiceNumber);
+        if (reconciled) {
+          return { success: true, isPaid: true, order: reconciled };
+        }
+      } catch (recErr) {
+        console.warn("[checkPaymentStatus] Reconcile error:", recErr);
+      }
       return { success: true, isPaid: true, order };
     }
 

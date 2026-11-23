@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import { createDigiflazzTransaction } from "./digiflazz";
+import { createDigiflazzTransaction, checkDigiflazzTransactionStatus } from "./digiflazz";
 import { XavieraClient } from "./xaviera";
 import { OrderStatus, canTransition } from "./orderStatus";
 import { dispatchNotificationEvent } from "./notifications";
@@ -359,4 +359,81 @@ async function dispatchFailed(order: any, reason: string) {
  */
 export async function fulfillOrderWithSupplier(order: { id: string }) {
   return await startFulfillment(order.id);
+}
+
+/**
+ * Auto-reconcile pending/processing order status from supplier (e.g. Digiflazz)
+ */
+export async function reconcileSupplierOrder(orderIdOrInvoice: string) {
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        OR: [
+          { id: orderIdOrInvoice },
+          { invoiceNumber: orderIdOrInvoice },
+        ],
+      },
+      include: { product: true, productItem: true },
+    });
+
+    if (!order) return null;
+
+    // Only reconcile if order is currently PROCESSING or PAID (pending supplier completion)
+    if (order.status !== OrderStatus.PROCESSING && order.status !== OrderStatus.PAID) {
+      return order;
+    }
+
+    const supplier = (order.productItem as any)?.supplier || "DIGIFLAZZ";
+    const sku = order.productItem.sku;
+    const isXaviera = supplier === "XAVIERA" || sku.startsWith("XAV-");
+    const isDigiflazz = !isXaviera && (supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY);
+
+    if (isDigiflazz) {
+      const target = order.targetZoneId
+        ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
+        : order.targetUserId.trim();
+
+      const digiRes = await checkDigiflazzTransactionStatus(
+        order.invoiceNumber,
+        sku,
+        target
+      );
+
+      if (digiRes.status === "SUCCESS") {
+        const updated = await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: OrderStatus.SUCCESS,
+            fulfilledAt: new Date(),
+            sn: digiRes.sn || "Injeksi berhasil",
+            supplierStatus: "SUCCESS",
+            notes: `Digiflazz Ref: ${digiRes.refId} | Status: Sukses | SN: ${digiRes.sn || "Selesai"}`,
+          },
+          include: { product: true, productItem: true },
+        });
+
+        await dispatchSuccess(updated, digiRes.sn, digiRes.refId);
+        return updated;
+      } else if (digiRes.status === "FAILED") {
+        const updated = await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: OrderStatus.FAILED,
+            supplierStatus: "FAILED",
+            fulfillmentError: digiRes.message || "Supplier transaction failed",
+            notes: `Digiflazz Ref: ${digiRes.refId} | Status: Gagal (${digiRes.message || "-"})`,
+          },
+          include: { product: true, productItem: true },
+        });
+
+        await dispatchFailed(updated, digiRes.message || "Digiflazz failed");
+        return updated;
+      }
+    }
+
+    return order;
+  } catch (error) {
+    console.error("[reconcileSupplierOrder] Error:", error);
+    return null;
+  }
 }

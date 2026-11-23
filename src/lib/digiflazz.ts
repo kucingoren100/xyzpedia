@@ -207,3 +207,66 @@ export async function createDigiflazzTransaction(
     raw: data,
   };
 }
+
+/**
+ * Cek Status Transaksi Digiflazz (Inquiry Status)
+ * Menggunakan endpoint /v1/transaction dengan ref_id yang sama
+ */
+export async function checkDigiflazzTransactionStatus(
+  refId: string,
+  buyerSkuCode: string,
+  customerNo: string
+): Promise<DigiflazzTransactionResponse> {
+  const { username, apiKey } = getConfig();
+  const sign = md5(username + apiKey + refId);
+
+  const requestBody = {
+    username,
+    buyer_sku_code: buyerSkuCode,
+    customer_no: customerNo,
+    ref_id: refId,
+    sign,
+  };
+
+  const target = getEndpoint("/v1/transaction");
+  const res = await fetch(target.url, {
+    method: "POST",
+    headers: target.headers,
+    body: JSON.stringify(requestBody),
+  });
+
+  const json = await res.json();
+  const data = json?.data;
+
+  if (!res.ok || !data) {
+    return {
+      success: false,
+      refId,
+      status: "PENDING",
+      message: data?.message || json?.message || "Gagal mengambil status Digiflazz",
+      raw: json,
+    };
+  }
+
+  const rawStatus = (data.status || "").toLowerCase();
+  let normalizedStatus: "SUCCESS" | "PENDING" | "FAILED" = "PENDING";
+
+  if (rawStatus === "sukses") {
+    normalizedStatus = "SUCCESS";
+  } else if (rawStatus === "gagal") {
+    normalizedStatus = "FAILED";
+  } else {
+    normalizedStatus = "PENDING";
+  }
+
+  return {
+    success: normalizedStatus === "SUCCESS",
+    refId: data.ref_id || refId,
+    status: normalizedStatus,
+    sn: data.sn || undefined,
+    message: data.message,
+    price: data.price,
+    buyerLastSaldo: data.buyer_last_saldo,
+    raw: data,
+  };
+}

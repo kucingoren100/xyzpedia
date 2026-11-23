@@ -66,9 +66,9 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
 
   const [timeLeft, setTimeLeft] = useState(getRemainingSeconds);
 
-  // Auto-poll payment status only when order is PENDING
+  // Auto-poll status when order is PENDING (waiting payment) or PROCESSING (waiting supplier fulfillment)
   useEffect(() => {
-    if (order.status !== "PENDING") return;
+    if (order.status !== "PENDING" && order.status !== "PROCESSING") return;
 
     let isVisible = true;
     const handleVisibilityChange = () => {
@@ -422,6 +422,15 @@ Status: ${order.status}`;
               Pembayaran berhasil diverifikasi. Pesanan Anda saat ini sedang diproses ke supplier resmi. Halaman ini akan diperbarui secara otomatis.
             </p>
           </div>
+
+          <div className="flex items-center justify-center gap-2 text-xs font-bold text-sky-600 dark:text-sky-400">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500"></span>
+            </span>
+            <span>Sinkronisasi otomatis dengan server supplier...</span>
+          </div>
+
           <div className="p-4 bg-[#f0f9ff] dark:bg-[#152338] ink-border rounded-2xl text-left text-xs font-semibold space-y-2">
             <div className="flex justify-between">
               <span className="text-gray-500">Nomor Invoice:</span>
@@ -431,6 +440,24 @@ Status: ${order.status}`;
               <span className="text-gray-500">Produk:</span>
               <span className="font-bold">{order.product.name} ({order.productItem.name})</span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Status Supplier:</span>
+              <span className="font-mono font-bold text-amber-600 dark:text-amber-400 uppercase">
+                {order.supplierStatus || "Diproses"}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              onClick={handleManualCheckStatus}
+              disabled={isChecking}
+              className="px-6 py-2.5 bg-[#ffd731] hover:bg-[#ffe160] text-black rounded-full ink-border font-black text-xs uppercase shadow-[2px_2px_0px_0px_#000000] inline-flex items-center gap-2 active:translate-x-0.5 active:translate-y-0.5 transition-all disabled:opacity-50"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${isChecking ? "animate-spin" : ""}`} />
+              <span>{isChecking ? "Mengecek Supplier..." : "Cek Status Terkini"}</span>
+            </button>
           </div>
         </div>
       )}
