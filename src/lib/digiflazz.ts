@@ -55,31 +55,65 @@ function getEndpoint(path: string): { url: string; headers: Record<string, strin
   };
 }
 
+// Memory cache for Digiflazz balance
+let cachedBalance: { deposit: number; timestamp: number } | null = null;
+const BALANCE_CACHE_TTL = 60 * 1000; // 60 seconds TTL
+
 /**
- * Cek Saldo Akun Digiflazz
+ * Cek Saldo Akun Digiflazz (dengan timeout 5 detik)
  */
-export async function checkDigiflazzBalance() {
+export async function checkDigiflazzBalance(): Promise<number> {
   const { username, apiKey } = getConfig();
   const sign = md5(username + apiKey + "depo");
 
   const target = getEndpoint("/v1/cek-saldo");
-  const res = await fetch(target.url, {
-    method: "POST",
-    headers: target.headers,
-    body: JSON.stringify({
-      cmd: "deposit",
-      username,
-      sign,
-    }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Digiflazz HTTP ${res.status}: ${errText}`);
+  try {
+    const res = await fetch(target.url, {
+      method: "POST",
+      headers: target.headers,
+      body: JSON.stringify({
+        cmd: "deposit",
+        username,
+        sign,
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Digiflazz HTTP ${res.status}: ${errText}`);
+    }
+
+    const json = await res.json();
+    const deposit = Number(json?.data?.deposit ?? 0);
+    cachedBalance = { deposit, timestamp: Date.now() };
+    return deposit;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
+
+/**
+ * Dapatkan saldo Digiflazz dengan caching (anti-rate limit & performa tinggi)
+ */
+export async function getDigiflazzBalanceCached(forceRefresh = false): Promise<number | null> {
+  const now = Date.now();
+  if (!forceRefresh && cachedBalance && now - cachedBalance.timestamp < BALANCE_CACHE_TTL) {
+    return cachedBalance.deposit;
   }
 
-  const json = await res.json();
-  return json?.data?.deposit ?? 0;
+  try {
+    return await checkDigiflazzBalance();
+  } catch (err) {
+    console.warn("[Digiflazz] Gagal mengambil saldo live, fallback ke cache:", err);
+    return cachedBalance ? cachedBalance.deposit : null;
+  }
 }
 
 // Memory cache for Digiflazz pricelist to prevent RC 83 rate limit

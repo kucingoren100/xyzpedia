@@ -9,6 +9,7 @@ import ProductReviewsSection from "@/components/ProductReviewsSection";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getWebCondition } from "@/lib/webCondition";
+import { getDigiflazzBalanceCached } from "@/lib/digiflazz";
 
 export const revalidate = 60;
 
@@ -76,7 +77,51 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const webCondition = await getWebCondition();
 
-  const itemPrices = product.items.map((i) => i.price).filter((p) => p > 0);
+  // Live balance check for Digiflazz products to auto-toggle availability
+  const isDigiflazzProduct =
+    product.categorySlug === "game-topup" ||
+    product.categorySlug === "pulsa-ewallet" ||
+    product.categorySlug === "voucher-digital" ||
+    product.items.some((item) => (item as any).supplier === "DIGIFLAZZ");
+
+  let digiBalance: number | null = null;
+  if (isDigiflazzProduct) {
+    try {
+      digiBalance = await getDigiflazzBalanceCached();
+    } catch {
+      digiBalance = null;
+    }
+  }
+
+  // Live item availability check based on Digiflazz deposit balance
+  const itemsWithLiveStock = product.items.map((item) => {
+    // If item was already set OUT_OF_STOCK by admin in DB, keep it
+    if (item.stockStatus === "OUT_OF_STOCK") {
+      return item;
+    }
+
+    const supplier = (item as any).supplier || (product.categorySlug === "game-topup" ? "DIGIFLAZZ" : "MANUAL");
+    const isDigiflazzItem = supplier === "DIGIFLAZZ";
+
+    if (isDigiflazzItem && digiBalance !== null) {
+      const requiredCost = item.supplierPrice || Math.round(item.price * 0.8);
+      if (requiredCost > digiBalance) {
+        return {
+          ...item,
+          stockStatus: "OUT_OF_STOCK",
+        };
+      }
+    }
+
+    return item;
+  });
+
+  const liveProduct = {
+    ...product,
+    items: itemsWithLiveStock,
+  };
+
+  const itemPrices = liveProduct.items.map((i) => i.price).filter((p) => p > 0);
   const minPrice = itemPrices.length > 0 ? Math.min(...itemPrices) : 1000;
   const maxPrice = itemPrices.length > 0 ? Math.max(...itemPrices) : 100000;
 
@@ -218,7 +263,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </div>
 
       {/* Main Checkout Experience */}
-      <ProductCustomizerClient product={product} initialCondition={webCondition} />
+      <ProductCustomizerClient product={liveProduct} initialCondition={webCondition} />
 
       {/* Verified Customer Reviews */}
       <ProductReviewsSection productId={product.id} productName={product.name} />
