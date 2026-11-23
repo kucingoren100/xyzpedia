@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface Banner {
@@ -90,17 +91,16 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
       <div className="relative w-full h-[125px] xs:h-[150px] sm:h-[185px] md:h-[215px] lg:h-[240px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
         <Link
           href={current.linkUrl || "/katalog"}
-          className="block w-full h-full cursor-pointer overflow-hidden"
+          className="relative block w-full h-full cursor-pointer overflow-hidden"
           title={`Buka Promo (${current.linkUrl || "/katalog"})`}
         >
-          <img
+          <Image
             src={current.imageUrl}
             alt="Promo Banner"
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.01]"
-            onError={(e: any) => {
-              e.currentTarget.src =
-                "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200";
-            }}
+            fill
+            priority
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.01]"
           />
         </Link>
 
@@ -110,23 +110,23 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
             <button
               type="button"
               onClick={handlePrev}
-              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10"
+              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10 p-1"
               aria-label="Banner Sebelumnya"
             >
-              <ArrowLeft className="w-3.5 h-3.5 stroke-[3]" />
+              <ArrowLeft className="w-4 h-4 stroke-[3]" />
             </button>
 
             <button
               type="button"
               onClick={handleNext}
-              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10"
+              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10 p-1"
               aria-label="Banner Selanjutnya"
             >
-              <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
             </button>
 
-            {/* Indicator Dots — Touch friendly, visible on mobile */}
-            <div className="absolute bottom-2 sm:bottom-2.5 right-3 sm:right-4 flex items-center gap-1.5 z-10 bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-xs opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+            {/* Indicator Dots — Touch friendly with minimum 32px hit area */}
+            <div className="absolute bottom-2 sm:bottom-2.5 right-3 sm:right-4 flex items-center gap-0.5 z-10 bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-xs opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
               {banners.map((_, idx) => (
                 <button
                   key={idx}
@@ -136,13 +136,17 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
                     e.stopPropagation();
                     setCurrentIndex(idx);
                   }}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    currentIndex === idx
-                      ? "w-5 bg-[#ffd731]"
-                      : "w-1.5 bg-white/60 hover:bg-white"
-                  }`}
+                  className="p-1.5 flex items-center justify-center cursor-pointer transition-transform active:scale-95"
                   aria-label={`Slide ${idx + 1}`}
-                />
+                >
+                  <span
+                    className={`h-1.5 rounded-full transition-all duration-300 block ${
+                      currentIndex === idx
+                        ? "w-5 bg-[#ffd731]"
+                        : "w-1.5 bg-white/60 hover:bg-white"
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </>

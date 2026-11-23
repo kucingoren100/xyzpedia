@@ -1,15 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MobileFloatingDock from "@/components/MobileFloatingDock";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import FloatingWhatsApp from "@/components/FloatingWhatsApp";
-import StoreAnnouncementModal from "@/components/StoreAnnouncementModal";
 import NavigationProgressBar from "@/components/NavigationProgressBar";
-import RecentOrdersTicker from "@/components/RecentOrdersTicker";
+
+// Dynamic import for non-critical floating / interactive components to optimize FCP, LCP & TBT
+const FloatingWhatsApp = dynamic(() => import("@/components/FloatingWhatsApp"), { ssr: false });
+const StoreAnnouncementModal = dynamic(() => import("@/components/StoreAnnouncementModal"), { ssr: false });
+const RecentOrdersTicker = dynamic(() => import("@/components/RecentOrdersTicker"), { ssr: false });
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -107,8 +110,6 @@ const jsonLdData = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
@@ -123,10 +124,6 @@ export default function RootLayout({
       className={`${bricolage.variable} ${hanken.variable} min-h-screen antialiased`}
     >
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

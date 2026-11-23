@@ -218,7 +218,7 @@ export default function FlashSaleSection({ products }: { products: FlashSaleProd
 
                 {/* Price Display */}
                 <div className="space-y-0.5">
-                  <span className="text-[10px] text-gray-400 line-through font-bold block leading-none">
+                  <span className="text-[10px] text-gray-600 dark:text-gray-400 line-through font-bold block leading-none">
                     Rp {originalPrice.toLocaleString("id-ID")}
                   </span>
                   <div className="text-xs sm:text-sm font-black text-[#fb4903] font-[var(--font-bricolage)] leading-none">
@@ -233,7 +233,7 @@ export default function FlashSaleSection({ products }: { products: FlashSaleProd
                       <Flame className="w-2.5 h-2.5 fill-current" />
                       <span>Sisa {remainingQuota} Slot</span>
                     </span>
-                    <span className="text-gray-400 font-bold">{soldPercentage}%</span>
+                    <span className="text-gray-600 dark:text-gray-400 font-bold">{soldPercentage}%</span>
                   </div>
                   <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full ink-border overflow-hidden">
                     <div

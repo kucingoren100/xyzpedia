@@ -390,7 +390,7 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             <span className="w-7 h-7 rounded-full bg-[#ffd731] text-black ink-border flex items-center justify-center text-xs font-black">
               1
             </span>
-            <h4 className="text-sm font-black text-carbon dark:text-white">Pilih Game / Layanan</h4>
+            <h3 className="text-sm font-black text-carbon dark:text-white">Pilih Game / Layanan</h3>
             <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold leading-relaxed">
               Tentukan produk game atau akun langganan premium yang ingin kamu beli.
             </p>
@@ -400,7 +400,7 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             <span className="w-7 h-7 rounded-full bg-[#55db9c] text-black ink-border flex items-center justify-center text-xs font-black">
               2
             </span>
-            <h4 className="text-sm font-black text-carbon dark:text-white">Isi Data Akun</h4>
+            <h3 className="text-sm font-black text-carbon dark:text-white">Isi Data Akun</h3>
             <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold leading-relaxed">
               Masukkan User ID dan Server ID game atau email akunmu secara akurat.
             </p>
@@ -410,7 +410,7 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             <span className="w-7 h-7 rounded-full bg-[#4da2ff] text-white ink-border flex items-center justify-center text-xs font-black">
               3
             </span>
-            <h4 className="text-sm font-black text-carbon dark:text-white">Scan QRIS Dinamis</h4>
+            <h3 className="text-sm font-black text-carbon dark:text-white">Scan QRIS Dinamis</h3>
             <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold leading-relaxed">
               Bayar nominal tepat via GoPay, DANA, BCA, BRI, ShopeePay atau bank apa pun.
             </p>
@@ -420,7 +420,7 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             <span className="w-7 h-7 rounded-full bg-[#fb4903] text-white ink-border flex items-center justify-center text-xs font-black">
               4
             </span>
-            <h4 className="text-sm font-black text-carbon dark:text-white">Pesanan Masuk Otomatis</h4>
+            <h3 className="text-sm font-black text-carbon dark:text-white">Pesanan Masuk Otomatis</h3>
             <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold leading-relaxed">
               Dalam 1 - 3 detik setelah pembayaran berhasil, item langsung masuk ke akunmu!
             </p>

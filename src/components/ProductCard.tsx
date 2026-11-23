@@ -114,6 +114,7 @@ export default function ProductCard({ product, aspectRatio }: ProductCardProps) 
               isOutOfStock ? "grayscale-[35%]" : ""
             }`}
             loading="lazy"
+            decoding="async"
           />
 
           {/* Developer / Badge Sticker (Specialized for Akun Premium: Instan vs Manual) */}
@@ -172,7 +173,7 @@ export default function ProductCard({ product, aspectRatio }: ProductCardProps) 
               )}
             </div>
           ) : (
-            <p className="text-[11px] text-gray-500 dark:text-gray-400 font-bold mt-0.5">
+            <p className="text-[11px] text-gray-600 dark:text-gray-400 font-bold mt-0.5">
               Mulai{" "}
               <span className="font-black text-[#fb4903]">
                 {minPrice ? `Rp ${minPrice.toLocaleString("id-ID")}` : "Cek Varian"}

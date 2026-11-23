@@ -39,8 +39,8 @@ export default function StoreAnnouncementModal() {
           return;
         }
       }
-      // Small timeout so page loads first
-      const timer = setTimeout(() => setIsOpen(true), 800);
+      // Timeout so initial LCP and first render complete smoothly first
+      const timer = setTimeout(() => setIsOpen(true), 2000);
       return () => clearTimeout(timer);
     } catch {
       // ignore
