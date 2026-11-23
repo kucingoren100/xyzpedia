@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { createDigiflazzTransaction } from "./digiflazz";
+import { XavieraClient } from "./xaviera";
 import { OrderStatus, canTransition } from "./orderStatus";
 import { dispatchNotificationEvent } from "./notifications";
 import { notifyBuyerOrderSuccess } from "./whatsapp";
@@ -36,16 +37,19 @@ export async function startFulfillment(orderId: string) {
   const supplier = (order.productItem as any).supplier || "DIGIFLAZZ";
   const sku = order.productItem.sku;
 
-  // Akun premium is managed manually by admin (100% decoupled from Waroengkuy)
+  const isXaviera = supplier === "XAVIERA" || sku.startsWith("XAV-");
+
+  // Akun premium non-Xaviera is managed manually by admin (100% decoupled from Waroengkuy)
   const isManual =
-    supplier === "MANUAL" ||
-    order.product.categorySlug === "akun-premium" ||
-    sku.startsWith("CUSTOM-") ||
-    sku.startsWith("SKU-") ||
-    sku.startsWith("MANUAL-");
+    !isXaviera &&
+    (supplier === "MANUAL" ||
+      order.product.categorySlug === "akun-premium" ||
+      sku.startsWith("CUSTOM-") ||
+      sku.startsWith("SKU-") ||
+      sku.startsWith("MANUAL-"));
 
   // Check if Waroengkuy product (PPOB only, never akun-premium)
-  const isWaroengkuy = !isManual && supplier === "WAROENGKUY";
+  const isWaroengkuy = !isManual && !isXaviera && supplier === "WAROENGKUY";
 
   if (isManual) {
     // Keep order in PAID / PROCESSING state waiting for admin manual handover
@@ -74,6 +78,75 @@ export async function startFulfillment(orderId: string) {
     }
 
     return { success: true, manual: true };
+  }
+
+  // 1A. XAVIERA STORE FULFILLMENT (Akun Premium & Digital Subscriptions)
+  if (isXaviera) {
+    try {
+      const xavClient = new XavieraClient();
+      const xavRes = await xavClient.createOrder({
+        productSlug: order.product.slug,
+        sku: sku,
+        targetEmailOrPhone: order.customerEmail || order.targetUserId,
+      });
+
+      if (xavRes.success && xavRes.credentials) {
+        // Order berhasil instan dan kredensial terbit!
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: OrderStatus.SUCCESS,
+            fulfilledAt: new Date(),
+            supplierRef: xavRes.orderId || null,
+            sn: xavRes.credentials,
+            supplierStatus: xavRes.status || "SUCCESS",
+            notes: `Kredensial Akun Resmi (Xaviera):\n${xavRes.credentials}`,
+          },
+        });
+
+        // Kirim WhatsApp buyer jika ada nomor
+        if (order.customerPhone) {
+          try {
+            await notifyBuyerOrderSuccess({
+              customerPhone: order.customerPhone,
+              customerName: order.customerEmail || "Pelanggan",
+              productName: `${order.product.name} - ${order.productItem.name}`,
+              targetId: order.targetUserId,
+              invoice: order.invoiceNumber,
+              sn: xavRes.credentials,
+            });
+          } catch (e) {
+            console.error("[startFulfillment] WA notify error:", e);
+          }
+        }
+
+        return { success: true, supplier: "XAVIERA", credentials: xavRes.credentials };
+      } else if (xavRes.success && !xavRes.credentials) {
+        // Order Xaviera diterima tapi tipe invite/manual
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: OrderStatus.PROCESSING,
+            supplierRef: xavRes.orderId || null,
+            supplierStatus: xavRes.status || "PROCESSING",
+            notes: `Pesanan Xaviera diproses (${xavRes.orderId}): menunggu pengiriman akses/invite.`,
+          },
+        });
+        return { success: true, supplier: "XAVIERA", processing: true };
+      } else {
+        console.error("[startFulfillment] Xaviera order error:", xavRes.message);
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            fulfillmentError: xavRes.message || "Gagal membuat order ke Xaviera.",
+          },
+        });
+        return { success: false, reason: xavRes.message };
+      }
+    } catch (err: any) {
+      console.error("[startFulfillment] Xaviera fulfillment exception:", err);
+      return { success: false, reason: err?.message || "Gagal menghubungi Xaviera." };
+    }
   }
 
   // Routing supplier based on ProductItem.supplier
