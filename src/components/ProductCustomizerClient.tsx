@@ -1316,7 +1316,13 @@ export default function ProductCustomizerClient({
                   VERIFIKASI PRE-CHECKOUT
                 </span>
                 <h3 className="font-[var(--font-bricolage)] text-lg sm:text-xl font-black uppercase text-carbon dark:text-white leading-tight mt-1">
-                  Konfirmasi Akun Game
+                  {product.categorySlug === "akun-premium"
+                    ? "Konfirmasi Akun Premium"
+                    : product.categorySlug === "pulsa-ewallet"
+                    ? "Konfirmasi Isi Pulsa / E-Wallet"
+                    : product.categorySlug === "voucher-digital"
+                    ? "Konfirmasi Voucher Digital"
+                    : "Konfirmasi Akun Game"}
                 </h3>
               </div>
 
@@ -1410,6 +1416,16 @@ export default function ProductCustomizerClient({
                 <span className="text-gray-500 dark:text-gray-400">Nominal:</span>
                 <span className="font-black text-carbon dark:text-white text-right">{selectedItem?.name}</span>
               </div>
+              {targetUserId && (product.categorySlug !== "game-topup" && !product.requiresServer) && (
+                <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {product.targetInputLabel || (product.categorySlug === "akun-premium" ? "Email / No. Akun:" : "No. Tujuan:")}
+                  </span>
+                  <span className="font-black text-carbon dark:text-white truncate max-w-[200px]">
+                    {targetUserId}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
                 <span className="text-gray-500 dark:text-gray-400">Email Struk:</span>
                 <span className="font-black text-carbon dark:text-white truncate max-w-[200px]">
@@ -1444,7 +1460,14 @@ export default function ProductCustomizerClient({
 
             {/* Disclaimer Alert */}
             <div className="p-2.5 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-300 dark:border-yellow-700/50 rounded-xl text-[10px] font-bold text-yellow-900 dark:text-yellow-200 leading-relaxed">
-              ⚠️ <strong>Penting:</strong> Pesanan langsung diinjeksi ke akun ID di atas setelah pembayaran QRIS lunas. Transaksi yang salah input ID tidak dapat dibatalkan atau ditarik kembali.
+              ⚠️ <strong>Penting:</strong>{" "}
+              {product.categorySlug === "akun-premium"
+                ? "Detail akun / akses langganan resmi akan dikirimkan ke email atau ditampilkan langsung setelah pembayaran QRIS lunas. Pastikan email Anda sudah benar."
+                : product.categorySlug === "pulsa-ewallet"
+                ? "Pulsa / saldo e-wallet akan otomatis ditransfer ke nomor tujuan setelah pembayaran QRIS lunas. Pastikan nomor tujuan Anda sudah benar."
+                : product.categorySlug === "voucher-digital"
+                ? "Kode voucher digital akan dikirimkan ke email dan ditampilkan langsung setelah pembayaran QRIS lunas."
+                : "Pesanan langsung diinjeksi ke akun ID di atas setelah pembayaran QRIS lunas. Transaksi yang salah input ID tidak dapat dibatalkan atau ditarik kembali."}
             </div>
 
             {/* Action Buttons */}
