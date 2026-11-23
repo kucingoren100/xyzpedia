@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
 import { Bricolage_Grotesque, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -8,11 +7,7 @@ import Footer from "@/components/Footer";
 import MobileFloatingDock from "@/components/MobileFloatingDock";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import NavigationProgressBar from "@/components/NavigationProgressBar";
-
-// Dynamic import for non-critical floating / interactive components to optimize FCP, LCP & TBT
-const FloatingWhatsApp = dynamic(() => import("@/components/FloatingWhatsApp"), { ssr: false });
-const StoreAnnouncementModal = dynamic(() => import("@/components/StoreAnnouncementModal"), { ssr: false });
-const RecentOrdersTicker = dynamic(() => import("@/components/RecentOrdersTicker"), { ssr: false });
+import ClientFloatingWidgets from "@/components/ClientFloatingWidgets";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -157,9 +152,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <MobileFloatingDock />
-          <FloatingWhatsApp />
-          <StoreAnnouncementModal />
-          <RecentOrdersTicker />
+          <ClientFloatingWidgets />
         </ThemeProvider>
       </body>
     </html>

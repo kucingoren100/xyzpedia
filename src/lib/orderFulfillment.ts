@@ -108,11 +108,8 @@ export async function startFulfillment(orderId: string) {
         if (order.customerPhone) {
           try {
             await notifyBuyerOrderSuccess({
-              customerPhone: order.customerPhone,
-              customerName: order.customerEmail || "Pelanggan",
-              productName: `${order.product.name} - ${order.productItem.name}`,
-              targetId: order.targetUserId,
-              invoice: order.invoiceNumber,
+              ...order,
+              status: OrderStatus.SUCCESS,
               sn: xavRes.credentials,
             });
           } catch (e) {
