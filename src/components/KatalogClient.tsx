@@ -379,13 +379,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
         ))}
 
         <div className="max-w-3xl space-y-3 z-10 relative">
-          <div
-            className={`inline-flex items-center gap-2 self-start ${bannerContent.badgeBg} ink-border rounded-full px-3.5 py-1 text-xs font-black text-black dark:text-white -rotate-1 shadow-[1.5px_1.5px_0px_0px_#000000]`}
-          >
-            <span className="w-2 h-2 rounded-full bg-[#fb4903] animate-pulse" />
-            <span>{bannerContent.badgeText}</span>
-          </div>
-
           <h1 className="font-[var(--font-bricolage)] text-3xl sm:text-5xl md:text-5xl font-extrabold uppercase leading-[0.92] tracking-tight text-black dark:text-white">
             {bannerContent.title}
           </h1>

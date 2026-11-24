@@ -24,6 +24,7 @@ import {
   History,
   Clock,
   Sparkles,
+  Users,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
 
@@ -55,6 +56,9 @@ interface Coupon {
   startsAt?: string | null;
   endsAt?: string | null;
   createdAt?: string;
+  usedCount?: number;
+  buyerCount?: number;
+  totalSaved?: number;
 }
 
 function toDatetimeLocal(isoStr?: string | null) {
@@ -800,6 +804,29 @@ export default function AdminKuponClient({ session }: { session: any }) {
                         <span className="text-gray-400">Berlaku Selamanya (Tanpa Batas Waktu)</span>
                       )}
                     </div>
+                  </div>
+
+                  {/* Statistik Pemakaian Pembeli */}
+                  <div className="pt-2 border-t border-gray-100 dark:border-[#252538] space-y-1">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                      Pemakaian Kupon:
+                    </span>
+                    {coupon.buyerCount && coupon.buyerCount > 0 ? (
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 pt-0.5">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 text-[11px] font-black">
+                          <Users className="w-3.5 h-3.5" />
+                          <span>{coupon.buyerCount} Pembeli ({coupon.usedCount || 0}× Dipakai)</span>
+                        </span>
+                        <span className="text-[11px] font-mono font-black text-emerald-600 dark:text-emerald-400">
+                          Hemat Rp {(coupon.totalSaved || 0).toLocaleString("id-ID")}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-gray-500/10 text-gray-500 dark:text-gray-400 text-[11px] font-medium">
+                        <Users className="w-3 h-3 text-gray-400" />
+                        <span>Belum ada pembeli yang pakai kupon ini</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Cakupan Produk */}

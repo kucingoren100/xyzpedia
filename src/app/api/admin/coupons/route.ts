@@ -12,8 +12,8 @@ export async function GET() {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    // Concurrent fetch coupons and products
-    const [coupons, products] = await Promise.all([
+    // Concurrent fetch coupons, products, and order coupon usage
+    const [coupons, products, usageOrders] = await Promise.all([
       prisma.coupon.findMany({
         orderBy: { createdAt: "desc" },
       }),
@@ -36,9 +36,52 @@ export async function GET() {
         },
         orderBy: { name: "asc" },
       }),
+      prisma.order.findMany({
+        where: {
+          couponCode: { not: null },
+          status: { in: ["PAID", "PROCESSING", "SUCCESS"] },
+        },
+        select: {
+          couponCode: true,
+          customerEmail: true,
+          customerPhone: true,
+          discountAmount: true,
+        },
+      }),
     ]);
 
-    return NextResponse.json({ success: true, coupons, products });
+    const usageMap: Record<
+      string,
+      { totalOrders: number; uniqueBuyers: Set<string>; totalDiscount: number }
+    > = {};
+
+    for (const order of usageOrders) {
+      if (!order.couponCode) continue;
+      const key = order.couponCode.trim().toUpperCase();
+      if (!usageMap[key]) {
+        usageMap[key] = {
+          totalOrders: 0,
+          uniqueBuyers: new Set<string>(),
+          totalDiscount: 0,
+        };
+      }
+      usageMap[key].totalOrders += 1;
+      const buyerId = order.customerEmail || order.customerPhone || "anon";
+      usageMap[key].uniqueBuyers.add(buyerId.toLowerCase());
+      usageMap[key].totalDiscount += order.discountAmount || 0;
+    }
+
+    const couponsWithUsage = coupons.map((c) => {
+      const u = usageMap[c.code.trim().toUpperCase()];
+      return {
+        ...c,
+        usedCount: u ? u.totalOrders : 0,
+        buyerCount: u ? u.uniqueBuyers.size : 0,
+        totalSaved: u ? u.totalDiscount : 0,
+      };
+    });
+
+    return NextResponse.json({ success: true, coupons: couponsWithUsage, products });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

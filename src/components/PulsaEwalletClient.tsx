@@ -134,10 +134,6 @@ export default function PulsaEwalletClient({ products }: PulsaEwalletClientProps
       <section className="bg-[#ffd731] ink-border rounded-3xl p-6 sm:p-10 relative overflow-hidden shadow-[4px_4px_0px_0px_#000000]">
         <div className="absolute -right-8 -top-8 w-40 h-40 bg-[#ffdad6] rounded-full ink-border opacity-50 pointer-events-none" />
         <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-carbon rounded-full ink-border text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000]">
-            <Sparkles className="w-3.5 h-3.5 text-[#fb4903]" />
-            <span>PPOB Resmi Waroengkuy • 24 Jam Nonstop</span>
-          </div>
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black font-[var(--font-bricolage)] uppercase text-carbon leading-tight">
             Pulsa & E-Wallet Instan
           </h1>
