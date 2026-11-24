@@ -15,6 +15,7 @@ import {
   generateFailedOrderEmailHtml,
   formatDailyReportMessage,
   generateDailyReportEmailHtml,
+  generateBuyerReceiptEmailHtml,
   SendTelegramOptions,
 } from "@/lib/notifications";
 import { generateReportCardPng } from "@/lib/reportCardImage";
@@ -142,7 +143,20 @@ export async function POST(req: Request) {
       let emailHtml = "";
       let eventTitle = "";
 
-      if (eventType === "notifyNewOrder") {
+      if (eventType === "buyer_receipt") {
+        eventTitle = "Struk & Kredensial Pembeli";
+        const mockData = {
+          invoice: "INV-XYZ-" + Date.now().toString().slice(-6),
+          productName: "Netflix Premium UHD 4K",
+          variantName: "1 Bulan Private Profile (1P1U)",
+          targetUser: "pembeli@gmail.com",
+          totalAmount: 35000,
+          paymentMethod: "QRIS Real-time",
+          sn: "Email: akun.netflix@example.com | Pass: XyzPedia123! | PIN: 4412",
+        };
+        emailSubject = `🧾 [UJI COBA STRUK PEMBELI] Bukti Pembayaran & Pengiriman Berhasil · ${mockData.invoice} — XYZPEDIA`;
+        emailHtml = generateBuyerReceiptEmailHtml(mockData);
+      } else if (eventType === "notifyNewOrder") {
         eventTitle = "Transaksi Baru Masuk";
         const mockData = {
           invoice: "XYZ-" + Date.now().toString().slice(-6),

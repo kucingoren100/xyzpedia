@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
 import { startFulfillment } from "@/lib/orderFulfillment";
 import { logAuditEvent } from "@/lib/audit";
+import { dispatchNotificationEvent } from "@/lib/notifications";
 
 export async function POST(
   req: Request,
@@ -80,6 +81,29 @@ export async function POST(
         target: order.invoiceNumber,
         summary: `Admin menyelesaikan pesanan manual #${order.invoiceNumber} (SN: ${serialNumber})`,
       });
+
+      // Dispatch notification & buyer receipt email for manually completed order
+      try {
+        const profit = Math.max(
+          0,
+          updated.totalAmount - (order.productItem.supplierPrice || order.productItem.price * 0.8)
+        );
+        await dispatchNotificationEvent("notifySuccessOrder", {
+          invoice: updated.invoiceNumber,
+          productName: order.product.name,
+          variantName: order.productItem.name,
+          targetUser: updated.targetUserId + (updated.targetZoneId ? ` (${updated.targetZoneId})` : ""),
+          totalAmount: updated.totalAmount,
+          profit: Math.round(profit),
+          paymentMethod: updated.paymentMethod || "QRIS",
+          deliveryType: "MANUAL",
+          customerPhone: updated.customerPhone || undefined,
+          customerEmail: updated.customerEmail || undefined,
+          sn: serialNumber,
+        });
+      } catch (notifErr) {
+        console.error("[complete_manual] Notification dispatch error:", notifErr);
+      }
 
       return NextResponse.json({
         success: true,

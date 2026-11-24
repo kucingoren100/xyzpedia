@@ -7,6 +7,7 @@ import {
   generateSuccessOrderEmailHtml,
   generateFailedOrderEmailHtml,
   generateDailyReportEmailHtml,
+  generateBuyerReceiptEmailHtml,
 } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +27,18 @@ export async function GET(req: Request) {
 
     let rawHtml = "";
 
-    if (type === "new_order") {
+    if (type === "buyer_receipt") {
+      rawHtml = generateBuyerReceiptEmailHtml({
+        invoice: "INV-XYZ-20261125-PREVIEW",
+        productName: "Netflix Premium UHD 4K",
+        variantName: "1 Bulan Private Profile (1P1U)",
+        targetUser: "pembeli@gmail.com",
+        totalAmount: 35000,
+        paymentMethod: "QRIS Real-time",
+        sn: "Email: akun.netflix@example.com | Pass: XyzPedia123! | PIN: 4412 (Profile 1)",
+        storeName: "XYZPEDIA",
+      });
+    } else if (type === "new_order") {
       rawHtml = generateNewOrderEmailHtml({
         invoice: "XYZ-PREVIEW-001",
         productName: "Mobile Legends: Bang Bang",

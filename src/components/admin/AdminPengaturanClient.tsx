@@ -857,7 +857,7 @@ export default function AdminPengaturanClient() {
                     className="py-2.5 px-3 bg-white dark:bg-[#20202e] hover:bg-gray-100 text-carbon dark:text-white rounded-xl ink-border text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform hover:scale-101 active:scale-99 cursor-pointer shadow-[2px_2px_0px_#000000] text-center"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
-                    <span>Lihat Preview Template</span>
+                    <span>Preview Email Admin</span>
                   </a>
 
                   <button
@@ -868,6 +868,26 @@ export default function AdminPengaturanClient() {
                   >
                     <Mail className="w-3.5 h-3.5" />
                     <span>{testingChannel === "email" ? "Mengirim..." : "Kirim Email Uji Coba"}</span>
+                  </button>
+
+                  <a
+                    href="/api/admin/notifications/preview-email?type=buyer_receipt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2.5 px-3 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 rounded-xl ink-border text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform hover:scale-101 active:scale-99 cursor-pointer shadow-[2px_2px_0px_#000000] text-center"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Preview Struk Pembeli</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => handleTestNotification("email", "buyer_receipt")}
+                    disabled={testingChannel === "buyer_receipt_email"}
+                    className="py-2.5 px-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl ink-border text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform hover:scale-101 active:scale-99 cursor-pointer shadow-[2px_2px_0px_#000000]"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>{testingChannel === "buyer_receipt_email" ? "Mengirim..." : "Test Struk Pembeli"}</span>
                   </button>
                 </div>
               </section>
