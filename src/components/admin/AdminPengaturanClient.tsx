@@ -36,12 +36,18 @@ import {
   Cpu,
   Lock,
   Activity,
+  Megaphone,
+  X,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
 import {
   NotificationSettings,
   DEFAULT_NOTIFICATION_SETTINGS,
 } from "@/types/notifications";
+import {
+  StoreAnnouncementsConfig,
+  DEFAULT_STORE_ANNOUNCEMENTS,
+} from "@/types/storeAnnouncements";
 
 function PopToggle({
   checked,
@@ -134,10 +140,12 @@ export default function AdminPengaturanClient() {
     message: string;
   } | null>(null);
 
-  // Store announcement
-  const [announcement, setAnnouncement] = useState(
-    "⚡ QRIS 0% BIAYA ADMIN ✦ PENGIRIMAN KILAT DI BAWAH 5 DETIK ✦ PROSES OTOMATIS INSTAN 24/7 ✦ 100% API RESMI PUBLISHER ✦ CHECKOUT LANGSUNG (TANPA PERLU LOGIN)"
+  // Store announcements & ads config
+  const [storeAnnouncements, setStoreAnnouncements] = useState<StoreAnnouncementsConfig>(
+    DEFAULT_STORE_ANNOUNCEMENTS
   );
+  const [isSavingAnnouncements, setIsSavingAnnouncements] = useState(false);
+  const [previewModal, setPreviewModal] = useState<"announcement" | "ad" | null>(null);
 
   // Health check state
   const [healthData, setHealthData] = useState<any>(null);
@@ -158,7 +166,7 @@ export default function AdminPengaturanClient() {
     }
   };
 
-  // Load notification settings on mount
+  // Load notification and announcements settings on mount
   useEffect(() => {
     fetch("/api/admin/settings/notifications")
       .then((res) => res.json())
@@ -168,6 +176,15 @@ export default function AdminPengaturanClient() {
         }
       })
       .catch((err) => console.error("Error loading notification settings:", err));
+
+    fetch("/api/admin/settings/announcements")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.config) {
+          setStoreAnnouncements(data.config);
+        }
+      })
+      .catch((err) => console.error("Error loading store announcements:", err));
 
     fetchHealthData();
   }, []);
@@ -249,10 +266,27 @@ export default function AdminPengaturanClient() {
     }
   };
 
-  const handleSaveAnnouncement = (e: React.FormEvent) => {
+  const handleSaveStoreAnnouncements = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
+    setIsSavingAnnouncements(true);
+    try {
+      const res = await fetch("/api/admin/settings/announcements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(storeAnnouncements),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSavedSuccess(true);
+        setTimeout(() => setSavedSuccess(false), 3000);
+      } else {
+        alert("Gagal menyimpan: " + data.message);
+      }
+    } catch (err: any) {
+      alert("Terjadi kesalahan: " + err.message);
+    } finally {
+      setIsSavingAnnouncements(false);
+    }
   };
 
   return (
@@ -1084,46 +1118,517 @@ export default function AdminPengaturanClient() {
         )}
 
         {/* ========================================================
-            TAB 3: PENGUMUMAN BERJALAN (TOP MARQUEE)
+            TAB 3: PENGUMUMAN TOKO & IKLAN PROMO (MODAL POP-UP & MARQUEE)
             ======================================================== */}
         {activeTab === "announcement" && (
-          <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#000000] space-y-4">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-gray-200 dark:border-gray-800">
-              <span className="p-2 bg-[#5c4ade] text-white rounded-xl ink-border">
-                <Bell className="w-5 h-5" />
-              </span>
-              <div>
-                <h2 className="text-base sm:text-lg font-black uppercase text-carbon dark:text-white font-[var(--font-bricolage)]">
-                  Pengumuman Berjalan (Top Marquee)
-                </h2>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                  Pesan promosi yang bergerak di bagian paling atas halaman toko
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleSaveAnnouncement} className="space-y-3">
-              <div>
-                <label className="text-xs font-black uppercase text-carbon dark:text-white block mb-1">
-                  Teks Pengumuman:
-                </label>
-                <textarea
-                  value={announcement}
-                  onChange={(e) => setAnnouncement(e.target.value)}
-                  rows={3}
-                  className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+          <form onSubmit={handleSaveStoreAnnouncements} className="space-y-6">
+            {/* BAGIAN 1: PENGUMUMAN BERJALAN (TOP MARQUEE) */}
+            <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#000000] space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800 flex-wrap gap-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 bg-[#5c4ade] text-white rounded-xl ink-border">
+                    <Bell className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h2 className="text-base sm:text-lg font-black uppercase text-carbon dark:text-white font-[var(--font-bricolage)]">
+                      1. Pengumuman Berjalan (Top Marquee)
+                    </h2>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                      Pesan promosi teks berjalan di bar paling atas toko web
+                    </p>
+                  </div>
+                </div>
+                <PopToggle
+                  checked={storeAnnouncements.marquee.isActive}
+                  onChange={(checked) =>
+                    setStoreAnnouncements((prev) => ({
+                      ...prev,
+                      marquee: { ...prev.marquee, isActive: checked },
+                    }))
+                  }
+                  label={storeAnnouncements.marquee.isActive ? "Marquee Aktif" : "Marquee Nonaktif"}
                 />
               </div>
 
+              <div className="space-y-2">
+                <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                  Teks Pengumuman Berjalan:
+                </label>
+                <textarea
+                  value={storeAnnouncements.marquee.text}
+                  onChange={(e) =>
+                    setStoreAnnouncements((prev) => ({
+                      ...prev,
+                      marquee: { ...prev.marquee, text: e.target.value },
+                    }))
+                  }
+                  rows={3}
+                  className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  placeholder="Tulis teks pengumuman berjalan..."
+                />
+                <p className="text-[11px] text-gray-400 font-medium">
+                  Tips: Gunakan simbol pemisah seperti ✦ atau ⚡ untuk memisahkan antar poin promosi.
+                </p>
+              </div>
+            </section>
+
+            {/* BAGIAN 2: PENGUMUMAN TOKO (MODAL POP-UP) */}
+            <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#000000] space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800 flex-wrap gap-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 bg-[#ffd731] text-black rounded-xl ink-border">
+                    <Megaphone className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-base sm:text-lg font-black uppercase text-carbon dark:text-white font-[var(--font-bricolage)]">
+                        2. Pengumuman Toko (Modal Pop-Up)
+                      </h2>
+                      <span className="px-2 py-0.5 bg-yellow-400/20 text-yellow-800 dark:text-yellow-300 font-mono text-[10px] font-black rounded-full border border-yellow-400/50">
+                        INFO RESMI
+                      </span>
+                    </div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                      Modal pop-up pengumuman resmi yang muncul saat pengunjung membuka website toko
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewModal("announcement")}
+                    className="px-3 py-1.5 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 dark:hover:bg-[#34344d] rounded-xl text-xs font-bold text-carbon dark:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Preview Pop-Up</span>
+                  </button>
+                  <PopToggle
+                    checked={storeAnnouncements.popupAnnouncement.isActive}
+                    onChange={(checked) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAnnouncement: { ...prev.popupAnnouncement, isActive: checked },
+                      }))
+                    }
+                    label={storeAnnouncements.popupAnnouncement.isActive ? "Pop-Up Aktif" : "Pop-Up Nonaktif"}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Judul Pengumuman:
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAnnouncement.title}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAnnouncement: { ...prev.popupAnnouncement, title: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: Pemberitahuan Pembaruan Sistem & Produk Baru"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Timer Otomatis Hilang (Detik):
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={60}
+                    value={storeAnnouncements.popupAnnouncement.autoCloseSeconds}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAnnouncement: {
+                          ...prev.popupAnnouncement,
+                          autoCloseSeconds: Number(e.target.value) || 0,
+                        },
+                      }))
+                    }
+                    placeholder="0 = Hanya tutup manual"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white font-mono"
+                  />
+                  <p className="text-[10px] text-gray-400">
+                    Isi 0 jika hanya ingin ditutup manual oleh pelanggan lewat tombol ✕.
+                  </p>
+                </div>
+
+                <div className="md:col-span-2 space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Teks / Isi Pengumuman:
+                  </label>
+                  <textarea
+                    value={storeAnnouncements.popupAnnouncement.message}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAnnouncement: { ...prev.popupAnnouncement, message: e.target.value },
+                      }))
+                    }
+                    rows={3}
+                    placeholder="Tuliskan isi pengumuman lengkap di sini..."
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Teks Tombol Aksi (Opsional):
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAnnouncement.actionText || ""}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAnnouncement: { ...prev.popupAnnouncement, actionText: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: Lihat Selengkapnya / Buka Katalog"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Link Tertuju Kemana (Opsional):
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAnnouncement.actionUrl || ""}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAnnouncement: { ...prev.popupAnnouncement, actionUrl: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: /katalog atau https://wa.me/..."
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white font-mono"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* BAGIAN 3: IKLAN PROMO TOKO (MODAL POP-UP IKLAN) */}
+            <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-5 sm:p-6 shadow-[4px_4px_0px_0px_#000000] space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800 flex-wrap gap-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 bg-[#fb4903] text-white rounded-xl ink-border">
+                    <Sparkles className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-base sm:text-lg font-black uppercase text-carbon dark:text-white font-[var(--font-bricolage)]">
+                        3. Iklan Promo Toko (Modal Pop-Up Iklan)
+                      </h2>
+                      <span className="px-2 py-0.5 bg-orange-500/20 text-orange-400 font-mono text-[10px] font-black rounded-full border border-orange-500/50">
+                        PROMO & FLASH SALE
+                      </span>
+                    </div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                      Modal pop-up promosi diskon, banner poster, dan penawaran khusus produk
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewModal("ad")}
+                    className="px-3 py-1.5 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 dark:hover:bg-[#34344d] rounded-xl text-xs font-bold text-carbon dark:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Preview Iklan</span>
+                  </button>
+                  <PopToggle
+                    checked={storeAnnouncements.popupAd.isActive}
+                    onChange={(checked) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, isActive: checked },
+                      }))
+                    }
+                    label={storeAnnouncements.popupAd.isActive ? "Iklan Aktif" : "Iklan Nonaktif"}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Judul Promo / Iklan:
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAd.title}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, title: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: FLASH SALE SPOTIFY & NETFLIX HEMAT 70%"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Badge / Subtitle Promo:
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAd.subtitle || ""}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, subtitle: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: STOK TERBATAS HANYA HARI INI"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="md:col-span-2 space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Deskripsi Promo / Tawaran:
+                  </label>
+                  <textarea
+                    value={storeAnnouncements.popupAd.description}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, description: e.target.value },
+                      }))
+                    }
+                    rows={2}
+                    placeholder="Contoh: Nikmati streaming musik & film premium resmi legal dengan proses otomatis instan 24 jam!"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Link Tertuju Kemana:
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAd.actionUrl}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, actionUrl: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: /katalog?kategori=akun-premium"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Teks Tombol Aksi:
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAd.actionText}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, actionText: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: Ambil Promo Sekarang / Beli Langsung"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    URL Gambar Banner (Opsional):
+                  </label>
+                  <input
+                    type="text"
+                    value={storeAnnouncements.popupAd.imageUrl || ""}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: { ...prev.popupAd, imageUrl: e.target.value },
+                      }))
+                    }
+                    placeholder="Contoh: https://... atau kosongkan jika tanpa gambar"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-carbon dark:text-white block">
+                    Timer Otomatis Hilang (Detik Countdown):
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={60}
+                    value={storeAnnouncements.popupAd.autoCloseSeconds}
+                    onChange={(e) =>
+                      setStoreAnnouncements((prev) => ({
+                        ...prev,
+                        popupAd: {
+                          ...prev.popupAd,
+                          autoCloseSeconds: Number(e.target.value) || 0,
+                        },
+                      }))
+                    }
+                    placeholder="10 (detik)"
+                    className="w-full px-3.5 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white font-mono"
+                  />
+                  <p className="text-[10px] text-gray-400">
+                    Akan muncul countdown timer mundur dan tombol "Lewati Iklan" / "✕".
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* SUBMIT BUTTON */}
+            <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-black text-white dark:bg-[#ffd731] dark:text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 hover:bg-[#fb4903] transition-colors cursor-pointer shadow-[2px_2px_0px_#000000]"
+                disabled={isSavingAnnouncements}
+                className="px-6 py-3 bg-[#ffd731] hover:bg-[#ffe066] text-black font-black ink-border rounded-2xl shadow-[4px_4px_0px_#000000] text-xs sm:text-sm flex items-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 disabled:opacity-50"
               >
-                <Save className="w-4 h-4" />
-                <span>Simpan Pengumuman</span>
+                <Save className="w-4 h-4 stroke-[2.5]" />
+                <span>
+                  {isSavingAnnouncements
+                    ? "Menyimpan Pengaturan..."
+                    : "Simpan Semua Pengumuman & Iklan"}
+                </span>
               </button>
-            </form>
-          </section>
+            </div>
+          </form>
+        )}
+
+        {/* MODAL PREVIEW UNTUK ADMIN */}
+        {previewModal && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="relative max-w-md w-full bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-6 shadow-[8px_8px_0px_#000000] space-y-4">
+              <button
+                type="button"
+                onClick={() => setPreviewModal(null)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 dark:bg-[#252538] flex items-center justify-center text-gray-500 hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {previewModal === "announcement" ? (
+                <div className="space-y-4 text-center">
+                  <div className="w-12 h-12 mx-auto rounded-2xl bg-[#ffd731] text-black flex items-center justify-center ink-border shadow-[2px_2px_0px_#000]">
+                    <Megaphone className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="px-2.5 py-0.5 bg-yellow-400/20 text-yellow-800 dark:text-yellow-300 font-mono text-[10px] font-black rounded-full border border-yellow-400/50">
+                      PENGUMUMAN RESMI
+                    </span>
+                    <h3 className="text-base font-black text-carbon dark:text-white mt-1.5 font-[var(--font-bricolage)]">
+                      {storeAnnouncements.popupAnnouncement.title || "Pengumuman Resmi XYZPEDIA"}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-2 leading-relaxed whitespace-pre-wrap">
+                      {storeAnnouncements.popupAnnouncement.message || "Pesan pengumuman..."}
+                    </p>
+                  </div>
+
+                  {storeAnnouncements.popupAnnouncement.autoCloseSeconds > 0 && (
+                    <div className="text-[11px] font-bold text-gray-400 flex items-center justify-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>
+                        Menutup otomatis dalam {storeAnnouncements.popupAnnouncement.autoCloseSeconds} detik
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="pt-2 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewModal(null)}
+                      className="flex-1 py-2.5 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 text-carbon dark:text-white rounded-xl text-xs font-bold cursor-pointer"
+                    >
+                      Tutup
+                    </button>
+                    {storeAnnouncements.popupAnnouncement.actionUrl && (
+                      <a
+                        href={storeAnnouncements.popupAnnouncement.actionUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 py-2.5 bg-[#ffd731] text-black font-black ink-border rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000]"
+                      >
+                        <span>
+                          {storeAnnouncements.popupAnnouncement.actionText || "Lihat Selengkapnya"}
+                        </span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 text-center">
+                  {storeAnnouncements.popupAd.imageUrl && (
+                    <div className="w-full h-36 rounded-2xl overflow-hidden ink-border bg-[#252538]">
+                      <img
+                        src={storeAnnouncements.popupAd.imageUrl}
+                        alt="Promo Banner"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <span className="px-2.5 py-0.5 bg-orange-500/20 text-orange-400 font-mono text-[10px] font-black rounded-full border border-orange-500/50">
+                      {storeAnnouncements.popupAd.subtitle || "PROMO SPESIAL TOKO"}
+                    </span>
+                    <h3 className="text-base font-black text-carbon dark:text-white mt-1.5 font-[var(--font-bricolage)]">
+                      {storeAnnouncements.popupAd.title || "Judul Promo Toko"}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed whitespace-pre-wrap">
+                      {storeAnnouncements.popupAd.description || "Deskripsi tawaran promo..."}
+                    </p>
+                  </div>
+
+                  {storeAnnouncements.popupAd.autoCloseSeconds > 0 && (
+                    <div className="text-[11px] font-bold text-orange-400 flex items-center justify-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>
+                        Otomatis tertutup dalam {storeAnnouncements.popupAd.autoCloseSeconds} detik
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="pt-2 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewModal(null)}
+                      className="py-2.5 px-4 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 text-carbon dark:text-white rounded-xl text-xs font-bold cursor-pointer"
+                    >
+                      Lewati
+                    </button>
+                    <a
+                      href={storeAnnouncements.popupAd.actionUrl || "/katalog"}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex-1 py-2.5 bg-[#fb4903] text-white font-black ink-border rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000]"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{storeAnnouncements.popupAd.actionText || "Ambil Promo"}</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         {/* ========================================================

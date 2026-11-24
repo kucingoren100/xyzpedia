@@ -24,6 +24,15 @@ export async function GET() {
           slug: true,
           categorySlug: true,
           thumbnailUrl: true,
+          items: {
+            select: {
+              id: true,
+              name: true,
+              sku: true,
+              price: true,
+            },
+            orderBy: { price: "asc" },
+          },
         },
         orderBy: { name: "asc" },
       }),

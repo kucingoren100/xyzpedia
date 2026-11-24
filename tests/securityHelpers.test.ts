@@ -49,6 +49,49 @@ describe("Fase 4: Coupon Validation & Rate Limiter", () => {
     }
   });
 
+  it("should validate variant-specific coupons (SKU scoped) properly", async () => {
+    const { prisma } = await import("../src/lib/prisma");
+    const testSkuCode = `TESTSKU_${Date.now()}`;
+    const targetSku = "XAV-NETFLIX-1U1P";
+
+    // Create a coupon restricted to variant targetSku only
+    await prisma.coupon.create({
+      data: {
+        code: testSkuCode,
+        type: "fixed",
+        value: 5000,
+        applicableProducts: JSON.stringify([`SKU:${targetSku}`]),
+        active: true,
+      },
+    });
+
+    try {
+      // 1. Used on same product ("netflix") but DIFFERENT variant SKU -> should be rejected
+      const resDiffVariant = await validateCoupon(
+        testSkuCode,
+        35000,
+        25000,
+        "netflix",
+        "XAV-NETFLIX-SEMIPRIVAT"
+      );
+      expect(resDiffVariant.valid).toBe(false);
+      expect(resDiffVariant.message).toContain("tidak berlaku untuk produk atau varian");
+
+      // 2. Used on matching variant SKU -> should be valid
+      const resMatchVariant = await validateCoupon(
+        testSkuCode,
+        30000,
+        20000,
+        "netflix",
+        targetSku
+      );
+      expect(resMatchVariant.valid).toBe(true);
+      expect(resMatchVariant.discountAmount).toBe(5000);
+    } finally {
+      await prisma.coupon.delete({ where: { code: testSkuCode } }).catch(() => {});
+    }
+  });
+
   it("should enforce rate limiting correctly", () => {
     const testKey = `test-ip-${Date.now()}`;
     const rl1 = checkRateLimit(testKey, { intervalMs: 10000, max: 2 });

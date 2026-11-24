@@ -15,7 +15,8 @@ export async function validateCoupon(
   code: string | undefined | null,
   itemPrice: number,
   supplierPrice: number = 0,
-  productSlugOrId?: string | null
+  productSlugOrId?: string | null,
+  variantSkuOrId?: string | null
 ): Promise<CouponValidationResult> {
   if (!code || !code.trim()) {
     return { valid: false, discountAmount: 0 };
@@ -45,24 +46,50 @@ export async function validateCoupon(
         };
       }
 
-      // Check product restriction if configured
+      // Check product and variant restriction if configured
       if (dbCoupon.applicableProducts && dbCoupon.applicableProducts !== "ALL") {
         let allowedList: string[] = [];
         try {
           allowedList = JSON.parse(dbCoupon.applicableProducts);
         } catch {
-          allowedList = dbCoupon.applicableProducts.split(",").map((s: string) => s.trim().toLowerCase());
+          allowedList = dbCoupon.applicableProducts.split(",").map((s: string) => s.trim());
         }
 
         if (Array.isArray(allowedList) && allowedList.length > 0) {
-          const currentProductKey = String(productSlugOrId || "").trim().toLowerCase();
-          const isAllowed = allowedList.some((item) => String(item).toLowerCase() === currentProductKey);
+          const currentProd = String(productSlugOrId || "").trim().toLowerCase();
+          const currentSku = String(variantSkuOrId || "").trim().toLowerCase();
+
+          const isAllowed = allowedList.some((item) => {
+            const raw = String(item).trim().toLowerCase();
+
+            // 1. Check specific variant SKU (SKU:code)
+            if (raw.startsWith("sku:")) {
+              const targetSku = raw.replace("sku:", "").trim();
+              return currentSku && currentSku === targetSku;
+            }
+
+            // 2. Check full product (PROD:slug or bare slug)
+            const targetProd = raw.replace("prod:", "").trim();
+            if (currentProd && currentProd === targetProd) {
+              return true;
+            }
+
+            // 3. Fallback direct match with SKU or Slug
+            if (currentSku && currentSku === raw) {
+              return true;
+            }
+            if (currentProd && currentProd === raw) {
+              return true;
+            }
+
+            return false;
+          });
 
           if (!isAllowed) {
             return {
               valid: false,
               discountAmount: 0,
-              message: "Kupon ini tidak berlaku untuk produk yang Anda pilih",
+              message: "Kupon ini tidak berlaku untuk produk atau varian yang Anda pilih",
             };
           }
         }

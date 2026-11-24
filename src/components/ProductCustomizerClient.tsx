@@ -37,6 +37,7 @@ import {
 interface ProductItem {
   id: string;
   name: string;
+  sku?: string;
   price: number;
   originalPrice: number | null;
   discountPercent: number | null;
@@ -257,6 +258,7 @@ export default function ProductCustomizerClient({
           supplierPrice: 0,
           productSlug: product.slug,
           productId: product.id,
+          variantSku: selectedItem.sku,
         }),
       });
       const data = await res.json();

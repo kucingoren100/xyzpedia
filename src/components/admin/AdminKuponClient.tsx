@@ -17,8 +17,18 @@ import {
   Check,
   X,
   Package,
+  ChevronDown,
+  ChevronUp,
+  Tag,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
+
+interface ProductItemOption {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+}
 
 interface ProductOption {
   id: string;
@@ -26,6 +36,7 @@ interface ProductOption {
   slug: string;
   categorySlug: string;
   thumbnailUrl?: string;
+  items?: ProductItemOption[];
 }
 
 interface Coupon {
@@ -46,6 +57,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [expandedProducts, setExpandedProducts] = useState<Record<string, boolean>>({});
 
   // Form State
   const [form, setForm] = useState({
@@ -56,7 +68,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
     minSpend: 0,
     active: true,
     scopeType: "ALL" as "ALL" | "SELECTED",
-    selectedSlugs: [] as string[],
+    selectedTargets: [] as string[], // e.g. "PROD:netflix", "SKU:XAV-NETFLIX-1U1P"
   });
 
   const [productSearch, setProductSearch] = useState("");
@@ -96,9 +108,10 @@ export default function AdminKuponClient({ session }: { session: any }) {
       minSpend: 0,
       active: true,
       scopeType: "ALL",
-      selectedSlugs: [],
+      selectedTargets: [],
     });
     setProductSearch("");
+    setExpandedProducts({});
     setShowModal(true);
   };
 
@@ -106,20 +119,20 @@ export default function AdminKuponClient({ session }: { session: any }) {
     setEditingCoupon(coupon);
 
     let scopeType: "ALL" | "SELECTED" = "ALL";
-    let selectedSlugs: string[] = [];
+    let selectedTargets: string[] = [];
 
     if (coupon.applicableProducts && coupon.applicableProducts !== "ALL") {
       try {
         const parsed = JSON.parse(coupon.applicableProducts);
         if (Array.isArray(parsed) && parsed.length > 0) {
           scopeType = "SELECTED";
-          selectedSlugs = parsed;
+          selectedTargets = parsed;
         }
       } catch {
-        const split = coupon.applicableProducts.split(",").map((s) => s.trim().toLowerCase());
-        if (split.length > 0 && split[0] !== "all") {
+        const split = coupon.applicableProducts.split(",").map((s) => s.trim());
+        if (split.length > 0 && split[0].toLowerCase() !== "all") {
           scopeType = "SELECTED";
-          selectedSlugs = split;
+          selectedTargets = split;
         }
       }
     }
@@ -132,9 +145,10 @@ export default function AdminKuponClient({ session }: { session: any }) {
       minSpend: coupon.minSpend ?? 0,
       active: coupon.active,
       scopeType,
-      selectedSlugs,
+      selectedTargets,
     });
     setProductSearch("");
+    setExpandedProducts({});
     setShowModal(true);
   };
 
@@ -189,24 +203,157 @@ export default function AdminKuponClient({ session }: { session: any }) {
     }
   };
 
-  const handleToggleProductSlug = (slug: string) => {
-    const lower = slug.toLowerCase();
+  const toggleExpandProduct = (slug: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedProducts((prev) => ({
+      ...prev,
+      [slug]: !prev[slug],
+    }));
+  };
+
+  // Helper checks
+  const isProductFullySelected = (prod: ProductOption) => {
+    const prodKey = `PROD:${prod.slug.toLowerCase()}`;
+    const legacyKey = prod.slug.toLowerCase();
+    return form.selectedTargets.some(
+      (t) => t.toLowerCase() === prodKey.toLowerCase() || t.toLowerCase() === legacyKey.toLowerCase()
+    );
+  };
+
+  const getSelectedVariantCount = (prod: ProductOption) => {
+    if (isProductFullySelected(prod)) return prod.items?.length || 1;
+    const itemSkus = (prod.items || []).map((it) => it.sku.toLowerCase());
+    return form.selectedTargets.filter((t) => {
+      const lower = t.toLowerCase();
+      const sku = lower.startsWith("sku:") ? lower.replace("sku:", "").trim() : lower;
+      return itemSkus.includes(sku);
+    }).length;
+  };
+
+  const isVariantSelected = (prod: ProductOption, item: ProductItemOption) => {
+    if (isProductFullySelected(prod)) return true;
+    const skuKey = `SKU:${item.sku.toLowerCase()}`;
+    return form.selectedTargets.some(
+      (t) =>
+        t.toLowerCase() === skuKey.toLowerCase() ||
+        t.toLowerCase() === item.sku.toLowerCase()
+    );
+  };
+
+  // Toggle selection for an ENTIRE product (all variants)
+  const handleToggleEntireProduct = (prod: ProductOption) => {
+    const prodKey = `PROD:${prod.slug.toLowerCase()}`;
+    const legacyKey = prod.slug.toLowerCase();
+    const itemSkus = (prod.items || []).map((it) => `sku:${it.sku.toLowerCase()}`);
+    const bareSkus = (prod.items || []).map((it) => it.sku.toLowerCase());
+
     setForm((prev) => {
-      const exists = prev.selectedSlugs.includes(lower);
-      const next = exists
-        ? prev.selectedSlugs.filter((s) => s !== lower)
-        : [...prev.selectedSlugs, lower];
-      return { ...prev, selectedSlugs: next };
+      const isAlreadySelected = prev.selectedTargets.some(
+        (t) => t.toLowerCase() === prodKey.toLowerCase() || t.toLowerCase() === legacyKey.toLowerCase()
+      );
+
+      let next: string[];
+      if (isAlreadySelected) {
+        next = prev.selectedTargets.filter((t) => {
+          const lower = t.toLowerCase();
+          return (
+            lower !== prodKey.toLowerCase() &&
+            lower !== legacyKey.toLowerCase() &&
+            !itemSkus.includes(lower) &&
+            !bareSkus.includes(lower)
+          );
+        });
+      } else {
+        const cleaned = prev.selectedTargets.filter((t) => {
+          const lower = t.toLowerCase();
+          return (
+            lower !== prodKey.toLowerCase() &&
+            lower !== legacyKey.toLowerCase() &&
+            !itemSkus.includes(lower) &&
+            !bareSkus.includes(lower)
+          );
+        });
+        next = [...cleaned, prodKey];
+      }
+
+      return { ...prev, selectedTargets: next };
+    });
+  };
+
+  // Toggle selection for a SPECIFIC VARIANT of a product
+  const handleToggleVariantSku = (prod: ProductOption, item: ProductItemOption) => {
+    const skuKey = `SKU:${item.sku.toLowerCase()}`;
+    const prodKey = `PROD:${prod.slug.toLowerCase()}`;
+    const legacyKey = prod.slug.toLowerCase();
+    const allVariants = prod.items || [];
+
+    setForm((prev) => {
+      const isEntireProdSelected = prev.selectedTargets.some(
+        (t) => t.toLowerCase() === prodKey.toLowerCase() || t.toLowerCase() === legacyKey.toLowerCase()
+      );
+
+      let next: string[];
+
+      if (isEntireProdSelected) {
+        // If entire product was selected, break down into other variants
+        const otherVariants = allVariants
+          .filter((it) => it.sku.toLowerCase() !== item.sku.toLowerCase())
+          .map((it) => `SKU:${it.sku.toLowerCase()}`);
+
+        const withoutProd = prev.selectedTargets.filter(
+          (t) => t.toLowerCase() !== prodKey.toLowerCase() && t.toLowerCase() !== legacyKey.toLowerCase()
+        );
+        next = [...withoutProd, ...otherVariants];
+      } else {
+        const isSkuSelected = prev.selectedTargets.some(
+          (t) =>
+            t.toLowerCase() === skuKey.toLowerCase() ||
+            t.toLowerCase() === item.sku.toLowerCase()
+        );
+
+        if (isSkuSelected) {
+          next = prev.selectedTargets.filter(
+            (t) =>
+              t.toLowerCase() !== skuKey.toLowerCase() &&
+              t.toLowerCase() !== item.sku.toLowerCase()
+          );
+        } else {
+          const currentSelected = [...prev.selectedTargets, skuKey];
+          // Check if now ALL variants of this product are selected:
+          const selectedCount = allVariants.filter((it) =>
+            currentSelected.some(
+              (t) =>
+                t.toLowerCase() === `sku:${it.sku.toLowerCase()}` ||
+                t.toLowerCase() === it.sku.toLowerCase()
+            )
+          ).length;
+
+          if (allVariants.length > 0 && selectedCount === allVariants.length) {
+            // Collapse to entire product
+            const withoutVariants = currentSelected.filter((t) => {
+              const lower = t.toLowerCase();
+              return !allVariants.some(
+                (it) => lower === `sku:${it.sku.toLowerCase()}` || lower === it.sku.toLowerCase()
+              );
+            });
+            next = [...withoutVariants, prodKey];
+          } else {
+            next = currentSelected;
+          }
+        }
+      }
+
+      return { ...prev, selectedTargets: next };
     });
   };
 
   const handleSelectAllProducts = () => {
-    const all = products.map((p) => p.slug.toLowerCase());
-    setForm((prev) => ({ ...prev, selectedSlugs: all }));
+    const all = products.map((p) => `PROD:${p.slug.toLowerCase()}`);
+    setForm((prev) => ({ ...prev, selectedTargets: all }));
   };
 
   const handleClearSelectedProducts = () => {
-    setForm((prev) => ({ ...prev, selectedSlugs: [] }));
+    setForm((prev) => ({ ...prev, selectedTargets: [] }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -214,14 +361,14 @@ export default function AdminKuponClient({ session }: { session: any }) {
     setSubmitting(true);
     setMessage(null);
 
-    if (form.scopeType === "SELECTED" && form.selectedSlugs.length === 0) {
-      alert("Harap pilih minimal 1 produk jika membatasi kupon pada produk tertentu.");
+    if (form.scopeType === "SELECTED" && form.selectedTargets.length === 0) {
+      alert("Harap pilih minimal 1 produk atau varian jika membatasi kupon.");
       setSubmitting(false);
       return;
     }
 
     const applicableProducts =
-      form.scopeType === "ALL" ? "ALL" : JSON.stringify(form.selectedSlugs);
+      form.scopeType === "ALL" ? "ALL" : JSON.stringify(form.selectedTargets);
 
     try {
       const res = await fetch("/api/admin/coupons", {
@@ -256,36 +403,62 @@ export default function AdminKuponClient({ session }: { session: any }) {
     }
   };
 
-  // Helper untuk parsing produk kupon
+  // Helper untuk parsing produk & varian kupon untuk kartu tampilan
   const getCouponApplicableInfo = (coupon: Coupon) => {
     if (!coupon.applicableProducts || coupon.applicableProducts === "ALL") {
-      return { isAll: true, count: 0, names: [] };
+      return { isAll: true, totalCount: 0, labels: ["Semua Produk (Global)"] };
     }
 
-    let slugs: string[] = [];
+    let targets: string[] = [];
     try {
-      slugs = JSON.parse(coupon.applicableProducts);
+      targets = JSON.parse(coupon.applicableProducts);
     } catch {
-      slugs = coupon.applicableProducts.split(",").map((s) => s.trim().toLowerCase());
+      targets = coupon.applicableProducts.split(",").map((s) => s.trim());
     }
 
-    if (!Array.isArray(slugs) || slugs.length === 0) {
-      return { isAll: true, count: 0, names: [] };
+    if (!Array.isArray(targets) || targets.length === 0) {
+      return { isAll: true, totalCount: 0, labels: ["Semua Produk (Global)"] };
     }
 
-    const matchedNames = slugs.map((slug) => {
-      const prod = products.find((p) => p.slug.toLowerCase() === slug.toLowerCase());
-      return prod ? prod.name : slug;
-    });
+    const labels: string[] = [];
 
-    return { isAll: false, count: slugs.length, names: matchedNames };
+    for (const raw of targets) {
+      const target = raw.trim();
+      const lower = target.toLowerCase();
+
+      if (lower.startsWith("sku:")) {
+        const sku = lower.replace("sku:", "").trim();
+        let found = false;
+        for (const p of products) {
+          const it = (p.items || []).find((item) => item.sku.toLowerCase() === sku);
+          if (it) {
+            labels.push(`${p.name} (${it.name})`);
+            found = true;
+            break;
+          }
+        }
+        if (!found) labels.push(`Varian SKU: ${sku}`);
+      } else {
+        const prodSlug = lower.replace("prod:", "").trim();
+        const p = products.find((prod) => prod.slug.toLowerCase() === prodSlug);
+        labels.push(p ? `${p.name} (Semua Varian)` : prodSlug);
+      }
+    }
+
+    return {
+      isAll: false,
+      totalCount: targets.length,
+      labels,
+    };
   };
 
-  const filteredProductsForModal = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-      p.slug.toLowerCase().includes(productSearch.toLowerCase())
-  );
+  const filteredProductsForModal = products.filter((p) => {
+    const q = productSearch.toLowerCase();
+    if (p.name.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q)) return true;
+    return (p.items || []).some(
+      (it) => it.name.toLowerCase().includes(q) || it.sku.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -457,11 +630,11 @@ export default function AdminKuponClient({ session }: { session: any }) {
                       <div className="space-y-1">
                         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-purple-500/15 text-purple-400 border border-purple-500/30 text-[11px] font-black">
                           <Package className="w-3 h-3" />
-                          <span>Hanya {applicableInfo.count} Produk Pilihan</span>
+                          <span>Hanya {applicableInfo.totalCount} Target Pilihan</span>
                         </div>
                         <p className="text-[11px] text-gray-400 truncate font-medium">
-                          {applicableInfo.names.slice(0, 3).join(", ")}
-                          {applicableInfo.names.length > 3 && ` +${applicableInfo.names.length - 3} lainnya`}
+                          {applicableInfo.labels.slice(0, 3).join(", ")}
+                          {applicableInfo.labels.length > 3 && ` +${applicableInfo.labels.length - 3} lainnya`}
                         </p>
                       </div>
                     )}
@@ -684,46 +857,131 @@ export default function AdminKuponClient({ session }: { session: any }) {
                       </div>
 
                       <div className="flex items-center justify-between text-[11px] font-bold text-gray-400 pt-1">
-                        <span>Pilih produk yang diizinkan:</span>
+                        <span>Pilih produk & varian spesifik yang diizinkan:</span>
                         <span className="text-purple-400">
-                          {form.selectedSlugs.length} produk terpilih
+                          {form.selectedTargets.length} target dipilih
                         </span>
                       </div>
 
-                      {/* Scrollable list checkbox */}
-                      <div className="max-h-48 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                      {/* Scrollable list accordion produk & varian */}
+                      <div className="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                         {filteredProductsForModal.length === 0 ? (
                           <p className="text-center py-4 text-gray-500 text-[11px]">
                             Tidak ada produk yang cocok dengan pencarian.
                           </p>
                         ) : (
                           filteredProductsForModal.map((prod) => {
-                            const isSelected = form.selectedSlugs.includes(prod.slug.toLowerCase());
+                            const isAllSelected = isProductFullySelected(prod);
+                            const selectedCount = getSelectedVariantCount(prod);
+                            const hasItems = !!(prod.items && prod.items.length > 0);
+                            const isExpanded = !!(
+                              expandedProducts[prod.slug] ||
+                              (productSearch.trim().length > 0 && hasItems)
+                            );
+
                             return (
                               <div
                                 key={prod.id}
-                                onClick={() => handleToggleProductSlug(prod.slug)}
-                                className={`flex items-center justify-between p-2 rounded-xl border transition-all cursor-pointer ${
-                                  isSelected
-                                    ? "bg-purple-500/20 border-purple-500 text-white"
-                                    : "bg-white dark:bg-[#1a1a26] border-gray-200 dark:border-[#28283d] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#232334]"
-                                }`}
+                                className="rounded-xl border border-gray-200 dark:border-[#28283d] overflow-hidden bg-white dark:bg-[#1a1a26]"
                               >
-                                <div className="flex items-center gap-2 truncate">
+                                {/* Header Bar Produk */}
+                                <div className="flex items-center justify-between p-2.5 gap-2 hover:bg-gray-50 dark:hover:bg-[#20202f] transition-colors">
                                   <div
-                                    className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] font-black shrink-0 ${
-                                      isSelected
-                                        ? "bg-purple-600 border-purple-400 text-white"
-                                        : "border-gray-500"
-                                    }`}
+                                    onClick={() => handleToggleEntireProduct(prod)}
+                                    className="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer"
                                   >
-                                    {isSelected && "✓"}
+                                    <div
+                                      className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] font-black shrink-0 transition-colors ${
+                                        isAllSelected
+                                          ? "bg-purple-600 border-purple-400 text-white"
+                                          : selectedCount > 0
+                                          ? "bg-purple-600/30 border-purple-400 text-purple-300"
+                                          : "border-gray-500 text-transparent"
+                                      }`}
+                                    >
+                                      {isAllSelected ? "✓" : selectedCount > 0 ? "−" : ""}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span className="text-xs font-bold text-carbon dark:text-white truncate">
+                                          {prod.name}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400 font-mono">
+                                          /{prod.slug}
+                                        </span>
+                                      </div>
+                                      <p className="text-[10px] text-gray-500">
+                                        {isAllSelected
+                                          ? "Semua varian terpilih"
+                                          : selectedCount > 0
+                                          ? `${selectedCount} dari ${prod.items?.length || 0} varian terpilih`
+                                          : `${prod.items?.length || 0} varian tersedia`}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <span className="text-xs font-bold truncate">{prod.name}</span>
+
+                                  {/* Toggle Expand Varian */}
+                                  {hasItems && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => toggleExpandProduct(prod.slug, e)}
+                                      className="px-2 py-1 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 dark:hover:bg-[#323249] rounded-lg text-gray-600 dark:text-gray-300 hover:text-white transition-colors cursor-pointer shrink-0 flex items-center gap-1 text-[10px] font-bold"
+                                    >
+                                      <span>{isExpanded ? "Tutup" : "Pilih Varian"}</span>
+                                      {isExpanded ? (
+                                        <ChevronUp className="w-3.5 h-3.5" />
+                                      ) : (
+                                        <ChevronDown className="w-3.5 h-3.5" />
+                                      )}
+                                    </button>
+                                  )}
                                 </div>
-                                <span className="text-[10px] text-gray-500 font-mono shrink-0 ml-2">
-                                  /{prod.slug}
-                                </span>
+
+                                {/* List Varian Spesifik (Accordion Drawer) */}
+                                {hasItems && isExpanded && (
+                                  <div className="border-t border-gray-100 dark:border-[#28283d] bg-gray-50/70 dark:bg-[#14141e] p-2 space-y-1">
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1 pb-1">
+                                      Pilih Varian Spesifik:
+                                    </div>
+                                    {prod.items!.map((it) => {
+                                      const isChecked = isVariantSelected(prod, it);
+                                      return (
+                                        <div
+                                          key={it.id || it.sku}
+                                          onClick={() => handleToggleVariantSku(prod, it)}
+                                          className={`flex items-center justify-between p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
+                                            isChecked
+                                              ? "bg-purple-500/15 border-purple-500/60 text-carbon dark:text-white"
+                                              : "bg-white dark:bg-[#1a1a26] border-gray-200 dark:border-[#252538] text-gray-400 hover:bg-gray-100 dark:hover:bg-[#20202e]"
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-2 min-w-0 pr-2">
+                                            <div
+                                              className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9px] font-black shrink-0 ${
+                                                isChecked
+                                                  ? "bg-purple-600 border-purple-400 text-white"
+                                                  : "border-gray-500 text-transparent"
+                                              }`}
+                                            >
+                                              {isChecked && "✓"}
+                                            </div>
+                                            <span className="text-[11px] font-bold truncate">
+                                              {it.name}
+                                            </span>
+                                          </div>
+                                          <div className="text-right shrink-0">
+                                            <span className="text-[11px] font-black text-carbon dark:text-yellow-400 font-mono block">
+                                              Rp {it.price.toLocaleString("id-ID")}
+                                            </span>
+                                            <span className="text-[9px] text-gray-400 font-mono block">
+                                              SKU: {it.sku}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
                               </div>
                             );
                           })

@@ -1,15 +1,50 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function TopMarquee() {
+  const [marquee, setMarquee] = useState<{ text: string; isActive: boolean }>({
+    text: "⚡ PROSES OTOMATIS INSTAN 24/7 ✦ 100% API RESMI PUBLISHER ✦ CHECKOUT LANGSUNG (TANPA PERLU LOGIN) ✦ QRIS 0% BIAYA ADMIN ✦ PENGIRIMAN KILAT DI BAWAH 5 DETIK",
+    isActive: true,
+  });
+
+  useEffect(() => {
+    fetch("/api/public/announcements")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.config?.marquee) {
+          setMarquee(data.config.marquee);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  if (!marquee.isActive || !marquee.text.trim()) {
+    return null;
+  }
+
+  // Parse text into items separated by ✦ or • or |
+  const parts = marquee.text
+    .split(/✦|•|\|/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const colors = ["text-[#ffd731]", "text-[#55db9c]", "text-[#fb4903]", "text-[#4da2ff]"];
+
   const content = (
     <span className="px-6 flex items-center gap-3">
-      <span>⚡ PROSES OTOMATIS INSTAN 24/7</span>
-      <span className="text-[#ffd731]">✦</span>
-      <span>100% API RESMI PUBLISHER</span>
-      <span className="text-[#55db9c]">✦</span>
-      <span>CHECKOUT LANGSUNG (TANPA PERLU LOGIN)</span>
-      <span className="text-[#fb4903]">✦</span>
-      <span>QRIS 0% BIAYA ADMIN</span>
-      <span className="text-[#4da2ff]">✦</span>
-      <span>PENGIRIMAN KILAT DI BAWAH 5 DETIK</span>
+      {parts.length > 0 ? (
+        parts.map((p, idx) => (
+          <span key={idx} className="flex items-center gap-3">
+            <span>{p}</span>
+            {idx < parts.length - 1 && (
+              <span className={colors[idx % colors.length]}>✦</span>
+            )}
+          </span>
+        ))
+      ) : (
+        <span>{marquee.text}</span>
+      )}
     </span>
   );
 
