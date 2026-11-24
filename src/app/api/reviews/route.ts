@@ -14,6 +14,23 @@ const submitReviewSchema = z.object({
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const invoiceNumber = searchParams.get("invoiceNumber");
+
+    // Check specific review status by invoiceNumber
+    if (invoiceNumber) {
+      const existing = await prisma.review.findUnique({
+        where: { invoiceNumber },
+        include: {
+          product: { select: { name: true, slug: true } },
+        },
+      });
+      return NextResponse.json({
+        success: true,
+        hasReviewed: !!existing,
+        review: existing,
+      });
+    }
+
     const productSlug = searchParams.get("slug");
     const productId = searchParams.get("productId");
     const limit = Math.min(Number(searchParams.get("limit") || 10), 30);

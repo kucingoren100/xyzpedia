@@ -165,7 +165,7 @@ export default function CekTransaksiPage() {
                         href={`/transaksi/${order.invoiceNumber}`}
                         className="flex items-center gap-1.5 px-4 py-2 bg-black text-white rounded-full ink-border text-xs font-black uppercase shadow-[2px_2px_0px_0px_#ffd731] hover:scale-[1.02] transition-transform"
                       >
-                        <span>Lihat Invoice & QRIS</span>
+                        <span>{isSuccess ? "Buka Kredensial & Ulasan" : "Lihat Invoice & QRIS"}</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </Link>
                     </div>

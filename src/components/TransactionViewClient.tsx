@@ -19,6 +19,7 @@ import {
   Key,
 } from "lucide-react";
 import Link from "next/link";
+import ReviewWidget from "@/components/ReviewWidget";
 
 interface SafeOrder {
   id: string;
@@ -394,6 +395,15 @@ Status: ${order.status}`;
               </a>
             </div>
           ) : null}
+
+          {/* Customer Review & Rating Widget directly on Success */}
+          <div className="pt-2 w-full flex justify-center">
+            <ReviewWidget
+              invoiceNumber={order.invoiceNumber}
+              productName={order.product.name}
+              defaultName={order.customerEmail ? order.customerEmail.split("@")[0] : ""}
+            />
+          </div>
 
           {/* Action Links */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
