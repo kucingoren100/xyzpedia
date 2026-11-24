@@ -87,6 +87,7 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
     const parsed = JSON.parse(row.value);
     const rawBotToken = parsed.telegram?.botToken || "";
     const rawSmtpPass = parsed.email?.smtpPass || "";
+    const rawResendKey = parsed.email?.resendApiKey || "";
 
     return {
       ...DEFAULT_NOTIFICATION_SETTINGS,
@@ -100,6 +101,7 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
         ...DEFAULT_NOTIFICATION_SETTINGS.email,
         ...(parsed.email || {}),
         smtpPass: decryptSecret(rawSmtpPass),
+        resendApiKey: decryptSecret(rawResendKey),
       },
       events: {
         ...DEFAULT_NOTIFICATION_SETTINGS.events,
@@ -141,6 +143,16 @@ export async function saveNotificationSettings(
     newSmtpPass = settings.email.smtpPass.trim();
   }
 
+  // Handle incoming email.resendApiKey: preserve if empty, placeholder, or unchanged
+  let newResendApiKey = current.email.resendApiKey || "";
+  if (
+    settings.email?.resendApiKey !== undefined &&
+    settings.email.resendApiKey.trim() !== "" &&
+    !settings.email.resendApiKey.startsWith("••••")
+  ) {
+    newResendApiKey = settings.email.resendApiKey.trim();
+  }
+
   const merged: NotificationSettings = {
     ...current,
     ...settings,
@@ -153,6 +165,7 @@ export async function saveNotificationSettings(
       ...current.email,
       ...(settings.email || {}),
       smtpPass: newSmtpPass,
+      resendApiKey: newResendApiKey,
     },
     events: {
       ...current.events,
@@ -170,6 +183,7 @@ export async function saveNotificationSettings(
     email: {
       ...merged.email,
       smtpPass: encryptSecret(merged.email.smtpPass || ""),
+      resendApiKey: encryptSecret(merged.email.resendApiKey || ""),
     },
   };
 
@@ -564,6 +578,8 @@ export async function sendEmailMessage(
     smtpPass?: string;
     smtpSecure?: boolean;
     senderName?: string;
+    senderEmail?: string;
+    resendApiKey?: string;
   }
 ): Promise<{ success: boolean; message: string; simulated?: boolean }> {
   if (!recipient || !recipient.trim()) {
@@ -594,8 +610,59 @@ export async function sendEmailMessage(
   const smtpUser = customConfig?.smtpUser || settings.email.smtpUser || process.env.SMTP_USER || "";
   const smtpPass = customConfig?.smtpPass || settings.email.smtpPass || process.env.SMTP_PASS || "";
   const senderName = customConfig?.senderName || settings.email.senderName || "XYZPEDIA Store Bot";
+  const senderEmail =
+    customConfig?.senderEmail?.trim() ||
+    settings.email.senderEmail?.trim() ||
+    process.env.RESEND_FROM_EMAIL?.trim() ||
+    "noreply@xyzpedia.my.id";
+  const resendApiKey =
+    customConfig?.resendApiKey?.trim() ||
+    settings.email.resendApiKey?.trim() ||
+    process.env.RESEND_API_KEY?.trim() ||
+    "";
 
-  // Check if SMTP credentials exist for REAL delivery
+  // Priority 1: Resend REST API (Fast, reliable, custom domain)
+  if (resendApiKey) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `${senderName} <${senderEmail}>`,
+          to: emails,
+          subject,
+          html: htmlContent,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const errMsg = data?.message || data?.name || `HTTP ${res.status}`;
+        console.error("[Resend API Error]", res.status, data);
+        return {
+          success: false,
+          message: `Gagal kirim email via Resend (${res.status}): ${errMsg}`,
+        };
+      }
+
+      return {
+        success: true,
+        simulated: false,
+        message: `Email berhasil dikirim via Resend ke ${emails.join(", ")}! (ID: ${data?.id || "ok"})`,
+      };
+    } catch (err: any) {
+      console.error("[Resend Fetch Error]", err);
+      return {
+        success: false,
+        message: `Koneksi ke Resend API gagal: ${err?.message || "Timeout"}`,
+      };
+    }
+  }
+
+  // Priority 2: Check if SMTP credentials exist for REAL delivery
   if (smtpUser.trim() && smtpPass.trim()) {
     const isGmail = smtpHost.toLowerCase().includes("gmail");
     try {
@@ -964,7 +1031,7 @@ export function generateBuyerReceiptEmailHtml(data: {
       ${data.sn ? `
       <div style="background: #0f172a; border: 1.5px solid #38bdf8; border-radius: 14px; padding: 14px 16px; margin-bottom: 20px;">
         <div style="font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-          🧾 Bukti Serial Number (SN) / Pengiriman Server:
+          🧾 Bukti Pengiriman / Kredensial & SN:
         </div>
         <div style="font-size: 12px; font-weight: 700; color: #f8fafc; font-family: monospace; word-break: break-all; line-height: 1.5;">
           ${data.sn}

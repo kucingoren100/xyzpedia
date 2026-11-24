@@ -17,9 +17,10 @@ export async function GET() {
 
     const settings = await getNotificationSettings();
 
-    // Redact secrets: do NOT return raw botToken or smtpPass to the client
+    // Redact secrets: do NOT return raw botToken, smtpPass, or resendApiKey to the client
     const botToken = settings.telegram.botToken || "";
     const smtpPass = settings.email.smtpPass || "";
+    const resendApiKey = settings.email.resendApiKey || "";
 
     const safeSettings = {
       ...settings,
@@ -34,6 +35,10 @@ export async function GET() {
         smtpPass: smtpPass ? `••••••••${smtpPass.slice(-4)}` : "",
         smtpPassSet: !!smtpPass,
         smtpPassLast4: smtpPass.slice(-4),
+        resendApiKey: resendApiKey ? `••••••••${resendApiKey.slice(-4)}` : "",
+        resendApiKeySet: !!resendApiKey,
+        resendApiKeyLast4: resendApiKey.slice(-4),
+        resendEnvConfigured: !!process.env.RESEND_API_KEY?.trim(),
       },
     };
 

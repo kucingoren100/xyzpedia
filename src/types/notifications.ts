@@ -8,6 +8,8 @@ export interface NotificationSettings {
     enabled: boolean;
     recipient: string;
     senderName: string;
+    senderEmail?: string;
+    resendApiKey?: string;
     smtpHost?: string;
     smtpPort?: number;
     smtpUser?: string;
@@ -33,6 +35,8 @@ export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
     enabled: false,
     recipient: "",
     senderName: "XYZPEDIA Store Bot",
+    senderEmail: "noreply@xyzpedia.my.id",
+    resendApiKey: "",
     smtpHost: "smtp.gmail.com",
     smtpPort: 465,
     smtpUser: "",

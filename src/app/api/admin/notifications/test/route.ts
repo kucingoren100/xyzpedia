@@ -99,12 +99,20 @@ export async function POST(req: Request) {
         return { success: false, message: "Email penerima belum diisi di Pengaturan." };
       }
 
-      const activeHost = body.smtpHost || settings.email.smtpHost;
-      if (!isSafeSmtpHost(activeHost, settings.email.smtpHost)) {
-        return {
-          success: false,
-          message: "Host SMTP ditolak: host privat/loopback dilarang. Hanya domain tersimpan atau penyedia terpercaya yang diizinkan.",
-        };
+      let activeResendKey = body.resendApiKey?.trim();
+      if (!activeResendKey || activeResendKey.startsWith("••••")) {
+        activeResendKey = settings.email.resendApiKey || process.env.RESEND_API_KEY;
+      }
+
+      const usingResend = !!activeResendKey?.trim();
+      if (!usingResend) {
+        const activeHost = body.smtpHost || settings.email.smtpHost;
+        if (!isSafeSmtpHost(activeHost, settings.email.smtpHost)) {
+          return {
+            success: false,
+            message: "Host SMTP ditolak: host privat/loopback dilarang. Hanya domain tersimpan atau penyedia terpercaya yang diizinkan.",
+          };
+        }
       }
 
       let activeSmtpPass = body.smtpPass?.trim();
@@ -119,6 +127,8 @@ export async function POST(req: Request) {
         smtpPass: activeSmtpPass,
         smtpSecure: body.smtpSecure !== undefined ? body.smtpSecure : settings.email.smtpSecure,
         senderName: body.senderName || settings.email.senderName,
+        senderEmail: body.senderEmail || settings.email.senderEmail,
+        resendApiKey: activeResendKey,
       });
     };
 

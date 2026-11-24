@@ -247,6 +247,8 @@ export default function AdminPengaturanClient() {
           smtpPass: notificationSettings.email.smtpPass,
           smtpSecure: notificationSettings.email.smtpSecure,
           senderName: notificationSettings.email.senderName,
+          senderEmail: notificationSettings.email.senderEmail,
+          resendApiKey: notificationSettings.email.resendApiKey,
         }),
       });
       const data = await res.json();
@@ -647,27 +649,60 @@ export default function AdminPengaturanClient() {
                     </p>
                   </div>
 
-                  {/* Sender Name Input */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase text-gray-500 block">
-                      Nama Pengirim Notifikasi:
-                    </label>
-                    <input
-                      type="text"
-                      value={notificationSettings.email.senderName}
-                      onChange={(e) =>
-                        setNotificationSettings({
-                          ...notificationSettings,
-                          email: {
-                            ...notificationSettings.email,
-                            senderName: e.target.value,
-                          },
-                        })
-                      }
-                      placeholder="Contoh: XYZPEDIA Store Bot"
-                      className="w-full px-3 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400"
-                    />
+                  {/* Sender Name & Email Input */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-500 block">
+                        Nama Pengirim Notifikasi:
+                      </label>
+                      <input
+                        type="text"
+                        value={notificationSettings.email.senderName}
+                        onChange={(e) =>
+                          setNotificationSettings({
+                            ...notificationSettings,
+                            email: {
+                              ...notificationSettings.email,
+                              senderName: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="Contoh: XYZPEDIA Store"
+                        className="w-full px-3 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-gray-500 block">
+                        Email Pengirim (Domain Resend):
+                      </label>
+                      <input
+                        type="email"
+                        value={notificationSettings.email.senderEmail || ""}
+                        onChange={(e) =>
+                          setNotificationSettings({
+                            ...notificationSettings,
+                            email: {
+                              ...notificationSettings.email,
+                              senderEmail: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="noreply@xyzpedia.my.id"
+                        className="w-full px-3 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-mono font-bold text-carbon dark:text-white placeholder:text-gray-400"
+                      />
+                    </div>
                   </div>
+
+                  {/* Resend Environment Status Indicator */}
+                  {(notificationSettings.email as any).resendEnvConfigured && (
+                    <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-300 font-bold">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <span>
+                        Resend API Key terdeteksi aktif dari Environment Server (<code>RESEND_API_KEY</code>). Pengiriman struk & kredensial ke customer siap digunakan.
+                      </span>
+                    </div>
+                  )}
 
                   {/* Email Channel Description Info Box */}
                   <div className="p-3.5 bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-2xl space-y-1 text-xs">
@@ -696,6 +731,33 @@ export default function AdminPengaturanClient() {
 
                     {showSmtpConfig && (
                       <div className="p-4 pt-1 space-y-3 border-t border-amber-200 dark:border-amber-900/40 font-medium text-xs">
+                        <div className="space-y-1 pb-2 border-b border-amber-200/60 dark:border-amber-900/30">
+                          <label className="text-[10px] font-black uppercase text-gray-500 block">
+                            Resend API Key Override (Opsional jika sudah set di Vercel ENV):
+                          </label>
+                          <input
+                            type="password"
+                            value={notificationSettings.email.resendApiKey || ""}
+                            onChange={(e) =>
+                              setNotificationSettings({
+                                ...notificationSettings,
+                                email: {
+                                  ...notificationSettings.email,
+                                  resendApiKey: e.target.value,
+                                },
+                              })
+                            }
+                            placeholder={
+                              (notificationSettings.email as any).resendApiKeySet
+                                ? "•••••••• tersimpan di DB (isi jika ingin mengganti)"
+                                : (notificationSettings.email as any).resendEnvConfigured
+                                  ? "Menggunakan RESEND_API_KEY dari Environment Server"
+                                  : "re_xxxxxxxx..."
+                            }
+                            className="w-full px-3 py-2 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border text-xs font-mono font-bold text-carbon dark:text-white"
+                          />
+                        </div>
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="space-y-1">
                             <label className="text-[10px] font-black uppercase text-gray-500 block">
