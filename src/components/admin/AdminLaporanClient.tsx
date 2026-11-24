@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
+import AdminTopbar from "./AdminTopbar";
 import {
   AdminReportData,
   ReportPeriod,
@@ -128,53 +129,61 @@ export default function AdminLaporanClient({ initialData }: AdminLaporanClientPr
   );
 
   return (
-    <div className="space-y-6 pb-12 font-sans text-gray-200">
-      {/* 1. Header & Periode Switcher */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#28283d] pb-5">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#ffd731]/15 text-[#ffd731] flex items-center justify-center font-black">
-              <BarChart3 className="w-5 h-5" />
+    <div className="flex-1 flex flex-col font-sans text-gray-200">
+      <AdminTopbar
+        title="Laporan Penjualan & Laba Supplier"
+        subtitle="Analisis performa omzet, konversi, dan laba bersih per supplier secara real-time"
+      />
+
+      <main className="p-4 sm:p-6 md:p-8 space-y-8 max-w-7xl w-full mx-auto pb-16">
+        {/* 1. Header & Periode Switcher */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#14141e] border-2 border-[#2b2b3f] rounded-3xl p-5 md:p-6 shadow-[3px_3px_0px_0px_#000000]">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#ffd731]/15 text-[#ffd731] flex items-center justify-center font-black border border-[#ffd731]/30">
+                <BarChart3 className="w-5 h-5" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-[var(--font-bricolage)] font-black text-white tracking-tight">
+                  Laporan Penjualan Toko
+                </h1>
+                <p className="text-xs text-gray-400 mt-0.5 font-medium">
+                  Web tokomu saja, waktu WIB. Dibandingkan dengan periode sebelumnya yang sama panjang.
+                </p>
+              </div>
             </div>
-            <h1 className="text-2xl font-[var(--font-bricolage)] font-black text-white tracking-tight">
-              Laporan penjualan
-            </h1>
           </div>
-          <p className="text-xs text-gray-400 mt-1 font-medium">
-            Web tokomu saja, waktu WIB. Dibandingkan dengan periode sebelumnya yang sama panjang.
-          </p>
+
+          {/* Tab Filter Periode */}
+          <div className="flex items-center gap-1.5 p-1 bg-[#1a1a26] border border-[#2d2d42] rounded-xl self-start md:self-auto">
+            {(["7d", "30d", "90d"] as ReportPeriod[]).map((p) => {
+              const label = p === "7d" ? "7 hari" : p === "30d" ? "30 hari" : "90 hari";
+              const isActive = activePeriod === p;
+              return (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => handlePeriodChange(p)}
+                  disabled={isPending}
+                  className={`px-3.5 py-1.5 text-xs font-black rounded-lg transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-[#28283e] text-white shadow-sm border border-[#3b3b59]"
+                      : "text-gray-400 hover:text-white hover:bg-[#202030]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Tab Filter Periode */}
-        <div className="flex items-center gap-1.5 p-1 bg-[#1a1a26] border border-[#2d2d42] rounded-xl self-start md:self-auto">
-          {(["7d", "30d", "90d"] as ReportPeriod[]).map((p) => {
-            const label = p === "7d" ? "7 hari" : p === "30d" ? "30 hari" : "90 hari";
-            const isActive = activePeriod === p;
-            return (
-              <button
-                key={p}
-                type="button"
-                onClick={() => handlePeriodChange(p)}
-                disabled={isPending}
-                className={`px-3 py-1.5 text-xs font-black rounded-lg transition-all ${
-                  isActive
-                    ? "bg-[#28283e] text-white shadow-sm border border-[#3b3b59]"
-                    : "text-gray-400 hover:text-white hover:bg-[#202030]"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Loading overlay indicator */}
-      {isPending && (
-        <div className="w-full h-1 bg-[#28283e] overflow-hidden rounded-full">
-          <div className="w-full h-full bg-[#ffd731] animate-pulse" />
-        </div>
-      )}
+        {/* Loading overlay indicator */}
+        {isPending && (
+          <div className="w-full h-1 bg-[#28283e] overflow-hidden rounded-full">
+            <div className="w-full h-full bg-[#ffd731] animate-pulse" />
+          </div>
+        )}
 
       {/* 2. Top Metric Cards (Row 1) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -777,6 +786,7 @@ export default function AdminLaporanClient({ initialData }: AdminLaporanClientPr
           </p>
         </div>
       </div>
-    </div>
+    </main>
+  </div>
   );
 }

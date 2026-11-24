@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
 import { checkDigiflazzBalance, getDigiflazzPriceList, createDigiflazzTransaction } from "@/lib/digiflazz";
+import { getXavieraBalanceCached } from "@/lib/xaviera";
 import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
@@ -14,16 +15,31 @@ export async function GET() {
   }
 
   try {
-    // 1. Fetch Digiflazz balance & pricelist
+    // 1. Fetch Digiflazz & Xaviera balance
     let balance = 0;
     let resellerName = "Digiflazz H2H Partner";
+    let xavieraBalance = 0;
+    let xavieraResellerName = "Xaviera Store Partner";
     let digiItems: any[] = [];
 
     try {
-      balance = await checkDigiflazzBalance();
-      digiItems = await getDigiflazzPriceList("prepaid");
+      const [digiBal, digiList, xavBal] = await Promise.allSettled([
+        checkDigiflazzBalance(),
+        getDigiflazzPriceList("prepaid"),
+        getXavieraBalanceCached(true),
+      ]);
+
+      if (digiBal.status === "fulfilled") {
+        balance = digiBal.value;
+      }
+      if (digiList.status === "fulfilled") {
+        digiItems = digiList.value;
+      }
+      if (xavBal.status === "fulfilled" && typeof xavBal.value === "number") {
+        xavieraBalance = xavBal.value;
+      }
     } catch (digiErr) {
-      console.warn("[Admin Stock] Error fetching Digiflazz:", digiErr);
+      console.warn("[Admin Stock] Error fetching balances:", digiErr);
     }
 
     // Map Digiflazz availability by buyer_sku_code
@@ -106,6 +122,8 @@ export async function GET() {
       success: true,
       balance,
       resellerName,
+      xavieraBalance,
+      xavieraResellerName,
       totalDbItems,
       totalReady,
       totalUnready,

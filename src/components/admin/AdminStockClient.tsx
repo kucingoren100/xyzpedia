@@ -48,6 +48,8 @@ export default function AdminStockClient() {
   const [testingSku, setTestingSku] = useState(false);
   const [balance, setBalance] = useState<number>(0);
   const [resellerName, setResellerName] = useState<string>("");
+  const [xavieraBalance, setXavieraBalance] = useState<number>(0);
+  const [xavieraResellerName, setXavieraResellerName] = useState<string>("");
   const [products, setProducts] = useState<ProductReport[]>([]);
   const [totalDbItems, setTotalDbItems] = useState(0);
   const [totalReady, setTotalReady] = useState(0);
@@ -101,7 +103,9 @@ export default function AdminStockClient() {
       const data = await res.json();
       if (data.success) {
         setBalance(data.balance ?? 0);
-        setResellerName(data.resellerName || "Waroengkuy Reseller");
+        setResellerName(data.resellerName || "Digiflazz H2H Partner");
+        setXavieraBalance(data.xavieraBalance ?? 0);
+        setXavieraResellerName(data.xavieraResellerName || "Xaviera Store Partner");
         setProducts(data.products || []);
         setTotalDbItems(data.totalDbItems || 0);
         setTotalReady(data.totalReady || 0);
@@ -233,23 +237,43 @@ export default function AdminStockClient() {
         )}
 
         {/* Top Summary Cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Saldo Reseller */}
-          <div className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-5 shadow-[4px_4px_0px_0px_#000000] relative">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Card 1: Saldo Digiflazz */}
+          <div className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-4 sm:p-5 shadow-[4px_4px_0px_0px_#000000] relative">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Saldo Supplier
+              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                Saldo Digiflazz
               </span>
-              <div className="p-2 rounded-xl bg-[#ffd731]/20 text-[#ffd731]">
-                <Wallet className="w-5 h-5" />
+              <div className="p-1.5 sm:p-2 rounded-xl bg-blue-500/20 text-blue-500">
+                <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
             </div>
-            <div className="mt-3">
-              <div className="text-2xl font-black text-carbon dark:text-white font-mono">
+            <div className="mt-2 sm:mt-3">
+              <div className="text-xl sm:text-2xl font-black text-carbon dark:text-white font-mono">
                 Rp {balance.toLocaleString("id-ID")}
               </div>
-              <p className="text-[11px] font-bold text-gray-400 mt-1 truncate">
+              <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 mt-1 truncate">
                 {resellerName}
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Saldo Xaviera */}
+          <div className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-4 sm:p-5 shadow-[4px_4px_0px_0px_#000000] relative">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                Saldo Xaviera
+              </span>
+              <div className="p-1.5 sm:p-2 rounded-xl bg-purple-500/20 text-purple-400">
+                <Wallet className="w-4 h-4 sm:w-5 sm:h-5" />
+              </div>
+            </div>
+            <div className="mt-2 sm:mt-3">
+              <div className="text-xl sm:text-2xl font-black text-carbon dark:text-white font-mono">
+                Rp {xavieraBalance.toLocaleString("id-ID")}
+              </div>
+              <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 mt-1 truncate">
+                {xavieraResellerName}
               </p>
             </div>
           </div>
