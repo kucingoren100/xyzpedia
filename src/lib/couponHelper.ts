@@ -14,7 +14,8 @@ export interface CouponValidationResult {
 export async function validateCoupon(
   code: string | undefined | null,
   itemPrice: number,
-  supplierPrice: number = 0
+  supplierPrice: number = 0,
+  productSlugOrId?: string | null
 ): Promise<CouponValidationResult> {
   if (!code || !code.trim()) {
     return { valid: false, discountAmount: 0 };
@@ -42,6 +43,29 @@ export async function validateCoupon(
           discountAmount: 0,
           message: `Minimal belanja Rp ${dbCoupon.minSpend.toLocaleString("id-ID")} untuk kupon ini`,
         };
+      }
+
+      // Check product restriction if configured
+      if (dbCoupon.applicableProducts && dbCoupon.applicableProducts !== "ALL") {
+        let allowedList: string[] = [];
+        try {
+          allowedList = JSON.parse(dbCoupon.applicableProducts);
+        } catch {
+          allowedList = dbCoupon.applicableProducts.split(",").map((s: string) => s.trim().toLowerCase());
+        }
+
+        if (Array.isArray(allowedList) && allowedList.length > 0) {
+          const currentProductKey = String(productSlugOrId || "").trim().toLowerCase();
+          const isAllowed = allowedList.some((item) => String(item).toLowerCase() === currentProductKey);
+
+          if (!isAllowed) {
+            return {
+              valid: false,
+              discountAmount: 0,
+              message: "Kupon ini tidak berlaku untuk produk yang Anda pilih",
+            };
+          }
+        }
       }
 
       let discount = 0;

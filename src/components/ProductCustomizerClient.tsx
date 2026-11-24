@@ -255,6 +255,8 @@ export default function ProductCustomizerClient({
           code,
           itemPrice: priceToCheck,
           supplierPrice: 0,
+          productSlug: product.slug,
+          productId: product.id,
         }),
       });
       const data = await res.json();

@@ -12,23 +12,24 @@ export async function GET() {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    try {
-      const coupons = await (prisma as any).coupon.findMany({
+    // Concurrent fetch coupons and products
+    const [coupons, products] = await Promise.all([
+      prisma.coupon.findMany({
         orderBy: { createdAt: "desc" },
-      });
-      return NextResponse.json({ success: true, coupons });
-    } catch {
-      // Return default seed fallback if table not yet migrated
-      return NextResponse.json({
-        success: true,
-        coupons: [
-          { code: "XYZPEDIA", type: "percent", value: 30, maxDiscount: 1500, minSpend: 0, active: true },
-          { code: "HEMAT5", type: "percent", value: 5, maxDiscount: 5000, minSpend: 0, active: true },
-          { code: "NEWUSER", type: "fixed", value: 2000, maxDiscount: 2000, minSpend: 10000, active: true },
-        ],
-        fallback: true,
-      });
-    }
+      }),
+      prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          categorySlug: true,
+          thumbnailUrl: true,
+        },
+        orderBy: { name: "asc" },
+      }),
+    ]);
+
+    return NextResponse.json({ success: true, coupons, products });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
@@ -42,48 +43,115 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { code, type, value, maxDiscount, minSpend, active } = body;
+    const { code, type, value, maxDiscount, minSpend, active, applicableProducts } = body;
 
-    if (!code || !value) {
+    if (!code || value === undefined || value === null) {
       return NextResponse.json({ success: false, message: "Kode dan nilai diskon wajib diisi." }, { status: 400 });
     }
 
     const cleanCode = code.trim().toUpperCase();
+    const appProductsVal =
+      applicableProducts && typeof applicableProducts === "object"
+        ? JSON.stringify(applicableProducts)
+        : applicableProducts || "ALL";
 
-    try {
-      const coupon = await (prisma as any).coupon.upsert({
-        where: { code: cleanCode },
-        update: {
-          type: type || "fixed",
-          value: Number(value),
-          maxDiscount: maxDiscount ? Number(maxDiscount) : null,
-          minSpend: minSpend ? Number(minSpend) : 0,
-          active: active !== undefined ? Boolean(active) : true,
-        },
-        create: {
-          code: cleanCode,
-          type: type || "fixed",
-          value: Number(value),
-          maxDiscount: maxDiscount ? Number(maxDiscount) : null,
-          minSpend: minSpend ? Number(minSpend) : 0,
-          active: active !== undefined ? Boolean(active) : true,
-        },
-      });
+    const coupon = await prisma.coupon.upsert({
+      where: { code: cleanCode },
+      update: {
+        type: type || "fixed",
+        value: Number(value),
+        maxDiscount: maxDiscount ? Number(maxDiscount) : null,
+        minSpend: minSpend ? Number(minSpend) : 0,
+        active: active !== undefined ? Boolean(active) : true,
+        applicableProducts: appProductsVal,
+      },
+      create: {
+        code: cleanCode,
+        type: type || "fixed",
+        value: Number(value),
+        maxDiscount: maxDiscount ? Number(maxDiscount) : null,
+        minSpend: minSpend ? Number(minSpend) : 0,
+        active: active !== undefined ? Boolean(active) : true,
+        applicableProducts: appProductsVal,
+      },
+    });
 
-      await logAuditEvent({
-        actor: session.username,
-        action: "save_coupon",
-        target: cleanCode,
-        summary: `Admin created/updated coupon ${cleanCode}: ${type} ${value}`,
-      });
+    await logAuditEvent({
+      actor: session.username,
+      action: "save_coupon",
+      target: cleanCode,
+      summary: `Admin created/updated coupon ${cleanCode}: ${type} ${value} (Scope: ${appProductsVal})`,
+    });
 
-      return NextResponse.json({ success: true, coupon });
-    } catch (dbErr: any) {
-      return NextResponse.json({
-        success: false,
-        message: "Tabel Coupon belum termigrasi. Jalankan 'npx prisma db push' untuk menyimpan kupon permanen ke database.",
-      }, { status: 400 });
+    return NextResponse.json({ success: true, coupon });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
+
+    const body = await req.json();
+    const { code, active } = body;
+
+    if (!code) {
+      return NextResponse.json({ success: false, message: "Kode kupon wajib diisi." }, { status: 400 });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    const updated = await prisma.coupon.update({
+      where: { code: cleanCode },
+      data: {
+        active: Boolean(active),
+      },
+    });
+
+    await logAuditEvent({
+      actor: session.username,
+      action: "toggle_coupon_status",
+      target: cleanCode,
+      summary: `Admin changed coupon ${cleanCode} active state to ${active}`,
+    });
+
+    return NextResponse.json({ success: true, coupon: updated });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    const url = new URL(req.url);
+    const codeParam = url.searchParams.get("code");
+    const body = await req.json().catch(() => ({}));
+    const code = (codeParam || body.code || "").trim().toUpperCase();
+
+    if (!code) {
+      return NextResponse.json({ success: false, message: "Kode kupon tidak diberikan." }, { status: 400 });
+    }
+
+    await prisma.coupon.delete({
+      where: { code },
+    });
+
+    await logAuditEvent({
+      actor: session.username,
+      action: "delete_coupon",
+      target: code,
+      summary: `Admin deleted coupon ${code}`,
+    });
+
+    return NextResponse.json({ success: true, message: `Kupon ${code} berhasil dihapus.` });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

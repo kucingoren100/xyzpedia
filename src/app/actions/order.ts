@@ -159,7 +159,8 @@ export async function createOrder(data: CreateOrderInput) {
     const couponRes = await validateCoupon(
       validData.promoCode,
       item.price,
-      item.supplierPrice || 0
+      item.supplierPrice || 0,
+      product.slug
     );
     const discountAmount = couponRes.discountAmount || 0;
     const couponCode = couponRes.valid ? couponRes.code : null;

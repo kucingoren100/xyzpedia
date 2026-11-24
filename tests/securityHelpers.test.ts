@@ -19,6 +19,36 @@ describe("Fase 4: Coupon Validation & Rate Limiter", () => {
     expect(resInvalid.valid).toBe(false);
   });
 
+  it("should validate product-scoped coupons properly", async () => {
+    const { prisma } = await import("../src/lib/prisma");
+    const testCode = `TESTPROD_${Date.now()}`;
+
+    // Create a coupon restricted to "spotify" only
+    await prisma.coupon.create({
+      data: {
+        code: testCode,
+        type: "fixed",
+        value: 3000,
+        applicableProducts: JSON.stringify(["spotify"]),
+        active: true,
+      },
+    });
+
+    try {
+      // 1. Used on wrong product ("mobile-legends") -> should be rejected
+      const resWrong = await validateCoupon(testCode, 20000, 10000, "mobile-legends");
+      expect(resWrong.valid).toBe(false);
+      expect(resWrong.message).toContain("tidak berlaku untuk produk");
+
+      // 2. Used on matching product ("spotify") -> should be valid
+      const resRight = await validateCoupon(testCode, 20000, 10000, "spotify");
+      expect(resRight.valid).toBe(true);
+      expect(resRight.discountAmount).toBe(3000);
+    } finally {
+      await prisma.coupon.delete({ where: { code: testCode } }).catch(() => {});
+    }
+  });
+
   it("should enforce rate limiting correctly", () => {
     const testKey = `test-ip-${Date.now()}`;
     const rl1 = checkRateLimit(testKey, { intervalMs: 10000, max: 2 });

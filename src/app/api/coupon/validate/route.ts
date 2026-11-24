@@ -4,7 +4,7 @@ import { validateCoupon } from "@/lib/couponHelper";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { code, itemPrice, supplierPrice } = body;
+    const { code, itemPrice, supplierPrice, productSlug, productId } = body;
 
     if (!code || typeof itemPrice !== "number") {
       return NextResponse.json(
@@ -13,7 +13,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const res = await validateCoupon(code, itemPrice, supplierPrice || 0);
+    const res = await validateCoupon(
+      code,
+      itemPrice,
+      supplierPrice || 0,
+      productSlug || productId || null
+    );
     return NextResponse.json(res);
   } catch (error: any) {
     return NextResponse.json(
