@@ -579,7 +579,14 @@ export default function AdminTransaksiClient({
                 ) : (
                   <tr>
                     <td colSpan={7} className="py-12 text-center text-gray-400">
-                      Tidak ada transaksi yang cocok dengan kriteria pencarian.
+                      <div className="w-16 h-16 mx-auto mb-2 opacity-80">
+                        <img
+                          src="/brand/stiker/xyzi-stiker-cari.png"
+                          alt="XYZI Cari"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <span className="text-xs font-bold">Tidak ada transaksi yang cocok dengan kriteria pencarian.</span>
                     </td>
                   </tr>
                 )}

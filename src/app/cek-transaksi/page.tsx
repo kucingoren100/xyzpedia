@@ -60,7 +60,14 @@ export default function CekTransaksiPage() {
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 space-y-8">
       {/* Header Banner (Stitch style from guest_order_tracking_dispatch_status_1) */}
       <div className="relative w-full rounded-3xl ink-border overflow-hidden bg-[#dceeff] dark:bg-[#151926] dark:border-[#38384a] p-6 md:p-10 shadow-[4px_4px_0px_0px_#000000]">
-        <div className="absolute right-12 bottom-6 transform rotate-3 hidden lg:block pointer-events-none">
+        <div className="absolute right-8 bottom-4 transform rotate-2 hidden lg:flex items-center gap-3 pointer-events-none">
+          <div className="w-24 h-24 object-contain drop-shadow-[3px_3px_0px_#000]">
+            <img
+              src="/brand/stiker/xyzi-stiker-keren.png"
+              alt="XYZI Keren"
+              className="w-full h-full object-contain"
+            />
+          </div>
           <div className="bg-[#ffd731] ink-border px-4 py-2 rounded-2xl flex items-center gap-2 shadow-[2px_2px_0px_0px_#000000]">
             <span className="w-2.5 h-2.5 rounded-full bg-[#55db9c] ink-border animate-ping" />
             <span className="text-xs font-black uppercase tracking-wider text-black">
@@ -244,13 +251,19 @@ export default function CekTransaksiPage() {
               })}
             </div>
           ) : (
-            <div className="text-center py-12 bg-white dark:bg-[#181824] dark:border-[#38384a] ink-border rounded-3xl p-6 shadow-[3px_3px_0px_0px_#000000] space-y-2">
-              <p className="text-3xl">🔍</p>
-              <h4 className="text-base font-black text-carbon dark:text-white">
+            <div className="text-center py-12 bg-white dark:bg-[#181824] dark:border-[#38384a] ink-border rounded-3xl p-6 shadow-[4px_4px_0px_0px_#000000] space-y-3">
+              <div className="w-20 h-20 mx-auto animate-bounce" style={{ animationDuration: "2.5s" }}>
+                <img
+                  src="/brand/stiker/xyzi-stiker-cari.png"
+                  alt="XYZI Cari Transaksi"
+                  className="w-full h-full object-contain drop-shadow-[2px_2px_0px_#000]"
+                />
+              </div>
+              <h4 className="text-base font-black text-carbon dark:text-white uppercase font-[var(--font-bricolage)]">
                 Transaksi Tidak Ditemukan
               </h4>
               <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold max-w-sm mx-auto">
-                Pastikan nomor invoice yang dimasukkan tepat (format: <code className="bg-gray-100 dark:bg-[#252536] dark:border-[#38384a] px-1 py-0.5 rounded">INV-XYZ-...</code>) atau alamat email yang digunakan saat checkout.
+                Pastikan nomor invoice yang dimasukkan tepat (format: <code className="bg-gray-100 dark:bg-[#252536] dark:border-[#38384a] px-1 py-0.5 rounded font-mono font-bold">INV-XYZ-...</code>) atau alamat email yang digunakan saat checkout.
               </p>
             </div>
           )}

@@ -558,19 +558,35 @@ export default function HeroBanner() {
                         </span>
                       </div>
 
-                      {/* Central Emblem Circle */}
-                      <div className="hero-card-white-circle w-18 h-18 sm:w-28 sm:h-28 rounded-full bg-white !bg-white ink-border flex items-center justify-center p-3 mb-1.5 sm:mb-2 shadow-[3px_3px_0px_0px_#000000]">
+                      {/* Central Emblem Circle with Official XYZI Mascot Sticker */}
+                      <div className="hero-card-white-circle w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-white !bg-white ink-border flex items-center justify-center p-2 mb-1.5 sm:mb-2 shadow-[3px_3px_0px_0px_#000000] relative">
                         {slide.card.centerIcon === "rocket" && (
-                          <Rocket className="w-9 h-9 sm:w-12 sm:h-12 text-[#fb4903]" />
+                          <img
+                            src="/brand/stiker/xyzi-stiker-keren.png"
+                            alt="XYZI Keren"
+                            className="w-full h-full object-contain drop-shadow hover:scale-110 transition-transform"
+                          />
                         )}
                         {slide.card.centerIcon === "gamepad" && (
-                          <Gamepad2 className="w-9 h-9 sm:w-12 sm:h-12 text-[#5c4ade]" />
+                          <img
+                            src="/brand/stiker/xyzi-stiker-rayakan.png"
+                            alt="XYZI Gamers"
+                            className="w-full h-full object-contain drop-shadow hover:scale-110 transition-transform"
+                          />
                         )}
                         {slide.card.centerIcon === "streaming" && (
-                          <Tv className="w-9 h-9 sm:w-12 sm:h-12 text-[#fb4903]" />
+                          <img
+                            src="/brand/stiker/xyzi-stiker-cinta.png"
+                            alt="XYZI Streaming"
+                            className="w-full h-full object-contain drop-shadow hover:scale-110 transition-transform"
+                          />
                         )}
                         {slide.card.centerIcon === "voucher" && (
-                          <Ticket className="w-9 h-9 sm:w-12 sm:h-12 text-[#55db9c]" />
+                          <img
+                            src="/brand/stiker/xyzi-stiker-senang.png"
+                            alt="XYZI Voucher"
+                            className="w-full h-full object-contain drop-shadow hover:scale-110 transition-transform"
+                          />
                         )}
                       </div>
 

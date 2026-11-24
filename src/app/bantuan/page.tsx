@@ -74,9 +74,16 @@ export default function BantuanPage() {
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-12">
       {/* 1. HERO SECTION (Stitch Sky Wash Ground with physical vinyl badges) */}
       <section className="bg-[#dceeff] dark:bg-[#151926] dark:border-[#38384a] ink-border rounded-3xl p-6 md:p-12 relative overflow-hidden shadow-[4px_4px_0px_0px_#000000]">
-        {/* Tilted Floating Vinyl Badge */}
-        <div className="absolute -right-6 top-6 hidden lg:block rotate-[4deg] pointer-events-none">
-          <div className="bg-[#ffd731] ink-border rounded-2xl px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-[2px_2px_0px_0px_#000000]">
+        {/* Tilted Floating Mascot & Badge */}
+        <div className="absolute right-6 top-6 hidden lg:flex items-center gap-3 pointer-events-none">
+          <div className="w-24 h-24 object-contain drop-shadow-[3px_3px_0px_#000]">
+            <img
+              src="/brand/stiker/xyzi-stiker-halo.png"
+              alt="XYZI Halo"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="bg-[#ffd731] ink-border rounded-2xl px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-[2px_2px_0px_0px_#000000] rotate-[3deg]">
             24/7 AUTOMATED BOT + HUMAN CONCIERGE
           </div>
         </div>
@@ -115,8 +122,12 @@ export default function BantuanPage() {
               PRIORITAS UTAMA
             </span>
             <div className="space-y-3">
-              <div className="w-12 h-12 rounded-full bg-[#55db9c] ink-border flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-black fill-black" />
+              <div className="w-14 h-14 rounded-2xl bg-[#55db9c] ink-border flex items-center justify-center p-1 shadow-[2px_2px_0px_#000]">
+                <img
+                  src="/brand/stiker/xyzi-stiker-oke.png"
+                  alt="XYZI CS"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <h3 className="font-[var(--font-bricolage)] text-lg font-black text-carbon dark:text-white uppercase">
                 WhatsApp Live Concierge

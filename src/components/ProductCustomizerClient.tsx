@@ -899,9 +899,22 @@ export default function ProductCustomizerClient({
                 </button>
               </div>
               {promoMessage && (
-                <p className={`text-[11px] font-bold mt-1 ${appliedPromo ? "text-green-600 dark:text-green-400" : "text-red-500"}`}>
-                  {promoMessage}
-                </p>
+                <div className={`flex items-center gap-2 p-2 rounded-xl border mt-2 ${
+                  appliedPromo
+                    ? "bg-green-500/10 border-green-500/40 text-green-700 dark:text-green-300"
+                    : "bg-red-500/10 border-red-500/40 text-red-600 dark:text-red-400"
+                }`}>
+                  <div className="w-6 h-6 shrink-0">
+                    <img
+                      src={appliedPromo ? "/brand/ekspresi/xyzi-rayakan.svg" : "/brand/ekspresi/xyzi-maaf.svg"}
+                      alt="XYZI"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <p className="text-[11px] font-bold">
+                    {promoMessage}
+                  </p>
+                </div>
               )}
             </div>
           </section>
@@ -1280,9 +1293,22 @@ export default function ProductCustomizerClient({
                   </button>
                 </div>
                 {promoMessage && (
-                  <p className={`text-[10px] font-bold ${appliedPromo ? "text-green-600 dark:text-green-400" : "text-red-500"}`}>
-                    {promoMessage}
-                  </p>
+                  <div className={`flex items-center gap-1.5 p-1.5 rounded-lg border mt-1.5 ${
+                    appliedPromo
+                      ? "bg-green-500/10 border-green-500/40 text-green-700 dark:text-green-300"
+                      : "bg-red-500/10 border-red-500/40 text-red-600 dark:text-red-400"
+                  }`}>
+                    <div className="w-5 h-5 shrink-0">
+                      <img
+                        src={appliedPromo ? "/brand/ekspresi/xyzi-rayakan.svg" : "/brand/ekspresi/xyzi-maaf.svg"}
+                        alt="XYZI"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <p className="text-[10px] font-bold">
+                      {promoMessage}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

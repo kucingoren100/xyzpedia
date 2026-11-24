@@ -55,8 +55,12 @@ export default function FloatingWhatsApp() {
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-[#25d366] text-white flex items-center justify-center ink-border font-black text-sm shadow-[1.5px_1.5px_0px_#000000]">
-                  CS
+                <div className="w-10 h-10 rounded-2xl bg-[#ffd731] flex items-center justify-center ink-border shrink-0 shadow-[2px_2px_0px_#000000] p-0.5">
+                  <img
+                    src="/brand/stiker/xyzi-stiker-halo.png"
+                    alt="XYZI CS"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <div>
                   <h4 className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
@@ -156,6 +160,14 @@ export default function FloatingWhatsApp() {
             className="group relative flex items-center justify-center w-12 h-12 md:w-auto md:h-auto md:px-4 md:py-3 bg-[#25d366] hover:bg-[#20ba59] text-white rounded-full ink-border shadow-[3px_3px_0px_#000000] md:shadow-[4px_4px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer font-black text-xs uppercase"
             aria-label="Bantuan CS WhatsApp"
           >
+            {/* Mascot Peeking Sticker */}
+            <div className="absolute -top-6 -right-2 w-8 h-8 pointer-events-none group-hover:scale-115 group-hover:-rotate-12 transition-transform duration-200">
+              <img
+                src="/brand/stiker/xyzi-stiker-halo.png"
+                alt="XYZI"
+                className="w-full h-full object-contain drop-shadow-[1px_1px_0px_#000]"
+              />
+            </div>
             <span className="relative flex h-2.5 w-2.5 mr-0 md:mr-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>

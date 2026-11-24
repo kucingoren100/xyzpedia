@@ -228,7 +228,7 @@ export default function StoreAnnouncementModal() {
         {/* Content Mode: Iklan Promo */}
         {currentTab === "ad" ? (
           <div className="space-y-4">
-            {/* Banner Image */}
+            {/* Banner Image or Fallback Mascot Sticker */}
             {config.popupAd.imageUrl ? (
               <div className="w-full h-40 sm:h-48 rounded-2xl overflow-hidden ink-border bg-gray-900 shadow-[2px_2px_0px_#000000]">
                 <img
@@ -237,7 +237,15 @@ export default function StoreAnnouncementModal() {
                   className="w-full h-full object-cover"
                 />
               </div>
-            ) : null}
+            ) : (
+              <div className="w-24 h-24 mx-auto py-1">
+                <img
+                  src="/brand/stiker/xyzi-stiker-cinta.png"
+                  alt="XYZI Promo"
+                  className="w-full h-full object-contain drop-shadow"
+                />
+              </div>
+            )}
 
             {/* Title & Description */}
             <div className="space-y-1.5">
@@ -279,9 +287,13 @@ export default function StoreAnnouncementModal() {
         ) : (
           /* Content Mode: Pengumuman Toko */
           <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="w-12 h-12 rounded-2xl bg-[#ffd731] text-black flex items-center justify-center ink-border shadow-[2px_2px_0px_#000000]">
-                <Megaphone className="w-6 h-6" />
+            <div className="space-y-3">
+              <div className="w-16 h-16 rounded-2xl bg-[#ffd731] flex items-center justify-center ink-border shadow-[2px_2px_0px_#000000] p-1">
+                <img
+                  src="/brand/stiker/xyzi-stiker-halo.png"
+                  alt="XYZI Pengumuman"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <h3 className="font-[var(--font-bricolage)] text-xl sm:text-2xl font-black uppercase text-carbon dark:text-white leading-tight">
                 {config.popupAnnouncement.title}

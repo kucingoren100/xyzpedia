@@ -539,8 +539,14 @@ export default function AdminKuponClient({ session }: { session: any }) {
 
         {/* Empty State */}
         {!loading && coupons.length === 0 && (
-          <div className="bg-[#181824] border-2 border-[#2b2b3f] rounded-3xl p-12 text-center space-y-4 shadow-[4px_4px_0px_0px_#000000]">
-            <Ticket className="w-12 h-12 text-gray-500 mx-auto" />
+          <div className="bg-[#181824] border-2 border-[#2b2b3f] rounded-3xl p-10 text-center space-y-4 shadow-[4px_4px_0px_0px_#000000]">
+            <div className="w-20 h-20 mx-auto">
+              <img
+                src="/brand/stiker/xyzi-stiker-berpikir.png"
+                alt="XYZI Berpikir"
+                className="w-full h-full object-contain drop-shadow"
+              />
+            </div>
             <div className="space-y-1">
               <h3 className="text-base font-black text-white font-[var(--font-bricolage)]">
                 Belum Ada Kupon Promo

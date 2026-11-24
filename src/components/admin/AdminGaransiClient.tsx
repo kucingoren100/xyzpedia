@@ -291,8 +291,14 @@ export default function AdminGaransiClient({
 
         {/* Claims Table / Cards */}
         {filteredClaims.length === 0 ? (
-          <div className="bg-white dark:bg-[#161622] ink-border dark:border-[#38384a] rounded-2xl p-8 text-center space-y-2">
-            <ShieldCheck className="w-10 h-10 mx-auto text-gray-300 dark:text-gray-600" />
+          <div className="bg-white dark:bg-[#161622] ink-border dark:border-[#38384a] rounded-2xl p-8 text-center space-y-3">
+            <div className="w-16 h-16 mx-auto">
+              <img
+                src="/brand/stiker/xyzi-stiker-senang.png"
+                alt="XYZI Senang"
+                className="w-full h-full object-contain"
+              />
+            </div>
             <p className="text-xs font-black uppercase text-gray-400">Tidak ada tiket klaim pada kategori ini</p>
           </div>
         ) : (

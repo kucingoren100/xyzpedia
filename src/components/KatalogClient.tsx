@@ -753,12 +753,22 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white ink-border rounded-3xl p-6 shadow-[3px_3px_0px_0px_#000000] space-y-3">
-              <p className="text-4xl">🔍</p>
-              <h3 className="text-lg font-black text-carbon">Produk Tidak Ditemukan</h3>
-              <p className="text-xs text-gray-600 font-semibold max-w-sm mx-auto">
-                Tidak ada produk yang cocok dengan pencarian Anda.
-              </p>
+            <div className="text-center py-14 bg-white dark:bg-[#161622] ink-border dark:border-[#38384a] rounded-3xl p-6 shadow-[4px_4px_0px_0px_#000000] space-y-4">
+              <div className="w-24 h-24 mx-auto relative animate-bounce" style={{ animationDuration: "2.5s" }}>
+                <img
+                  src="/brand/stiker/xyzi-stiker-cari.png"
+                  alt="XYZI Mencari Produk"
+                  className="w-full h-full object-contain drop-shadow-[2px_2px_0px_#000]"
+                />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-black text-carbon dark:text-white font-[var(--font-bricolage)] uppercase">
+                  Yah, Produk Belum Ketemu
+                </h3>
+                <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold max-w-sm mx-auto">
+                  Tidak ada produk yang cocok dengan kata kunci atau filter kategori Anda.
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => {
@@ -767,9 +777,9 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
                   setInputPhone("");
                   router.replace("/katalog", { scroll: false });
                 }}
-                className="px-5 py-2 bg-[#ffd731] text-carbon ink-border rounded-full text-xs font-black uppercase shadow-[2px_2px_0px_0px_#000000]"
+                className="px-6 py-2.5 bg-[#ffd731] hover:bg-[#ffe066] text-carbon ink-border rounded-full text-xs font-black uppercase shadow-[2px_2px_0px_0px_#000000] active:translate-y-0.5 transition-all cursor-pointer"
               >
-                Reset Filter
+                Reset Semua Filter
               </button>
             </div>
           )}

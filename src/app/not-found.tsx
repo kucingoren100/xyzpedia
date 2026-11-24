@@ -5,12 +5,19 @@ export default function NotFound() {
   return (
     <div className="min-h-[75vh] flex items-center justify-center px-4 py-16">
       <div className="max-w-md w-full text-center space-y-6">
-        {/* Pop-Brutalist 404 Visual Sticker */}
+        {/* Pop-Brutalist 404 Mascot & Visual Sticker */}
         <div className="relative inline-block">
-          <div className="text-8xl md:text-9xl font-[var(--font-bricolage)] font-black text-[#5c4ade] dark:text-[#ffd731] tracking-tighter drop-shadow-[4px_4px_0px_#000000]">
+          <div className="w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-2 animate-bounce" style={{ animationDuration: "2s" }}>
+            <img
+              src="/brand/stiker/xyzi-stiker-kaget.png"
+              alt="XYZI Kaget 404"
+              className="w-full h-full object-contain drop-shadow-[3px_3px_0px_#000]"
+            />
+          </div>
+          <div className="text-7xl sm:text-8xl md:text-9xl font-[var(--font-bricolage)] font-black text-[#5c4ade] dark:text-[#ffd731] tracking-tighter drop-shadow-[4px_4px_0px_#000000] leading-none">
             404
           </div>
-          <div className="absolute -top-3 -right-6 rotate-12 bg-[#ff4d4d] text-white px-3 py-1 rounded-full text-xs font-black uppercase ink-border shadow-[2px_2px_0px_#000000] flex items-center gap-1">
+          <div className="absolute top-24 -right-4 rotate-12 bg-[#ff4d4d] text-white px-3 py-1 rounded-full text-xs font-black uppercase ink-border shadow-[2px_2px_0px_#000000] flex items-center gap-1">
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>LOST IN VOID</span>
           </div>

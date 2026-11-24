@@ -123,6 +123,13 @@ export default function AdminLoginPage() {
         
         {/* Brand Header */}
         <div className="text-center space-y-2">
+          <div className="w-20 h-20 mx-auto mb-1">
+            <img
+              src="/brand/stiker/xyzi-stiker-keren.png"
+              alt="XYZI Admin Guardian"
+              className="w-full h-full object-contain drop-shadow-[2px_2px_0px_#000]"
+            />
+          </div>
           <Link href="/" className="inline-block hover:scale-105 transition-transform">
             <BrandLogo />
           </Link>

@@ -25,7 +25,16 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row justify-between gap-8 pb-8 border-b border-white/20">
           
           <div className="space-y-4 max-w-sm">
-            <BrandLogo asLink href="/" size="md" theme="dark" />
+            <div className="flex items-center gap-3">
+              <BrandLogo asLink href="/" size="md" theme="dark" />
+              <div className="w-10 h-10 shrink-0 transform -rotate-6 hover:rotate-0 transition-transform">
+                <img
+                  src="/brand/stiker/xyzi-stiker-oke.png"
+                  alt="XYZI Maskot"
+                  className="w-full h-full object-contain drop-shadow"
+                />
+              </div>
+            </div>
 
             <p className="text-xs text-[#e9e9e9] font-medium leading-relaxed">
               Platform direct-fulfillment digital terkemuka untuk top up game, voucher, dan langganan premium instan. Transaksi guest langsung tanpa wajib login akun.

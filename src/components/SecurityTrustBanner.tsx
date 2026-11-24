@@ -26,8 +26,12 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
       {/* Top Banner Alert Bar */}
       <div className="bg-[#ff4d4d] text-white ink-border rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-[2px_2px_0px_#000000]">
         <div className="flex items-start gap-3">
-          <div className="p-2 bg-[#ffd731] text-black rounded-xl ink-border shrink-0 shadow-[1px_1px_0px_#000000]">
-            <AlertTriangle className="w-5 h-5 fill-current stroke-black" />
+          <div className="w-12 h-12 p-0.5 bg-[#ffd731] rounded-2xl ink-border shrink-0 shadow-[2px_2px_0px_#000000]">
+            <img
+              src="/brand/stiker/xyzi-stiker-keren.png"
+              alt="XYZI Security"
+              className="w-full h-full object-contain"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">

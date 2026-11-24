@@ -215,8 +215,12 @@ export default function AdminSidebar({
           {/* Admin Role Pill */}
           {isCollapsed ? (
             <div className="relative group flex items-center justify-center">
-              <div className="w-10 h-10 bg-[#ffd731] ink-border rounded-xl flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] relative cursor-pointer">
-                <ShieldCheck className="w-5 h-5 text-black" />
+              <div className="w-10 h-10 bg-[#ffd731] ink-border rounded-xl flex items-center justify-center shadow-[2px_2px_0px_0px_#000000] relative cursor-pointer p-1">
+                <img
+                  src="/brand/logo/xyzpedia-maskot.svg"
+                  alt="XYZI Mascot"
+                  className="w-full h-full object-contain"
+                />
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#55db9c] ink-border animate-pulse" />
               </div>
               {/* Tooltip */}
@@ -228,7 +232,13 @@ export default function AdminSidebar({
           ) : (
             <div className="p-2.5 bg-[#ffd731] ink-border rounded-xl flex items-center justify-between shadow-[2px_2px_0px_0px_#000000]">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-black shrink-0" />
+                <div className="w-6 h-6 rounded-lg overflow-hidden shrink-0">
+                  <img
+                    src="/brand/logo/xyzpedia-maskot.svg"
+                    alt="XYZI Mascot"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
                 <div>
                   <p className="text-[10px] font-black uppercase text-black leading-tight">
                     Super Admin
