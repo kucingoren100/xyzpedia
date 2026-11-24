@@ -14,6 +14,7 @@ export interface XavieraOrderResult {
 }
 
 const XAVIERA_PRODUCT_MAP: Record<string, string> = {
+  netflix: "p_bb4378a5c1345a6f",
   viu: "p_065404294e71ec70",
   iqiyi: "p_f159552a25f64ae2",
   loklok: "p_adc3826cdb9f4b27",
