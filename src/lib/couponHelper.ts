@@ -30,13 +30,17 @@ export async function validateCoupon(
       where: { code: cleanPromo },
     });
 
-    if (dbCoupon && dbCoupon.active) {
+    if (dbCoupon) {
+      if (!dbCoupon.active) {
+        return { valid: false, discountAmount: 0, message: "Kupon ini sedang dinonaktifkan atau tidak berlaku." };
+      }
+
       const now = new Date();
       if (dbCoupon.startsAt && now < dbCoupon.startsAt) {
-        return { valid: false, discountAmount: 0, message: "Kupon belum dapat digunakan" };
+        return { valid: false, discountAmount: 0, message: "Kupon promo belum mulai berlaku." };
       }
       if (dbCoupon.endsAt && now > dbCoupon.endsAt) {
-        return { valid: false, discountAmount: 0, message: "Kupon telah kedaluwarsa" };
+        return { valid: false, discountAmount: 0, message: "Kupon promo telah kedaluwarsa dan tidak berlaku lagi." };
       }
       if (dbCoupon.minSpend && itemPrice < dbCoupon.minSpend) {
         return {

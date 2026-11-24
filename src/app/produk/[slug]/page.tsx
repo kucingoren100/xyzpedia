@@ -279,15 +279,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             </div>
           </div>
-
-          {/* Server Status Live Indicator Box (Stitch style) */}
-          <div className="flex items-center gap-3 bg-[#e9e9e9] ink-border rounded-2xl p-3 self-start md:self-center rotate-1 shadow-[2px_2px_0px_0px_#000000]">
-            <div className="w-3 h-3 rounded-full bg-[#55db9c] ink-border animate-pulse flex-shrink-0" />
-            <div>
-              <span className="text-[10px] uppercase font-black text-gray-500 block">Server Gateway</span>
-              <span className="text-xs font-black text-carbon">ONLINE (0.8s avg)</span>
-            </div>
-          </div>
         </div>
       </div>
 

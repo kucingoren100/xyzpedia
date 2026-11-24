@@ -39,13 +39,6 @@ export default function Footer() {
             <p className="text-xs text-[#e9e9e9] font-medium leading-relaxed">
               Platform direct-fulfillment digital terkemuka untuk top up game, voucher, dan langganan premium instan. Transaksi guest langsung tanpa wajib login akun.
             </p>
-
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#55db9c] animate-pulse" />
-              <span className="text-xs text-[#55db9c] font-bold">
-                Semua Node Dispatch Otomatis Aktif 24/7
-              </span>
-            </div>
           </div>
 
           {/* Payment Method Badges Row */}

@@ -20,6 +20,10 @@ import {
   ChevronDown,
   ChevronUp,
   Tag,
+  Calendar,
+  History,
+  Clock,
+  Sparkles,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
 
@@ -48,7 +52,37 @@ interface Coupon {
   minSpend?: number | null;
   active: boolean;
   applicableProducts?: string | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
   createdAt?: string;
+}
+
+function toDatetimeLocal(isoStr?: string | null) {
+  if (!isoStr) return "";
+  try {
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return "";
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } catch {
+    return "";
+  }
+}
+
+function formatDateIndo(isoStr?: string | null) {
+  if (!isoStr) return "-";
+  try {
+    const d = new Date(isoStr);
+    return d.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "-";
+  }
 }
 
 export default function AdminKuponClient({ session }: { session: any }) {
@@ -59,6 +93,9 @@ export default function AdminKuponClient({ session }: { session: any }) {
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
   const [expandedProducts, setExpandedProducts] = useState<Record<string, boolean>>({});
 
+  // Active Tab: "ACTIVE" (Kupon Aktif) or "HISTORY" (Riwayat / Kadaluarsa)
+  const [activeTab, setActiveTab] = useState<"ACTIVE" | "HISTORY">("ACTIVE");
+
   // Form State
   const [form, setForm] = useState({
     code: "",
@@ -67,8 +104,10 @@ export default function AdminKuponClient({ session }: { session: any }) {
     maxDiscount: 5000,
     minSpend: 0,
     active: true,
+    startsAt: "",
+    endsAt: "",
     scopeType: "ALL" as "ALL" | "SELECTED",
-    selectedTargets: [] as string[], // e.g. "PROD:netflix", "SKU:XAV-NETFLIX-1U1P"
+    selectedTargets: [] as string[],
   });
 
   const [productSearch, setProductSearch] = useState("");
@@ -107,6 +146,8 @@ export default function AdminKuponClient({ session }: { session: any }) {
       maxDiscount: 5000,
       minSpend: 0,
       active: true,
+      startsAt: "",
+      endsAt: "",
       scopeType: "ALL",
       selectedTargets: [],
     });
@@ -144,6 +185,8 @@ export default function AdminKuponClient({ session }: { session: any }) {
       maxDiscount: coupon.maxDiscount ?? 0,
       minSpend: coupon.minSpend ?? 0,
       active: coupon.active,
+      startsAt: toDatetimeLocal(coupon.startsAt),
+      endsAt: toDatetimeLocal(coupon.endsAt),
       scopeType,
       selectedTargets,
     });
@@ -170,6 +213,34 @@ export default function AdminKuponClient({ session }: { session: any }) {
         await fetchCouponsAndProducts();
       } else {
         setMessage({ type: "error", text: data.message || "Gagal mengubah status kupon." });
+      }
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleReactivateCoupon = async (coupon: Coupon) => {
+    setActionLoading(`reactivate-${coupon.code}`);
+    setMessage(null);
+    try {
+      // Extend expiry 7 days from now if expired, and mark active: true
+      const newEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      const res = await fetch("/api/admin/coupons", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: coupon.code, active: true, endsAt: newEndsAt }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMessage({
+          type: "success",
+          text: `Kupon ${coupon.code} berhasil diaktifkan kembali (Masa aktif diperpanjang 7 hari)!`,
+        });
+        await fetchCouponsAndProducts();
+      } else {
+        setMessage({ type: "error", text: data.message || "Gagal mengaktifkan kupon." });
       }
     } catch (err: any) {
       setMessage({ type: "error", text: err.message });
@@ -211,7 +282,6 @@ export default function AdminKuponClient({ session }: { session: any }) {
     }));
   };
 
-  // Helper checks
   const isProductFullySelected = (prod: ProductOption) => {
     const prodKey = `PROD:${prod.slug.toLowerCase()}`;
     const legacyKey = prod.slug.toLowerCase();
@@ -240,7 +310,6 @@ export default function AdminKuponClient({ session }: { session: any }) {
     );
   };
 
-  // Toggle selection for an ENTIRE product (all variants)
   const handleToggleEntireProduct = (prod: ProductOption) => {
     const prodKey = `PROD:${prod.slug.toLowerCase()}`;
     const legacyKey = prod.slug.toLowerCase();
@@ -280,7 +349,6 @@ export default function AdminKuponClient({ session }: { session: any }) {
     });
   };
 
-  // Toggle selection for a SPECIFIC VARIANT of a product
   const handleToggleVariantSku = (prod: ProductOption, item: ProductItemOption) => {
     const skuKey = `SKU:${item.sku.toLowerCase()}`;
     const prodKey = `PROD:${prod.slug.toLowerCase()}`;
@@ -295,7 +363,6 @@ export default function AdminKuponClient({ session }: { session: any }) {
       let next: string[];
 
       if (isEntireProdSelected) {
-        // If entire product was selected, break down into other variants
         const otherVariants = allVariants
           .filter((it) => it.sku.toLowerCase() !== item.sku.toLowerCase())
           .map((it) => `SKU:${it.sku.toLowerCase()}`);
@@ -319,7 +386,6 @@ export default function AdminKuponClient({ session }: { session: any }) {
           );
         } else {
           const currentSelected = [...prev.selectedTargets, skuKey];
-          // Check if now ALL variants of this product are selected:
           const selectedCount = allVariants.filter((it) =>
             currentSelected.some(
               (t) =>
@@ -329,7 +395,6 @@ export default function AdminKuponClient({ session }: { session: any }) {
           ).length;
 
           if (allVariants.length > 0 && selectedCount === allVariants.length) {
-            // Collapse to entire product
             const withoutVariants = currentSelected.filter((t) => {
               const lower = t.toLowerCase();
               return !allVariants.some(
@@ -382,6 +447,8 @@ export default function AdminKuponClient({ session }: { session: any }) {
           minSpend: form.minSpend ? Number(form.minSpend) : 0,
           active: form.active,
           applicableProducts,
+          startsAt: form.startsAt ? new Date(form.startsAt).toISOString() : null,
+          endsAt: form.endsAt ? new Date(form.endsAt).toISOString() : null,
         }),
       });
 
@@ -402,6 +469,54 @@ export default function AdminKuponClient({ session }: { session: any }) {
       setSubmitting(false);
     }
   };
+
+  // Helper status kupon (Aktif, Mendatang, Kadaluarsa, Nonaktif)
+  const getCouponStatus = (coupon: Coupon) => {
+    const now = new Date();
+    if (coupon.endsAt && new Date(coupon.endsAt) < now) {
+      return {
+        key: "EXPIRED",
+        label: "Kadaluarsa",
+        color: "bg-red-500/15 text-red-400 border-red-500/40",
+        isExpired: true,
+      };
+    }
+    if (coupon.startsAt && new Date(coupon.startsAt) > now) {
+      return {
+        key: "UPCOMING",
+        label: "Mendatang",
+        color: "bg-blue-500/15 text-blue-400 border-blue-500/40",
+        isExpired: false,
+      };
+    }
+    if (!coupon.active) {
+      return {
+        key: "INACTIVE",
+        label: "Nonaktif",
+        color: "bg-gray-500/15 text-gray-400 border-gray-600",
+        isExpired: false,
+      };
+    }
+    return {
+      key: "ACTIVE",
+      label: "Aktif",
+      color: "bg-emerald-500/15 text-[#55db9c] border-emerald-500/40",
+      isExpired: false,
+    };
+  };
+
+  // Filter Active vs History
+  const activeCoupons = coupons.filter((c) => {
+    const status = getCouponStatus(c);
+    return status.key === "ACTIVE" || status.key === "UPCOMING";
+  });
+
+  const historyCoupons = coupons.filter((c) => {
+    const status = getCouponStatus(c);
+    return status.key === "EXPIRED" || status.key === "INACTIVE";
+  });
+
+  const displayedCoupons = activeTab === "ACTIVE" ? activeCoupons : historyCoupons;
 
   // Helper untuk parsing produk & varian kupon untuk kartu tampilan
   const getCouponApplicableInfo = (coupon: Coupon) => {
@@ -464,7 +579,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
     <div className="flex-1 flex flex-col min-w-0">
       <AdminTopbar
         title="Kupon Promo & Diskon"
-        subtitle="Kelola kode voucher diskon dengan batas harga modal dan batasan produk tertentu"
+        subtitle="Kelola kode voucher diskon dengan batas harga modal, batasan produk, dan masa aktif kedaluwarsa"
       />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl w-full mx-auto pb-16">
@@ -479,7 +594,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
                 Kupon Promo & Diskon
               </h1>
               <p className="text-xs text-gray-400 font-medium">
-                Kelola kode kupon, atur diskon, aktifkan/nonaktifkan, dan tentukan produk yang berlaku.
+                Kelola kode kupon, masa aktif, proteksi modal, dan batasan produk yang berlaku.
               </p>
             </div>
           </div>
@@ -501,6 +616,35 @@ export default function AdminKuponClient({ session }: { session: any }) {
               Tambah Kupon
             </button>
           </div>
+        </div>
+
+        {/* Tab Switcher: Kupon Aktif vs Riwayat / Kadaluarsa */}
+        <div className="flex items-center gap-2 border-b border-gray-200 dark:border-[#2b2b3f] pb-3">
+          <button
+            type="button"
+            onClick={() => setActiveTab("ACTIVE")}
+            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider ink-border flex items-center gap-2 transition-all cursor-pointer ${
+              activeTab === "ACTIVE"
+                ? "bg-[#ffd731] text-black shadow-[2px_2px_0px_#000000]"
+                : "bg-white dark:bg-[#1a1a26] text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
+            }`}
+          >
+            <Ticket className="w-3.5 h-3.5" />
+            <span>Kupon Aktif ({activeCoupons.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("HISTORY")}
+            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider ink-border flex items-center gap-2 transition-all cursor-pointer ${
+              activeTab === "HISTORY"
+                ? "bg-[#ffd731] text-black shadow-[2px_2px_0px_#000000]"
+                : "bg-white dark:bg-[#1a1a26] text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
+            }`}
+          >
+            <History className="w-3.5 h-3.5" />
+            <span>Riwayat & Kadaluarsa ({historyCoupons.length})</span>
+          </button>
         </div>
 
         {/* Notifikasi Message */}
@@ -538,7 +682,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
         )}
 
         {/* Empty State */}
-        {!loading && coupons.length === 0 && (
+        {!loading && displayedCoupons.length === 0 && (
           <div className="bg-[#181824] border-2 border-[#2b2b3f] rounded-3xl p-10 text-center space-y-4 shadow-[4px_4px_0px_0px_#000000]">
             <div className="w-20 h-20 mx-auto">
               <img
@@ -549,53 +693,69 @@ export default function AdminKuponClient({ session }: { session: any }) {
             </div>
             <div className="space-y-1">
               <h3 className="text-base font-black text-white font-[var(--font-bricolage)]">
-                Belum Ada Kupon Promo
+                {activeTab === "ACTIVE" ? "Tidak Ada Kupon Aktif" : "Tidak Ada Riwayat Kupon"}
               </h3>
               <p className="text-xs text-gray-400 max-w-md mx-auto">
-                Buat kupon promo pertama untuk memberikan diskon spesial bagi pelanggan XYZPEDIA.
+                {activeTab === "ACTIVE"
+                  ? "Semua kupon sedang nonaktif atau telah kadaluarsa. Buat kupon baru untuk menarik pembeli."
+                  : "Belum ada kupon yang kadaluarsa atau dinonaktifkan."}
               </p>
             </div>
-            <button
-              onClick={openCreateModal}
-              className="px-5 py-2.5 bg-[#ffd731] text-black text-xs font-black rounded-xl ink-border shadow-[2px_2px_0px_#000000] inline-flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              <span>Buat Kupon Baru</span>
-            </button>
+            {activeTab === "ACTIVE" && (
+              <button
+                onClick={openCreateModal}
+                className="px-5 py-2.5 bg-[#ffd731] text-black text-xs font-black rounded-xl ink-border shadow-[2px_2px_0px_#000000] inline-flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+                <span>Buat Kupon Baru</span>
+              </button>
+            )}
           </div>
         )}
 
         {/* Grid of Coupons */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {coupons.map((coupon) => {
+          {displayedCoupons.map((coupon) => {
             const applicableInfo = getCouponApplicableInfo(coupon);
+            const statusInfo = getCouponStatus(coupon);
             const isDeleting = actionLoading === `delete-${coupon.code}`;
             const isToggling = actionLoading === `toggle-${coupon.code}`;
+            const isReactivating = actionLoading === `reactivate-${coupon.code}`;
 
             return (
               <div
                 key={coupon.code}
-                className="bg-white dark:bg-[#181824] ink-border dark:border-[#33334d] rounded-2xl p-5 shadow-[4px_4px_0px_0px_#000000] space-y-4 relative overflow-hidden flex flex-col justify-between"
+                className={`bg-white dark:bg-[#181824] ink-border dark:border-[#33334d] rounded-2xl p-5 shadow-[4px_4px_0px_0px_#000000] space-y-4 relative overflow-hidden flex flex-col justify-between ${
+                  statusInfo.key === "EXPIRED" ? "opacity-90 border-red-500/30" : ""
+                }`}
               >
                 <div className="space-y-3">
-                  {/* Top Bar: Code & Status */}
-                  <div className="flex items-center justify-between">
+                  {/* Top Bar: Code & Status Badge */}
+                  <div className="flex items-center justify-between gap-2">
                     <span className="px-3 py-1 bg-yellow-400/20 text-yellow-800 dark:text-yellow-300 font-mono font-black text-sm rounded-lg border border-yellow-400/50">
                       {coupon.code}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => handleToggleActive(coupon.code, coupon.active)}
-                      disabled={isToggling}
-                      title="Klik untuk ubah status aktif/nonaktif"
-                      className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border cursor-pointer transition-all ${
-                        coupon.active
-                          ? "bg-emerald-500/15 text-[#55db9c] border-emerald-500/40 hover:bg-emerald-500/25"
-                          : "bg-gray-500/15 text-gray-400 border-gray-600 hover:bg-gray-500/25"
-                      }`}
-                    >
-                      {isToggling ? "Memproses..." : coupon.active ? "● Aktif" : "○ Nonaktif"}
-                    </button>
+
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${statusInfo.color}`}
+                      >
+                        {statusInfo.label}
+                      </span>
+
+                      {/* Quick Toggle Active Button (if not expired) */}
+                      {!statusInfo.isExpired && (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleActive(coupon.code, coupon.active)}
+                          disabled={isToggling}
+                          title="Klik untuk ubah status aktif/nonaktif"
+                          className="text-gray-400 hover:text-white p-1 rounded-md"
+                        >
+                          <Power className={`w-3.5 h-3.5 ${coupon.active ? "text-[#55db9c]" : "text-gray-500"}`} />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Diskon Value */}
@@ -619,6 +779,26 @@ export default function AdminKuponClient({ session }: { session: any }) {
                           {coupon.minSpend ? `Rp ${coupon.minSpend.toLocaleString("id-ID")}` : "Rp 0"}
                         </span>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Masa Aktif Kupon */}
+                  <div className="pt-2 border-t border-gray-100 dark:border-[#252538] space-y-1">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                      Masa Aktif Kupon:
+                    </span>
+                    <div className="text-[11px] font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      {coupon.startsAt || coupon.endsAt ? (
+                        <span>
+                          {coupon.startsAt ? formatDateIndo(coupon.startsAt) : "Mulai sekarang"} s/d{" "}
+                          <strong className={statusInfo.isExpired ? "text-red-400 font-bold" : "text-emerald-400 font-bold"}>
+                            {coupon.endsAt ? formatDateIndo(coupon.endsAt) : "Selamanya"}
+                          </strong>
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">Berlaku Selamanya (Tanpa Batas Waktu)</span>
+                      )}
                     </div>
                   </div>
 
@@ -647,7 +827,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
                   </div>
                 </div>
 
-                {/* Bottom Actions: Edit & Hapus */}
+                {/* Bottom Actions: Edit, Reaktifkan & Hapus */}
                 <div className="pt-3 border-t border-gray-200 dark:border-[#2b2b3f] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-bold">
                     <span>Proteksi Modal</span>
@@ -655,6 +835,20 @@ export default function AdminKuponClient({ session }: { session: any }) {
                   </div>
 
                   <div className="flex items-center gap-1.5">
+                    {/* Quick Reactivate for Expired/Inactive in History */}
+                    {statusInfo.isExpired && (
+                      <button
+                        type="button"
+                        onClick={() => handleReactivateCoupon(coupon)}
+                        disabled={isReactivating}
+                        className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg ink-border text-[11px] font-black flex items-center gap-1 transition-colors cursor-pointer"
+                        title="Perpanjang 7 hari & aktifkan kembali"
+                      >
+                        <RefreshCw className={`w-3 h-3 ${isReactivating ? "animate-spin" : ""}`} />
+                        <span>Reaktifkan</span>
+                      </button>
+                    )}
+
                     <button
                       type="button"
                       onClick={() => openEditModal(coupon)}
@@ -663,6 +857,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
                       <Pencil className="w-3 h-3" />
                       <span>Edit</span>
                     </button>
+
                     <button
                       type="button"
                       onClick={() => handleDelete(coupon.code)}
@@ -679,29 +874,31 @@ export default function AdminKuponClient({ session }: { session: any }) {
           })}
         </div>
 
-        {/* Modal Tambah / Edit Kupon */}
+        {/* Modal Tambah / Edit Kupon (Mobile-Optimized with Internal Scroll) */}
         {showModal && (
-          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl p-6 max-w-lg w-full shadow-[8px_8px_0px_#000000] space-y-5 my-8">
-              <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3">
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+            <div className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-3xl max-w-lg w-full shadow-[8px_8px_0px_#000000] flex flex-col max-h-[92vh] sm:max-h-[88vh] my-auto overflow-hidden">
+              {/* Modal Header (Fixed shrink-0) */}
+              <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 p-4 sm:p-5 shrink-0">
                 <div className="flex items-center gap-2.5">
                   <div className="p-2 bg-[#ffd731] text-black rounded-xl ink-border">
                     <Ticket className="w-4 h-4" />
                   </div>
-                  <h3 className="text-base font-black text-carbon dark:text-white font-[var(--font-bricolage)]">
+                  <h3 className="text-sm sm:text-base font-black text-carbon dark:text-white font-[var(--font-bricolage)]">
                     {editingCoupon ? `Edit Kupon: ${editingCoupon.code}` : "Tambah Kupon Promo Baru"}
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="w-7 h-7 rounded-full bg-gray-100 dark:bg-[#252538] flex items-center justify-center text-gray-500 hover:text-white"
+                  className="w-7 h-7 rounded-full bg-gray-100 dark:bg-[#252538] flex items-center justify-center text-gray-500 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+              {/* Modal Form Body (Scrollable inside) */}
+              <form onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 custom-scrollbar text-xs">
                 {/* Kode Kupon */}
                 <div>
                   <label className="block font-black mb-1 text-gray-700 dark:text-gray-300">
@@ -713,15 +910,15 @@ export default function AdminKuponClient({ session }: { session: any }) {
                     value={form.code}
                     onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                     placeholder="CONTOH: PROMOHEMAT"
-                    className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-mono uppercase font-black text-sm"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-mono uppercase font-black text-xs sm:text-sm"
                   />
-                  <p className="text-[10px] text-gray-400 mt-1">
+                  <p className="text-[10px] text-gray-400 mt-0.5">
                     Gunakan huruf besar tanpa spasi (contoh: HEMAT5, SPOTIFYVIP).
                   </p>
                 </div>
 
                 {/* Tipe & Nilai Diskon */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block font-black mb-1 text-gray-700 dark:text-gray-300">
                       Tipe Diskon
@@ -729,7 +926,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
                     <select
                       value={form.type}
                       onChange={(e) => setForm({ ...form, type: e.target.value })}
-                      className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-bold cursor-pointer"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-bold cursor-pointer"
                     >
                       <option value="percent">Persentase (%)</option>
                       <option value="fixed">Nominal Tetap (Rp)</option>
@@ -746,13 +943,13 @@ export default function AdminKuponClient({ session }: { session: any }) {
                       max={form.type === "percent" ? 100 : 1000000}
                       value={form.value}
                       onChange={(e) => setForm({ ...form, value: Number(e.target.value) })}
-                      className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-bold font-mono"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-bold font-mono"
                     />
                   </div>
                 </div>
 
                 {/* Maks Diskon & Min Belanja */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block font-black mb-1 text-gray-700 dark:text-gray-300">
                       Maks Diskon (Rp)
@@ -762,7 +959,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
                       value={form.maxDiscount || ""}
                       placeholder="0 = Tanpa batas"
                       onChange={(e) => setForm({ ...form, maxDiscount: Number(e.target.value) || 0 })}
-                      className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-mono"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-mono"
                     />
                   </div>
                   <div>
@@ -774,13 +971,54 @@ export default function AdminKuponClient({ session }: { session: any }) {
                       value={form.minSpend || ""}
                       placeholder="0 = Tanpa syarat"
                       onChange={(e) => setForm({ ...form, minSpend: Number(e.target.value) || 0 })}
-                      className="w-full px-3 py-2.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-mono"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl font-mono"
                     />
                   </div>
                 </div>
 
-                {/* CAKUPAN PRODUK (FITUR SPESIFIK USER) */}
-                <div className="pt-2 border-t border-gray-200 dark:border-gray-800 space-y-3">
+                {/* MASA AKTIF KUPON (FITUR MASA BERLAKU & KADALUARSA) */}
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-amber-500" />
+                    <label className="font-black text-gray-800 dark:text-gray-200">
+                      Masa Aktif & Kedaluwarsa
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                        Mulai Berlaku (Opsional)
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={form.startsAt}
+                        onChange={(e) => setForm({ ...form, startsAt: e.target.value })}
+                        className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl text-xs font-mono"
+                      />
+                      <span className="text-[9px] text-gray-400 block mt-0.5">
+                        Kosongkan jika langsung aktif
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                        Berakhir Pada / Kadaluarsa (Opsional)
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={form.endsAt}
+                        onChange={(e) => setForm({ ...form, endsAt: e.target.value })}
+                        className="w-full px-2.5 py-1.5 bg-gray-50 dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-xl text-xs font-mono"
+                      />
+                      <span className="text-[9px] text-gray-400 block mt-0.5">
+                        Kosongkan jika berlaku selamanya
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CAKUPAN PRODUK (FITUR SPESIFIK USER - MOBILE OPTIMIZED) */}
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-800 space-y-2.5">
                   <div>
                     <label className="block font-black text-gray-800 dark:text-gray-200">
                       Cakupan Produk yang Berlaku
@@ -791,11 +1029,11 @@ export default function AdminKuponClient({ session }: { session: any }) {
                   </div>
 
                   {/* Radio Opsi Cakupan */}
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => setForm({ ...form, scopeType: "ALL" })}
-                      className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
+                      className={`p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
                         form.scopeType === "ALL"
                           ? "bg-emerald-500/15 border-emerald-500 text-white shadow-sm"
                           : "bg-gray-50 dark:bg-[#1f1f2e] border-gray-200 dark:border-[#38384a] text-gray-400 hover:text-white"
@@ -805,15 +1043,15 @@ export default function AdminKuponClient({ session }: { session: any }) {
                         <span className="font-black text-xs text-emerald-400">Semua Produk</span>
                         {form.scopeType === "ALL" && <Check className="w-3.5 h-3.5 text-emerald-400" />}
                       </div>
-                      <span className="text-[10px] text-gray-400 mt-1">
-                        Berlaku bebas di seluruh katalog
+                      <span className="text-[10px] text-gray-400 mt-0.5">
+                        Bebas di seluruh katalog
                       </span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setForm({ ...form, scopeType: "SELECTED" })}
-                      className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
+                      className={`p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
                         form.scopeType === "SELECTED"
                           ? "bg-purple-500/15 border-purple-500 text-white shadow-sm"
                           : "bg-gray-50 dark:bg-[#1f1f2e] border-gray-200 dark:border-[#38384a] text-gray-400 hover:text-white"
@@ -823,57 +1061,57 @@ export default function AdminKuponClient({ session }: { session: any }) {
                         <span className="font-black text-xs text-purple-400">Produk Tertentu</span>
                         {form.scopeType === "SELECTED" && <Check className="w-3.5 h-3.5 text-purple-400" />}
                       </div>
-                      <span className="text-[10px] text-gray-400 mt-1">
-                        Hanya produk yang dipilih di bawah
+                      <span className="text-[10px] text-gray-400 mt-0.5">
+                        Hanya target di bawah
                       </span>
                     </button>
                   </div>
 
-                  {/* Selector List Produk Khusus (Jika SELECTED) */}
+                  {/* Selector List Produk Khusus (Mobile-Optimized Compact Accordion) */}
                   {form.scopeType === "SELECTED" && (
-                    <div className="space-y-2 p-3 bg-gray-50 dark:bg-[#13131c] rounded-2xl border border-gray-200 dark:border-[#2b2b3d]">
-                      <div className="flex items-center justify-between gap-2">
+                    <div className="space-y-2 p-2.5 bg-gray-50 dark:bg-[#13131c] rounded-2xl border border-gray-200 dark:border-[#2b2b3d]">
+                      <div className="flex items-center justify-between gap-1.5">
                         <div className="relative flex-1">
-                          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <Search className="w-3 h-3 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                           <input
                             type="text"
-                            placeholder="Cari nama produk (misal: Spotify, ML)..."
+                            placeholder="Cari produk / game..."
                             value={productSearch}
                             onChange={(e) => setProductSearch(e.target.value)}
-                            className="w-full pl-8 pr-3 py-1.5 bg-white dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-lg text-xs"
+                            className="w-full pl-7 pr-2.5 py-1.5 bg-white dark:bg-[#1f1f2e] ink-border dark:border-[#38384a] rounded-lg text-xs"
                           />
                         </div>
 
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             type="button"
                             onClick={handleSelectAllProducts}
-                            className="text-[10px] font-bold px-2 py-1 bg-gray-200 dark:bg-[#252538] hover:bg-gray-300 dark:hover:bg-[#34344d] rounded-md text-carbon dark:text-white"
+                            className="text-[9px] font-bold px-2 py-1 bg-gray-200 dark:bg-[#252538] hover:bg-gray-300 dark:hover:bg-[#34344d] rounded-md text-carbon dark:text-white cursor-pointer"
                           >
-                            Pilih Semua
+                            Semua
                           </button>
                           <button
                             type="button"
                             onClick={handleClearSelectedProducts}
-                            className="text-[10px] font-bold px-2 py-1 bg-gray-200 dark:bg-[#252538] hover:bg-gray-300 dark:hover:bg-[#34344d] rounded-md text-carbon dark:text-white"
+                            className="text-[9px] font-bold px-2 py-1 bg-gray-200 dark:bg-[#252538] hover:bg-gray-300 dark:hover:bg-[#34344d] rounded-md text-carbon dark:text-white cursor-pointer"
                           >
                             Reset
                           </button>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-[11px] font-bold text-gray-400 pt-1">
-                        <span>Pilih produk & varian spesifik yang diizinkan:</span>
+                      <div className="flex items-center justify-between text-[10px] font-bold text-gray-400">
+                        <span>Pilih target yang diizinkan:</span>
                         <span className="text-purple-400">
-                          {form.selectedTargets.length} target dipilih
+                          {form.selectedTargets.length} dipilih
                         </span>
                       </div>
 
-                      {/* Scrollable list accordion produk & varian */}
-                      <div className="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                      {/* Compact Scrollable list accordion (max-h-40 on mobile, max-h-52 on desktop) */}
+                      <div className="max-h-40 sm:max-h-52 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
                         {filteredProductsForModal.length === 0 ? (
-                          <p className="text-center py-4 text-gray-500 text-[11px]">
-                            Tidak ada produk yang cocok dengan pencarian.
+                          <p className="text-center py-3 text-gray-500 text-[10px]">
+                            Tidak ada produk yang cocok.
                           </p>
                         ) : (
                           filteredProductsForModal.map((prod) => {
@@ -891,13 +1129,13 @@ export default function AdminKuponClient({ session }: { session: any }) {
                                 className="rounded-xl border border-gray-200 dark:border-[#28283d] overflow-hidden bg-white dark:bg-[#1a1a26]"
                               >
                                 {/* Header Bar Produk */}
-                                <div className="flex items-center justify-between p-2.5 gap-2 hover:bg-gray-50 dark:hover:bg-[#20202f] transition-colors">
+                                <div className="flex items-center justify-between p-2 gap-2 hover:bg-gray-50 dark:hover:bg-[#20202f] transition-colors">
                                   <div
                                     onClick={() => handleToggleEntireProduct(prod)}
-                                    className="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer"
+                                    className="flex items-center gap-2 flex-1 min-w-0 cursor-pointer"
                                   >
                                     <div
-                                      className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] font-black shrink-0 transition-colors ${
+                                      className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9px] font-black shrink-0 transition-colors ${
                                         isAllSelected
                                           ? "bg-purple-600 border-purple-400 text-white"
                                           : selectedCount > 0
@@ -909,19 +1147,19 @@ export default function AdminKuponClient({ session }: { session: any }) {
                                     </div>
                                     <div className="min-w-0">
                                       <div className="flex items-center gap-1.5 flex-wrap">
-                                        <span className="text-xs font-bold text-carbon dark:text-white truncate">
+                                        <span className="text-[11px] font-bold text-carbon dark:text-white truncate">
                                           {prod.name}
                                         </span>
-                                        <span className="text-[10px] text-gray-400 font-mono">
+                                        <span className="text-[9px] text-gray-400 font-mono">
                                           /{prod.slug}
                                         </span>
                                       </div>
-                                      <p className="text-[10px] text-gray-500">
+                                      <p className="text-[9px] text-gray-500">
                                         {isAllSelected
                                           ? "Semua varian terpilih"
                                           : selectedCount > 0
-                                          ? `${selectedCount} dari ${prod.items?.length || 0} varian terpilih`
-                                          : `${prod.items?.length || 0} varian tersedia`}
+                                          ? `${selectedCount} dari ${prod.items?.length || 0} varian`
+                                          : `${prod.items?.length || 0} varian`}
                                       </p>
                                     </div>
                                   </div>
@@ -931,13 +1169,13 @@ export default function AdminKuponClient({ session }: { session: any }) {
                                     <button
                                       type="button"
                                       onClick={(e) => toggleExpandProduct(prod.slug, e)}
-                                      className="px-2 py-1 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 dark:hover:bg-[#323249] rounded-lg text-gray-600 dark:text-gray-300 hover:text-white transition-colors cursor-pointer shrink-0 flex items-center gap-1 text-[10px] font-bold"
+                                      className="px-2 py-0.5 bg-gray-100 dark:bg-[#252538] hover:bg-gray-200 dark:hover:bg-[#323249] rounded-md text-gray-600 dark:text-gray-300 hover:text-white transition-colors cursor-pointer shrink-0 flex items-center gap-1 text-[9px] font-bold"
                                     >
-                                      <span>{isExpanded ? "Tutup" : "Pilih Varian"}</span>
+                                      <span>{isExpanded ? "Tutup" : "Varian"}</span>
                                       {isExpanded ? (
-                                        <ChevronUp className="w-3.5 h-3.5" />
+                                        <ChevronUp className="w-3 h-3" />
                                       ) : (
-                                        <ChevronDown className="w-3.5 h-3.5" />
+                                        <ChevronDown className="w-3 h-3" />
                                       )}
                                     </button>
                                   )}
@@ -945,9 +1183,9 @@ export default function AdminKuponClient({ session }: { session: any }) {
 
                                 {/* List Varian Spesifik (Accordion Drawer) */}
                                 {hasItems && isExpanded && (
-                                  <div className="border-t border-gray-100 dark:border-[#28283d] bg-gray-50/70 dark:bg-[#14141e] p-2 space-y-1">
-                                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1 pb-1">
-                                      Pilih Varian Spesifik:
+                                  <div className="border-t border-gray-100 dark:border-[#28283d] bg-gray-50/70 dark:bg-[#14141e] p-1.5 space-y-1">
+                                    <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider px-1 pb-0.5">
+                                      Pilih Varian:
                                     </div>
                                     {prod.items!.map((it) => {
                                       const isChecked = isVariantSelected(prod, it);
@@ -955,15 +1193,15 @@ export default function AdminKuponClient({ session }: { session: any }) {
                                         <div
                                           key={it.id || it.sku}
                                           onClick={() => handleToggleVariantSku(prod, it)}
-                                          className={`flex items-center justify-between p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
+                                          className={`flex items-center justify-between p-1.5 rounded-lg border text-xs cursor-pointer transition-colors ${
                                             isChecked
                                               ? "bg-purple-500/15 border-purple-500/60 text-carbon dark:text-white"
                                               : "bg-white dark:bg-[#1a1a26] border-gray-200 dark:border-[#252538] text-gray-400 hover:bg-gray-100 dark:hover:bg-[#20202e]"
                                           }`}
                                         >
-                                          <div className="flex items-center gap-2 min-w-0 pr-2">
+                                          <div className="flex items-center gap-1.5 min-w-0 pr-2">
                                             <div
-                                              className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9px] font-black shrink-0 ${
+                                              className={`w-3 h-3 rounded flex items-center justify-center border text-[8px] font-black shrink-0 ${
                                                 isChecked
                                                   ? "bg-purple-600 border-purple-400 text-white"
                                                   : "border-gray-500 text-transparent"
@@ -971,16 +1209,13 @@ export default function AdminKuponClient({ session }: { session: any }) {
                                             >
                                               {isChecked && "✓"}
                                             </div>
-                                            <span className="text-[11px] font-bold truncate">
+                                            <span className="text-[10px] font-bold truncate">
                                               {it.name}
                                             </span>
                                           </div>
                                           <div className="text-right shrink-0">
-                                            <span className="text-[11px] font-black text-carbon dark:text-yellow-400 font-mono block">
+                                            <span className="text-[10px] font-black text-carbon dark:text-yellow-400 font-mono block">
                                               Rp {it.price.toLocaleString("id-ID")}
-                                            </span>
-                                            <span className="text-[9px] text-gray-400 font-mono block">
-                                              SKU: {it.sku}
                                             </span>
                                           </div>
                                         </div>
@@ -997,7 +1232,7 @@ export default function AdminKuponClient({ session }: { session: any }) {
                   )}
                 </div>
 
-                {/* Status Aktif */}
+                {/* Status Aktif Checkbox */}
                 <div className="flex items-center gap-2 pt-1">
                   <input
                     type="checkbox"
@@ -1006,24 +1241,24 @@ export default function AdminKuponClient({ session }: { session: any }) {
                     onChange={(e) => setForm({ ...form, active: e.target.checked })}
                     className="w-4 h-4 rounded text-blue-600 cursor-pointer"
                   />
-                  <label htmlFor="coupon-active" className="font-bold text-gray-700 dark:text-gray-300 cursor-pointer">
+                  <label htmlFor="coupon-active" className="font-bold text-gray-700 dark:text-gray-300 cursor-pointer text-xs">
                     Kupon langsung aktif dan siap digunakan pembeli
                   </label>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200 dark:border-gray-800">
+                {/* Actions (Fixed bottom) */}
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-200 dark:border-gray-800 shrink-0">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-carbon dark:text-white rounded-xl font-bold cursor-pointer"
+                    className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-carbon dark:text-white rounded-xl font-bold cursor-pointer text-xs"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-5 py-2 bg-[#ffd731] hover:bg-[#ffe066] text-black font-black ink-border rounded-xl shadow-[2px_2px_0px_#000000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-50"
+                    className="px-5 py-2 bg-[#ffd731] hover:bg-[#ffe066] text-black font-black ink-border rounded-xl shadow-[2px_2px_0px_#000000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-50 text-xs"
                   >
                     {submitting ? "Menyimpan..." : editingCoupon ? "Perbarui Kupon" : "Simpan Kupon"}
                   </button>

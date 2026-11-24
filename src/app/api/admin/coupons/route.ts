@@ -52,7 +52,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { code, type, value, maxDiscount, minSpend, active, applicableProducts } = body;
+    const {
+      code,
+      type,
+      value,
+      maxDiscount,
+      minSpend,
+      active,
+      applicableProducts,
+      startsAt,
+      endsAt,
+    } = body;
 
     if (!code || value === undefined || value === null) {
       return NextResponse.json({ success: false, message: "Kode dan nilai diskon wajib diisi." }, { status: 400 });
@@ -64,6 +74,9 @@ export async function POST(req: Request) {
         ? JSON.stringify(applicableProducts)
         : applicableProducts || "ALL";
 
+    const parsedStartsAt = startsAt ? new Date(startsAt) : null;
+    const parsedEndsAt = endsAt ? new Date(endsAt) : null;
+
     const coupon = await prisma.coupon.upsert({
       where: { code: cleanCode },
       update: {
@@ -73,6 +86,8 @@ export async function POST(req: Request) {
         minSpend: minSpend ? Number(minSpend) : 0,
         active: active !== undefined ? Boolean(active) : true,
         applicableProducts: appProductsVal,
+        startsAt: parsedStartsAt,
+        endsAt: parsedEndsAt,
       },
       create: {
         code: cleanCode,
@@ -82,6 +97,8 @@ export async function POST(req: Request) {
         minSpend: minSpend ? Number(minSpend) : 0,
         active: active !== undefined ? Boolean(active) : true,
         applicableProducts: appProductsVal,
+        startsAt: parsedStartsAt,
+        endsAt: parsedEndsAt,
       },
     });
 
@@ -106,18 +123,21 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { code, active } = body;
+    const { code, active, startsAt, endsAt } = body;
 
     if (!code) {
       return NextResponse.json({ success: false, message: "Kode kupon wajib diisi." }, { status: 400 });
     }
 
     const cleanCode = code.trim().toUpperCase();
+    const updateData: any = {};
+    if (active !== undefined) updateData.active = Boolean(active);
+    if (startsAt !== undefined) updateData.startsAt = startsAt ? new Date(startsAt) : null;
+    if (endsAt !== undefined) updateData.endsAt = endsAt ? new Date(endsAt) : null;
+
     const updated = await prisma.coupon.update({
       where: { code: cleanCode },
-      data: {
-        active: Boolean(active),
-      },
+      data: updateData,
     });
 
     await logAuditEvent({
