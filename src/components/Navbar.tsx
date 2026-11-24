@@ -156,10 +156,15 @@ export default function Navbar() {
 
       {/* 2. Top Navigation Bar */}
       <header className="bg-[#ffffff] dark:bg-[#181824] border-b border-[#000000] dark:border-[#38384a]">
-        <div className="flex justify-between items-center w-full px-4 md:px-8 py-2.5 sm:py-3.5 max-w-[1440px] mx-auto gap-4">
+        <div className="flex justify-between items-center w-full px-4 md:px-8 py-2 sm:py-2.5 md:py-3 max-w-[1440px] mx-auto gap-4">
           
-          {/* Brand Logo */}
-          <BrandLogo asLink href="/" size="md" />
+          {/* Brand Logo - Responsive & enlarged for mobile & desktop */}
+          <BrandLogo
+            asLink
+            href="/"
+            size="md"
+            imgClassName="h-[50px] sm:h-[58px] md:h-[66px] lg:h-[74px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+          />
 
           {/* Navigation Links with Suspense Boundary for searchParams */}
           <Suspense
