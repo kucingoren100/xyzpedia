@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface BrandLogoProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -11,76 +12,48 @@ interface BrandLogoProps {
 
 export default function BrandLogo({
   size = "md",
-  theme = "light",
+  theme,
   className = "",
   asLink = false,
   href = "/",
-  withGlitch = true,
 }: BrandLogoProps) {
-  const isDark = theme === "dark";
-
-  // Sizing: XYZ and PEDIA share the EXACT SAME font-size across all breakpoints
-  const sizeClasses = {
-    sm: {
-      wrap: "gap-1.5",
-      text: "text-base sm:text-lg",
-      pill: "px-2.5 py-0.5",
-    },
-    md: {
-      wrap: "gap-1.5 sm:gap-2.5",
-      text: "text-lg sm:text-2xl lg:text-[26px]",
-      pill: "px-2.5 py-0.5 sm:px-4 sm:py-1.5",
-    },
-    lg: {
-      wrap: "gap-3",
-      text: "text-2xl sm:text-3xl lg:text-4xl",
-      pill: "px-5 py-1.5 sm:px-6 sm:py-2",
-    },
-    xl: {
-      wrap: "gap-3.5",
-      text: "text-3xl sm:text-4xl lg:text-5xl",
-      pill: "px-6 py-2 sm:px-7 sm:py-2.5",
-    },
+  const heightClasses = {
+    sm: "h-7",
+    md: "h-8 sm:h-9",
+    lg: "h-10 sm:h-11",
+    xl: "h-12 sm:h-14",
   }[size];
 
-  // Chromatic aberration (RGB split / 3D edge effect) as seen in the reference logo
-  const glitchStyle = withGlitch
-    ? {
-        textShadow: "1.2px 0px 0px rgba(255, 69, 0, 0.85), -1.2px 0px 0px rgba(0, 102, 255, 0.85)",
-      }
-    : undefined;
-
   const content = (
-    <span
-      className={`inline-flex items-center select-none font-[var(--font-hanken)] font-black tracking-tight ${sizeClasses.wrap} ${className}`}
-    >
-      {/* "XYZ" Pill - tilted counter-clockwise (-2.8deg), solid capsule, identical font size */}
-      <span
-        className={`inline-flex items-center justify-center rounded-full leading-none -rotate-[2.8deg] transition-transform duration-200 group-hover:-rotate-[5deg] group-hover:scale-105 shrink-0 ${
-          sizeClasses.pill
-        } ${
-          isDark
-            ? "bg-white text-black"
-            : "bg-black text-white dark:bg-white dark:text-black"
-        }`}
-      >
-        <span
-          style={glitchStyle}
-          className={`${sizeClasses.text} font-black uppercase tracking-tight leading-none pt-[1px]`}
-        >
-          XYZ
-        </span>
-      </span>
-
-      {/* "PEDIA" Text - upright, matching the exact font size and weight */}
-      <span
-        style={glitchStyle}
-        className={`${sizeClasses.text} font-black uppercase tracking-tight leading-none shrink-0 ${
-          isDark ? "text-white" : "text-black dark:text-white"
-        }`}
-      >
-        PEDIA
-      </span>
+    <span className={`inline-flex items-center shrink-0 select-none ${className}`}>
+      {theme === "dark" ? (
+        <img
+          src="/brand/logo/xyzpedia-logo-horizontal-gelap.svg"
+          alt="XYZPEDIA"
+          className={`${heightClasses} w-auto object-contain transition-transform duration-200 group-hover:scale-105`}
+        />
+      ) : theme === "light" ? (
+        <img
+          src="/brand/logo/xyzpedia-logo-horizontal.svg"
+          alt="XYZPEDIA"
+          className={`${heightClasses} w-auto object-contain transition-transform duration-200 group-hover:scale-105`}
+        />
+      ) : (
+        <>
+          {/* Light mode */}
+          <img
+            src="/brand/logo/xyzpedia-logo-horizontal.svg"
+            alt="XYZPEDIA"
+            className={`${heightClasses} w-auto object-contain block dark:hidden transition-transform duration-200 group-hover:scale-105`}
+          />
+          {/* Dark mode */}
+          <img
+            src="/brand/logo/xyzpedia-logo-horizontal-gelap.svg"
+            alt="XYZPEDIA"
+            className={`${heightClasses} w-auto object-contain hidden dark:block transition-transform duration-200 group-hover:scale-105`}
+          />
+        </>
+      )}
     </span>
   );
 

@@ -10,6 +10,7 @@ import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getWebCondition } from "@/lib/webCondition";
 import { getDigiflazzBalanceCached } from "@/lib/digiflazz";
+import { getXavieraBalanceCached } from "@/lib/xaviera";
 
 export const revalidate = 60;
 
@@ -93,7 +94,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }
   }
 
-  // Live item availability check based on Digiflazz deposit balance
+  // Live balance check for Xaviera products (Akun Premium & Subscriptions)
+  const isXavieraProduct =
+    product.items.some((item) => (item as any).supplier === "XAVIERA" || item.sku.startsWith("XAV-")) ||
+    (product.categorySlug === "akun-premium" && product.developer?.toLowerCase() !== "manual");
+
+  let xavieraBalance: number | null = null;
+  if (isXavieraProduct) {
+    try {
+      xavieraBalance = await getXavieraBalanceCached();
+    } catch {
+      xavieraBalance = null;
+    }
+  }
+
+  // Live item availability check based on supplier deposit balance (Digiflazz & Xaviera)
   const itemsWithLiveStock = product.items.map((item) => {
     // If item was already set OUT_OF_STOCK by admin in DB, keep it
     if (item.stockStatus === "OUT_OF_STOCK") {
@@ -101,11 +116,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }
 
     const supplier = (item as any).supplier || (product.categorySlug === "game-topup" ? "DIGIFLAZZ" : "MANUAL");
-    const isDigiflazzItem = supplier === "DIGIFLAZZ";
+    const isXavieraItem =
+      supplier === "XAVIERA" ||
+      item.sku.startsWith("XAV-") ||
+      (product.categorySlug === "akun-premium" && product.developer?.toLowerCase() !== "manual");
+    const isDigiflazzItem = !isXavieraItem && supplier === "DIGIFLAZZ";
 
     if (isDigiflazzItem && digiBalance !== null) {
       const requiredCost = item.supplierPrice || Math.round(item.price * 0.8);
       if (requiredCost > digiBalance) {
+        return {
+          ...item,
+          stockStatus: "OUT_OF_STOCK",
+        };
+      }
+    }
+
+    if (isXavieraItem && xavieraBalance !== null) {
+      const requiredCost = item.supplierPrice || Math.round(item.price * 0.8);
+      if (requiredCost > xavieraBalance) {
         return {
           ...item,
           stockStatus: "OUT_OF_STOCK",

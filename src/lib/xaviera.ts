@@ -31,6 +31,37 @@ const XAVIERA_PRODUCT_MAP: Record<string, string> = {
   wetv: "p_79025547fd58dd84",
 };
 
+// Memory cache for Xaviera balance (60s TTL)
+let cachedXavieraBalance: { saldo: number; timestamp: number } | null = null;
+const XAVIERA_BALANCE_CACHE_TTL = 60 * 1000;
+
+export function updateXavieraBalanceCache(saldo: number) {
+  cachedXavieraBalance = { saldo, timestamp: Date.now() };
+}
+
+/**
+ * Dapatkan saldo Xaviera dengan caching 60s (anti-rate limit & performa instan)
+ */
+export async function getXavieraBalanceCached(forceRefresh = false): Promise<number | null> {
+  const now = Date.now();
+  if (!forceRefresh && cachedXavieraBalance && now - cachedXavieraBalance.timestamp < XAVIERA_BALANCE_CACHE_TTL) {
+    return cachedXavieraBalance.saldo;
+  }
+
+  try {
+    const client = new XavieraClient();
+    const profile = await client.getProfile();
+    if (profile.success && typeof profile.saldo === "number") {
+      updateXavieraBalanceCache(profile.saldo);
+      return profile.saldo;
+    }
+    return cachedXavieraBalance ? cachedXavieraBalance.saldo : null;
+  } catch (err) {
+    console.warn("[Xaviera] Gagal mengambil saldo live, fallback ke cache:", err);
+    return cachedXavieraBalance ? cachedXavieraBalance.saldo : null;
+  }
+}
+
 export class XavieraClient {
   private baseUrl: string;
   private apiKey: string;
@@ -51,23 +82,32 @@ export class XavieraClient {
     }
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const res = await fetch(`${this.baseUrl}/me`, {
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
           Accept: "application/json",
           "User-Agent": "XYZPEDIA-Engine/1.0",
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         return { success: false, error: `HTTP ${res.status}: Gagal mengambil profil Xaviera.` };
       }
 
       const data = await res.json();
+      const saldo = typeof data.saldo === "number" ? data.saldo : Number(data.saldo || 0);
+      updateXavieraBalanceCache(saldo);
+
       return {
         success: true,
         name: data.name,
-        saldo: data.saldo,
+        saldo,
       };
     } catch (e: any) {
       return { success: false, error: e?.message || "Koneksi ke Xaviera gagal." };
@@ -193,6 +233,10 @@ export class XavieraClient {
         formattedCredentials = String(orderData.delivery);
       } else if (orderData.snk) {
         formattedCredentials = String(orderData.snk);
+      }
+
+      if (typeof resJson.saldo === "number") {
+        updateXavieraBalanceCache(resJson.saldo);
       }
 
       return {

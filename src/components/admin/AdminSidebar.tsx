@@ -19,6 +19,7 @@ import {
   ScrollText,
   Users,
   Image as ImageIcon,
+  BarChart3,
 } from "lucide-react";
 import BrandLogo from "@/components/BrandLogo";
 import { useTheme } from "@/components/ThemeProvider";
@@ -60,6 +61,14 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       active: pathname.startsWith("/admin/transaksi"),
       badge: "Live",
       badgeColor: "bg-[#ffd731] text-black",
+    },
+    {
+      label: "Laporan",
+      href: "/admin/laporan",
+      icon: BarChart3,
+      active: pathname.startsWith("/admin/laporan"),
+      badge: "Laba",
+      badgeColor: "bg-[#55db9c] text-black",
     },
     {
       label: "Produk & Paket",

@@ -305,8 +305,16 @@ Status: ${order.status}`;
       {/* 1. SUCCESS VIEW */}
       {isSuccess && (
         <div className="bg-white dark:bg-[#181824] dark:border-[#38384a] ink-border rounded-3xl p-6 md:p-10 text-center space-y-6 shadow-[4px_4px_0px_0px_#000000] max-w-4xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-[#55db9c] ink-border flex items-center justify-center mx-auto shadow-[2px_2px_0px_0px_#000000]">
-            <CheckCircle2 className="w-8 h-8 text-black" />
+          <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+            <img
+              src="/brand/ekspresi/xyzi-rayakan.svg"
+              alt="XYZI Merayakan Sukses"
+              className="w-full h-full object-contain drop-shadow-md animate-bounce"
+              style={{ animationDuration: "2s" }}
+            />
+            <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-[#55db9c] ink-border flex items-center justify-center shadow-[2px_2px_0px_0px_#000000]">
+              <CheckCircle2 className="w-5 h-5 text-black" />
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -314,7 +322,7 @@ Status: ${order.status}`;
               Transaksi Berhasil
             </h2>
             <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
-              Pembayaran telah terverifikasi secara resmi oleh sistem.
+              Pembayaran telah terverifikasi secara resmi oleh sistem. Item Anda telah siap.
             </p>
           </div>
 
@@ -411,8 +419,16 @@ Status: ${order.status}`;
       {/* 2. PAID / PROCESSING VIEW */}
       {isPaidOrProcessing && (
         <div className="bg-white dark:bg-[#181824] dark:border-[#38384a] ink-border rounded-3xl p-6 md:p-10 text-center space-y-6 shadow-[4px_4px_0px_0px_#000000] max-w-4xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-[#38bdf8] ink-border flex items-center justify-center mx-auto shadow-[2px_2px_0px_0px_#000000]">
-            <Clock className="w-8 h-8 text-black" />
+          <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+            <img
+              src="/brand/ekspresi/xyzi-berpikir.svg"
+              alt="XYZI Sedang Memproses"
+              className="w-full h-full object-contain drop-shadow-md animate-pulse"
+              style={{ animationDuration: "1.5s" }}
+            />
+            <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-[#38bdf8] ink-border flex items-center justify-center shadow-[2px_2px_0px_0px_#000000]">
+              <Clock className="w-5 h-5 text-black" />
+            </div>
           </div>
           <div className="space-y-1">
             <h2 className="font-[var(--font-bricolage)] text-xl md:text-2xl font-black uppercase text-carbon dark:text-white">
@@ -465,8 +481,15 @@ Status: ${order.status}`;
       {/* 3. FAILED VIEW */}
       {isFailed && (
         <div className="bg-white dark:bg-[#181824] dark:border-[#38384a] ink-border rounded-3xl p-6 md:p-10 text-center space-y-6 shadow-[4px_4px_0px_0px_#000000] max-w-4xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-[#f87171] ink-border flex items-center justify-center mx-auto shadow-[2px_2px_0px_0px_#000000]">
-            <AlertTriangle className="w-8 h-8 text-black" />
+          <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+            <img
+              src="/brand/ekspresi/xyzi-maaf.svg"
+              alt="XYZI Mohon Maaf"
+              className="w-full h-full object-contain drop-shadow-md"
+            />
+            <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-[#f87171] ink-border flex items-center justify-center shadow-[2px_2px_0px_0px_#000000]">
+              <AlertTriangle className="w-5 h-5 text-black" />
+            </div>
           </div>
           <div className="space-y-1">
             <h2 className="font-[var(--font-bricolage)] text-xl md:text-2xl font-black uppercase text-carbon dark:text-white">
@@ -491,8 +514,15 @@ Status: ${order.status}`;
       {/* 4. EXPIRED OR CANCELLED VIEW */}
       {isExpiredOrCancelled && (
         <div className="bg-white dark:bg-[#181824] dark:border-[#38384a] ink-border rounded-3xl p-6 md:p-10 text-center space-y-6 shadow-[4px_4px_0px_0px_#000000] max-w-4xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-gray-300 ink-border flex items-center justify-center mx-auto shadow-[2px_2px_0px_0px_#000000]">
-            <XCircle className="w-8 h-8 text-black" />
+          <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+            <img
+              src="/brand/ekspresi/xyzi-tidur.svg"
+              alt="XYZI Sedang Istirahat"
+              className="w-full h-full object-contain drop-shadow-md opacity-80"
+            />
+            <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-gray-300 ink-border flex items-center justify-center shadow-[2px_2px_0px_0px_#000000]">
+              <XCircle className="w-5 h-5 text-black" />
+            </div>
           </div>
           <div className="space-y-1">
             <h2 className="font-[var(--font-bricolage)] text-xl md:text-2xl font-black uppercase text-carbon dark:text-white">

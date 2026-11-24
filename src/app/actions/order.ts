@@ -106,14 +106,29 @@ export async function createOrder(data: CreateOrderInput) {
       };
     }
 
-    // Provider balance check for Digiflazz items
+    // Provider balance check for Digiflazz and Xaviera items
     const supplier = (item as any).supplier || (product.categorySlug === "game-topup" ? "DIGIFLAZZ" : "MANUAL");
-    const isXaviera = supplier === "XAVIERA" || item.sku.startsWith("XAV-");
+    const isXaviera =
+      supplier === "XAVIERA" ||
+      item.sku.startsWith("XAV-") ||
+      (product.categorySlug === "akun-premium" && product.developer?.toLowerCase() !== "manual");
     const isDigiflazz = !isXaviera && (supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY);
 
     if (isDigiflazz) {
       const { getDigiflazzBalanceCached } = await import("@/lib/digiflazz");
       const currentBalance = await getDigiflazzBalanceCached();
+      const requiredCost = item.supplierPrice || Math.round(item.price * 0.8);
+      if (currentBalance !== null && requiredCost > currentBalance) {
+        return {
+          success: false,
+          error: `Varian item "${item.name}" saat ini belum tersedia. Silakan pilih varian lain atau hubungi admin.`,
+        };
+      }
+    }
+
+    if (isXaviera) {
+      const { getXavieraBalanceCached } = await import("@/lib/xaviera");
+      const currentBalance = await getXavieraBalanceCached();
       const requiredCost = item.supplierPrice || Math.round(item.price * 0.8);
       if (currentBalance !== null && requiredCost > currentBalance) {
         return {

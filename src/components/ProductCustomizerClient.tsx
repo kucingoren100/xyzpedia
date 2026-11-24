@@ -284,6 +284,9 @@ export default function ProductCustomizerClient({
     product.categorySlug === "akun-premium" ||
     product.categorySlug === "voucher-digital" ||
     product.categorySlug === "pulsa-ewallet";
+  const isInstantPremium =
+    product.categorySlug === "akun-premium" &&
+    product.developer?.toLowerCase() !== "manual";
   const outOfStockBadge = isNonGame ? "Stok habis" : "Belum tersedia";
   const outOfStockButton = isNonGame ? "Stok Habis" : "Varian Belum Tersedia";
   const outOfStockNotice = isNonGame
@@ -300,16 +303,18 @@ export default function ProductCustomizerClient({
       return;
     }
 
-    if (!targetUserId.trim()) {
-      setErrorMessage(`Mohon isi ${product.targetInputLabel} terlebih dahulu.`);
-      window.scrollTo({ top: 120, behavior: "smooth" });
-      return;
-    }
+    if (!isInstantPremium) {
+      if (!targetUserId.trim()) {
+        setErrorMessage(`Mohon isi ${product.targetInputLabel} terlebih dahulu.`);
+        window.scrollTo({ top: 120, behavior: "smooth" });
+        return;
+      }
 
-    if (product.requiresServer && !targetZoneId.trim()) {
-      setErrorMessage("Mohon isi Server / Zone ID akun terlebih dahulu.");
-      window.scrollTo({ top: 120, behavior: "smooth" });
-      return;
+      if (product.requiresServer && !targetZoneId.trim()) {
+        setErrorMessage("Mohon isi Server / Zone ID akun terlebih dahulu.");
+        window.scrollTo({ top: 120, behavior: "smooth" });
+        return;
+      }
     }
 
     if (!selectedItemId) {
@@ -341,14 +346,22 @@ export default function ProductCustomizerClient({
       return;
     }
 
-    if (!targetUserId.trim()) {
-      setErrorMessage(`Mohon isi ${product.targetInputLabel}`);
-      return;
-    }
+    if (isInstantPremium) {
+      const emailToCheck = customerEmail.trim();
+      if (!emailToCheck || !emailToCheck.includes("@")) {
+        setErrorMessage("Mohon masukkan alamat email yang valid untuk pengiriman kredensial akun.");
+        return;
+      }
+    } else {
+      if (!targetUserId.trim()) {
+        setErrorMessage(`Mohon isi ${product.targetInputLabel}`);
+        return;
+      }
 
-    if (product.requiresServer && !targetZoneId.trim()) {
-      setErrorMessage("Mohon isi Server / Zone ID akun");
-      return;
+      if (product.requiresServer && !targetZoneId.trim()) {
+        setErrorMessage("Mohon isi Server / Zone ID akun");
+        return;
+      }
     }
 
     const isUnderMaintenance = checkIsCategoryUnderMaintenance(condition, product.categorySlug);
@@ -387,6 +400,9 @@ export default function ProductCustomizerClient({
     const effectiveEmail =
       customerEmail.trim() ||
       (targetUserId.includes("@") ? targetUserId.trim() : "");
+    const finalTargetUserId = isInstantPremium
+      ? effectiveEmail
+      : targetUserId.trim();
 
     setIsSubmitting(true);
 
@@ -394,8 +410,8 @@ export default function ProductCustomizerClient({
       const res = await createOrder({
         productSlug: product.slug,
         itemId: selectedItemId,
-        targetUserId: targetUserId.trim(),
-        targetZoneId: targetZoneId.trim() || undefined,
+        targetUserId: finalTargetUserId,
+        targetZoneId: isInstantPremium ? undefined : (targetZoneId.trim() || undefined),
         customerEmail: effectiveEmail,
         customerPhone: customerPhone.trim() || undefined,
         promoCode: appliedPromo || undefined,
@@ -433,150 +449,152 @@ export default function ProductCustomizerClient({
         {/* Left Column: Form Steps (lg:col-span-8) */}
         <div className="lg:col-span-8 space-y-6">
           
-          {/* STEP 1: Account Credentials (Always visible on mobile & desktop) */}
-          <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-5 sm:p-6 relative shadow-[3px_3px_0px_0px_#000000]">
-            <div className="flex items-center justify-between pb-3 border-b border-carbon dark:border-[#38384a] mb-4">
-              <div className="flex items-center gap-2.5">
-                <span className="w-7 h-7 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-xs">
-                  1
-                </span>
-                <h3 className="font-[var(--font-bricolage)] text-base sm:text-lg font-black uppercase text-carbon dark:text-white">
-                  1. Masukkan Data Akun
-                </h3>
-              </div>
-              <span className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400">Wajib Diisi</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label htmlFor="target-user-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5" />
-                  <span>{product.targetInputLabel}</span>
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="target-user-id"
-                  type="text"
-                  value={targetUserId}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setTargetUserId(val);
-                    if (val.includes("@") && !customerEmail) {
-                      setCustomerEmail(val.trim());
-                    }
-                  }}
-                  placeholder={displayPlaceholder}
-                  className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
-                  required
-                />
+          {/* STEP 1: Account Credentials (Hidden for Instant Premium because credentials are provided by supplier) */}
+          {!isInstantPremium && (
+            <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-5 sm:p-6 relative shadow-[3px_3px_0px_0px_#000000]">
+              <div className="flex items-center justify-between pb-3 border-b border-carbon dark:border-[#38384a] mb-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-7 h-7 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-xs">
+                    1
+                  </span>
+                  <h3 className="font-[var(--font-bricolage)] text-base sm:text-lg font-black uppercase text-carbon dark:text-white">
+                    1. Masukkan Data Akun
+                  </h3>
+                </div>
+                <span className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400">Wajib Diisi</span>
               </div>
 
-              {product.requiresServer && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="target-zone-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
-                    <Server className="w-3.5 h-3.5" />
-                    <span>Zone / Server ID</span>
+                  <label htmlFor="target-user-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5" />
+                    <span>{product.targetInputLabel}</span>
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="target-zone-id"
+                    id="target-user-id"
                     type="text"
-                    value={targetZoneId}
-                    onChange={(e) => setTargetZoneId(e.target.value)}
-                    placeholder={product.serverInputPlaceholder || "Zone ID"}
+                    value={targetUserId}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setTargetUserId(val);
+                      if (val.includes("@") && !customerEmail) {
+                        setCustomerEmail(val.trim());
+                      }
+                    }}
+                    placeholder={displayPlaceholder}
                     className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
-                    required
+                    required={!isInstantPremium}
                   />
                 </div>
-              )}
-            </div>
 
-            {/* Live Verified Game Nickname Indicator */}
-            {nicknameStatus !== "IDLE" && (
-              <div
-                className={`mt-3 p-3.5 rounded-xl ink-border text-xs font-bold transition-all shadow-[2px_2px_0px_#000000] ${
-                  nicknameStatus === "CHECKING"
-                    ? "bg-[#fffbeb] dark:bg-[#78350f]/20 text-[#92400e] dark:text-[#fde68a] border-amber-400"
-                    : nicknameStatus === "VALID"
-                    ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30 text-[#065f46] dark:text-[#6ee7b7] border-emerald-500"
-                    : nicknameStatus === "INVALID"
-                    ? "bg-[#fef2f2] dark:bg-[#7f1d1d]/30 text-[#991b1b] dark:text-[#fca5a5] border-red-500"
-                    : "bg-[#f0f9ff] dark:bg-[#0c4a6e]/20 text-[#0369a1] dark:text-[#7dd3fc] border-sky-400"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    {nicknameStatus === "CHECKING" && (
-                      <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
-                    )}
-                    {nicknameStatus === "VALID" && (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    )}
-                    {nicknameStatus === "INVALID" && (
-                      <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
-                    )}
-                    {nicknameStatus === "UNVERIFIED" && (
-                      <Info className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
-                    )}
+                {product.requiresServer && (
+                  <div className="space-y-1.5">
+                    <label htmlFor="target-zone-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                      <Server className="w-3.5 h-3.5" />
+                      <span>Zone / Server ID</span>
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      id="target-zone-id"
+                      type="text"
+                      value={targetZoneId}
+                      onChange={(e) => setTargetZoneId(e.target.value)}
+                      placeholder={product.serverInputPlaceholder || "Zone ID"}
+                      className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
+                      required
+                    />
+                  </div>
+                )}
+              </div>
 
-                    <span className="font-extrabold">
-                      {nicknameStatus === "CHECKING" && "Sedang memeriksa akun in-game..."}
-                      {nicknameStatus === "VALID" && "Nickname Akun:"}
-                      {nicknameStatus === "INVALID" && "Akun Tidak Ditemukan!"}
-                      {nicknameStatus === "UNVERIFIED" && "Data Akun Tersimpan"}
-                    </span>
+              {/* Live Verified Game Nickname Indicator */}
+              {nicknameStatus !== "IDLE" && (
+                <div
+                  className={`mt-3 p-3.5 rounded-xl ink-border text-xs font-bold transition-all shadow-[2px_2px_0px_#000000] ${
+                    nicknameStatus === "CHECKING"
+                      ? "bg-[#fffbeb] dark:bg-[#78350f]/20 text-[#92400e] dark:text-[#fde68a] border-amber-400"
+                      : nicknameStatus === "VALID"
+                      ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30 text-[#065f46] dark:text-[#6ee7b7] border-emerald-500"
+                      : nicknameStatus === "INVALID"
+                      ? "bg-[#fef2f2] dark:bg-[#7f1d1d]/30 text-[#991b1b] dark:text-[#fca5a5] border-red-500"
+                      : "bg-[#f0f9ff] dark:bg-[#0c4a6e]/20 text-[#0369a1] dark:text-[#7dd3fc] border-sky-400"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      {nicknameStatus === "CHECKING" && (
+                        <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
+                      )}
+                      {nicknameStatus === "VALID" && (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      )}
+                      {nicknameStatus === "INVALID" && (
+                        <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+                      )}
+                      {nicknameStatus === "UNVERIFIED" && (
+                        <Info className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
+                      )}
 
-                    {nicknameStatus === "VALID" && checkedNickname && (
-                      <span className="font-mono text-sm font-black text-emerald-800 dark:text-emerald-300 bg-white dark:bg-[#1a1a24] px-2.5 py-0.5 rounded ink-border">
-                        {checkedNickname}
+                      <span className="font-extrabold">
+                        {nicknameStatus === "CHECKING" && "Sedang memeriksa akun in-game..."}
+                        {nicknameStatus === "VALID" && "Nickname Akun:"}
+                        {nicknameStatus === "INVALID" && "Akun Tidak Ditemukan!"}
+                        {nicknameStatus === "UNVERIFIED" && "Data Akun Tersimpan"}
                       </span>
-                    )}
+
+                      {nicknameStatus === "VALID" && checkedNickname && (
+                        <span className="font-mono text-sm font-black text-emerald-800 dark:text-emerald-300 bg-white dark:bg-[#1a1a24] px-2.5 py-0.5 rounded ink-border">
+                          {checkedNickname}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      {nicknameStatus === "VALID" && (
+                        <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">
+                          ✓ Terverifikasi
+                        </span>
+                      )}
+                      {nicknameStatus === "INVALID" && (
+                        <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-red-600 text-white">
+                          ✕ ID Salah / Tidak Ada
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    {nicknameStatus === "VALID" && (
-                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">
-                        ✓ Terverifikasi
-                      </span>
-                    )}
-                    {nicknameStatus === "INVALID" && (
-                      <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-red-600 text-white">
-                        ✕ ID Salah / Tidak Ada
-                      </span>
-                    )}
-                  </div>
+                  {nicknameStatus === "INVALID" && (
+                    <p className="mt-1.5 text-[11px] text-red-600 dark:text-red-400 font-semibold">
+                      {nicknameMessage || "Pastikan User ID dan Zone ID sudah sesuai dengan akun Anda di dalam game."}
+                    </p>
+                  )}
+                  {nicknameStatus === "UNVERIFIED" && (
+                    <p className="mt-1 text-[11px] text-sky-700 dark:text-sky-300 font-semibold">
+                      {nicknameMessage}
+                    </p>
+                  )}
                 </div>
+              )}
 
-                {nicknameStatus === "INVALID" && (
-                  <p className="mt-1.5 text-[11px] text-red-600 dark:text-red-400 font-semibold">
-                    {nicknameMessage || "Pastikan User ID dan Zone ID sudah sesuai dengan akun Anda di dalam game."}
-                  </p>
-                )}
-                {nicknameStatus === "UNVERIFIED" && (
-                  <p className="mt-1 text-[11px] text-sky-700 dark:text-sky-300 font-semibold">
-                    {nicknameMessage}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {product.instructions && (
-              <div className="mt-4 p-3 product-instruction-box bg-[#dceeff] dark:bg-[#152338] ink-border dark:border-[#2d3f5e] rounded-xl flex items-center gap-2 text-xs font-semibold text-[#003a6b] dark:text-[#bae6fd]">
-                <Info className="w-4 h-4 text-[#005ea5] dark:text-[#38bdf8] shrink-0" />
-                <span>{product.instructions}</span>
-              </div>
-            )}
-          </section>
+              {product.instructions && (
+                <div className="mt-4 p-3 product-instruction-box bg-[#dceeff] dark:bg-[#152338] ink-border dark:border-[#2d3f5e] rounded-xl flex items-center gap-2 text-xs font-semibold text-[#003a6b] dark:text-[#bae6fd]">
+                  <Info className="w-4 h-4 text-[#005ea5] dark:text-[#38bdf8] shrink-0" />
+                  <span>{product.instructions}</span>
+                </div>
+              )}
+            </section>
+          )}
 
           {/* STEP 2: Denomination Selection (Always visible on mobile & desktop) */}
           <section className="bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-5 sm:p-6 relative shadow-[3px_3px_0px_0px_#000000]">
             <div className="flex items-center justify-between pb-3 border-b border-carbon dark:border-[#38384a] mb-3">
               <div className="flex items-center gap-2 sm:gap-2.5">
                 <span className="w-7 h-7 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-xs">
-                  2
+                  {isInstantPremium ? "1" : "2"}
                 </span>
                 <h3 className="font-[var(--font-bricolage)] text-base sm:text-lg font-black uppercase text-carbon dark:text-white">
-                  2. Pilih Nominal / Paket
+                  {isInstantPremium ? "1. Pilih Nominal / Paket" : "2. Pilih Nominal / Paket"}
                 </h3>
               </div>
               <div className="flex items-center gap-2">
@@ -762,15 +780,15 @@ export default function ProductCustomizerClient({
             </div>
           )}
 
-          {/* STEP 3: Payment Method (Desktop Only: hidden on mobile) */}
+          {/* STEP 3 (or 2 if Instant): Payment Method (Desktop Only: hidden on mobile) */}
           <section className="hidden lg:block bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-6 relative shadow-[3px_3px_0px_0px_#000000]">
             <div className="flex items-center justify-between pb-3 border-b border-carbon dark:border-[#38384a] mb-4">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-xs">
-                  3
+                  {isInstantPremium ? "2" : "3"}
                 </span>
                 <h3 className="font-[var(--font-bricolage)] text-lg font-black uppercase text-carbon dark:text-white">
-                  3. Metode Pembayaran Instan
+                  {isInstantPremium ? "2. Metode Pembayaran Instan" : "3. Metode Pembayaran Instan"}
                 </h3>
               </div>
               <span className="text-[10px] font-black uppercase text-black bg-[#ffd731] px-2 py-0.5 rounded ink-border">
@@ -801,15 +819,15 @@ export default function ProductCustomizerClient({
             </div>
           </section>
 
-          {/* STEP 4: Buyer Contact (Desktop Only: hidden on mobile) */}
+          {/* STEP 4 (or 3 if Instant): Buyer Contact (Desktop Only: hidden on mobile) */}
           <section className="hidden lg:block bg-white dark:bg-[#181824] ink-border dark:border-[#38384a] rounded-2xl p-6 relative shadow-[3px_3px_0px_0px_#000000]">
             <div className="flex items-center justify-between pb-3 border-b border-carbon dark:border-[#38384a] mb-4">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-xs">
-                  4
+                  {isInstantPremium ? "3" : "4"}
                 </span>
                 <h3 className="font-[var(--font-bricolage)] text-lg font-black uppercase text-carbon dark:text-white">
-                  4. Kontak Pengiriman Invoice
+                  {isInstantPremium ? "3. Kontak Pengiriman Kredensial & Struk" : "4. Kontak Pengiriman Invoice"}
                 </h3>
               </div>
               <span className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400">Tanpa Login</span>
@@ -819,7 +837,7 @@ export default function ProductCustomizerClient({
               <div className="space-y-1.5">
                 <label htmlFor="customer-email-desktop" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
-                  <span>Alamat Email</span>
+                  <span>{isInstantPremium ? "Email Penerima Kredensial Akun & Struk" : "Alamat Email"}</span>
                   <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -831,6 +849,11 @@ export default function ProductCustomizerClient({
                   className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#1f1f2e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
                   required
                 />
+                {isInstantPremium && (
+                  <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 mt-1">
+                    ✓ Kredensial akun resmi (email & password) dan bukti transaksi dikirimkan otomatis ke email ini.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -905,12 +928,21 @@ export default function ProductCustomizerClient({
                   <span className="line-clamp-1">{selectedItem?.name || "-"}</span>
                 </span>
               </div>
-              <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800">
-                <span className="text-gray-500 dark:text-gray-400">Target ID:</span>
-                <span className="font-black text-carbon dark:text-white">
-                  {targetUserId || "Belum diisi"} {targetZoneId ? `(${targetZoneId})` : ""}
-                </span>
-              </div>
+              {isInstantPremium ? (
+                <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-gray-500 dark:text-gray-400">Pengiriman:</span>
+                  <span className="font-black text-[#5c4ade] dark:text-[#a78bfa] uppercase">
+                    Kredensial Instan (24/7)
+                  </span>
+                </div>
+              ) : (
+                <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-gray-500 dark:text-gray-400">Target ID:</span>
+                  <span className="font-black text-carbon dark:text-white">
+                    {targetUserId || "Belum diisi"} {targetZoneId ? `(${targetZoneId})` : ""}
+                  </span>
+                </div>
+              )}
               {checkedNickname && (
                 <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800">
                   <span className="text-gray-500 dark:text-gray-400">Nickname:</span>
@@ -1101,12 +1133,21 @@ export default function ProductCustomizerClient({
                     <span className="line-clamp-1">{selectedItem?.name}</span>
                   </span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
-                  <span className="text-gray-500 dark:text-gray-400">Target ID:</span>
-                  <span className="font-black text-carbon dark:text-white">
-                    {targetUserId} {targetZoneId ? `(${targetZoneId})` : ""}
-                  </span>
-                </div>
+                {isInstantPremium ? (
+                  <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                    <span className="text-gray-500 dark:text-gray-400">Pengiriman:</span>
+                    <span className="font-black text-[#5c4ade] dark:text-[#a78bfa] uppercase">
+                      Kredensial Instan (24/7)
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
+                    <span className="text-gray-500 dark:text-gray-400">Target ID:</span>
+                    <span className="font-black text-carbon dark:text-white">
+                      {targetUserId || "—"} {targetZoneId ? `(${targetZoneId})` : ""}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Price Box inside Modal */}
@@ -1125,12 +1166,12 @@ export default function ProductCustomizerClient({
               </div>
             </div>
 
-            {/* 2. Tahap 3: Metode Pembayaran (QRIS) */}
+            {/* 2. Tahap Metode Pembayaran (QRIS) */}
             <div className="bg-white dark:bg-[#1a1a26] ink-border dark:border-[#38384a] rounded-2xl p-4 space-y-2.5 shadow-[2px_2px_0px_0px_#000000]">
               <div className="flex items-center justify-between pb-2 border-b border-carbon dark:border-[#38384a]">
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-[10px]">
-                    3
+                    2
                   </span>
                   <span className="font-[var(--font-bricolage)] text-xs font-black uppercase text-carbon dark:text-white">
                     Metode Pembayaran
@@ -1159,15 +1200,15 @@ export default function ProductCustomizerClient({
               </div>
             </div>
 
-            {/* 3. Tahap 4: Kontak Pengiriman Invoice */}
+            {/* 3. Tahap Kontak Pengiriman */}
             <div className="bg-white dark:bg-[#1a1a26] ink-border dark:border-[#38384a] rounded-2xl p-4 space-y-3 shadow-[2px_2px_0px_0px_#000000]">
               <div className="flex items-center justify-between pb-2 border-b border-carbon dark:border-[#38384a]">
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black flex items-center justify-center font-black text-[10px]">
-                    4
+                    3
                   </span>
                   <span className="font-[var(--font-bricolage)] text-xs font-black uppercase text-carbon dark:text-white">
-                    Kontak Bukti Invoice
+                    {isInstantPremium ? "Kontak Penerima Akun & Invoice" : "Kontak Bukti Invoice"}
                   </span>
                 </div>
                 <span className="text-[9px] font-black uppercase text-gray-500 dark:text-gray-400">
@@ -1178,7 +1219,7 @@ export default function ProductCustomizerClient({
               <div className="space-y-1.5">
                 <label htmlFor="customer-email-mobile" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
-                  <span>Alamat Email</span>
+                  <span>{isInstantPremium ? "Email Penerima Kredensial & Struk" : "Alamat Email"}</span>
                   <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -1190,6 +1231,11 @@ export default function ProductCustomizerClient({
                   className="w-full px-4 py-2.5 bg-[#f3f4f6] dark:bg-[#20202e] rounded-xl ink-border dark:border-[#38384a] text-xs font-bold text-carbon dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:bg-white dark:focus:bg-[#27273a] transition-colors"
                   required
                 />
+                {isInstantPremium && (
+                  <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 mt-1">
+                    * Kredensial akun resmi & invoice otomatis dikirimkan ke email ini.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -1416,7 +1462,7 @@ export default function ProductCustomizerClient({
                 <span className="text-gray-500 dark:text-gray-400">Nominal:</span>
                 <span className="font-black text-carbon dark:text-white text-right">{selectedItem?.name}</span>
               </div>
-              {targetUserId && (product.categorySlug !== "game-topup" && !product.requiresServer) && (
+              {!isInstantPremium && targetUserId && (product.categorySlug !== "game-topup" && !product.requiresServer) && (
                 <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
                   <span className="text-gray-500 dark:text-gray-400">
                     {product.targetInputLabel || (product.categorySlug === "akun-premium" ? "Email / No. Akun:" : "No. Tujuan:")}
@@ -1427,7 +1473,9 @@ export default function ProductCustomizerClient({
                 </div>
               )}
               <div className="flex justify-between py-1 border-b border-gray-200 dark:border-gray-800">
-                <span className="text-gray-500 dark:text-gray-400">Email Struk:</span>
+                <span className="text-gray-500 dark:text-gray-400">
+                  {isInstantPremium ? "Email Penerima Kredensial:" : "Email Struk:"}
+                </span>
                 <span className="font-black text-carbon dark:text-white truncate max-w-[200px]">
                   {customerEmail || targetUserId}
                 </span>
@@ -1461,8 +1509,10 @@ export default function ProductCustomizerClient({
             {/* Disclaimer Alert */}
             <div className="p-2.5 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-300 dark:border-yellow-700/50 rounded-xl text-[10px] font-bold text-yellow-900 dark:text-yellow-200 leading-relaxed">
               ⚠️ <strong>Penting:</strong>{" "}
-              {product.categorySlug === "akun-premium"
-                ? "Detail akun / akses langganan resmi akan dikirimkan ke email atau ditampilkan langsung setelah pembayaran QRIS lunas. Pastikan email Anda sudah benar."
+              {isInstantPremium
+                ? "Kredensial akun resmi (email & password) akan terbit instan dan langsung dikirimkan ke email penerima di atas setelah pembayaran QRIS lunas."
+                : product.categorySlug === "akun-premium"
+                ? "Detail akun / akses langganan resmi akan dikirimkan ke email atau diserahkan admin setelah pembayaran QRIS lunas. Pastikan email Anda sudah benar."
                 : product.categorySlug === "pulsa-ewallet"
                 ? "Pulsa / saldo e-wallet akan otomatis ditransfer ke nomor tujuan setelah pembayaran QRIS lunas. Pastikan nomor tujuan Anda sudah benar."
                 : product.categorySlug === "voucher-digital"

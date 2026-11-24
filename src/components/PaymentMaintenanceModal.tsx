@@ -78,8 +78,8 @@ export default function PaymentMaintenanceModal({
         <div className="flex items-center gap-3 mb-3">
           <div className="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-400/40 p-1 flex-shrink-0 flex items-center justify-center">
             <img
-              src="/brand/padxy-mascot.png"
-              alt="Padxy Mascot"
+              src="/brand/ekspresi/xyzi-tidur.svg"
+              alt="XYZI Sedang Istirahat"
               className="w-full h-full object-contain"
             />
           </div>
