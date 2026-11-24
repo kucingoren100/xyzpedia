@@ -565,7 +565,30 @@ export function generateWeeklyReportEmailHtml(stats: WeeklyReportStats): string 
 }
 
 /**
- * Send simulated/real email notification via Nodemailer SMTP or Simulation fallback
+ * Convert HTML email content into clean readable plain-text fallback
+ * Improves inbox deliverability & spam filter scores across Gmail/Outlook/Yahoo.
+ */
+function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<head[\s\S]*?<\/head>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|tr|li|h[1-6])>/gi, "\n")
+    .replace(/<\/td>/gi, " | ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+/**
+ * Send simulated/real email notification via Resend API, Nodemailer SMTP, or Simulation fallback
  */
 export async function sendEmailMessage(
   recipient: string,
@@ -621,6 +644,13 @@ export async function sendEmailMessage(
     process.env.RESEND_API_KEY?.trim() ||
     "";
 
+  const plainText = htmlToPlainText(htmlContent);
+  const firstAdminEmail = settings.email.recipient
+    ?.split(",")
+    .map((e) => e.trim())
+    .find((e) => emailRegex.test(e));
+  const replyToEmail = firstAdminEmail || senderEmail;
+
   // Priority 1: Resend REST API (Fast, reliable, custom domain)
   if (resendApiKey) {
     try {
@@ -633,8 +663,10 @@ export async function sendEmailMessage(
         body: JSON.stringify({
           from: `${senderName} <${senderEmail}>`,
           to: emails,
+          reply_to: replyToEmail,
           subject,
           html: htmlContent,
+          text: plainText,
         }),
       });
 
@@ -694,6 +726,7 @@ export async function sendEmailMessage(
         to: emails.join(", "),
         subject,
         html: htmlContent,
+        text: plainText,
       });
 
       return {

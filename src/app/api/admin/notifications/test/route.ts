@@ -147,14 +147,14 @@ export async function POST(req: Request) {
         eventTitle = "Struk & Kredensial Pembeli";
         const mockData = {
           invoice: "INV-XYZ-" + Date.now().toString().slice(-6),
-          productName: "Netflix Premium UHD 4K",
-          variantName: "1 Bulan Private Profile (1P1U)",
-          targetUser: "pembeli@gmail.com",
-          totalAmount: 35000,
+          productName: "Mobile Legends: Bang Bang",
+          variantName: "86 Diamonds (Proses Otomatis)",
+          targetUser: "12345678 (Zone 2041)",
+          totalAmount: 21500,
           paymentMethod: "QRIS Real-time",
-          sn: "Email: akun.netflix@example.com | Pass: XyzPedia123! | PIN: 4412",
+          sn: "SN-XYZ-992841023491 / Transaksi Berhasil Diproses",
         };
-        emailSubject = `🧾 [UJI COBA STRUK PEMBELI] Bukti Pembayaran & Pengiriman Berhasil · ${mockData.invoice} — XYZPEDIA`;
+        emailSubject = `Bukti Pembayaran & Pengiriman Berhasil · ${mockData.invoice} — XYZPEDIA`;
         emailHtml = generateBuyerReceiptEmailHtml(mockData);
       } else if (eventType === "notifyNewOrder") {
         eventTitle = "Transaksi Baru Masuk";
