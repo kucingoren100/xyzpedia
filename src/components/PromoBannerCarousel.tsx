@@ -87,8 +87,8 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 100% Clean Clickable Graphic Banner (Responsive Consistent Aspect Ratio) */}
-      <div className="relative w-full aspect-[2.75/1] max-h-[460px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
+      {/* 100% Clean Clickable Graphic Banner (Exact Banner Aspect Ratio: 1024 / 434) */}
+      <div className="relative w-full aspect-[1024/434] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
         <Link
           href={current.linkUrl || "/katalog"}
           className="relative block w-full h-full cursor-pointer overflow-hidden"
