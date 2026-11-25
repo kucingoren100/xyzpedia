@@ -32,6 +32,18 @@ export default function FlashSaleSection({ products }: { products: FlashSaleProd
     seconds: 37,
   });
 
+  // Track horizontal scroll progress for mobile landscape slider indicator
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const maxScroll = target.scrollWidth - target.clientWidth;
+    if (maxScroll > 0) {
+      const progress = (target.scrollLeft / maxScroll) * 100;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    }
+  };
+
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -171,14 +183,17 @@ export default function FlashSaleSection({ products }: { products: FlashSaleProd
           </div>
         </div>
 
-        {/* Minimalist 4-Column Cards Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-5">
+        {/* Minimalist Cards Row - Landscape Horizontal Scroll on Mobile, 4-Col Grid on Desktop */}
+        <div
+          onScroll={handleScroll}
+          className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-5 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-none snap-x snap-mandatory -mx-1 px-1 sm:mx-0 sm:px-0"
+        >
           {flashSaleItems.map(({ product, item, discount, originalPrice }) => {
             return (
               <Link
                 key={`${product.id}-${item.id}`}
                 href={`/produk/${product.slug}`}
-                className="bg-[#181f30] hover:bg-[#202940] border border-[#27334d] rounded-2xl p-4 flex flex-col justify-between transition-all group hover:scale-[1.02] active:scale-[0.99] shadow-[2px_2px_0px_#000000]"
+                className="w-[235px] xs:w-[260px] sm:w-auto shrink-0 snap-start bg-[#181f30] hover:bg-[#202940] border border-[#27334d] rounded-2xl p-4 flex flex-col justify-between transition-all group hover:scale-[1.02] active:scale-[0.99] shadow-[2px_2px_0px_#000000]"
               >
                 {/* Top Row: Game Avatar + Game Name + Discount Badge */}
                 <div className="flex items-center justify-between gap-2">
@@ -227,6 +242,19 @@ export default function FlashSaleSection({ products }: { products: FlashSaleProd
               </Link>
             );
           })}
+        </div>
+
+        {/* Mobile Landscape Scroll Progress Indicator (Matching Reference Image) */}
+        <div className="sm:hidden mt-3 flex justify-end pr-1">
+          <div className="w-20 h-1 bg-[#232b3e] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#ffd731] rounded-full transition-all duration-100"
+              style={{
+                width: "45%",
+                transform: `translateX(${scrollProgress * 1.2}%)`,
+              }}
+            />
+          </div>
         </div>
       </div>
     </section>
