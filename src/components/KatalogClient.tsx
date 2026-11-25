@@ -573,8 +573,8 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
               </span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-              {gameProducts.map((p) => (
-                <ProductCard key={p.id} product={p} />
+              {gameProducts.map((p, idx) => (
+                <ProductCard key={p.id} product={p} priority={idx < 6} />
               ))}
             </div>
           </section>
