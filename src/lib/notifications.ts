@@ -217,12 +217,14 @@ export interface SendTelegramOptions {
 export function getPublicAppUrl(): string {
   const envUrl =
     process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-    process.env.VERCEL_URL;
-  if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
-    return "https://xyzpedia.my.id";
+    process.env.NEXT_PUBLIC_SITE_URL;
+  if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1") || envUrl.includes("vercel.app")) {
+    return "https://www.xyzpedia.my.id";
   }
-  const clean = envUrl.startsWith("http") ? envUrl : `https://${envUrl}`;
+  let clean = envUrl.startsWith("http") ? envUrl : `https://${envUrl}`;
+  if (clean.includes("xyzpedia.my.id") && !clean.includes("www.xyzpedia.my.id")) {
+    clean = clean.replace("xyzpedia.my.id", "www.xyzpedia.my.id");
+  }
   return clean.replace(/\/$/, "");
 }
 

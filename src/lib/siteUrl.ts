@@ -5,8 +5,13 @@
 export function siteUrl(path = ""): string {
   let base =
     process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://www.xyzpedia.my.id");
+    process.env.NEXT_PUBLIC_SITE_URL;
+
+  if (!base || base.includes("localhost") || base.includes("127.0.0.1") || base.includes("vercel.app")) {
+    base = "https://www.xyzpedia.my.id";
+  } else if (!base.startsWith("http")) {
+    base = `https://${base}`;
+  }
 
   // Vercel production enforces canonical redirect to www.xyzpedia.my.id (HTTP 308 on non-www).
   // Ensure webhook callbacks and redirects use the canonical domain so POST requests are never redirected.

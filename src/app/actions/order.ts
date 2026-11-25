@@ -508,10 +508,49 @@ export async function requestOrderLookup(email: string) {
       // In production/dev, we can trigger an email or provide direct lookup url
       const { sendEmailMessage, getPublicAppUrl } = await import("@/lib/notifications");
       const magicUrl = `${getPublicAppUrl()}/cek-transaksi/akses?token=${token}`;
+      const emailHtml = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tautan Akses Riwayat Pesanan XYZPEDIA</title>
+</head>
+<body style="margin: 0; padding: 24px 12px; background-color: #0b0b10; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff;">
+  <div style="max-width: 540px; margin: 0 auto; background: #12121a; border-radius: 20px; overflow: hidden; border: 2px solid #2d2d3d; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+    <div style="background-color: #ffd731; padding: 22px 24px; text-align: center; border-bottom: 2px solid #000000;">
+      <div style="font-size: 13px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: #000000; margin-bottom: 4px;">
+        XYZPEDIA STORE
+      </div>
+      <div style="font-size: 20px; font-weight: 900; color: #000000;">
+        🔐 Akses Riwayat Pesanan Anda
+      </div>
+    </div>
+    <div style="padding: 26px 24px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1; margin-top: 0;">
+        Halo, kami menerima permintaan untuk melihat seluruh riwayat transaksi pesanan yang terdaftar dengan email <strong style="color: #ffffff;">${trimmed}</strong>.
+      </p>
+      <div style="text-align: center; margin: 26px 0;">
+        <a href="${magicUrl}" style="display: inline-block; background-color: #ffd731; color: #000000; font-size: 14px; font-weight: 900; text-transform: uppercase; text-decoration: none; padding: 14px 28px; border-radius: 12px; border: 2px solid #000000; box-shadow: 3px 3px 0 #ffffff;">
+          Lihat Riwayat Transaksi Saya →
+        </a>
+      </div>
+      <p style="font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 8px;">
+        Atau salin tautan berikut ke browser Anda jika tombol di atas tidak dapat diklik:
+      </p>
+      <div style="background: #1a1a26; padding: 10px 14px; border-radius: 10px; border: 1px solid #334155; word-break: break-all; font-family: monospace; font-size: 11px; color: #38bdf8; margin-bottom: 20px;">
+        ${magicUrl}
+      </div>
+      <div style="border-top: 1px solid #2d2d3d; padding-top: 14px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.5;">
+        ⏱️ Tautan akses aman ini hanya berlaku selama <strong>30 menit</strong>.<br>
+        Jika Anda tidak merasa meminta tautan ini, Anda dapat mengabaikan email ini dengan aman.
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
       await sendEmailMessage(
         trimmed,
         "Tautan Akses Riwayat Pesanan XYZPEDIA",
-        `<p>Halo,</p><p>Klik tautan di bawah ini untuk melihat daftar pesanan Anda (berlaku 30 menit):</p><p><a href="${magicUrl}">${magicUrl}</a></p>`
+        emailHtml
       ).catch(() => {});
     }
 
