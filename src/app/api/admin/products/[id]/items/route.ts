@@ -15,7 +15,7 @@ export async function POST(
 
     const { id: productId } = await params;
     const body = await req.json();
-    const { name, price, originalPrice, supplierPrice, discountPercent, bonusText, stockStatus, sku } = body;
+    const { name, price, originalPrice, supplierPrice, discountPercent, bonusText, stockStatus, sku, credentials } = body;
 
     if (!name || price === undefined) {
       return NextResponse.json(
@@ -24,17 +24,26 @@ export async function POST(
       );
     }
 
-    // Auto-generate SKU if not provided
-    const generatedSku = sku?.trim() || `SKU-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    // Auto-generate SKU if not provided (always start with MANUAL- for admin added variants)
+    const generatedSku = sku?.trim() || `MANUAL-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     const numPrice = parseInt(price, 10);
     const numOrig = originalPrice ? parseInt(originalPrice, 10) : null;
-    const numSupplier = supplierPrice ? parseInt(supplierPrice, 10) : Math.round(numPrice * 0.88);
+    const numSupplier = supplierPrice ? parseInt(supplierPrice, 10) : 0;
 
     let calcDiscount = discountPercent ? parseInt(discountPercent, 10) : null;
     if (!calcDiscount && numOrig && numOrig > numPrice) {
       calcDiscount = Math.round(((numOrig - numPrice) / numOrig) * 100);
     }
+
+    // Process credentials if provided
+    const rawCreds = typeof credentials === "string" ? credentials.trim() : "";
+    const credLines = rawCreds
+      ? rawCreds
+          .split("\n")
+          .map((l: string) => l.trim())
+          .filter(Boolean)
+      : [];
 
     const newItem = await prisma.productItem.create({
       data: {
@@ -46,7 +55,27 @@ export async function POST(
         supplierPrice: numSupplier ?? 0,
         discountPercent: calcDiscount,
         bonusText: bonusText?.trim() || null,
-        stockStatus: stockStatus || "AVAILABLE",
+        stockStatus: stockStatus || (credLines.length > 0 ? "AVAILABLE" : "AVAILABLE"),
+        supplier: "MANUAL",
+        ...(credLines.length > 0
+          ? {
+              accountStocks: {
+                create: credLines.map((cred: string) => ({
+                  credential: cred,
+                  isUsed: false,
+                })),
+              },
+            }
+          : {}),
+      },
+      include: {
+        _count: {
+          select: {
+            accountStocks: {
+              where: { isUsed: false },
+            },
+          },
+        },
       },
     });
 
@@ -54,12 +83,12 @@ export async function POST(
       actor: session.username || "admin",
       action: "ADD_PRODUCT_ITEM",
       target: newItem.name,
-      summary: `Admin menambahkan varian "${newItem.name}" (SKU: ${newItem.sku}, Harga: Rp ${numPrice.toLocaleString("id-ID")}) ke produk ID ${productId}.`,
+      summary: `Admin menambahkan varian "${newItem.name}" (SKU: ${newItem.sku}, Harga: Rp ${numPrice.toLocaleString("id-ID")}, Stok Akun: ${credLines.length}) ke produk ID ${productId}.`,
     });
 
     return NextResponse.json({
       success: true,
-      message: `Varian "${newItem.name}" berhasil ditambahkan.`,
+      message: `Varian "${newItem.name}" berhasil ditambahkan${credLines.length > 0 ? ` bersama ${credLines.length} akun stok` : ""}.`,
       item: {
         ...newItem,
         supplierPrice: numSupplier,

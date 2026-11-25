@@ -52,7 +52,66 @@ export async function startFulfillment(orderId: string) {
   const isWaroengkuy = !isManual && !isXaviera && supplier === "WAROENGKUY";
 
   if (isManual) {
-    // Keep order in PAID / PROCESSING state waiting for admin manual handover
+    // 1. Check if ready stock credentials exist in the admin's AccountStock vault
+    try {
+      const readyStock = await prisma.accountStock.findFirst({
+        where: {
+          productItemId: order.productItemId,
+          isUsed: false,
+        },
+        orderBy: { createdAt: "asc" },
+      });
+
+      if (readyStock) {
+        // Mark stock item as used
+        await prisma.accountStock.update({
+          where: { id: readyStock.id },
+          data: {
+            isUsed: true,
+            orderId: order.id,
+            usedAt: new Date(),
+          },
+        });
+
+        // Check remaining available stock; if 0, update variant status to OUT_OF_STOCK
+        const remaining = await prisma.accountStock.count({
+          where: {
+            productItemId: order.productItemId,
+            isUsed: false,
+          },
+        });
+
+        if (remaining === 0) {
+          await prisma.productItem.update({
+            where: { id: order.productItemId },
+            data: { stockStatus: "OUT_OF_STOCK" },
+          });
+        }
+
+        // Complete order instantly with credentials
+        const updatedOrder = await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            status: OrderStatus.SUCCESS,
+            sn: readyStock.credential,
+            supplierStatus: "BERHASIL",
+            fulfilledAt: new Date(),
+            notes: `Kredensial stok mandiri diserahkan otomatis dari brankas akun.`,
+          },
+          include: { product: true, productItem: true },
+        });
+
+        // Send buyer receipt email with credentials
+        await dispatchSuccess(updatedOrder, readyStock.credential, "STOK_MANDIRI");
+
+        console.log(`[startFulfillment] Instant manual stock fulfilled for invoice ${order.invoiceNumber}`);
+        return { success: true, instantStock: true, sn: readyStock.credential };
+      }
+    } catch (stockErr) {
+      console.error("[startFulfillment] Error pulling manual stock:", stockErr);
+    }
+
+    // 2. Fallback if no instant stock: wait for admin manual handover
     await prisma.order.update({
       where: { id: order.id },
       data: {

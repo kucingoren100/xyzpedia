@@ -36,6 +36,15 @@ export async function GET(req: Request) {
           category: { select: { name: true, slug: true } },
           items: {
             orderBy: [{ order: "asc" }, { price: "asc" }],
+            include: {
+              _count: {
+                select: {
+                  accountStocks: {
+                    where: { isUsed: false },
+                  },
+                },
+              },
+            },
           },
         },
       }),

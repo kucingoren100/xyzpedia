@@ -25,6 +25,7 @@ import {
   Info,
   Sliders,
   Clock,
+  Key,
 } from "lucide-react";
 import AdminTopbar from "./AdminTopbar";
 import { compressImageClient } from "@/lib/imageCompressor";
@@ -41,6 +42,10 @@ interface ProductItem {
   stockStatus: string;
   bonusText: string | null;
   order: number;
+  supplier?: string | null;
+  _count?: {
+    accountStocks?: number;
+  };
 }
 
 interface Product {
@@ -177,7 +182,15 @@ export default function AdminProdukClient({
   const [newVariantSupplierPrice, setNewVariantSupplierPrice] = useState("");
   const [newVariantOriginalPrice, setNewVariantOriginalPrice] = useState("");
   const [newVariantStock, setNewVariantStock] = useState("AVAILABLE");
+  const [newVariantCredentials, setNewVariantCredentials] = useState("");
   const [isSubmittingVariant, setIsSubmittingVariant] = useState(false);
+
+  // Stock Vault Modal States
+  const [stockVaultItem, setStockVaultItem] = useState<ProductItem | null>(null);
+  const [stockVaultList, setStockVaultList] = useState<any[]>([]);
+  const [stockVaultLoading, setStockVaultLoading] = useState(false);
+  const [newStockInput, setNewStockInput] = useState("");
+  const [isSubmittingStock, setIsSubmittingStock] = useState(false);
 
   // Helper: Cek apakah produk ditambahkan secara manual mandiri (bukan dari API supplier)
   const isManualProduct = (prod: Product | null): boolean => {
@@ -527,6 +540,7 @@ export default function AdminProdukClient({
           supplierPrice,
           originalPrice,
           stockStatus: newVariantStock,
+          credentials: newVariantCredentials.trim() || undefined,
         }),
       });
 
@@ -544,6 +558,7 @@ export default function AdminProdukClient({
         setNewVariantPrice("");
         setNewVariantSupplierPrice("");
         setNewVariantOriginalPrice("");
+        setNewVariantCredentials("");
       } else {
         alert("Gagal menambahkan varian: " + (data.message || "Terjadi kesalahan"));
       }
@@ -551,6 +566,118 @@ export default function AdminProdukClient({
       alert("Terjadi kesalahan: " + err.message);
     } finally {
       setIsSubmittingVariant(false);
+    }
+  };
+
+  // Stock Vault Handlers
+  const openStockVault = async (item: ProductItem) => {
+    if (!activeProduct) return;
+    setStockVaultItem(item);
+    setStockVaultLoading(true);
+    setNewStockInput("");
+    try {
+      const res = await fetch(`/api/admin/products/${activeProduct.id}/items/${item.id}/stock`);
+      const data = await res.json();
+      if (data.success) {
+        setStockVaultList(data.stocks || []);
+      } else {
+        alert("Gagal memuat brankas stok: " + (data.message || "Terjadi kesalahan"));
+      }
+    } catch (err: any) {
+      alert("Terjadi kesalahan: " + err.message);
+    } finally {
+      setStockVaultLoading(false);
+    }
+  };
+
+  const handleAddStock = async () => {
+    if (!stockVaultItem || !activeProduct) return;
+    if (!newStockInput.trim()) {
+      return alert("Masukkan minimal 1 baris kredensial akun.");
+    }
+    setIsSubmittingStock(true);
+    try {
+      const res = await fetch(`/api/admin/products/${activeProduct.id}/items/${stockVaultItem.id}/stock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credentials: newStockInput }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNewStockInput("");
+        const resList = await fetch(`/api/admin/products/${activeProduct.id}/items/${stockVaultItem.id}/stock`);
+        const dataList = await resList.json();
+        if (dataList.success) {
+          setStockVaultList(dataList.stocks || []);
+        }
+        const updatedItems = activeProduct.items.map((it) => {
+          if (it.id === stockVaultItem.id) {
+            return {
+              ...it,
+              stockStatus: "AVAILABLE",
+              _count: {
+                ...it._count,
+                accountStocks: (it._count?.accountStocks || 0) + (data.addedCount || 0),
+              },
+            };
+          }
+          return it;
+        });
+        const updatedProduct = { ...activeProduct, items: updatedItems };
+        setActiveProduct(updatedProduct);
+        setProducts((prev) =>
+          prev.map((p) => (p.id === activeProduct.id ? updatedProduct : p))
+        );
+        setActionMsg(`Berhasil menambahkan ${data.addedCount} akun ke brankas!`);
+      } else {
+        alert("Gagal menambah stok: " + data.message);
+      }
+    } catch (err: any) {
+      alert("Terjadi kesalahan: " + err.message);
+    } finally {
+      setIsSubmittingStock(false);
+    }
+  };
+
+  const handleDeleteStock = async (stockId: string) => {
+    if (!stockVaultItem || !activeProduct) return;
+    if (!confirm("Hapus kredensial akun ini dari brankas stok?")) return;
+    try {
+      const res = await fetch(
+        `/api/admin/products/${activeProduct.id}/items/${stockVaultItem.id}/stock?stockId=${stockId}`,
+        { method: "DELETE" }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setStockVaultList((prev) => prev.filter((s) => s.id !== stockId));
+        const updatedItems = activeProduct.items.map((it) => {
+          if (it.id === stockVaultItem.id) {
+            const currentCount = it._count?.accountStocks ?? 1;
+            const newCount = Math.max(0, currentCount - 1);
+            return {
+              ...it,
+              stockStatus:
+                newCount === 0 && (it.supplier === "MANUAL" || it.sku?.startsWith("MANUAL-"))
+                  ? "OUT_OF_STOCK"
+                  : it.stockStatus,
+              _count: {
+                ...it._count,
+                accountStocks: newCount,
+              },
+            };
+          }
+          return it;
+        });
+        const updatedProduct = { ...activeProduct, items: updatedItems };
+        setActiveProduct(updatedProduct);
+        setProducts((prev) =>
+          prev.map((p) => (p.id === activeProduct.id ? updatedProduct : p))
+        );
+      } else {
+        alert("Gagal menghapus stok: " + data.message);
+      }
+    } catch (err: any) {
+      alert("Terjadi kesalahan: " + err.message);
     }
   };
 
@@ -1071,6 +1198,7 @@ export default function AdminProdukClient({
             {/* TAB 1: DAFTAR VARIAN & HARGA */}
             {modalTab === "variants" && (() => {
               const isManual = isManualProduct(activeProduct);
+              const allowCustomVariants = isManual || activeProduct.categorySlug === "akun-premium";
               return (
               <div className="space-y-4">
                 <div className="space-y-3">
@@ -1080,8 +1208,8 @@ export default function AdminProdukClient({
                         Tabel Varian, Harga Modal & Laba Bersih
                       </h4>
                       <p className="text-[11px] text-gray-400">
-                        {isManual
-                          ? "Kelola denominasi varian custom, harga modal, harga jual toko, dan status ketersediaan stok."
+                        {allowCustomVariants
+                          ? "Kelola denominasi varian custom/manual, brankas stok akun, harga modal, harga jual toko, dan status ketersediaan stok."
                           : "Klik ikon pensil untuk mengubah harga jual toko, modal supplier, atau harga coret diskon."}
                       </p>
                     </div>
@@ -1089,7 +1217,7 @@ export default function AdminProdukClient({
                       <span className="text-[10px] font-black uppercase bg-[#dceeff] dark:bg-[#152338] text-[#003a6b] dark:text-[#bae6fd] px-2.5 py-1 rounded-lg ink-border">
                         {activeProduct.items.length} Varian Terdaftar
                       </span>
-                      {isManual && (
+                      {allowCustomVariants && (
                         <button
                           type="button"
                           onClick={() => setIsAddingVariant(!isAddingVariant)}
@@ -1102,14 +1230,14 @@ export default function AdminProdukClient({
                     </div>
                   </div>
 
-                  {/* Form Tambah Varian Baru Khusus Produk Manual */}
-                  {isAddingVariant && isManual && (
+                  {/* Form Tambah Varian Baru (Produk Manual atau Akun Premium Hybrid) */}
+                  {isAddingVariant && allowCustomVariants && (
                     <div className="p-4 bg-white dark:bg-[#1e1e2d] ink-border rounded-2xl shadow-[3px_3px_0px_#000000] space-y-3">
                       <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800">
                         <div className="flex items-center gap-2">
                           <div className="w-2.5 h-2.5 rounded-full bg-[#55db9c] border border-black animate-pulse" />
                           <h5 className="text-xs font-black uppercase text-carbon dark:text-white">
-                            Tambah Varian Baru (Produk Manual)
+                            {isManual ? "Tambah Varian Baru (Produk Manual)" : "Tambah Varian Baru (Manual / Hybrid)"}
                           </h5>
                         </div>
                         <button
@@ -1175,6 +1303,30 @@ export default function AdminProdukClient({
                         </div>
                       </div>
 
+                      {/* Field Kredensial Stok Akun (Khusus Akun Premium atau Produk Manual) */}
+                      {(activeProduct.categorySlug === "akun-premium" || isManual) && (
+                        <div className="space-y-1.5 pt-1">
+                          <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-black uppercase text-gray-500 block">
+                              Kredensial Stok Akun (Opsional - 1 Akun Per Baris)
+                            </label>
+                            <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                              Auto-Fulfillment
+                            </span>
+                          </div>
+                          <textarea
+                            rows={3}
+                            placeholder={"Contoh format:\nuser1@gmail.com|pass123|pin:1234\nuser2@gmail.com|pass567|pin:5678"}
+                            value={newVariantCredentials}
+                            onChange={(e) => setNewVariantCredentials(e.target.value)}
+                            className="w-full px-3 py-2 bg-[#f3f4f6] dark:bg-[#252538] rounded-xl ink-border text-xs font-mono text-carbon dark:text-white focus:outline-none placeholder:font-sans placeholder:text-gray-400"
+                          />
+                          <p className="text-[10px] text-gray-400">
+                            Setiap baris dihitung sebagai 1 stok akun. Saat varian ini dibeli, sistem otomatis mengambil 1 akun dan mengirimkannya secara instan ke email & halaman transaksi pembeli.
+                          </p>
+                        </div>
+                      )}
+
                       <div className="flex items-center justify-between pt-1">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-black uppercase text-gray-500">Status Stok:</span>
@@ -1222,6 +1374,7 @@ export default function AdminProdukClient({
                           <th className="py-2.5 px-3">Harga Jual & Coret</th>
                           <th className="py-2.5 px-3 text-right">Laba / Keuntungan</th>
                           <th className="py-2.5 px-3 text-center">Status Stok</th>
+                          <th className="py-2.5 px-3 text-center">Brankas Akun</th>
                           <th className="py-2.5 px-3 text-center">Aksi</th>
                         </tr>
                       </thead>
@@ -1363,7 +1516,28 @@ export default function AdminProdukClient({
                                 </button>
                               </td>
 
-                              {/* 6. Inline Actions */}
+                              {/* 6. Stock Vault Button (Auto-Fulfillment) */}
+                              <td className="py-3 px-3 text-center">
+                                {activeProduct.categorySlug === "akun-premium" || it.supplier === "MANUAL" || it.sku?.startsWith("MANUAL-") || isManual ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => openStockVault(it)}
+                                    className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ink-border transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-[1px_1px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 ${
+                                      (it._count?.accountStocks ?? 0) > 0
+                                        ? "bg-[#dceeff] dark:bg-[#152338] text-[#003a6b] dark:text-[#bae6fd] hover:bg-sky-200"
+                                        : "bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200 hover:bg-amber-200"
+                                    }`}
+                                    title="Kelola & Restock Kredensial Akun Instan"
+                                  >
+                                    <Key className="w-3 h-3" />
+                                    <span>{it._count?.accountStocks ?? 0} Akun</span>
+                                  </button>
+                                ) : (
+                                  <span className="text-gray-400 text-[10px]">-</span>
+                                )}
+                              </td>
+
+                              {/* 7. Inline Actions */}
                               <td className="py-3 px-3 text-center">
                                 <div className="flex items-center justify-center gap-1.5">
                                   {isEditing ? (
@@ -1396,7 +1570,7 @@ export default function AdminProdukClient({
                                       >
                                         <Edit2 className="w-3 h-3" />
                                       </button>
-                                      {isManual && activeProduct.items.length > 1 && (
+                                      {(isManual || it.supplier === "MANUAL" || it.sku?.startsWith("MANUAL-") || it.sku?.startsWith("CUSTOM-")) && activeProduct.items.length > 1 && (
                                         <button
                                           type="button"
                                           onClick={() => handleDeleteVariant(it)}
@@ -2124,6 +2298,168 @@ export default function AdminProdukClient({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* ========================================================
+          MODAL BRANKAS STOK KREDENSIAL AKUN (AUTO-DELIVERY)
+          ======================================================== */}
+      {stockVaultItem && activeProduct && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#181824] ink-border-thick dark:border-[#38384a] rounded-3xl p-5 sm:p-7 max-w-2xl w-full shadow-[6px_6px_0px_0px_#000000] max-h-[92vh] overflow-y-auto space-y-5 animate-in slide-in-from-bottom duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#ffd731] ink-border flex items-center justify-center shadow-[2px_2px_0px_#000] shrink-0">
+                  <Key className="w-5 h-5 text-black" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase bg-[#55db9c] text-black px-2 py-0.5 rounded-md ink-border">
+                      Auto-Fulfillment Vault
+                    </span>
+                    <span className="text-xs text-gray-400 font-bold">
+                      {activeProduct.name}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-black text-carbon dark:text-white">
+                    Brankas Kredensial: {stockVaultItem.name}
+                  </h3>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStockVaultItem(null)}
+                className="w-8 h-8 rounded-full bg-[#f3f4f6] dark:bg-[#252538] hover:bg-[#ffdad6] dark:hover:bg-red-900/40 active:scale-95 ink-border flex items-center justify-center cursor-pointer transition-colors"
+                aria-label="Tutup"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Restock Input Form */}
+            <div className="p-4 bg-gray-50 dark:bg-[#1f1f2e] ink-border rounded-2xl space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                  <Plus className="w-3.5 h-3.5 text-emerald-500" />
+                  Tambah / Restock Akun Baru
+                </label>
+                <span className="text-[10px] text-gray-400 font-semibold">
+                  Format: 1 baris = 1 akun pembeli
+                </span>
+              </div>
+              <textarea
+                rows={3}
+                placeholder={"Contoh format:\nuser1@gmail.com|pass123|pin:1234\nuser2@netflix.com|rahasia123|profil:3"}
+                value={newStockInput}
+                onChange={(e) => setNewStockInput(e.target.value)}
+                className="w-full px-3 py-2 bg-white dark:bg-[#181824] rounded-xl ink-border text-xs font-mono text-carbon dark:text-white focus:outline-none placeholder:font-sans placeholder:text-gray-400"
+              />
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <p className="text-[10px] text-gray-400 max-w-sm">
+                  Kredensial langsung dikirimkan otomatis ke pembeli saat checkout berhasil.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleAddStock}
+                  disabled={isSubmittingStock || !newStockInput.trim()}
+                  className="px-4 py-2 bg-[#55db9c] hover:bg-[#43cd8c] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-[2px_2px_0px_#000] disabled:opacity-50 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+                >
+                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                  <span>{isSubmittingStock ? "Menyimpan..." : "Tambah ke Brankas"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Stock List */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-black uppercase text-carbon dark:text-white">
+                  Daftar Kredensial di Brankas ({stockVaultList.filter((s) => !s.isUsed).length} Tersedia / {stockVaultList.length} Total)
+                </h4>
+                {stockVaultLoading && (
+                  <span className="text-[10px] text-gray-400 animate-pulse">Memuat brankas...</span>
+                )}
+              </div>
+
+              {stockVaultList.length === 0 ? (
+                <div className="py-8 text-center bg-gray-50 dark:bg-[#1f1f2e] rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
+                  <p className="text-xs font-bold text-gray-500">
+                    Belum ada stok akun di brankas varian ini.
+                  </p>
+                  <p className="text-[11px] text-gray-400 mt-1">
+                    Gunakan form di atas untuk memasukkan akun pertama.
+                  </p>
+                </div>
+              ) : (
+                <div className="max-h-60 overflow-y-auto custom-scrollbar border border-gray-200 dark:border-gray-800 rounded-2xl divide-y divide-gray-100 dark:divide-gray-800">
+                  {stockVaultList.map((stk, idx) => (
+                    <div
+                      key={stk.id}
+                      className={`p-3 flex items-center justify-between gap-3 text-xs ${
+                        stk.isUsed
+                          ? "bg-gray-100/60 dark:bg-gray-900/40 opacity-70"
+                          : "hover:bg-gray-50 dark:hover:bg-[#1e1e2d]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-[10px] font-bold text-gray-400 w-5 shrink-0">
+                          #{idx + 1}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-mono font-bold text-carbon dark:text-white truncate max-w-xs sm:max-w-md select-all">
+                            {stk.credential}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-0.5">
+                            <span>
+                              Ditambahkan: {new Date(stk.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                            {stk.isUsed && stk.orderId && (
+                              <span className="text-amber-600 dark:text-amber-400 font-bold">
+                                • Order: {stk.orderId}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {stk.isUsed ? (
+                          <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-gray-200 dark:bg-gray-800 text-gray-500">
+                            Terpakai
+                          </span>
+                        ) : (
+                          <>
+                            <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-[#55db9c]/20 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+                              Tersedia
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteStock(stk.id)}
+                              className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors cursor-pointer"
+                              title="Hapus Kredensial Ini"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setStockVaultItem(null)}
+                className="px-5 py-2 rounded-xl bg-gray-200 dark:bg-[#20202e] text-gray-700 dark:text-gray-300 font-black text-xs uppercase ink-border cursor-pointer hover:bg-gray-300 transition-colors"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}

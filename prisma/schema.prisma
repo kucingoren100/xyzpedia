@@ -67,6 +67,9 @@ model ProductItem {
 
   // Supplier assignment: DIGIFLAZZ, WAROENGKUY, MANUAL
   supplier        String   @default("MANUAL")
+
+  // Account stock vault for instant delivery of manual digital accounts
+  accountStocks   AccountStock[]
 }
 
 model Order {
@@ -234,6 +237,20 @@ model MediaAsset {
   data      Bytes
   createdAt DateTime @default(now())
 
+  @@index([createdAt])
+}
+
+model AccountStock {
+  id            String      @id @default(cuid())
+  productItemId String
+  productItem   ProductItem @relation(fields: [productItemId], references: [id], onDelete: Cascade)
+  credential    String      @db.Text
+  isUsed        Boolean     @default(false)
+  orderId       String?
+  usedAt        DateTime?
+  createdAt     DateTime    @default(now())
+
+  @@index([productItemId, isUsed])
   @@index([createdAt])
 }
 
