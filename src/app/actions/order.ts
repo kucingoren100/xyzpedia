@@ -335,8 +335,18 @@ export async function checkPaymentStatus(invoiceNumber: string) {
       return { success: false, error: "Pesanan tidak ditemukan." };
     }
 
+    const safeOrder = {
+      id: order.id,
+      invoiceNumber: order.invoiceNumber,
+      status: order.status,
+      paidAt: order.paidAt,
+      sn: order.sn,
+      supplierStatus: order.supplierStatus,
+      totalAmount: order.totalAmount,
+    };
+
     if (order.status === "SUCCESS") {
-      return { success: true, isPaid: true, order };
+      return { success: true, isPaid: true, order: safeOrder };
     }
 
     if (order.status === "PROCESSING" || order.status === "PAID") {
@@ -345,12 +355,21 @@ export async function checkPaymentStatus(invoiceNumber: string) {
         const { reconcileSupplierOrder } = await import("@/lib/orderFulfillment");
         const reconciled = await reconcileSupplierOrder(order.invoiceNumber);
         if (reconciled) {
-          return { success: true, isPaid: true, order: reconciled };
+          return {
+            success: true,
+            isPaid: true,
+            order: {
+              ...safeOrder,
+              status: reconciled.status,
+              sn: reconciled.sn,
+              supplierStatus: reconciled.supplierStatus,
+            },
+          };
         }
       } catch (recErr) {
         console.warn("[checkPaymentStatus] Reconcile error:", recErr);
       }
-      return { success: true, isPaid: true, order };
+      return { success: true, isPaid: true, order: safeOrder };
     }
 
     // Rate-limit check to QiosPay: limit to once every 5 seconds per invoice if lastPaymentCheckAt exists
@@ -358,7 +377,7 @@ export async function checkPaymentStatus(invoiceNumber: string) {
       ? new Date((order as any).lastPaymentCheckAt).getTime()
       : 0;
     if (Date.now() - lastCheck < 5000) {
-      return { success: true, isPaid: false, order };
+      return { success: true, isPaid: false, order: safeOrder };
     }
 
     // Update last payment check timestamp
@@ -398,14 +417,24 @@ export async function checkPaymentStatus(invoiceNumber: string) {
         revalidatePath("/cek-transaksi");
 
         if (paidRes.success && paidRes.order) {
-          return { success: true, isPaid: true, order: paidRes.order };
+          return {
+            success: true,
+            isPaid: true,
+            order: {
+              ...safeOrder,
+              status: paidRes.order.status,
+              paidAt: paidRes.order.paidAt,
+              sn: paidRes.order.sn,
+              supplierStatus: paidRes.order.supplierStatus,
+            },
+          };
         }
       }
     } catch (checkErr) {
       console.warn("QiosPay checkStatus error:", checkErr);
     }
 
-    return { success: true, isPaid: false, order };
+    return { success: true, isPaid: false, order: safeOrder };
   } catch (error: any) {
     console.error("Check payment status error:", error);
     return { success: false, error: "Gagal mengecek status pembayaran." };
@@ -456,7 +485,14 @@ export async function requestOrderLookup(email: string) {
     });
 
     if (orderCount > 0) {
-      const secret = process.env.ORDER_ACCESS_SECRET || process.env.ADMIN_JWT_SECRET || "default_order_secret";
+      const secret = process.env.ORDER_ACCESS_SECRET || process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET;
+      if (!secret) {
+        console.error("[requestOrderLookup] Missing ORDER_ACCESS_SECRET or ADMIN_JWT_SECRET");
+        return {
+          success: false,
+          message: "Layanan magic link sedang tidak tersedia sementara waktu.",
+        };
+      }
       const crypto = await import("crypto");
       const payload = JSON.stringify({
         email: trimmed,
@@ -553,7 +589,8 @@ export async function verifyOrderAccessToken(token: string): Promise<{ valid: bo
   try {
     if (!token || !token.includes(".")) return { valid: false };
     const [encoded, sig] = token.split(".");
-    const secret = process.env.ORDER_ACCESS_SECRET || process.env.ADMIN_JWT_SECRET || "default_order_secret";
+    const secret = process.env.ORDER_ACCESS_SECRET || process.env.ADMIN_JWT_SECRET || process.env.ADMIN_SECRET;
+    if (!secret) return { valid: false };
     const crypto = await import("crypto");
     const expectedSig = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
 

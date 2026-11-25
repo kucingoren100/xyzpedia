@@ -53,7 +53,13 @@ export async function GET(req: NextRequest) {
       where,
       orderBy: { createdAt: "desc" },
       take: limit,
-      include: {
+      select: {
+        id: true,
+        productId: true,
+        customerName: true,
+        rating: true,
+        comment: true,
+        createdAt: true,
         product: { select: { name: true, slug: true } },
       },
     });

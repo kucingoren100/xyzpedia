@@ -142,7 +142,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
       }
     }
 
-    return item;
+    return {
+      id: item.id,
+      productId: item.productId,
+      sku: item.sku,
+      name: item.name,
+      price: item.price,
+      originalPrice: item.originalPrice,
+      discountPercent: item.discountPercent,
+      stockStatus: item.stockStatus,
+      bonusText: item.bonusText,
+      order: item.order,
+      createdAt: item.createdAt,
+    };
   });
 
   const liveProduct = {

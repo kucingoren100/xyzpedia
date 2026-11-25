@@ -149,6 +149,7 @@ export async function syncDigiflazzToDatabase(options: SyncOptions = {}): Promis
       await prisma.productItem.upsert({
         where: { sku },
         update: {
+          supplier: "DIGIFLAZZ",
           supplierPrice,
           ...(shouldUpdateSellingPrice ? { price: sellingPrice } : {}),
           stockStatus,
@@ -160,6 +161,7 @@ export async function syncDigiflazzToDatabase(options: SyncOptions = {}): Promis
           price: sellingPrice,
           originalPrice: Math.round(sellingPrice * 1.15),
           supplierPrice,
+          supplier: "DIGIFLAZZ",
           stockStatus,
           bonusText: null,
           order: 99,

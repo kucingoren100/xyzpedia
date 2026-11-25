@@ -84,10 +84,11 @@ export async function startFulfillment(orderId: string) {
   if (isXaviera) {
     try {
       const xavClient = new XavieraClient();
+      const targetUser = order.targetUserId?.trim();
       const xavRes = await xavClient.createOrder({
         productSlug: order.product.slug,
         sku: sku,
-        targetEmailOrPhone: order.customerEmail || order.targetUserId,
+        targetEmailOrPhone: targetUser || order.customerEmail,
       });
 
       if (xavRes.success && xavRes.credentials) {
@@ -104,18 +105,8 @@ export async function startFulfillment(orderId: string) {
           },
         });
 
-        // Kirim WhatsApp buyer jika ada nomor
-        if (order.customerPhone) {
-          try {
-            await notifyBuyerOrderSuccess({
-              ...order,
-              status: OrderStatus.SUCCESS,
-              sn: xavRes.credentials,
-            });
-          } catch (e) {
-            console.error("[startFulfillment] WA notify error:", e);
-          }
-        }
+        // Trigger official dispatch notifications (Email Resend ke pembeli + notif Telegram admin)
+        await dispatchSuccess(order, xavRes.credentials, xavRes.orderId || null);
 
         return { success: true, supplier: "XAVIERA", credentials: xavRes.credentials };
       } else if (xavRes.success && !xavRes.credentials) {
@@ -214,7 +205,7 @@ export async function startFulfillment(orderId: string) {
       return { success: false, reason: "No API Key" };
     }
 
-    const isDigitalAccount = order.product.categorySlug === "akun-premium" || !order.targetZoneId;
+    const isDigitalAccount = order.product.categorySlug === "akun-premium";
     const orderEndpoint = isDigitalAccount ? `${baseUrl}/orders` : `${baseUrl}/ppob/orders`;
     const orderBody = isDigitalAccount
       ? {
@@ -223,7 +214,7 @@ export async function startFulfillment(orderId: string) {
           ref_id: order.invoiceNumber,
         }
       : {
-          variant_id: parseInt(sku, 10),
+          variant_id: isNaN(Number(sku)) ? sku : parseInt(sku, 10),
           target: `${order.targetUserId.trim()}${order.targetZoneId ? order.targetZoneId.trim() : ""}`,
           ref_id: order.invoiceNumber,
         };
@@ -266,10 +257,10 @@ export async function startFulfillment(orderId: string) {
       });
 
       if (nextStatus === OrderStatus.SUCCESS) {
-        await dispatchSuccess(order, data.order.sn, data.order.ref);
+        await dispatchSuccess(order, snResult, data.order.ref || String(data.order.id));
       }
 
-      return { success: true, supplierRef: data.order.ref, status: nextStatus, sn: data.order.sn };
+      return { success: true, supplierRef: data.order.ref, status: nextStatus, sn: snResult };
     } else {
       await markFailed(order.id, data.error || `HTTP ${res.status}`);
       return { success: false, error: data.error };

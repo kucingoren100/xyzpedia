@@ -232,8 +232,6 @@ export class XavieraClient {
           .join("\n---\n");
       } else if (orderData.delivery) {
         formattedCredentials = String(orderData.delivery);
-      } else if (orderData.snk) {
-        formattedCredentials = String(orderData.snk);
       }
 
       if (typeof resJson.saldo === "number") {

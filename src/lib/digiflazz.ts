@@ -251,15 +251,16 @@ export async function checkDigiflazzTransactionStatus(
   buyerSkuCode: string,
   customerNo: string
 ): Promise<DigiflazzTransactionResponse> {
-  const { username, apiKey } = getConfig();
+  const { username, apiKey, mode } = getConfig();
   const sign = md5(username + apiKey + refId);
 
-  const requestBody = {
+  const requestBody: any = {
     username,
     buyer_sku_code: buyerSkuCode,
     customer_no: customerNo,
     ref_id: refId,
     sign,
+    ...(mode === "development" ? { testing: true } : {}),
   };
 
   const target = getEndpoint("/v1/transaction");

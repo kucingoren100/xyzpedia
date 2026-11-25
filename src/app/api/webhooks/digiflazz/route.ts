@@ -24,41 +24,41 @@ export async function POST(req: NextRequest) {
       process.env.DIGIFLAZZ_KEY ||
       "";
 
-    if (secret && signatureHeader) {
-      const isSha1 = signatureHeader.toLowerCase().startsWith("sha1=") || signatureHeader.length === 40;
-      const algorithm = isSha1 ? "sha1" : "sha256";
-      const cleanSignature = signatureHeader.replace(/^(sha1|sha256)=/i, "");
+    // Strict Fail-Closed Signature Verification
+    if (!secret || !signatureHeader) {
+      console.warn("[Digiflazz Webhook] Missing secret or signature header");
+      return NextResponse.json({ error: "Unauthorized: Missing signature" }, { status: 401 });
+    }
 
-      const hmac = crypto
-        .createHmac(algorithm, secret)
-        .update(rawBody)
-        .digest("hex");
+    const isSha1 = signatureHeader.toLowerCase().startsWith("sha1=") || signatureHeader.length === 40;
+    const algorithm = isSha1 ? "sha1" : "sha256";
+    const cleanSignature = signatureHeader.replace(/^(sha1|sha256)=/i, "");
 
-      const bufA = Buffer.from(cleanSignature, "hex");
-      const bufB = Buffer.from(hmac, "hex");
+    const hmac = crypto
+      .createHmac(algorithm, secret)
+      .update(rawBody)
+      .digest("hex");
 
-      if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
-        // Signature verified OK
-      } else {
-        // Also try with DIGIFLAZZ_KEY if DIGIFLAZZ_WEBHOOK_SECRET was used and mismatched, or vice versa
-        const altSecret = process.env.DIGIFLAZZ_KEY;
-        let altMatched = false;
-        if (altSecret && altSecret !== secret) {
-          const altHmac = crypto.createHmac(algorithm, altSecret).update(rawBody).digest("hex");
-          const altBuf = Buffer.from(altHmac, "hex");
-          if (bufA.length === altBuf.length && crypto.timingSafeEqual(bufA, altBuf)) {
-            altMatched = true;
-          }
-        }
+    const bufA = Buffer.from(cleanSignature, "hex");
+    const bufB = Buffer.from(hmac, "hex");
 
-        if (!altMatched) {
-          console.warn("[Digiflazz Webhook] Signature mismatch. Header:", signatureHeader);
-          // Only reject with 401 if DIGIFLAZZ_WEBHOOK_SECRET is explicitly configured
-          if (process.env.DIGIFLAZZ_WEBHOOK_SECRET) {
-            return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-          }
+    let isSigValid = bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+
+    if (!isSigValid) {
+      // Also try with DIGIFLAZZ_KEY if DIGIFLAZZ_WEBHOOK_SECRET was used and mismatched, or vice versa
+      const altSecret = process.env.DIGIFLAZZ_KEY;
+      if (altSecret && altSecret !== secret) {
+        const altHmac = crypto.createHmac(algorithm, altSecret).update(rawBody).digest("hex");
+        const altBuf = Buffer.from(altHmac, "hex");
+        if (bufA.length === altBuf.length && crypto.timingSafeEqual(bufA, altBuf)) {
+          isSigValid = true;
         }
       }
+    }
+
+    if (!isSigValid) {
+      console.warn("[Digiflazz Webhook] Signature mismatch. Header:", signatureHeader);
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
     const payload = JSON.parse(rawBody || "{}");
@@ -81,9 +81,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // Only update if still in PROCESSING or PENDING
+    // Only update orders currently in PROCESSING or PAID state (never allow transition straight from unpaid PENDING)
     if (order.status === OrderStatus.SUCCESS) {
       return NextResponse.json({ success: true, message: "Order already SUCCESS" });
+    }
+
+    if (order.status !== OrderStatus.PROCESSING && order.status !== OrderStatus.PAID) {
+      console.warn(`[Digiflazz Webhook] Ignored webhook for order in status ${order.status}: ${order.invoiceNumber}`);
+      return NextResponse.json({ success: true, message: `Ignored status transition from ${order.status}` });
     }
 
     if (rawStatus === "sukses" || rawStatus === "success") {
