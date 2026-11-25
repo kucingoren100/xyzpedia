@@ -304,6 +304,8 @@ export async function getOrderDetails(invoiceNumber: string) {
       uniqueCode: order.uniqueCode,
       fee: order.fee,
       totalAmount: order.totalAmount,
+      couponCode: order.couponCode || null,
+      discountAmount: order.discountAmount || 0,
       status: order.status,
       // Only send QRIS string when order is pending
       qrisString: order.status === "PENDING" ? order.qrisString : null,

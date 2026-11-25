@@ -494,6 +494,27 @@ export default function StrukClient({
                 <span style={{ color: "#0f172a" }}>{formatRupiah(order.basePrice)}</span>
               </div>
 
+              {Boolean((order as any).discountAmount && (order as any).discountAmount > 0) && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#16a34a",
+                    marginBottom: 6,
+                  }}
+                >
+                  <span>
+                    Diskon Kupon Promo{" "}
+                    {(order as any).couponCode ? `(${(order as any).couponCode})` : ""}:
+                  </span>
+                  <span style={{ color: "#16a34a", fontWeight: 900 }}>
+                    -{formatRupiah((order as any).discountAmount)}
+                  </span>
+                </div>
+              )}
+
               {order.uniqueCode > 0 && (
                 <div
                   style={{

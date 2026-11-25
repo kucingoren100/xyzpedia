@@ -20,6 +20,51 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import ReviewWidget from "@/components/ReviewWidget";
+import WarrantyClaimWidget from "@/components/WarrantyClaimWidget";
+import { OFFICIAL_WA_RAW, getWhatsAppUrl } from "@/lib/contact";
+
+interface CredentialItem {
+  label: string;
+  value: string;
+}
+
+function parseAccountCredentials(raw?: string | null): CredentialItem[] {
+  if (!raw || !raw.trim()) return [];
+  const text = raw.trim();
+
+  // Pipe separated: email | pass | profile | pin
+  if (text.includes("|")) {
+    const parts = text.split("|").map((p) => p.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      return parts.map((part, idx) => {
+        if (part.includes(":")) {
+          const [k, ...v] = part.split(":");
+          return { label: k.trim(), value: v.join(":").trim() };
+        }
+        if (idx === 0) return { label: part.includes("@") ? "Email / Akun" : "ID Akun", value: part };
+        if (idx === 1) return { label: "Password", value: part };
+        if (idx === 2) return { label: "Profil / Slot", value: part };
+        if (idx === 3) return { label: "PIN Akses", value: part };
+        return { label: `Info ${idx + 1}`, value: part };
+      });
+    }
+  }
+
+  // Multiline with Key: Value
+  if (text.includes("\n")) {
+    const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+    const parsed: CredentialItem[] = [];
+    for (const line of lines) {
+      if (line.includes(":")) {
+        const [k, ...v] = line.split(":");
+        parsed.push({ label: k.trim(), value: v.join(":").trim() });
+      }
+    }
+    if (parsed.length >= 2) return parsed;
+  }
+
+  return [];
+}
 
 interface SafeOrder {
   id: string;
@@ -32,6 +77,8 @@ interface SafeOrder {
   uniqueCode: number;
   fee: number;
   totalAmount: number;
+  couponCode?: string | null;
+  discountAmount?: number | null;
   status: string;
   qrisString: string | null;
   paidAt: Date | null;
@@ -188,8 +235,8 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
     (order.status === "PENDING" && timeLeft <= 0);
 
   const isAkunPremium = order.product.categorySlug === "akun-premium";
+  const parsedCreds = parseAccountCredentials(effectiveSn);
 
-  const waAdminNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281234567890";
   const waOrderText = `Halo Admin XYZPEDIA, saya ingin konfirmasi pesanan:
 📌 No. Invoice: ${order.invoiceNumber}
 📦 Produk: ${order.product.name}
@@ -197,7 +244,7 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
 💰 Total: Rp ${order.totalAmount.toLocaleString("id-ID")}
 Status: ${order.status}`;
 
-  const waOrderUrl = `https://wa.me/${waAdminNumber}?text=${encodeURIComponent(waOrderText)}`;
+  const waOrderUrl = getWhatsAppUrl(waOrderText);
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-6">
@@ -360,11 +407,60 @@ Status: ${order.status}`;
                 </button>
               </div>
 
-              <div className="bg-white dark:bg-[#0b131a] p-4 rounded-2xl ink-border shadow-inner">
-                <pre className="font-mono text-xs sm:text-sm font-black text-carbon dark:text-emerald-300 whitespace-pre-wrap break-words select-all leading-relaxed">
-                  {effectiveSn}
-                </pre>
-              </div>
+              {parsedCreds.length > 0 ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {parsedCreds.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white dark:bg-[#151926] dark:border-[#38384a] ink-border p-3 rounded-xl flex items-center justify-between gap-2 shadow-[2px_2px_0px_#000000]"
+                      >
+                        <div className="overflow-hidden min-w-0 pr-1">
+                          <span className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 block tracking-wider">
+                            {item.label}
+                          </span>
+                          <span className="font-mono text-xs font-bold text-carbon dark:text-emerald-300 truncate block select-all">
+                            {item.value}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => copyText(item.value, `cred-${idx}`)}
+                          className="px-2.5 py-1 bg-[#ffd731] hover:bg-[#ffe266] text-black ink-border rounded-lg text-[11px] font-black shrink-0 flex items-center gap-1 shadow-[1px_1px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5"
+                        >
+                          {copiedKey === `cred-${idx}` ? (
+                            <>
+                              <Check className="w-3 h-3 text-green-700" />
+                              <span>Tersalin</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Salin</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Raw Full View Box */}
+                  <div className="bg-white/90 dark:bg-[#0b131a] p-3 rounded-xl ink-border text-left">
+                    <span className="text-[10px] font-black text-gray-500 uppercase block mb-1">
+                      Data Mentah (Raw SN):
+                    </span>
+                    <pre className="font-mono text-[11px] font-bold text-carbon dark:text-emerald-300 whitespace-pre-wrap break-words select-all">
+                      {effectiveSn}
+                    </pre>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-[#0b131a] p-4 rounded-2xl ink-border shadow-inner">
+                  <pre className="font-mono text-xs sm:text-sm font-black text-carbon dark:text-emerald-300 whitespace-pre-wrap break-words select-all leading-relaxed">
+                    {effectiveSn}
+                  </pre>
+                </div>
+              )}
 
               <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
                 {isAkunPremium
@@ -402,6 +498,16 @@ Status: ${order.status}`;
               invoiceNumber={order.invoiceNumber}
               productName={order.product.name}
               defaultName={order.customerEmail ? order.customerEmail.split("@")[0] : ""}
+            />
+          </div>
+
+          {/* Warranty Claim & Buyer Protection Widget */}
+          <div className="pt-2 w-full max-w-2xl mx-auto">
+            <WarrantyClaimWidget
+              invoiceNumber={order.invoiceNumber}
+              customerPhone={order.customerPhone || ""}
+              customerEmail={order.customerEmail || ""}
+              productName={order.product.name}
             />
           </div>
 
@@ -691,6 +797,14 @@ Status: ${order.status}`;
                 <span className="text-gray-500">Harga Item:</span>
                 <span className="font-black">Rp {order.basePrice.toLocaleString("id-ID")}</span>
               </div>
+              {order.discountAmount && order.discountAmount > 0 ? (
+                <div className="flex justify-between py-1 border-b border-gray-100 dark:border-gray-800 text-[#16a34a] dark:text-[#4ade80]">
+                  <span className="font-bold">
+                    Diskon Promo {order.couponCode ? `(${order.couponCode})` : ""}:
+                  </span>
+                  <span className="font-black">- Rp {order.discountAmount.toLocaleString("id-ID")}</span>
+                </div>
+              ) : null}
               <div className="flex justify-between py-1">
                 <span className="text-gray-500">Kode Unik:</span>
                 <span className="font-black text-[#5c4ade]">+ Rp {order.uniqueCode}</span>

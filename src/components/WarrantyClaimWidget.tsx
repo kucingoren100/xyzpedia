@@ -54,8 +54,9 @@ export default function WarrantyClaimWidget({
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Form State
-  const [phone, setPhone] = useState(customerPhone || "");
+  // Form State - avoid pre-filling masked phone numbers with asterisks (e.g. 081****890)
+  const initialPhone = customerPhone && !customerPhone.includes("*") ? customerPhone : "";
+  const [phone, setPhone] = useState(initialPhone);
   const [issueType, setIssueType] = useState("ITEM_BELUM_MASUK");
   const [description, setDescription] = useState("");
   const [proofUrl, setProofUrl] = useState("");
@@ -86,8 +87,8 @@ export default function WarrantyClaimWidget({
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (!phone.trim() || phone.trim().length < 8) {
-      setErrorMessage("Nomor WhatsApp wajib diisi agar kami bisa mengirim solusi penggantian.");
+    if (!phone.trim() || phone.includes("*") || phone.replace(/\D/g, "").length < 8) {
+      setErrorMessage("Nomor WhatsApp aktif wajib diisi lengkap (bukan nomor tersensor) agar kami bisa mengirim solusi.");
       return;
     }
 

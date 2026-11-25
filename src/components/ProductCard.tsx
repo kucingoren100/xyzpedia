@@ -21,7 +21,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, aspectRatio }: ProductCardProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const cardRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
@@ -94,11 +94,7 @@ export default function ProductCard({ product, aspectRatio }: ProductCardProps) 
     <Link
       ref={cardRef}
       href={`/produk/${product.slug}`}
-      className={`group bg-white dark:bg-[#181824] rounded-2xl ink-border dark:border-[#38384a] p-3 flex flex-col justify-between relative overflow-hidden transition-all duration-700 ease-out will-change-[filter,transform,opacity] ${
-        isVisible
-          ? "blur-0 opacity-100 translate-y-0 scale-100 shadow-[3px_3px_0px_0px_#000000] hover:scale-[1.02] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000000]"
-          : "blur-md opacity-30 translate-y-7 scale-[0.96] shadow-none pointer-events-none"
-      }`}
+      className="group bg-white dark:bg-[#181824] rounded-2xl ink-border dark:border-[#38384a] p-3 flex flex-col justify-between relative overflow-hidden transition-all duration-300 ease-out shadow-[3px_3px_0px_0px_#000000] hover:scale-[1.02] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000000]"
     >
       <div className="space-y-2">
         {/* Adaptive Aspect Ratio Image (1:1 for games, 4:5 for premium accounts) */}

@@ -30,9 +30,9 @@ export async function POST(request: Request) {
     }
 
     const cleanPhone = String(customerPhone || "").trim();
-    if (!cleanPhone || cleanPhone.length < 8) {
+    if (!cleanPhone || cleanPhone.includes("*") || cleanPhone.replace(/\D/g, "").length < 8) {
       return NextResponse.json(
-        { error: "Nomor WhatsApp aktif wajib diisi untuk konfirmasi solusi." },
+        { error: "Nomor WhatsApp aktif wajib diisi lengkap (bukan nomor tersensor) untuk konfirmasi solusi." },
         { status: 400 }
       );
     }
@@ -54,6 +54,13 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Pesanan dengan nomor invoice tersebut tidak ditemukan." },
         { status: 404 }
+      );
+    }
+
+    if (order.status === "PENDING" || order.status === "EXPIRED" || order.status === "CANCELLED") {
+      return NextResponse.json(
+        { error: "Garansi hanya berlaku untuk pesanan yang telah dibayar atau selesai." },
+        { status: 400 }
       );
     }
 
@@ -104,6 +111,19 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
+    const clientIp =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+    const rl = checkRateLimit(`warranty-claim-get:${clientIp}`, {
+      intervalMs: 60 * 1000,
+      max: 20,
+    });
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: "Terlalu banyak permintaan. Silakan tunggu 1 menit." },
+        { status: 429 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const invoiceNumber = searchParams.get("invoiceNumber");
 
@@ -116,7 +136,25 @@ export async function GET(request: Request) {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ success: true, claims });
+    const sanitizedClaims = claims.map((c) => ({
+      id: c.id,
+      invoiceNumber: c.invoiceNumber,
+      customerPhone: c.customerPhone
+        ? `${c.customerPhone.slice(0, 4)}****${c.customerPhone.slice(-3)}`
+        : null,
+      customerEmail: c.customerEmail
+        ? `${c.customerEmail.slice(0, 2)}***@${c.customerEmail.split("@")[1] || ""}`
+        : null,
+      issueType: c.issueType,
+      description: c.description,
+      proofImageUrl: c.proofImageUrl,
+      status: c.status,
+      adminNotes: c.adminNotes,
+      createdAt: c.createdAt,
+      resolvedAt: c.resolvedAt,
+    }));
+
+    return NextResponse.json({ success: true, claims: sanitizedClaims });
   } catch (error: any) {
     console.error("[API WARRANTY CLAIM GET] Error:", error);
     return NextResponse.json(
