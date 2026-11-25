@@ -87,8 +87,8 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 100% Clean Clickable Graphic Banner (Zero Text, Zero Overlays) */}
-      <div className="relative w-full h-[125px] xs:h-[150px] sm:h-[185px] md:h-[215px] lg:h-[240px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
+      {/* 100% Clean Clickable Graphic Banner (Responsive Consistent Aspect Ratio) */}
+      <div className="relative w-full aspect-[2.75/1] max-h-[460px] rounded-2xl overflow-hidden ink-border shadow-[4px_4px_0px_#000] bg-black">
         <Link
           href={current.linkUrl || "/katalog"}
           className="relative block w-full h-full cursor-pointer overflow-hidden"
@@ -99,8 +99,8 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
             alt="Promo Banner"
             fill
             priority
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
-            className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.01]"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1440px"
+            className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.01]"
           />
         </Link>
 
