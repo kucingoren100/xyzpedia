@@ -80,7 +80,7 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
 
   return (
     <div
-      className="relative w-full my-2 sm:my-3 group select-none"
+      className="relative w-full max-w-4xl mx-auto my-2 sm:my-3 group select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}
