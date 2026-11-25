@@ -16,8 +16,6 @@ import {
   Flame,
   Sparkles,
   Star,
-  Play,
-  Pause,
 } from "lucide-react";
 
 interface SlideData {
@@ -345,14 +343,11 @@ const TICK_MS = 50;
 
 export default function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0); // 0 to 100%
   const slideCount = SLIDES.length;
 
   // Auto-scroll loop every 4 seconds with smooth progress bar
   useEffect(() => {
-    if (isPaused) return;
-
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -364,7 +359,7 @@ export default function HeroBanner() {
     }, TICK_MS);
 
     return () => clearInterval(timer);
-  }, [isPaused, slideCount]);
+  }, [slideCount]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -386,8 +381,6 @@ export default function HeroBanner() {
   return (
     <section
       className="relative w-full overflow-hidden select-none"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
       id="hero"
     >
       {/* Outer Shell with dynamic pastel background transition */}
@@ -401,33 +394,6 @@ export default function HeroBanner() {
         <div
           className={`absolute -bottom-16 left-1/3 w-80 h-80 ${activeSlide.bubbleColors[1]} dark:opacity-5 rounded-full ink-border dark:border-[#2b2b3a] pointer-events-none opacity-30 transition-colors duration-700`}
         />
-
-        {/* Top Progress Ticker Pill */}
-        <div className="relative z-10 flex items-center justify-between gap-3 mb-4 sm:mb-6">
-          <div className="inline-flex items-center gap-2 bg-white dark:bg-[#1f1f2e] px-3 py-1 rounded-full ink-border dark:border-[#38384a] text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-carbon dark:text-white shadow-[1.5px_1.5px_0px_0px_#000000]">
-            <span className="w-2 h-2 rounded-full bg-[#55db9c] animate-pulse ink-border" />
-            <span>BERGULIR OTOMATIS TIAP {AUTOPLAY_SECONDS} DETIK</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsPaused((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 bg-white dark:bg-[#1f1f2e] px-2.5 py-1 rounded-full ink-border dark:border-[#38384a] text-[10px] font-black uppercase tracking-wider text-carbon dark:text-white hover:bg-gray-100 dark:hover:bg-[#2b2b3d] transition-colors shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
-            title={isPaused ? "Lanjutkan bergulir otomatis" : "Jeda bergulir"}
-          >
-            {isPaused ? (
-              <>
-                <Play className="w-3 h-3 text-[#fb4903] fill-[#fb4903]" />
-                <span className="text-[#fb4903]">Lanjut</span>
-              </>
-            ) : (
-              <>
-                <Pause className="w-3 h-3 text-carbon dark:text-white" />
-                <span>Pause</span>
-              </>
-            )}
-          </button>
-        </div>
 
         {/* 
           HORIZONTAL SLIDING TRACK ("BERGULIR")
@@ -651,7 +617,7 @@ export default function HeroBanner() {
                   <span className="relative z-10 truncate">{s.tabLabel}</span>
 
                   {/* Active Slide Timer Progress Fill Line */}
-                  {isActive && !isPaused && (
+                  {isActive && (
                     <span
                       className="absolute bottom-0 left-0 h-[3px] bg-[#fb4903] transition-all duration-75 ease-linear pointer-events-none"
                       style={{ width: `${progress}%` }}
