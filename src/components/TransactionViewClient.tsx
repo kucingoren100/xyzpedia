@@ -67,9 +67,9 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
 
   const [timeLeft, setTimeLeft] = useState(getRemainingSeconds);
 
-  // Auto-poll status when order is PENDING (waiting payment) or PROCESSING (waiting supplier fulfillment)
+  // Auto-poll status when order is PENDING (waiting payment), PAID, or PROCESSING (waiting supplier fulfillment)
   useEffect(() => {
-    if (order.status !== "PENDING" && order.status !== "PROCESSING") return;
+    if (order.status !== "PENDING" && order.status !== "PAID" && order.status !== "PROCESSING") return;
 
     let isVisible = true;
     const handleVisibilityChange = () => {
@@ -93,7 +93,7 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
       } catch {
         // Silent error
       }
-    }, 4000);
+    }, 6000);
 
     return () => {
       clearInterval(interval);
@@ -567,9 +567,65 @@ Status: ${order.status}`;
               </div>
 
               {/* QR Code Container */}
-              <div className="p-5 bg-white !bg-white ink-border rounded-2xl shadow-[3px_3px_0px_0px_#000000]">
+              <div
+                id="qris-card-canvas-source"
+                className="p-5 bg-white !bg-white ink-border rounded-2xl shadow-[3px_3px_0px_0px_#000000] flex flex-col items-center"
+              >
                 {order.qrisString ? (
-                  <QRCodeSVG value={order.qrisString} size={240} level="M" includeMargin={false} />
+                  <>
+                    <QRCodeSVG value={order.qrisString} size={240} level="M" includeMargin={true} />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        try {
+                          const svg = document.querySelector("#qris-card-canvas-source svg") as SVGElement;
+                          if (!svg) return;
+                          const svgData = new XMLSerializer().serializeToString(svg);
+                          const canvas = document.createElement("canvas");
+                          const ctx = canvas.getContext("2d");
+                          const img = new Image();
+                          canvas.width = 300;
+                          canvas.height = 360;
+                          img.onload = () => {
+                            if (!ctx) return;
+                            ctx.fillStyle = "#ffffff";
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            // Draw Title
+                            ctx.fillStyle = "#000000";
+                            ctx.font = "bold 14px sans-serif";
+                            ctx.textAlign = "center";
+                            ctx.fillText("QRIS XYZPEDIA", canvas.width / 2, 28);
+                            ctx.font = "bold 11px monospace";
+                            ctx.fillText(order.invoiceNumber, canvas.width / 2, 46);
+                            // Draw QR
+                            ctx.drawImage(img, 30, 60, 240, 240);
+                            // Draw Total
+                            ctx.font = "bold 13px sans-serif";
+                            ctx.fillText(
+                              `Rp ${order.totalAmount.toLocaleString("id-ID")}`,
+                              canvas.width / 2,
+                              330
+                            );
+                            ctx.font = "10px sans-serif";
+                            ctx.fillStyle = "#666666";
+                            ctx.fillText("Scan / Upload ke m-Banking & E-Wallet", canvas.width / 2, 348);
+
+                            const a = document.createElement("a");
+                            a.download = `QRIS-${order.invoiceNumber}.png`;
+                            a.href = canvas.toDataURL("image/png");
+                            a.click();
+                          };
+                          img.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgData)))}`;
+                        } catch (err) {
+                          console.error("Gagal download QRIS:", err);
+                        }
+                      }}
+                      className="mt-3.5 w-full py-2.5 px-3 bg-[#ffd731] hover:bg-[#ffe066] text-black text-xs font-black uppercase tracking-wider rounded-xl ink-border shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-98"
+                    >
+                      <Download className="w-4 h-4 stroke-[2.5]" />
+                      <span>Unduh Gambar QRIS</span>
+                    </button>
+                  </>
                 ) : (
                   <div className="w-60 h-60 bg-gray-100 flex items-center justify-center text-xs font-bold text-black">
                     Memuat QRIS...
@@ -600,9 +656,9 @@ Status: ${order.status}`;
                 <button
                   type="button"
                   onClick={handleCopyAmount}
-                  className="px-3 py-1.5 bg-white text-black ink-border rounded-xl text-xs font-black flex items-center gap-1 shadow-[2px_2px_0px_0px_#000000] hover:bg-gray-50"
+                  className="px-3 py-1.5 bg-white dark:bg-[#1f1f2e] text-black dark:text-white ink-border rounded-xl text-xs font-black flex items-center gap-1 shadow-[2px_2px_0px_0px_#000000] hover:bg-gray-50 dark:hover:bg-[#28283c]"
                 >
-                  {copiedAmount ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5 text-black" />}
+                  {copiedAmount ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5 text-black dark:text-white" />}
                   <span>{copiedAmount ? "Tersalin" : "Salin"}</span>
                 </button>
               </div>

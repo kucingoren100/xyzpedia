@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { searchOrders } from "@/app/actions/order";
+import { useSearchParams } from "next/navigation";
+import { searchOrders, requestOrderLookup } from "@/app/actions/order";
 import {
   Search,
-  ShieldCheck,
-  Clock,
-  CheckCircle2,
-  ArrowRight,
   RotateCw,
   ExternalLink,
   Truck,
-  Check,
+  Mail,
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 
 interface OrderResult {
@@ -35,19 +35,57 @@ interface OrderResult {
   };
 }
 
-export default function CekTransaksiPage() {
+function getStatusBadge(status: string) {
+  switch (status) {
+    case "SUCCESS":
+      return { label: "✓ SELESAI & TERKIRIM", bg: "bg-[#55db9c] text-black" };
+    case "PROCESSING":
+      return { label: "⚡ SEDANG DIPROSES", bg: "bg-[#5c4ade] text-white" };
+    case "PAID":
+      return { label: "✓ DIBAYAR - ANTRI PROSES", bg: "bg-[#ffd731] text-black" };
+    case "PENDING":
+      return { label: "⏳ MENUNGGU BAYAR", bg: "bg-[#ffd731] text-black" };
+    case "EXPIRED":
+      return { label: "✕ KEDALUWARSA", bg: "bg-red-500 text-white" };
+    case "FAILED":
+      return { label: "✕ GAGAL", bg: "bg-red-500 text-white" };
+    case "REFUNDED":
+      return { label: "↩ DANA DI-REFUND", bg: "bg-purple-600 text-white" };
+    default:
+      return { label: status, bg: "bg-gray-200 text-black" };
+  }
+}
+
+function CekTransaksiContent() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<OrderResult[] | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [emailLookupSent, setEmailLookupSent] = useState<string | null>(null);
+  const [emailMessage, setEmailMessage] = useState<string | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+  const executeSearch = async (searchTerm: string) => {
+    const trimmed = searchTerm.trim();
+    if (!trimmed) return;
 
     setIsSearching(true);
+    setEmailLookupSent(null);
+    setEmailMessage(null);
+
     try {
-      const data = await searchOrders(query);
-      setResults(data as unknown as OrderResult[]);
+      if (trimmed.includes("@")) {
+        // Email lookup via magic link to protect customer data
+        const res = await requestOrderLookup(trimmed);
+        setEmailLookupSent(trimmed);
+        setEmailMessage(
+          res.message ||
+            "Jika email Anda terdaftar dalam pesanan, tautan akses aman telah dikirimkan ke kotak masuk Anda."
+        );
+        setResults(null);
+      } else {
+        const data = await searchOrders(trimmed);
+        setResults(data as unknown as OrderResult[]);
+      }
     } catch (err) {
       console.error(err);
       setResults([]);
@@ -56,9 +94,22 @@ export default function CekTransaksiPage() {
     }
   };
 
+  useEffect(() => {
+    const q = searchParams.get("q") || searchParams.get("invoice");
+    if (q) {
+      setQuery(q);
+      executeSearch(q);
+    }
+  }, [searchParams]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    executeSearch(query);
+  };
+
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 space-y-8">
-      {/* Header Banner (Stitch style from guest_order_tracking_dispatch_status_1) */}
+      {/* Header Banner */}
       <div className="relative w-full rounded-3xl ink-border overflow-hidden bg-[#dceeff] dark:bg-[#151926] dark:border-[#38384a] p-6 md:p-10 shadow-[4px_4px_0px_0px_#000000]">
         <div className="absolute right-8 bottom-4 transform rotate-2 hidden lg:flex items-center gap-3 pointer-events-none">
           <div className="w-24 h-24 object-contain drop-shadow-[3px_3px_0px_#000]">
@@ -87,7 +138,11 @@ export default function CekTransaksiPage() {
           </h1>
 
           <p className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 leading-relaxed">
-            Ketikkan nomor invoice transaksi Anda (contoh: <code className="bg-white dark:bg-[#20202e] dark:border-[#38384a] px-2 py-0.5 rounded ink-border">INV-XYZ-...</code>) atau alamat email yang digunakan saat pembelian.
+            Ketikkan nomor invoice transaksi Anda (contoh:{" "}
+            <code className="bg-white dark:bg-[#20202e] dark:border-[#38384a] px-2 py-0.5 rounded ink-border">
+              INV-XYZ-...
+            </code>
+            ) atau alamat email yang digunakan saat pembelian.
           </p>
 
           {/* Quick Search Form */}
@@ -121,6 +176,28 @@ export default function CekTransaksiPage() {
         </div>
       </div>
 
+      {/* Email Magic Link Sent Notification */}
+      {emailLookupSent && (
+        <div className="bg-[#55db9c]/20 border-2 border-carbon dark:border-[#55db9c] rounded-3xl p-6 md:p-8 shadow-[4px_4px_0px_0px_#000000] space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#55db9c] ink-border flex items-center justify-center">
+              <Mail className="w-5 h-5 text-black" />
+            </div>
+            <div>
+              <h3 className="font-[var(--font-bricolage)] text-lg font-black text-carbon dark:text-white uppercase">
+                Tautan Akses Riwayat Dikirimkan!
+              </h3>
+              <p className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                Email tujuan: <span className="font-black text-black dark:text-[#55db9c]">{emailLookupSent}</span>
+              </p>
+            </div>
+          </div>
+          <p className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 leading-relaxed bg-white/70 dark:bg-[#1a1a28]/70 p-4 rounded-xl ink-border">
+            {emailMessage} Demi privasi keamanan akun Anda, seluruh riwayat pembelian hanya dapat diakses melalui tautan khusus yang dikirimkan ke email Anda. Silakan cek folder <strong>Kotak Masuk (Inbox)</strong> atau <strong>Spam</strong> Anda.
+          </p>
+        </div>
+      )}
+
       {/* Results Section */}
       {results !== null && (
         <div className="space-y-4">
@@ -134,6 +211,10 @@ export default function CekTransaksiPage() {
             <div className="space-y-6">
               {results.map((order) => {
                 const isSuccess = order.status === "SUCCESS";
+                const isPaidOrProcessing = order.status === "PAID" || order.status === "PROCESSING";
+                const isFailedOrExpired = order.status === "FAILED" || order.status === "EXPIRED";
+                const badge = getStatusBadge(order.status);
+
                 return (
                   <div
                     key={order.id}
@@ -142,18 +223,12 @@ export default function CekTransaksiPage() {
                     {/* Header Row */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-carbon dark:border-gray-700">
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-[var(--font-bricolage)] text-lg font-black text-carbon dark:text-white">
                             {order.invoiceNumber}
                           </span>
-                          <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ink-border ${
-                              isSuccess
-                                ? "bg-[#55db9c] text-black"
-                                : "bg-[#ffd731] text-black"
-                            }`}
-                          >
-                            {isSuccess ? "✓ SUKSES & TERKIRIM" : "⏳ MENUNGGU BAYAR"}
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ink-border ${badge.bg}`}>
+                            {badge.label}
                           </span>
                         </div>
                         <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">
@@ -188,26 +263,30 @@ export default function CekTransaksiPage() {
                       {/* Step 2: Payment Settlement */}
                       <div
                         className={`p-4 ink-border rounded-2xl flex items-center gap-3 ${
-                          isSuccess
+                          isSuccess || isPaidOrProcessing
                             ? "bg-[#f9f9f9] dark:bg-[#1f1f2e] dark:border-[#38384a]"
+                            : isFailedOrExpired
+                            ? "bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400"
                             : "bg-[#ffd731] text-black"
                         }`}
                       >
                         <div
                           className={`w-8 h-8 rounded-full ink-border flex items-center justify-center font-black text-xs ${
-                            isSuccess
+                            isSuccess || isPaidOrProcessing
                               ? "bg-[#55db9c] text-black"
+                              : isFailedOrExpired
+                              ? "bg-red-500 text-white"
                               : "bg-white text-black animate-pulse"
                           }`}
                         >
-                          {isSuccess ? "✓" : "⏳"}
+                          {isSuccess || isPaidOrProcessing ? "✓" : isFailedOrExpired ? "✕" : "⏳"}
                         </div>
                         <div>
-                          <span className={`text-[10px] font-black uppercase block ${isSuccess ? "text-gray-600 dark:text-gray-400" : "text-black/80"}`}>
+                          <span className={`text-[10px] font-black uppercase block ${isSuccess || isPaidOrProcessing ? "text-gray-600 dark:text-gray-400" : isFailedOrExpired ? "text-red-600 dark:text-red-400" : "text-black/80"}`}>
                             Langkah 2
                           </span>
-                          <p className={`text-xs font-black ${isSuccess ? "text-carbon dark:text-white" : "text-black"}`}>
-                            {isSuccess ? "Pembayaran Terverifikasi" : "Menunggu QRIS"}
+                          <p className={`text-xs font-black ${isSuccess || isPaidOrProcessing ? "text-carbon dark:text-white" : isFailedOrExpired ? "text-red-600 dark:text-red-400" : "text-black"}`}>
+                            {isSuccess || isPaidOrProcessing ? "Pembayaran Terverifikasi" : isFailedOrExpired ? "Pembayaran Gagal/Kedaluwarsa" : "Menunggu QRIS"}
                           </p>
                         </div>
                       </div>
@@ -217,22 +296,28 @@ export default function CekTransaksiPage() {
                         className={`p-4 ink-border rounded-2xl flex items-center gap-3 ${
                           isSuccess
                             ? "bg-[#55db9c]/30 dark:bg-[#55db9c]/15 dark:border-[#38384a]"
+                            : isPaidOrProcessing
+                            ? "bg-[#5c4ade]/20 text-[#5c4ade] dark:text-[#a594fd]"
                             : "bg-gray-100 dark:bg-[#181824] opacity-60 dark:border-[#38384a]"
                         }`}
                       >
                         <div
                           className={`w-8 h-8 rounded-full ink-border flex items-center justify-center font-black text-xs ${
-                            isSuccess ? "bg-[#55db9c] text-black" : "bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                            isSuccess
+                              ? "bg-[#55db9c] text-black"
+                              : isPaidOrProcessing
+                              ? "bg-[#5c4ade] text-white animate-pulse"
+                              : "bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
                           }`}
                         >
-                          {isSuccess ? "✓" : "3"}
+                          {isSuccess ? "✓" : isPaidOrProcessing ? "⚡" : "3"}
                         </div>
                         <div>
                           <span className="text-[10px] font-black uppercase text-gray-600 dark:text-gray-400 block">
                             Langkah 3
                           </span>
                           <p className="text-xs font-black text-carbon dark:text-white">
-                            {isSuccess ? "Item Berhasil Diinjeksi" : "Proses Pengiriman"}
+                            {isSuccess ? "Item Berhasil Diinjeksi" : isPaidOrProcessing ? "Sedang Mengirim Akun/TopUp" : "Proses Pengiriman"}
                           </p>
                         </div>
                       </div>
@@ -270,5 +355,20 @@ export default function CekTransaksiPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function CekTransaksiPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-16 text-center">
+          <RotateCw className="w-6 h-6 animate-spin mx-auto text-carbon dark:text-white" />
+          <p className="text-xs font-bold text-gray-500 mt-2">Memuat pelacakan pesanan...</p>
+        </div>
+      }
+    >
+      <CekTransaksiContent />
+    </Suspense>
   );
 }

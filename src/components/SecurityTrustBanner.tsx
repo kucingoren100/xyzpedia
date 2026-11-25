@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck, AlertTriangle, Lock, Zap, MessageCircle, CheckCircle2 } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/contact";
 
 export default function SecurityTrustBanner({ compact = false }: { compact?: boolean }) {
   if (compact) {
@@ -49,7 +50,7 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
         </div>
 
         <a
-          href="https://wa.me/6281234567890?text=Halo%20Admin%20XYZPEDIA,%20saya%20ingin%20konfirmasi%20keamanan"
+          href={getWhatsAppUrl("Halo Admin XYZPEDIA, saya ingin konfirmasi keamanan")}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#ffd731] hover:bg-[#ffe266] text-black text-xs font-black uppercase rounded-xl ink-border shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all shrink-0 cursor-pointer"

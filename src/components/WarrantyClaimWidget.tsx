@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getWhatsAppUrl } from "@/lib/contact";
 import {
   ShieldCheck,
   AlertTriangle,
@@ -235,11 +236,11 @@ export default function WarrantyClaimWidget({
 
             {/* WhatsApp Direct Escalation Button */}
             <a
-              href={`https://wa.me/6281234567890?text=${encodeURIComponent(
+              href={getWhatsAppUrl(
                 `Halo Tim Support XYZPEDIA, saya ingin konfirmasi tiket garansi #${latestClaim.id
                   .slice(-6)
                   .toUpperCase()} untuk pesanan ${productName} (Invoice: ${invoiceNumber}).`
-              )}`}
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-2.5 px-3 bg-[#25d366] hover:bg-[#20ba59] text-white text-xs font-black uppercase rounded-xl ink-border flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"

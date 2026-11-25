@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getWhatsAppUrl } from "@/lib/contact";
 import {
   MessageCircle,
   Search,
@@ -137,7 +138,7 @@ export default function BantuanPage() {
               </p>
             </div>
             <a
-              href="https://wa.me/6281234567890?text=Halo%20Admin%20XYZPEDIA,%20saya%20butuh%20bantuan"
+              href={getWhatsAppUrl("Halo Admin XYZPEDIA, saya butuh bantuan")}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-5 w-full py-2.5 bg-black text-white hover:bg-[#55db9c] hover:text-black ink-border rounded-full text-xs font-black uppercase tracking-wider text-center transition-colors flex items-center justify-center gap-1.5"
@@ -263,7 +264,7 @@ export default function BantuanPage() {
         </div>
 
         <a
-          href="https://wa.me/6281234567890?text=Halo%20Admin%20XYZPEDIA,%20saya%20butuh%20bantuan"
+          href={getWhatsAppUrl("Halo Admin XYZPEDIA, saya butuh bantuan")}
           target="_blank"
           rel="noopener noreferrer"
           className="px-6 py-3.5 bg-black text-white hover:bg-[#fb4903] ink-border rounded-full text-xs font-black uppercase tracking-wider shadow-[3px_3px_0px_0px_#ffffff] transition-colors shrink-0"

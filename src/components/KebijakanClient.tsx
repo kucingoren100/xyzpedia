@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { getWhatsAppUrl, OFFICIAL_WA_FORMATTED, OFFICIAL_SUPPORT_EMAIL } from "@/lib/contact";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -294,7 +295,7 @@ export default function KebijakanClient() {
               </div>
             </div>
             <a
-              href="https://wa.me/6281234567890?text=Halo%20Admin%20XYZPEDIA,%20saya%20ingin%20konsultasi%20kendala%20transaksi"
+              href={getWhatsAppUrl("Halo Admin XYZPEDIA, saya ingin konsultasi kendala transaksi")}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3.5 py-1.5 bg-black text-white ink-border rounded-full text-xs font-black uppercase hover:scale-105 active:scale-95 transition-all shadow-[1.5px_1.5px_0px_0px_#ffd731]"
@@ -618,7 +619,7 @@ export default function KebijakanClient() {
 
               <div className="flex flex-col sm:flex-row gap-3.5 pt-1">
                 <a
-                  href="https://wa.me/6281234567890?text=Halo%20Admin%20XYZPEDIA,%20saya%20ingin%20lapor%20kendala%20transaksi"
+                  href={getWhatsAppUrl("Halo Admin XYZPEDIA, saya ingin lapor kendala transaksi")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 ink-border rounded-2xl p-4 bg-[#f3f4f6] dark:bg-[#12121a] dark:border-[#38384a] hover:bg-[#55db9c]/20 transition-all flex items-center gap-3.5 group shadow-[1px_1px_0px_0px_#000000]"
@@ -628,12 +629,12 @@ export default function KebijakanClient() {
                   </span>
                   <div>
                     <h4 className="text-xs font-black uppercase text-carbon dark:text-white">WhatsApp CS 24 Jam</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">+62 812-9988-XYZP (Chat Only)</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">{OFFICIAL_WA_FORMATTED} (Chat Only)</p>
                   </div>
                 </a>
 
                 <a
-                  href="mailto:dispute@xyzpedia.id"
+                  href={`mailto:${OFFICIAL_SUPPORT_EMAIL}`}
                   className="flex-1 ink-border rounded-2xl p-4 bg-[#f3f4f6] dark:bg-[#12121a] dark:border-[#38384a] hover:bg-[#ffd731]/20 transition-all flex items-center gap-3.5 group shadow-[1px_1px_0px_0px_#000000]"
                 >
                   <span className="w-11 h-11 rounded-xl bg-[#ffd731] ink-border flex items-center justify-center font-black group-hover:scale-105 transition-transform shrink-0">
@@ -641,7 +642,7 @@ export default function KebijakanClient() {
                   </span>
                   <div>
                     <h4 className="text-xs font-black uppercase text-carbon dark:text-white">Email Helpdesk Legal</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">dispute@xyzpedia.id</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">{OFFICIAL_SUPPORT_EMAIL}</p>
                   </div>
                 </a>
               </div>

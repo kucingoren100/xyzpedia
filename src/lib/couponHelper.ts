@@ -109,8 +109,9 @@ export async function validateCoupon(
         discount = dbCoupon.value;
       }
 
-      // Safeguard: final price must never fall below supplier price
-      const maxAllowedDiscount = Math.max(0, itemPrice - supplierPrice);
+      // Safeguard: final price must never fall below supplier price (minimum 15% floor if supplierPrice not set)
+      const effectiveSupplierCost = supplierPrice > 0 ? supplierPrice : Math.ceil(itemPrice * 0.85);
+      const maxAllowedDiscount = Math.max(0, itemPrice - effectiveSupplierCost);
       discount = Math.min(discount, maxAllowedDiscount);
 
       return { valid: true, code: cleanPromo, discountAmount: discount };
@@ -129,7 +130,8 @@ export async function validateCoupon(
     discountAmount = 2000;
   }
 
-  const maxAllowedDiscount = Math.max(0, itemPrice - supplierPrice);
+  const effectiveSupplierCost = supplierPrice > 0 ? supplierPrice : Math.ceil(itemPrice * 0.85);
+  const maxAllowedDiscount = Math.max(0, itemPrice - effectiveSupplierCost);
   discountAmount = Math.min(discountAmount, maxAllowedDiscount);
 
   if (discountAmount > 0) {

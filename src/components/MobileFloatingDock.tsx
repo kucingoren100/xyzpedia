@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getWhatsAppUrl } from "@/lib/contact";
 import {
   Home,
   LayoutGrid,
@@ -125,7 +126,7 @@ export default function MobileFloatingDock() {
             </Link>
 
             <a
-              href="https://wa.me/6281234567890?text=Halo%20Admin%20XYZPEDIA,%20saya%20butuh%20bantuan"
+              href={getWhatsAppUrl("Halo Admin XYZPEDIA, saya butuh bantuan")}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-[#ffd731] active:scale-98 ink-border transition-all text-[11px] font-black text-carbon"

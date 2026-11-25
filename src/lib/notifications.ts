@@ -219,7 +219,7 @@ export function getPublicAppUrl(): string {
     process.env.VERCEL_PROJECT_PRODUCTION_URL ||
     process.env.VERCEL_URL;
   if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
-    return "https://xyzpedia.vercel.app";
+    return "https://xyzpedia.my.id";
   }
   const clean = envUrl.startsWith("http") ? envUrl : `https://${envUrl}`;
   return clean.replace(/\/$/, "");
@@ -1112,7 +1112,7 @@ export function generateBuyerReceiptEmailHtml(data: {
       </div>
 
       <div style="text-align: center; font-size: 11px; color: #64748b; line-height: 1.6;">
-        Butuh bantuan terkait pesanan Anda? Hubungi Customer Support kami via WhatsApp: <strong style="color: #22c55e;">+62 896-4666-1132</strong>
+        Butuh bantuan terkait pesanan Anda? Hubungi Customer Support kami via WhatsApp: <strong style="color: #22c55e;">+62 895-1736-7660</strong>
       </div>
     </div>
   </div>
@@ -1478,7 +1478,7 @@ export async function dispatchNotificationEvent(
             visits: payload.visits ?? 42,
             conversionRate: payload.conversionRate ? `${payload.conversionRate}%` : "4,8%",
             topProduct: payload.topProduct || "Canva — 1 Tahun",
-            siteUrl: "xyzpedia.com",
+            siteUrl: "xyzpedia.my.id",
           });
         } catch (cardErr) {
           console.warn("Gagal generate card png:", cardErr);

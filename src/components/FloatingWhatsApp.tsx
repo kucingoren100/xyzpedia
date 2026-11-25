@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, X, ExternalLink, ShieldCheck, Clock } from "lucide-react";
+import { OFFICIAL_WA_RAW } from "@/lib/contact";
 
 export default function FloatingWhatsApp() {
   const pathname = usePathname();
@@ -29,8 +30,7 @@ export default function FloatingWhatsApp() {
     return null;
   }
 
-  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281234567890";
-  const cleanNumber = waNumber.replace(/\D/g, "");
+  const cleanNumber = OFFICIAL_WA_RAW;
 
   const handleOpenWhatsApp = (message?: string) => {
     const text = encodeURIComponent(
