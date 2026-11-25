@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { OFFICIAL_WA_FORMATTED, OFFICIAL_SUPPORT_EMAIL } from "./contact";
 import {
   NotificationSettings,
   DEFAULT_NOTIFICATION_SETTINGS,
@@ -645,11 +646,10 @@ export async function sendEmailMessage(
     "";
 
   const plainText = htmlToPlainText(htmlContent);
-  const firstAdminEmail = settings.email.recipient
-    ?.split(",")
-    .map((e) => e.trim())
-    .find((e) => emailRegex.test(e));
-  const replyToEmail = firstAdminEmail || senderEmail;
+  const replyToEmail =
+    (customConfig as any)?.replyTo ||
+    process.env.NEXT_PUBLIC_SUPPORT_EMAIL ||
+    OFFICIAL_SUPPORT_EMAIL;
 
   // Priority 1: Resend REST API (Fast, reliable, custom domain)
   if (resendApiKey) {
@@ -1111,8 +1111,8 @@ export function generateBuyerReceiptEmailHtml(data: {
         </a>
       </div>
 
-      <div style="text-align: center; font-size: 11px; color: #64748b; line-height: 1.6;">
-        Butuh bantuan terkait pesanan Anda? Hubungi Customer Support kami via WhatsApp: <strong style="color: #22c55e;">+62 895-1736-7660</strong>
+      <div style="text-align: center; font-size: 11px; color: #94a3b8; line-height: 1.6;">
+        Butuh bantuan terkait pesanan Anda? Hubungi CS via WhatsApp: <strong style="color: #22c55e;">${OFFICIAL_WA_FORMATTED}</strong> atau Email: <a href="mailto:${OFFICIAL_SUPPORT_EMAIL}" style="color: #38bdf8; text-decoration: none; font-weight: 700;">${OFFICIAL_SUPPORT_EMAIL}</a>
       </div>
     </div>
   </div>
