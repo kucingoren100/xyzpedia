@@ -46,33 +46,14 @@ export default function Footer() {
             <span className="text-xs text-[#e9e9e9] block uppercase font-bold tracking-wider">
               Metode Pembayaran Resmi (0% Biaya Admin)
             </span>
-            <div className="flex flex-wrap gap-2">
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-black shadow-[2px_2px_0px_0px_#ffd731]">
-                QRIS Instant
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="bg-[#ffd731] text-black px-3.5 py-1.5 rounded-lg ink-border text-xs font-black shadow-[2px_2px_0px_0px_#000000] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span>QRIS Instan 24 Jam</span>
               </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                BCA
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                Mandiri
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                BRI
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                BNI
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                GoPay
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                DANA
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                ShopeePay
-              </div>
-              <div className="bg-white text-carbon px-3 py-1.5 rounded-lg ink-border text-xs font-bold">
-                OVO
+              <div className="bg-[#20202e] text-[#d6d6e6] px-3.5 py-1.5 rounded-lg border border-[#38384d] text-xs font-bold flex items-center gap-2">
+                <span className="text-[#ffd731]">✓</span>
+                <span>Support Semua Bank &amp; E-Wallet (BCA, Mandiri, BRI, BNI, GoPay, DANA, ShopeePay, OVO, dll)</span>
               </div>
             </div>
           </div>
