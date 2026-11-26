@@ -37,7 +37,7 @@ export async function syncXavieraToDatabase(
   options: SyncXavieraOptions = {}
 ): Promise<SyncXavieraResult> {
   const markup = options.markupPercent ?? 8;
-  const shouldUpdateSellingPrice = options.updateSellingPrice ?? true;
+  const shouldUpdateSellingPrice = options.updateSellingPrice ?? false;
 
   const client = new XavieraClient();
   const res = await client.getProducts();

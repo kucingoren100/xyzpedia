@@ -108,7 +108,7 @@ export default function AdminProdukClient({
   const handleSyncDigiflazz = async () => {
     if (
       !confirm(
-        "Tarik dan petakan seluruh produk & harga modal terbaru dari Digiflazz ke katalog database sekarang?"
+        "Tarik harga modal terbaru & status stok Game & PPOB dari Digiflazz sekarang?\n\n(Catatan: Harga jual eceran Anda tetap aman dan tidak akan diubah)."
       )
     ) {
       return;
@@ -118,11 +118,11 @@ export default function AdminProdukClient({
       const res = await fetch("/api/admin/products/sync-digiflazz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ markupPercent: 8 }),
+        body: JSON.stringify({ updateSellingPrice: false }),
       });
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        alert(data.message || "Berhasil menyinkronkan harga modal & status stok Digiflazz!");
         fetchProducts(selectedCategory, searchQuery);
       } else {
         alert("Gagal sinkronisasi Digiflazz: " + (data.message || data.error));
@@ -207,7 +207,7 @@ export default function AdminProdukClient({
   const handleSyncXaviera = async () => {
     if (
       !confirm(
-        "Sinkronkan seluruh harga modal supplier dan status stok Akun Premium dari API resmi Xaviera Store sekarang?"
+        "Tarik harga modal terbaru & status stok Akun Premium dari Xaviera Store sekarang?\n\n(Catatan: Harga jual eceran Anda tetap aman dan tidak akan diubah)."
       )
     ) {
       return;
@@ -217,13 +217,13 @@ export default function AdminProdukClient({
       const res = await fetch("/api/admin/products/sync-xaviera", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ markupPercent: 8, updateSellingPrice: true }),
+        body: JSON.stringify({ updateSellingPrice: false }),
       });
       const data = await res.json();
       if (data.success) {
         alert(
           data.message ||
-            `Berhasil menyinkronkan data harga modal dan stok dari Xaviera Store!`
+            `Berhasil menyinkronkan harga modal dan status stok dari Xaviera Store!`
         );
         fetchProducts(selectedCategory, searchQuery);
       } else {
@@ -854,10 +854,10 @@ export default function AdminProdukClient({
                 onClick={handleSyncDigiflazz}
                 disabled={syncingDigi}
                 className="px-4 py-2.5 bg-[#38bdf8] hover:bg-[#0284c7] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-transform hover:scale-102 active:scale-98 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
-                title="Tarik & petakan seluruh harga modal game & PPOB langsung dari Digiflazz"
+                title="Tarik harga modal & status stok Game/PPOB dari Digiflazz (harga jual tetap aman)"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${syncingDigi ? "animate-spin text-blue-900" : "text-black"}`} />
-                <span>{syncingDigi ? "Menarik Digiflazz..." : "Sync Digiflazz"}</span>
+                <span>{syncingDigi ? "Menarik Digiflazz..." : "Sync Digiflazz (Games & PPOB)"}</span>
               </button>
 
               <button
@@ -865,10 +865,10 @@ export default function AdminProdukClient({
                 onClick={handleSyncXaviera}
                 disabled={syncingXaviera}
                 className="px-4 py-2.5 bg-[#c084fc] hover:bg-[#a855f7] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-transform hover:scale-102 active:scale-98 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
-                title="Tarik harga modal & stok terbaru akun premium dari Xaviera Store"
+                title="Tarik harga modal & status stok Akun Premium dari Xaviera Store (harga jual tetap aman)"
               >
                 <Zap className={`w-3.5 h-3.5 ${syncingXaviera ? "animate-spin text-purple-900" : "text-black"}`} />
-                <span>{syncingXaviera ? "Menyinkronkan..." : "Sync Xaviera (Akun)"}</span>
+                <span>{syncingXaviera ? "Menyinkronkan..." : "Sync Xaviera (Akun Premium)"}</span>
               </button>
 
               <button

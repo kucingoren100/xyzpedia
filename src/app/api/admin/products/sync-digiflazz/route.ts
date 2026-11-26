@@ -16,8 +16,9 @@ export async function POST(req: Request) {
 
     const body = await req.json().catch(() => ({}));
     const markupPercent = typeof body.markupPercent === "number" ? body.markupPercent : 8;
+    const updateSellingPrice = body.updateSellingPrice ?? false;
 
-    const result = await syncDigiflazzToDatabase({ markupPercent });
+    const result = await syncDigiflazzToDatabase({ markupPercent, updateSellingPrice });
 
     return NextResponse.json({
       success: result.success,

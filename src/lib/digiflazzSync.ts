@@ -87,7 +87,7 @@ export interface SyncResult {
  */
 export async function syncDigiflazzToDatabase(options: SyncOptions = {}): Promise<SyncResult> {
   const markup = options.markupPercent ?? 8;
-  const shouldUpdateSellingPrice = options.updateSellingPrice ?? true;
+  const shouldUpdateSellingPrice = options.updateSellingPrice ?? false;
 
   const digiItems = await getDigiflazzPriceList("prepaid");
   if (!digiItems || !Array.isArray(digiItems) || digiItems.length === 0) {

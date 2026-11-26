@@ -78,7 +78,7 @@ export async function POST(req?: Request) {
     const body = req ? await req.json().catch(() => ({})) : {};
     const provider = String(body?.provider || "all").toLowerCase();
     const markupPercent = typeof body?.markupPercent === "number" ? body.markupPercent : 8;
-    const updateSellingPrice = body?.updateSellingPrice ?? true;
+    const updateSellingPrice = body?.updateSellingPrice ?? false;
 
     let digiResult: any = null;
     let xavResult: any = null;
