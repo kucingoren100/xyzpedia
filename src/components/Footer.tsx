@@ -113,18 +113,18 @@ export default function Footer() {
 
             {/* Instagram Akun Premium */}
             <a
-              href="https://instagram.com/xzypedia.premium"
+              href="https://instagram.com/xyzpedia.premium"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2 px-3 py-2 bg-[#20202e] hover:bg-[#833AB4] text-white rounded-xl ink-border border-[#38384d] hover:border-[#833AB4] text-xs font-bold transition-all shadow-[2px_2px_0px_0px_#000000] hover:scale-102 active:scale-98 cursor-pointer"
-              title="Instagram Akun Premium: @xzypedia.premium"
+              title="Instagram Akun Premium: @xyzpedia.premium"
             >
               <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#833ab4] via-[#fd1d1d] to-[#fcb045] flex items-center justify-center text-white shrink-0 shadow-sm">
                 <InstagramIcon className="w-3.5 h-3.5" />
               </div>
               <div className="flex flex-col text-left leading-tight">
                 <span className="text-[9.5px] text-gray-400 group-hover:text-white/80 font-normal">IG Akun Premium</span>
-                <span className="text-xs font-black">@xzypedia.premium</span>
+                <span className="text-xs font-black">@xyzpedia.premium</span>
               </div>
             </a>
 
