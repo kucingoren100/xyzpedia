@@ -260,7 +260,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             "Arena Breakout",
             "Point Blank",
           ],
-          perks: ["🎯 Injeksi Langsung ke Akun", "⚡ Settlement < 5 Detik", "🛡️ Garansi Anti-Minus"],
         };
       case "akun-premium":
         return {
@@ -283,7 +282,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             "CapCut",
             "Viu",
           ],
-          perks: ["🔒 Garansi 30 - 365 Hari", "⚡ Akses Kilat via Email", "🌟 Durasi Penuh Tanpa Jeda"],
         };
       case "voucher-digital":
         return {
@@ -302,7 +300,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             { text: "TERBIT DI INVOICE", bg: "bg-[#55db9c] text-black", rotate: "-rotate-6" },
           ],
           quickChips: ["Steam", "Google Play", "Vidio"],
-          perks: ["⚡ Kode Terbit Seketika", "🛡️ Valid & Legal 100%", "💳 Bayar QRIS Bebas Admin"],
         };
       case "pulsa-ewallet":
         return {
@@ -330,7 +327,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             "ShopeePay",
             "LinkAja",
           ],
-          perks: ["📱 Semua Operator Seluler", "💳 8 Dompet Digital Populer", "⚡ Masuk Otomatis Detik Itu Juga"],
         };
       default: // "all"
         return {
@@ -349,7 +345,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             { text: "100% PROSES OTOMATIS", bg: "bg-[#55db9c] text-black", rotate: "-rotate-6" },
           ],
           quickChips: [],
-          perks: ["⚡ Injeksi < 5 Detik", "🛡️ Garansi Aman 100%", "💳 QRIS 0% Biaya Admin"],
         };
     }
   }, [selectedCategory]);
@@ -386,18 +381,6 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
           <p className="text-xs sm:text-sm font-semibold text-black/85 dark:text-gray-200 leading-relaxed max-w-xl">
             {bannerContent.desc}
           </p>
-
-          {/* Interactive Perks / Guarantee Pills */}
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-black">
-            {bannerContent.perks.map((p, i) => (
-              <span
-                key={i}
-                className="px-2.5 py-1 bg-white text-black dark:bg-[#252536] dark:text-white rounded-lg ink-border shadow-[1px_1px_0px_0px_#000000]"
-              >
-                {p}
-              </span>
-            ))}
-          </div>
 
           {/* Interactive Quick Filter Chips for Specific Category */}
           {bannerContent.quickChips.length > 0 && (
