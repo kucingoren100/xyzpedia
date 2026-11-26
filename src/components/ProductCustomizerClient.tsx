@@ -936,9 +936,9 @@ export default function ProductCustomizerClient({
                   <button
                     type="button"
                     onClick={() => setShowCouponList((prev) => !prev)}
-                    className="text-[10px] font-black uppercase text-[#5c4ade] dark:text-[#ffd731] hover:underline cursor-pointer shrink-0"
+                    className="px-2.5 py-0.5 rounded-full bg-[#ffd731] text-black ink-border text-[10px] font-black uppercase hover:bg-black hover:text-white transition-colors cursor-pointer shrink-0 shadow-[1px_1px_0px_#000000]"
                   >
-                    {showCouponList ? "Tutup Kupon" : `Lihat Kupon (${activeCoupons.length})`}
+                    {showCouponList ? "Tutup Kupon" : `🎟️ Kupon Aktif (${activeCoupons.length})`}
                   </button>
                 )}
               </div>
@@ -1401,9 +1401,9 @@ export default function ProductCustomizerClient({
                     <button
                       type="button"
                       onClick={() => setShowCouponList((prev) => !prev)}
-                      className="text-[10px] font-black uppercase text-[#5c4ade] dark:text-[#ffd731] hover:underline cursor-pointer"
+                      className="px-2.5 py-0.5 rounded-full bg-[#ffd731] text-black ink-border text-[10px] font-black uppercase cursor-pointer shadow-[1px_1px_0px_#000000]"
                     >
-                      {showCouponList ? "Tutup" : `Lihat Kupon (${activeCoupons.length})`}
+                      {showCouponList ? "Tutup" : `🎟️ Kupon Aktif (${activeCoupons.length})`}
                     </button>
                   )}
                 </div>

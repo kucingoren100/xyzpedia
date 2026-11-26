@@ -34,17 +34,26 @@ export async function GET(req: Request) {
     });
 
     const filtered = coupons.filter((c) => {
-      if (!c.applicableProducts || c.applicableProducts === "ALL") return true;
+      if (!c.applicableProducts || c.applicableProducts.trim().toUpperCase() === "ALL") return true;
+      let list: string[] = [];
       try {
-        const list = JSON.parse(c.applicableProducts);
-        if (!Array.isArray(list) || list.length === 0) return true;
-        return (
-          (productSlug && list.includes(productSlug)) ||
-          (productId && list.includes(productId))
-        );
+        const parsed = JSON.parse(c.applicableProducts);
+        list = Array.isArray(parsed) ? parsed : [String(parsed)];
       } catch {
-        return true;
+        list = c.applicableProducts.split(",").map((s) => s.trim()).filter(Boolean);
       }
+      if (list.length === 0) return true;
+
+      const slugLower = productSlug.trim().toLowerCase();
+      const idLower = productId.trim().toLowerCase();
+
+      return list.some((entry) => {
+        const raw = String(entry).trim().toLowerCase();
+        if (raw === "all") return true;
+        if (raw.startsWith("sku:")) return true; // SKU-specific coupons are shown on product page and validated per variant
+        const normalized = raw.replace(/^prod:/, "").trim();
+        return (slugLower && normalized === slugLower) || (idLower && normalized === idLower);
+      });
     });
 
     return NextResponse.json({
