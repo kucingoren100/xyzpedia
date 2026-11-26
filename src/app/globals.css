@@ -213,17 +213,17 @@ html.dark textarea::placeholder {
    Any element or badge with a bright yellow or mint green background
    MUST ALWAYS have 100% black text for perfect readability.
    ======================================================== */
-html:not(.dark) .bg-\[\#ffd731\]:not([class*="dark:bg-"]),
-html:not(.dark) .bg-\[\#55db9c\]:not([class*="dark:bg-"]),
-html:not(.dark) .bg-\[\#dceeff\]:not([class*="dark:bg-"]),
-html:not(.dark) .bg-\[\#e9ccff\]:not([class*="dark:bg-"]),
-html:not(.dark) .bg-\[\#ffdad6\]:not([class*="dark:bg-"]),
-html.dark .dark\:bg-\[\#ffd731\],
-html.dark .dark\:bg-\[\#55db9c\],
-html.dark button.dark\:bg-\[\#ffd731\],
-html.dark span.dark\:bg-\[\#ffd731\],
-span.bg-\[\#ffd731\],
-button.bg-\[\#ffd731\] {
+html:not(.dark) .bg-\[\#ffd731\]:not([class*="dark:bg-"]):not(:hover),
+html:not(.dark) .bg-\[\#55db9c\]:not([class*="dark:bg-"]):not(:hover),
+html:not(.dark) .bg-\[\#dceeff\]:not([class*="dark:bg-"]):not(:hover),
+html:not(.dark) .bg-\[\#e9ccff\]:not([class*="dark:bg-"]):not(:hover),
+html:not(.dark) .bg-\[\#ffdad6\]:not([class*="dark:bg-"]):not(:hover),
+html.dark .dark\:bg-\[\#ffd731\]:not(:hover),
+html.dark .dark\:bg-\[\#55db9c\]:not(:hover),
+html.dark button.dark\:bg-\[\#ffd731\]:not(:hover),
+html.dark span.dark\:bg-\[\#ffd731\]:not(:hover),
+span.bg-\[\#ffd731\]:not(:hover),
+button.bg-\[\#ffd731\]:not(:hover) {
   color: #000000 !important;
 }
 

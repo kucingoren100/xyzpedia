@@ -936,7 +936,7 @@ export default function ProductCustomizerClient({
                   <button
                     type="button"
                     onClick={() => setShowCouponList((prev) => !prev)}
-                    className="px-2.5 py-0.5 rounded-full bg-[#ffd731] text-black ink-border text-[10px] font-black uppercase hover:bg-black hover:text-white transition-colors cursor-pointer shrink-0 shadow-[1px_1px_0px_#000000]"
+                    className="px-2.5 py-0.5 rounded-full bg-[#ffd731] text-black ink-border text-[10px] font-black uppercase hover:bg-[#fb4903] hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors cursor-pointer shrink-0 shadow-[1px_1px_0px_#000000]"
                   >
                     {showCouponList ? "Tutup Kupon" : `🎟️ Kupon Aktif (${activeCoupons.length})`}
                   </button>
@@ -984,7 +984,7 @@ export default function ProductCustomizerClient({
                           }}
                           className={`px-2.5 py-1 rounded-lg ink-border text-[10px] font-black uppercase shrink-0 transition-all ${
                             minSpendMet
-                              ? "bg-[#ffd731] text-black hover:bg-black hover:text-white cursor-pointer"
+                              ? "bg-[#ffd731] text-black hover:bg-[#fb4903] hover:text-white dark:hover:bg-white dark:hover:text-black cursor-pointer"
                               : "bg-gray-200 dark:bg-[#2a2a3a] text-gray-500 dark:text-gray-400 cursor-not-allowed"
                           }`}
                         >

@@ -95,7 +95,7 @@ export default function KalkulatorPage() {
 
         <Link
           href="/produk/mobile-legends"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#ffd731] text-black hover:bg-black hover:text-white rounded-full ink-border text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000] transition-colors shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#ffd731] text-black hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black rounded-full ink-border text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#000000] transition-colors shrink-0"
         >
           <span>Top Up MLBB</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -259,7 +259,7 @@ export default function KalkulatorPage() {
                 </div>
                 <Link
                   href="/produk/mobile-legends"
-                  className="px-4 py-2 bg-[#ffd731] text-black rounded-xl ink-border text-xs font-black uppercase shrink-0 hover:bg-black hover:text-white transition-colors"
+                  className="px-4 py-2 bg-[#ffd731] text-black rounded-xl ink-border text-xs font-black uppercase shrink-0 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
                 >
                   Isi Diamond
                 </Link>
@@ -306,7 +306,7 @@ export default function KalkulatorPage() {
                 </div>
                 <Link
                   href="/produk/mobile-legends"
-                  className="px-4 py-2 bg-[#ffd731] text-black rounded-xl ink-border text-xs font-black uppercase shrink-0 hover:bg-black hover:text-white transition-colors"
+                  className="px-4 py-2 bg-[#ffd731] text-black rounded-xl ink-border text-xs font-black uppercase shrink-0 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
                 >
                   Isi Diamond
                 </Link>
