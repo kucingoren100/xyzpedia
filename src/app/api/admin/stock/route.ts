@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/adminAuth";
 import { checkDigiflazzBalance, getDigiflazzPriceList, createDigiflazzTransaction } from "@/lib/digiflazz";
 import { getXavieraBalanceCached } from "@/lib/xaviera";
+import { syncXavieraToDatabase } from "@/lib/xavieraSync";
 import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
@@ -179,7 +180,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 2. ACTION: Sync all items stock status from Digiflazz
+    // 2. ACTION: Sync all items stock status from Digiflazz & Xaviera
     let digiItems: any[] = [];
     try {
       digiItems = await getDigiflazzPriceList("prepaid");
@@ -221,18 +222,31 @@ export async function POST(req: Request) {
       }
     }
 
+    // Also sync Xaviera stock status (preserving selling prices)
+    let xavResult: any = null;
+    try {
+      xavResult = await syncXavieraToDatabase({ updateSellingPrice: false });
+      if (xavResult?.success) {
+        updatedToOutOfStock += xavResult.updatedToOutOfStock || 0;
+        updatedToAvailable += xavResult.updatedToAvailable || 0;
+      }
+    } catch (xavErr: any) {
+      console.warn("Xaviera stock sync error:", xavErr.message);
+    }
+
     await logAuditEvent({
       actor: session.username || "admin",
       action: "SYNC_STOCK",
-      target: "Digiflazz H2H",
-      summary: `Admin menjalankan sinkronisasi stok: ${updatedToOutOfStock} item dinonaktifkan, ${updatedToAvailable} item diaktifkan kembali.`,
+      target: "Digiflazz & Xaviera",
+      summary: `Admin menjalankan sinkronisasi stok: total ${updatedToOutOfStock} item dinonaktifkan, ${updatedToAvailable} item diaktifkan kembali.`,
     });
 
     return NextResponse.json({
       success: true,
-      message: `Sinkronisasi stok Digiflazz selesai! ${updatedToOutOfStock} item dinonaktifkan (gangguan/tutup), dan ${updatedToAvailable} item berhasil diaktifkan kembali.`,
+      message: `Sinkronisasi stok Digiflazz & Xaviera selesai! ${updatedToOutOfStock} item dinonaktifkan (gangguan/tutup), dan ${updatedToAvailable} item berhasil diaktifkan kembali.`,
       updatedToOutOfStock,
       updatedToAvailable,
+      xaviera: xavResult,
     });
   } catch (err: any) {
     console.error("Gagal sinkron stok:", err);

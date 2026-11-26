@@ -101,8 +101,8 @@ export default function AdminProdukClient({
   const [modalTab, setModalTab] = useState<"variants" | "image_info" | "notices">("variants");
   const [modalLoading, setModalLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
-  const [syncingApi, setSyncingApi] = useState(false);
   const [syncingDigi, setSyncingDigi] = useState(false);
+  const [syncingXaviera, setSyncingXaviera] = useState(false);
 
   // Sync products & prices directly from Digiflazz H2H API
   const handleSyncDigiflazz = async () => {
@@ -203,36 +203,36 @@ export default function AdminProdukClient({
     return !hasApiNumericSku;
   };
 
-  // Sync supplier prices directly from Waroengkuy API
-  const handleSyncApiPrices = async () => {
+  // Sync products & prices directly from Xaviera Store API (Akun Premium)
+  const handleSyncXaviera = async () => {
     if (
       !confirm(
-        "Sinkronkan seluruh harga modal supplier dan status stok dengan API resmi Waroengkuy?"
+        "Sinkronkan seluruh harga modal supplier dan status stok Akun Premium dari API resmi Xaviera Store sekarang?"
       )
     ) {
       return;
     }
-    setSyncingApi(true);
+    setSyncingXaviera(true);
     try {
-      const res = await fetch("/api/admin/products/sync-prices", {
+      const res = await fetch("/api/admin/products/sync-xaviera", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ markupPercent: 8, updateSellingPrice: true }),
       });
       const data = await res.json();
       if (data.success) {
         alert(
           data.message ||
-            `Berhasil mensinkronkan ${data.totalUpdated} harga supplier dari API!`
+            `Berhasil menyinkronkan data harga modal dan stok dari Xaviera Store!`
         );
         fetchProducts(selectedCategory, searchQuery);
       } else {
-        alert("Gagal sinkronisasi: " + (data.error || data.message));
+        alert("Gagal sinkronisasi Xaviera: " + (data.message || data.error));
       }
     } catch (err: any) {
       alert("Terjadi kesalahan: " + (err?.message || "Koneksi gagal"));
     } finally {
-      setSyncingApi(false);
+      setSyncingXaviera(false);
     }
   };
 
@@ -854,21 +854,21 @@ export default function AdminProdukClient({
                 onClick={handleSyncDigiflazz}
                 disabled={syncingDigi}
                 className="px-4 py-2.5 bg-[#38bdf8] hover:bg-[#0284c7] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-transform hover:scale-102 active:scale-98 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
-                title="Tarik & petakan seluruh produk game & PPOB langsung dari Digiflazz"
+                title="Tarik & petakan seluruh harga modal game & PPOB langsung dari Digiflazz"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${syncingDigi ? "animate-spin text-blue-900" : "text-black"}`} />
-                <span>{syncingDigi ? "Menarik Digiflazz..." : "Tarik Digiflazz"}</span>
+                <span>{syncingDigi ? "Menarik Digiflazz..." : "Sync Digiflazz"}</span>
               </button>
 
               <button
                 type="button"
-                onClick={handleSyncApiPrices}
-                disabled={syncingApi}
-                className="px-4 py-2.5 bg-[#ffd731] hover:bg-[#ffdf4a] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-transform hover:scale-102 active:scale-98 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
-                title="Tarik harga modal terbaru langsung dari API Waroengkuy"
+                onClick={handleSyncXaviera}
+                disabled={syncingXaviera}
+                className="px-4 py-2.5 bg-[#c084fc] hover:bg-[#a855f7] text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-transform hover:scale-102 active:scale-98 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
+                title="Tarik harga modal & stok terbaru akun premium dari Xaviera Store"
               >
-                <Zap className={`w-3.5 h-3.5 ${syncingApi ? "animate-spin text-orange-600" : "text-black"}`} />
-                <span>{syncingApi ? "Menyinkronkan..." : "Sinkronkan Harga API"}</span>
+                <Zap className={`w-3.5 h-3.5 ${syncingXaviera ? "animate-spin text-purple-900" : "text-black"}`} />
+                <span>{syncingXaviera ? "Menyinkronkan..." : "Sync Xaviera (Akun)"}</span>
               </button>
 
               <button

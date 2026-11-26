@@ -308,7 +308,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
         return {
           bgClass: "bg-[#ffd731] catalog-banner-pulsa",
           badgeBg: "bg-white dark:bg-[#2b251d]",
-          badgeText: "⚡ PPOB RESMI WAROENGKUY • 24 JAM NONSTOP",
+          badgeText: "⚡ PPOB RESMI H2H • 24 JAM NONSTOP",
           title: (
             <>
               Pulsa & E-Wallet<br />
@@ -317,7 +317,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
           ),
           desc: "Isi ulang pulsa reguler semua operator seluler dan top up saldo dompet digital (DANA, GoPay, OVO, ShopeePay, LinkAja, AstraPay, i.saku) dengan harga agen tangan pertama dan masuk dalam hitungan detik.",
           stickers: [
-            { text: "PPOB RESMI WAROENGKUY", bg: "bg-white dark:bg-[#2b251d] text-carbon dark:text-white", rotate: "rotate-3" },
+            { text: "PPOB RESMI 24 JAM", bg: "bg-white dark:bg-[#2b251d] text-carbon dark:text-white", rotate: "rotate-3" },
             { text: "INJEKSI 24 JAM NONSTOP", bg: "bg-[#fb4903] text-white", rotate: "-rotate-6" },
           ],
           quickChips: [

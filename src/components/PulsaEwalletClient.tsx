@@ -280,7 +280,7 @@ export default function PulsaEwalletClient({ products }: PulsaEwalletClientProps
               Injeksi 1-3 Detik
             </h3>
             <p className="text-xs text-gray-700 dark:text-gray-300 font-semibold mt-1">
-              Sistem backend otomatis terhubung langsung ke API Waroengkuy server pulsa 24 jam.
+              Sistem backend otomatis terhubung langsung ke server resmi pulsa 24 jam nonstop.
             </p>
           </div>
         </div>

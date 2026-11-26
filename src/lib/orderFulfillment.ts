@@ -39,7 +39,7 @@ export async function startFulfillment(orderId: string) {
 
   const isXaviera = supplier === "XAVIERA" || sku.startsWith("XAV-");
 
-  // Akun premium non-Xaviera is managed manually by admin (100% decoupled from Waroengkuy)
+  // Akun premium non-Xaviera is managed manually by admin (instant vault or manual handover)
   const isManual =
     !isXaviera &&
     (supplier === "MANUAL" ||
@@ -47,9 +47,6 @@ export async function startFulfillment(orderId: string) {
       sku.startsWith("CUSTOM-") ||
       sku.startsWith("SKU-") ||
       sku.startsWith("MANUAL-"));
-
-  // Check if Waroengkuy product (PPOB only, never akun-premium)
-  const isWaroengkuy = !isManual && !isXaviera && supplier === "WAROENGKUY";
 
   if (isManual) {
     // 1. Check if ready stock credentials exist in the admin's AccountStock vault
@@ -196,139 +193,63 @@ export async function startFulfillment(orderId: string) {
     }
   }
 
-  // Routing supplier based on ProductItem.supplier
-  const isDigiflazz = !isWaroengkuy && (supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY);
-
   // 15s Abort Controller
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
-    if (isDigiflazz) {
-      const target = order.targetZoneId
-        ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
-        : order.targetUserId.trim();
+    const target = order.targetZoneId
+      ? `${order.targetUserId.trim()}${order.targetZoneId.trim()}`
+      : order.targetUserId.trim();
 
-      const digiRes = await createDigiflazzTransaction({
-        buyerSkuCode: sku,
-        customerNo: target,
-        refId: order.invoiceNumber,
-      });
-
-      clearTimeout(timeoutId);
-
-      const isDone = digiRes.status === "SUCCESS" && !!digiRes.sn;
-      const isFailed = digiRes.status === "FAILED";
-      const nextStatus = isDone
-        ? OrderStatus.SUCCESS
-        : isFailed
-        ? OrderStatus.FAILED
-        : OrderStatus.PROCESSING;
-
-      await prisma.order.update({
-        where: { id: order.id },
-        data: {
-          status: nextStatus,
-          fulfilledAt: isDone ? new Date() : null,
-          notes: `Digiflazz Ref: ${digiRes.refId} | Status: ${digiRes.status} | SN: ${
-            digiRes.sn || digiRes.message || "Diproses"
-          }`,
-          supplierRef: digiRes.refId,
-          sn: digiRes.sn || null,
-          supplierStatus: digiRes.status,
-          fulfillmentError: isFailed ? digiRes.message || "Supplier report failed" : null,
-        },
-      });
-
-      if (nextStatus === OrderStatus.SUCCESS) {
-        await dispatchSuccess(order, digiRes.sn, digiRes.refId);
-      } else if (nextStatus === OrderStatus.FAILED) {
-        await dispatchFailed(order, digiRes.message || "Digiflazz failed");
-      }
-
-      return {
-        success: digiRes.success,
-        supplierRef: digiRes.refId,
-        status: nextStatus,
-        sn: digiRes.sn,
-      };
-    }
-
-    // Waroengkuy Fulfillment (Digital Accounts or PPOB)
-    const apiKey = process.env.WAROENGKUY_API_KEY || "";
-    const baseUrl = (process.env.WAROENGKUY_BASE_URL || "https://waroengkuy.com/api/reseller/v1").replace(/\/$/, "");
-
-    if (!apiKey) {
-      clearTimeout(timeoutId);
-      await markFailed(order.id, "Waroengkuy API Key not set");
-      return { success: false, reason: "No API Key" };
-    }
-
-    const isDigitalAccount = order.product.categorySlug === "akun-premium";
-    const orderEndpoint = isDigitalAccount ? `${baseUrl}/orders` : `${baseUrl}/ppob/orders`;
-    const orderBody = isDigitalAccount
-      ? {
-          variant_id: sku,
-          qty: 1,
-          ref_id: order.invoiceNumber,
-        }
-      : {
-          variant_id: isNaN(Number(sku)) ? sku : parseInt(sku, 10),
-          target: `${order.targetUserId.trim()}${order.targetZoneId ? order.targetZoneId.trim() : ""}`,
-          ref_id: order.invoiceNumber,
-        };
-
-    const res = await fetch(orderEndpoint, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(orderBody),
-      signal: controller.signal,
+    const digiRes = await createDigiflazzTransaction({
+      buyerSkuCode: sku,
+      customerNo: target,
+      refId: order.invoiceNumber,
     });
 
     clearTimeout(timeoutId);
-    const data = await res.json().catch(() => ({}));
 
-    if (data.ok && data.order) {
-      const rawAccounts = Array.isArray(data.order.accounts)
-        ? data.order.accounts.join("\n").trim()
-        : "";
-      const snResult = rawAccounts || data.order.sn || data.order.note || null;
-      const isDone =
-        data.order.status === "SUCCESS" ||
-        data.order.status === "success" ||
-        Boolean(rawAccounts);
-      const nextStatus = isDone ? OrderStatus.SUCCESS : OrderStatus.PROCESSING;
+    const isDone = digiRes.status === "SUCCESS" && !!digiRes.sn;
+    const isFailed = digiRes.status === "FAILED";
+    const nextStatus = isDone
+      ? OrderStatus.SUCCESS
+      : isFailed
+      ? OrderStatus.FAILED
+      : OrderStatus.PROCESSING;
 
-      await prisma.order.update({
-        where: { id: order.id },
-        data: {
-          status: nextStatus,
-          fulfilledAt: isDone ? new Date() : null,
-          notes: `Waroengkuy: ${data.order.ref || data.order.id} | Status: ${data.order.status}`,
-          supplierRef: data.order.ref || String(data.order.id),
-          sn: snResult,
-          supplierStatus: data.order.status,
-        },
-      });
+    await prisma.order.update({
+      where: { id: order.id },
+      data: {
+        status: nextStatus,
+        fulfilledAt: isDone ? new Date() : null,
+        notes: `Digiflazz Ref: ${digiRes.refId} | Status: ${digiRes.status} | SN: ${
+          digiRes.sn || digiRes.message || "Diproses"
+        }`,
+        supplierRef: digiRes.refId,
+        sn: digiRes.sn || null,
+        supplierStatus: digiRes.status,
+        fulfillmentError: isFailed ? digiRes.message || "Supplier report failed" : null,
+      },
+    });
 
-      if (nextStatus === OrderStatus.SUCCESS) {
-        await dispatchSuccess(order, snResult, data.order.ref || String(data.order.id));
-      }
-
-      return { success: true, supplierRef: data.order.ref, status: nextStatus, sn: snResult };
-    } else {
-      await markFailed(order.id, data.error || `HTTP ${res.status}`);
-      return { success: false, error: data.error };
+    if (nextStatus === OrderStatus.SUCCESS) {
+      await dispatchSuccess(order, digiRes.sn, digiRes.refId);
+    } else if (nextStatus === OrderStatus.FAILED) {
+      await dispatchFailed(order, digiRes.message || "Digiflazz failed");
     }
+
+    return {
+      success: digiRes.success,
+      supplierRef: digiRes.refId,
+      status: nextStatus,
+      sn: digiRes.sn,
+    };
   } catch (err: any) {
     clearTimeout(timeoutId);
     console.error("[startFulfillment] Error connecting to supplier:", err.message || err);
     await markFailed(order.id, err.message || "Timeout connecting to supplier");
-    return { success: false, error: err.message };
+    return { success: false, reason: err.message };
   }
 }
 
@@ -436,7 +357,7 @@ export async function reconcileSupplierOrder(orderIdOrInvoice: string) {
     const supplier = (order.productItem as any)?.supplier || "DIGIFLAZZ";
     const sku = order.productItem.sku;
     const isXaviera = supplier === "XAVIERA" || sku.startsWith("XAV-");
-    const isDigiflazz = !isXaviera && (supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY);
+    const isDigiflazz = !isXaviera;
 
     if (isDigiflazz) {
       const target = order.targetZoneId

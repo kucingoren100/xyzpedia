@@ -112,7 +112,7 @@ export async function createOrder(data: CreateOrderInput) {
       supplier === "XAVIERA" ||
       item.sku.startsWith("XAV-") ||
       (product.categorySlug === "akun-premium" && product.developer?.toLowerCase() !== "manual");
-    const isDigiflazz = !isXaviera && (supplier === "DIGIFLAZZ" || !process.env.WAROENGKUY_API_KEY);
+    const isDigiflazz = !isXaviera && (supplier === "DIGIFLAZZ" || !supplier);
 
     if (isDigiflazz) {
       const { getDigiflazzBalanceCached } = await import("@/lib/digiflazz");

@@ -125,7 +125,7 @@ export default function AdminStockClient() {
   const handleSyncAll = async () => {
     if (
       !confirm(
-        "Apakah Anda yakin ingin menyinkronkan status stok ke server Waroengkuy sekarang? Varian yang unavailable di server akan otomatis diubah statusnya menjadi 'Belum tersedia' (OUT_OF_STOCK)."
+        "Apakah Anda yakin ingin menyinkronkan status stok ke server Digiflazz & Xaviera sekarang? Varian yang unavailable di server akan otomatis diubah statusnya menjadi 'Belum tersedia' (OUT_OF_STOCK)."
       )
     ) {
       return;
@@ -396,7 +396,7 @@ export default function AdminStockClient() {
           </div>
 
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Ketik SKU (Variant ID Waroengkuy) untuk mengecek respon server secara live. Fitur ini membaca langsung respon kode error asli seperti <code>out_of_stock</code> atau ketersediaan supplier.
+            Ketik SKU (Buyer SKU Code Digiflazz) untuk mengecek respon server secara live. Fitur ini membaca langsung respon kode error asli seperti <code>out_of_stock</code> atau ketersediaan supplier.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
@@ -441,7 +441,7 @@ export default function AdminStockClient() {
             <div className="mt-4 p-4 rounded-2xl bg-[#0d1117] border border-[#30363d] text-left">
               <div className="flex items-center justify-between pb-2 mb-2 border-b border-gray-800">
                 <span className="text-[11px] font-bold text-gray-400">
-                  Respon Asli Dari Server Waroengkuy:
+                  Respon Asli Dari Server Digiflazz:
                 </span>
                 <span
                   className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${

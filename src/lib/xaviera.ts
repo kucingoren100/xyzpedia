@@ -116,6 +116,45 @@ export class XavieraClient {
   }
 
   /**
+   * Ambil seluruh produk & varian live dari katalog Xaviera Store
+   */
+  async getProducts(): Promise<{ success: boolean; products?: any[]; error?: string }> {
+    if (!this.apiKey) {
+      return { success: false, error: "XAVIERA_API_KEY belum diset." };
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+      const res = await fetch(`${this.baseUrl}/products`, {
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          Accept: "application/json",
+          "User-Agent": "XYZPEDIA-Engine/1.0",
+        },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        return { success: false, error: `HTTP ${res.status}: Gagal mengambil produk Xaviera.` };
+      }
+
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : data.products || data.data || [];
+
+      return {
+        success: true,
+        products: list,
+      };
+    } catch (e: any) {
+      return { success: false, error: e?.message || "Koneksi ke katalog Xaviera gagal." };
+    }
+  }
+
+  /**
    * Buat pesanan akun premium ke Xaviera
    */
   async createOrder(params: {
