@@ -22,14 +22,14 @@ function NavLinks() {
   const isBantuan = pathname === "/bantuan";
 
   return (
-    <nav className="hidden md:flex items-center gap-6 sm:gap-8 shrink-0 text-xs font-bold uppercase tracking-wider">
+    <nav className="flex items-center gap-3 lg:gap-4 xl:gap-5 text-[11px] lg:text-xs font-black uppercase tracking-wider">
       <Link
         href="/katalog?cat=game-topup"
         prefetch={true}
-        className={`transition-colors ${
+        className={`whitespace-nowrap transition-colors ${
           isGame
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
-            : "text-carbon hover:text-[#fb4903]"
+            : "text-carbon dark:text-gray-200 hover:text-[#fb4903] dark:hover:text-[#ffd731]"
         }`}
       >
         Top Up Game
@@ -37,10 +37,10 @@ function NavLinks() {
       <Link
         href="/katalog?cat=akun-premium"
         prefetch={true}
-        className={`transition-colors ${
+        className={`whitespace-nowrap transition-colors ${
           isAkun
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
-            : "text-carbon hover:text-[#fb4903]"
+            : "text-carbon dark:text-gray-200 hover:text-[#fb4903] dark:hover:text-[#ffd731]"
         }`}
       >
         Akun Premium
@@ -48,10 +48,10 @@ function NavLinks() {
       <Link
         href="/katalog?cat=voucher-digital"
         prefetch={true}
-        className={`transition-colors ${
+        className={`whitespace-nowrap transition-colors ${
           isVoucher
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
-            : "text-carbon hover:text-[#fb4903]"
+            : "text-carbon dark:text-gray-200 hover:text-[#fb4903] dark:hover:text-[#ffd731]"
         }`}
       >
         Voucher Digital
@@ -59,10 +59,10 @@ function NavLinks() {
       <Link
         href="/katalog?cat=pulsa-ewallet"
         prefetch={true}
-        className={`transition-colors ${
+        className={`whitespace-nowrap transition-colors ${
           isPulsa
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
-            : "text-carbon hover:text-[#fb4903]"
+            : "text-carbon dark:text-gray-200 hover:text-[#fb4903] dark:hover:text-[#ffd731]"
         }`}
       >
         Pulsa & E-Wallet
@@ -70,10 +70,10 @@ function NavLinks() {
       <Link
         href="/katalog"
         prefetch={true}
-        className={`transition-colors ${
+        className={`whitespace-nowrap transition-colors ${
           isSemua
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
-            : "text-carbon hover:text-[#fb4903]"
+            : "text-carbon dark:text-gray-200 hover:text-[#fb4903] dark:hover:text-[#ffd731]"
         }`}
       >
         Semua Katalog
@@ -81,10 +81,10 @@ function NavLinks() {
       <Link
         href="/bantuan"
         prefetch={true}
-        className={`transition-colors ${
+        className={`whitespace-nowrap transition-colors ${
           isBantuan
             ? "text-[#fb4903] underline decoration-2 underline-offset-4"
-            : "text-carbon hover:text-[#fb4903]"
+            : "text-carbon dark:text-gray-200 hover:text-[#fb4903] dark:hover:text-[#ffd731]"
         }`}
       >
         Bantuan & FAQ
@@ -156,31 +156,35 @@ export default function Navbar() {
 
       {/* 2. Top Navigation Bar */}
       <header className="bg-[#ffffff] dark:bg-[#181824] border-b border-[#000000] dark:border-[#38384a]">
-        <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 max-w-6xl mx-auto gap-4">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 max-w-6xl mx-auto gap-4">
           
-          {/* Brand Logo - Responsive & enlarged for mobile & desktop */}
-          <BrandLogo
-            asLink
-            href="/"
-            size="md"
-            imgClassName="h-[50px] sm:h-[58px] md:h-[66px] lg:h-[74px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
-          />
+          {/* Brand Logo - Responsive & sleek */}
+          <div className="flex items-center shrink-0">
+            <BrandLogo
+              asLink
+              href="/"
+              size="md"
+              imgClassName="h-[42px] sm:h-[46px] md:h-[50px] w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
+          </div>
 
-          {/* Navigation Links with Suspense Boundary for searchParams */}
-          <Suspense
-            fallback={
-              <nav className="hidden md:flex items-center gap-6 sm:gap-8 shrink-0 text-xs font-bold uppercase tracking-wider text-carbon">
-                <Link href="/katalog?cat=game-topup">Top Up Game</Link>
-                <Link href="/katalog?cat=akun-premium">Akun Premium</Link>
-                <Link href="/katalog?cat=voucher-digital">Voucher Digital</Link>
-                <Link href="/katalog?cat=pulsa-ewallet">Pulsa & E-Wallet</Link>
-                <Link href="/katalog">Semua Katalog</Link>
-                <Link href="/bantuan">Bantuan & FAQ</Link>
-              </nav>
-            }
-          >
-            <NavLinks />
-          </Suspense>
+          {/* Navigation Links with Suspense Boundary - Centered in middle */}
+          <div className="hidden md:flex flex-1 items-center justify-center px-2">
+            <Suspense
+              fallback={
+                <nav className="flex items-center gap-3 lg:gap-4 xl:gap-5 text-[11px] lg:text-xs font-black uppercase tracking-wider text-carbon dark:text-gray-200">
+                  <Link href="/katalog?cat=game-topup">Top Up Game</Link>
+                  <Link href="/katalog?cat=akun-premium">Akun Premium</Link>
+                  <Link href="/katalog?cat=voucher-digital">Voucher Digital</Link>
+                  <Link href="/katalog?cat=pulsa-ewallet">Pulsa & E-Wallet</Link>
+                  <Link href="/katalog">Semua Katalog</Link>
+                  <Link href="/bantuan">Bantuan & FAQ</Link>
+                </nav>
+              }
+            >
+              <NavLinks />
+            </Suspense>
+          </div>
 
           {/* Trailing Action: Theme Toggle & Track Order */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -189,7 +193,7 @@ export default function Navbar() {
             <div className="hidden sm:flex items-center">
               <Link
                 href="/cek-transaksi"
-                className="bg-carbon text-white text-xs font-bold uppercase px-4 py-2 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-2 shadow-[2px_2px_0px_0px_#ffd731]"
+                className="bg-carbon text-white text-[11px] lg:text-xs font-black uppercase px-3.5 py-1.5 sm:py-2 rounded-full ink-border hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#ffd731] whitespace-nowrap"
               >
                 <Truck className="w-3.5 h-3.5 shrink-0" />
                 <span>Lacak Pesanan</span>
