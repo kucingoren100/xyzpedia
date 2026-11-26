@@ -247,7 +247,7 @@ Status: ${order.status}`;
   const waOrderUrl = getWhatsAppUrl(waOrderText);
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-6">
       {/* Top Navigation */}
       <div className="flex items-center justify-between">
         <Link

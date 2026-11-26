@@ -48,7 +48,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-carbon text-white border-t border-carbon mt-16">
-      <div className="w-full px-4 md:px-8 py-12 max-w-[1440px] mx-auto flex flex-col gap-8">
+      <div className="w-full px-4 sm:px-6 md:px-8 py-12 max-w-6xl mx-auto flex flex-col gap-8">
         {/* Top Row: Brand & Payment Matrix */}
         <div className="flex flex-col lg:flex-row justify-between gap-8 pb-8 border-b border-white/20">
           

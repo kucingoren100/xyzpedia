@@ -72,7 +72,7 @@ export default function BantuanPage() {
   ];
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-12">
       {/* 1. HERO SECTION (Stitch Sky Wash Ground with physical vinyl badges) */}
       <section className="bg-[#dceeff] dark:bg-[#151926] dark:border-[#38384a] ink-border rounded-3xl p-6 md:p-12 relative overflow-hidden shadow-[4px_4px_0px_0px_#000000]">
         {/* Tilted Floating Mascot & Badge */}

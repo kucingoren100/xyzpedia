@@ -156,7 +156,7 @@ export default function Navbar() {
 
       {/* 2. Top Navigation Bar */}
       <header className="bg-[#ffffff] dark:bg-[#181824] border-b border-[#000000] dark:border-[#38384a]">
-        <div className="flex justify-between items-center w-full px-4 md:px-8 py-2 sm:py-2.5 md:py-3 max-w-[1440px] mx-auto gap-4">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 max-w-6xl mx-auto gap-4">
           
           {/* Brand Logo - Responsive & enlarged for mobile & desktop */}
           <BrandLogo

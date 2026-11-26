@@ -424,7 +424,7 @@ export default function HeroBanner() {
                   </div>
 
                   {/* Huge Monolithic Expressive Headline */}
-                  <h1 className="font-[var(--font-bricolage)] text-2xl xs:text-3xl sm:text-5xl lg:text-[60px] xl:text-[66px] font-black uppercase text-carbon dark:text-white leading-[0.94] tracking-tight">
+                  <h1 className="font-[var(--font-bricolage)] text-2xl xs:text-3xl sm:text-4xl lg:text-[46px] xl:text-[52px] font-black uppercase text-carbon dark:text-white leading-[0.96] tracking-tight">
                     {slide.headlineFirst}
                     <span
                       className={`${slide.headlineHighlightCol} underline decoration-4 decoration-carbon dark:decoration-white underline-offset-4`}

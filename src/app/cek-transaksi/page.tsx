@@ -108,7 +108,7 @@ function CekTransaksiContent() {
   };
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 space-y-8">
       {/* Header Banner */}
       <div className="relative w-full rounded-3xl ink-border overflow-hidden bg-[#dceeff] dark:bg-[#151926] dark:border-[#38384a] p-6 md:p-10 shadow-[4px_4px_0px_0px_#000000]">
         <div className="absolute right-8 bottom-4 transform rotate-2 hidden lg:flex items-center gap-3 pointer-events-none">
@@ -362,7 +362,7 @@ export default function CekTransaksiPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-16 text-center">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 text-center">
           <RotateCw className="w-6 h-6 animate-spin mx-auto text-carbon dark:text-white" />
           <p className="text-xs font-bold text-gray-500 mt-2">Memuat pelacakan pesanan...</p>
         </div>

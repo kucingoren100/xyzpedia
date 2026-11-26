@@ -319,8 +319,8 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
           ))}
         </div>
 
-        {/* Product Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {/* Product Cards Grid (5 cols on desktop matching centered viewport) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4">
           {filteredProducts.map((p, idx) => (
             <ProductCard key={p.id} product={p} priority={idx < 6} />
           ))}

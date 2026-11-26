@@ -572,7 +572,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
                 {gameProducts.length} Produk
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4">
               {gameProducts.map((p, idx) => (
                 <ProductCard key={p.id} product={p} priority={idx < 6} />
               ))}
@@ -600,7 +600,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
                 {subscriptionProducts.length} Produk
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4">
               {subscriptionProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -628,7 +628,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
                 {voucherProducts.length} Produk
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4">
               {voucherProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -656,7 +656,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
                 {pulsaProducts.length} Produk
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4">
               {pulsaProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -740,7 +740,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
           )}
 
           {displayProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5 lg:gap-4">
               {displayProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

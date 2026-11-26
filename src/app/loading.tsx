@@ -1,6 +1,6 @@
 export default function GlobalLoading() {
   return (
-    <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6 space-y-8 animate-pulse">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-8 animate-pulse">
       {/* Top indeterminate loader bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#ffd731] via-[#55db9c] to-[#38bdf8] z-50 animate-pulse" />
 

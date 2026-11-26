@@ -101,13 +101,13 @@ export default function ProductCard({
     <Link
       ref={cardRef}
       href={`/produk/${product.slug}`}
-      className={`group bg-white dark:bg-[#181824] rounded-2xl ink-border dark:border-[#38384a] p-3 flex flex-col justify-between relative overflow-hidden transition-all duration-700 ease-out will-change-[filter,transform,opacity] ${
+      className={`group bg-white dark:bg-[#181824] rounded-2xl ink-border dark:border-[#38384a] p-2.5 sm:p-3 flex flex-col justify-between relative overflow-hidden transition-all duration-700 ease-out will-change-[filter,transform,opacity] ${
         isVisible
           ? "blur-0 opacity-100 translate-y-0 scale-100 shadow-[3px_3px_0px_0px_#000000] hover:scale-[1.02] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000000]"
           : "blur-md opacity-30 translate-y-7 scale-[0.96] shadow-none pointer-events-none"
       }`}
     >
-      <div className="space-y-2">
+      <div className="space-y-1.5 sm:space-y-2">
         {/* Adaptive Aspect Ratio Image (1:1 for games, 4:5 for premium accounts) */}
         <div
           className={`relative w-full ${
@@ -192,12 +192,12 @@ export default function ProductCard({
 
       {/* Action Button Pill */}
       {isOutOfStock ? (
-        <div className="mt-3 w-full bg-[#f3f4f6] dark:bg-[#20202e] text-gray-700 dark:text-gray-300 group-hover:bg-[#fee2e2] dark:group-hover:bg-[#3b1219] group-hover:text-[#991b1b] dark:group-hover:text-[#f87171] py-2 rounded-full ink-border dark:border-[#38384a] text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-colors">
+        <div className="mt-2.5 sm:mt-3 w-full bg-[#f3f4f6] dark:bg-[#20202e] text-gray-700 dark:text-gray-300 group-hover:bg-[#fee2e2] dark:group-hover:bg-[#3b1219] group-hover:text-[#991b1b] dark:group-hover:text-[#f87171] py-1.5 sm:py-2 rounded-full ink-border dark:border-[#38384a] text-[10.5px] sm:text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-colors">
           <span>{outOfStockBtn}</span>
           <ArrowUpRight className="w-3 h-3 stroke-[3]" />
         </div>
       ) : (
-        <div className="mt-3 w-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black group-hover:bg-[#fb4903] dark:group-hover:bg-[#fb4903] group-hover:text-white dark:group-hover:text-white py-2 rounded-full ink-border dark:border-[#38384a] text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-colors">
+        <div className="mt-2.5 sm:mt-3 w-full bg-carbon text-white dark:bg-[#ffd731] dark:text-black group-hover:bg-[#fb4903] dark:group-hover:bg-[#fb4903] group-hover:text-white dark:group-hover:text-white py-1.5 sm:py-2 rounded-full ink-border dark:border-[#38384a] text-[10.5px] sm:text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-colors">
           <span>Beli Langsung</span>
           <ArrowUpRight className="w-3 h-3 stroke-[3]" />
         </div>

@@ -43,7 +43,7 @@ export default function FlashSaleBanner() {
 
   return (
     <div className="w-full bg-[#ff4d4d] dark:bg-[#b91c1c] text-white border-y-2 border-black py-2.5 px-4 shadow-[0_2px_0_#000000]">
-      <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
           <span className="p-1 bg-[#ffd731] text-black rounded-lg ink-border font-black text-[10px] uppercase shadow-[1px_1px_0px_#000000] flex items-center gap-1 animate-pulse">
             <Flame className="w-3.5 h-3.5 fill-current" />
