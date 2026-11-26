@@ -13,7 +13,15 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  History,
+  X,
 } from "lucide-react";
+import {
+  getRecentInvoices,
+  removeRecentInvoice,
+  clearRecentInvoices,
+  type RecentInvoiceEntry,
+} from "@/lib/recentInvoices";
 
 interface OrderResult {
   id: string;
@@ -63,6 +71,11 @@ function CekTransaksiContent() {
   const [isSearching, setIsSearching] = useState(false);
   const [emailLookupSent, setEmailLookupSent] = useState<string | null>(null);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [recentInvoices, setRecentInvoices] = useState<RecentInvoiceEntry[]>([]);
+
+  useEffect(() => {
+    setRecentInvoices(getRecentInvoices());
+  }, []);
 
   const executeSearch = async (searchTerm: string) => {
     const trimmed = searchTerm.trim();
@@ -173,6 +186,59 @@ function CekTransaksiContent() {
               )}
             </button>
           </form>
+
+          {/* Recent Invoice History from Local Browser Storage */}
+          {recentInvoices.length > 0 && (
+            <div className="pt-3 space-y-2 text-left">
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase text-gray-600 dark:text-gray-300 tracking-wider">
+                  <History className="w-3.5 h-3.5" />
+                  <span>Riwayat Terakhir di Perangkat Ini</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearRecentInvoices();
+                    setRecentInvoices([]);
+                  }}
+                  className="text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:text-red-500 cursor-pointer"
+                >
+                  Hapus Semua
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {recentInvoices.map((inv) => (
+                  <div
+                    key={inv.invoiceNumber}
+                    className="inline-flex items-center gap-1.5 bg-white dark:bg-[#1a1a28] ink-border dark:border-[#38384a] rounded-xl pl-3 pr-1.5 py-1.5 shadow-[1.5px_1.5px_0px_0px_#000000]"
+                  >
+                    <Link
+                      href={`/transaksi/${inv.invoiceNumber}`}
+                      className="text-[11px] font-black text-carbon dark:text-white hover:text-[#fb4903] dark:hover:text-[#ffd731] flex items-center gap-1.5"
+                    >
+                      <span className="font-mono">{inv.invoiceNumber}</span>
+                      {inv.productName && (
+                        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 hidden sm:inline">
+                          ({inv.productName})
+                        </span>
+                      )}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        removeRecentInvoice(inv.invoiceNumber);
+                        setRecentInvoices(getRecentInvoices());
+                      }}
+                      title="Hapus dari riwayat"
+                      className="w-5 h-5 rounded-lg hover:bg-[#ffdad6] dark:hover:bg-[#3d141a] flex items-center justify-center text-gray-400 hover:text-red-600 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

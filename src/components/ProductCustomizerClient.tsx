@@ -22,7 +22,9 @@ import {
   X,
   Tag,
   Gamepad2,
+  HelpCircle,
 } from "lucide-react";
+import { saveRecentInvoice } from "@/lib/recentInvoices";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getItemSubCategory, getProductSubCategories } from "@/lib/productSubCategories";
 import ProductNoticeBox from "@/components/ProductNoticeBox";
@@ -193,6 +195,32 @@ export default function ProductCustomizerClient({
   // Payment Maintenance Modal State
   const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
 
+  // Game ID Guide Modal & Active Public Coupons Picker
+  const [isIdGuideOpen, setIsIdGuideOpen] = useState(false);
+  const [activeCoupons, setActiveCoupons] = useState<
+    Array<{
+      id: string;
+      code: string;
+      type: string;
+      value: number;
+      maxDiscount: number | null;
+      minSpend: number | null;
+      totalQuota: number | null;
+    }>
+  >([]);
+  const [showCouponList, setShowCouponList] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/coupon/active?productSlug=${encodeURIComponent(product.slug)}&productId=${encodeURIComponent(product.id)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.coupons)) {
+          setActiveCoupons(data.coupons);
+        }
+      })
+      .catch(() => {});
+  }, [product.slug, product.id]);
+
   // Sub-Category Classification & Filtering
   const [activeSubCategory, setActiveSubCategory] = useState<string>("ALL");
 
@@ -236,9 +264,12 @@ export default function ProductCustomizerClient({
     return Math.max(100, selectedItem.price - discountAmount);
   }, [selectedItem, discountAmount]);
 
-  const handleApplyPromo = async (overridePrice?: number) => {
+  const handleApplyPromo = async (overridePrice?: number, overrideCode?: string) => {
     if (!selectedItem) return;
-    const code = promoInput.trim().toUpperCase();
+    const code = (overrideCode ?? promoInput).trim().toUpperCase();
+    if (overrideCode) {
+      setPromoInput(code);
+    }
     if (!code) {
       setAppliedPromo(null);
       setDiscountAmount(0);
@@ -422,6 +453,12 @@ export default function ProductCustomizerClient({
       });
 
       if (res.success && res.invoiceNumber) {
+        saveRecentInvoice({
+          invoiceNumber: res.invoiceNumber,
+          productName: product.name,
+          itemName: selectedItem?.name,
+          totalAmount: finalPrice,
+        });
         setIsConfirmOrderOpen(false);
         router.push(`/transaksi/${res.invoiceNumber}`);
       } else {
@@ -470,11 +507,23 @@ export default function ProductCustomizerClient({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="target-user-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5" />
-                    <span>{product.targetInputLabel}</span>
-                    <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between gap-2">
+                    <label htmlFor="target-user-id" className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5" />
+                      <span>{product.targetInputLabel}</span>
+                      <span className="text-red-500">*</span>
+                    </label>
+                    {!isNonGame && (
+                      <button
+                        type="button"
+                        onClick={() => setIsIdGuideOpen(true)}
+                        className="inline-flex items-center gap-1 text-[10px] font-black uppercase text-[#5c4ade] dark:text-[#ffd731] hover:underline cursor-pointer shrink-0"
+                      >
+                        <HelpCircle className="w-3 h-3" />
+                        <span>Cara Cek ID?</span>
+                      </button>
+                    )}
+                  </div>
                   <input
                     id="target-user-id"
                     type="text"
@@ -878,10 +927,74 @@ export default function ProductCustomizerClient({
 
             {/* Promo Code Box */}
             <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-800 space-y-1.5">
-              <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5" />
-                <span>Punya Kode Promo / Kupon?</span>
-              </label>
+              <div className="flex items-center justify-between gap-2">
+                <label className="text-xs font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>Punya Kode Promo / Kupon?</span>
+                </label>
+                {activeCoupons.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowCouponList((prev) => !prev)}
+                    className="text-[10px] font-black uppercase text-[#5c4ade] dark:text-[#ffd731] hover:underline cursor-pointer shrink-0"
+                  >
+                    {showCouponList ? "Tutup Kupon" : `Lihat Kupon (${activeCoupons.length})`}
+                  </button>
+                )}
+              </div>
+              {showCouponList && activeCoupons.length > 0 && (
+                <div className="space-y-1.5 py-1.5">
+                  {activeCoupons.map((c) => {
+                    const minSpendMet = !c.minSpend || (selectedItem?.price || 0) >= c.minSpend;
+                    const discountLabel =
+                      c.type === "percent"
+                        ? `Diskon ${c.value}%${c.maxDiscount ? ` (Maks Rp ${c.maxDiscount.toLocaleString("id-ID")})` : ""}`
+                        : `Potongan Rp ${c.value.toLocaleString("id-ID")}`;
+                    return (
+                      <div
+                        key={c.id}
+                        className="flex items-center justify-between gap-2 p-2 rounded-xl bg-[#fbfbfd] dark:bg-[#1f1f2e] ink-border dark:border-[#38384a]"
+                      >
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[11px] font-black uppercase text-carbon dark:text-white tracking-wider">
+                              {c.code}
+                            </span>
+                            <span className="px-1.5 py-0.5 rounded bg-[#55db9c] text-black text-[9px] font-black">
+                              {discountLabel}
+                            </span>
+                          </div>
+                          {c.minSpend ? (
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-0.5">
+                              Min. belanja Rp {c.minSpend.toLocaleString("id-ID")}
+                              {c.totalQuota ? ` • Sisa ${c.totalQuota}` : ""}
+                            </p>
+                          ) : c.totalQuota ? (
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-0.5">
+                              Tanpa min. belanja • Sisa {c.totalQuota}
+                            </p>
+                          ) : null}
+                        </div>
+                        <button
+                          type="button"
+                          disabled={!minSpendMet}
+                          onClick={() => {
+                            handleApplyPromo(selectedItem?.price, c.code);
+                            setShowCouponList(false);
+                          }}
+                          className={`px-2.5 py-1 rounded-lg ink-border text-[10px] font-black uppercase shrink-0 transition-all ${
+                            minSpendMet
+                              ? "bg-[#ffd731] text-black hover:bg-black hover:text-white cursor-pointer"
+                              : "bg-gray-200 dark:bg-[#2a2a3a] text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          {appliedPromo === c.code ? "Dipakai" : minSpendMet ? "Pakai" : "Kurang"}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <input
                   type="text"
@@ -1060,7 +1173,7 @@ export default function ProductCustomizerClient({
         Compact Pop-Brutalist dock matching MobileFloatingDock
         ============================================================
       */}
-      <div className="lg:hidden fixed bottom-2.5 left-3 right-3 z-40 max-w-[340px] sm:max-w-[360px] mx-auto p-2 px-3.5 bg-white/95 dark:bg-[#181824]/95 backdrop-blur-md ink-border dark:border-[#38384a] rounded-2xl shadow-[2.5px_2.5px_0px_0px_#000000] flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-200">
+      <div className="lg:hidden fixed bottom-2.5 left-4 right-4 z-40 max-w-md mx-auto p-2.5 px-3.5 bg-white/95 dark:bg-[#181824]/95 backdrop-blur-md ink-border dark:border-[#38384a] rounded-2xl shadow-[3px_3px_0px_0px_#000000] flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-200">
         <div className="min-w-0 flex-1">
           <p className="text-[9px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 truncate">
             {product.name}
@@ -1068,9 +1181,16 @@ export default function ProductCustomizerClient({
           <p className="text-xs font-black text-carbon dark:text-white truncate">
             {selectedItem ? selectedItem.name : "Pilih nominal"}
           </p>
-          <p className="text-sm font-black text-[#fb4903] font-[var(--font-bricolage)] leading-none mt-0.5">
-            {selectedItem ? `Rp ${finalPrice.toLocaleString("id-ID")}` : "—"}
-          </p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <p className="text-sm font-black text-[#fb4903] font-[var(--font-bricolage)] leading-none">
+              {selectedItem ? `Rp ${finalPrice.toLocaleString("id-ID")}` : "—"}
+            </p>
+            {discountAmount > 0 && (
+              <span className="px-1.5 py-0.5 rounded bg-[#55db9c] text-black text-[9px] font-black leading-none">
+                -Rp {discountAmount.toLocaleString("id-ID")}
+              </span>
+            )}
+          </div>
         </div>
 
         <button
@@ -1272,10 +1392,69 @@ export default function ProductCustomizerClient({
 
               {/* Promo Code Box (Mobile Modal) */}
               <div className="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-1">
-                <label className="text-[11px] font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
-                  <Tag className="w-3 h-3" />
-                  <span>Kupon Diskon</span>
-                </label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-[11px] font-black uppercase text-carbon dark:text-white flex items-center gap-1.5">
+                    <Tag className="w-3 h-3" />
+                    <span>Kupon Diskon</span>
+                  </label>
+                  {activeCoupons.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowCouponList((prev) => !prev)}
+                      className="text-[10px] font-black uppercase text-[#5c4ade] dark:text-[#ffd731] hover:underline cursor-pointer"
+                    >
+                      {showCouponList ? "Tutup" : `Lihat Kupon (${activeCoupons.length})`}
+                    </button>
+                  )}
+                </div>
+                {showCouponList && activeCoupons.length > 0 && (
+                  <div className="space-y-1.5 py-1">
+                    {activeCoupons.map((c) => {
+                      const minSpendMet = !c.minSpend || (selectedItem?.price || 0) >= c.minSpend;
+                      const discountLabel =
+                        c.type === "percent"
+                          ? `Diskon ${c.value}%`
+                          : `Potongan Rp ${c.value.toLocaleString("id-ID")}`;
+                      return (
+                        <div
+                          key={c.id}
+                          className="flex items-center justify-between gap-2 p-2 rounded-xl bg-[#fbfbfd] dark:bg-[#20202e] ink-border dark:border-[#38384a]"
+                        >
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-[11px] font-black uppercase text-carbon dark:text-white">
+                                {c.code}
+                              </span>
+                              <span className="px-1.5 py-0.5 rounded bg-[#55db9c] text-black text-[9px] font-black">
+                                {discountLabel}
+                              </span>
+                            </div>
+                            {c.minSpend && (
+                              <p className="text-[9.5px] text-gray-500 dark:text-gray-400 font-semibold">
+                                Min. Rp {c.minSpend.toLocaleString("id-ID")}
+                              </p>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            disabled={!minSpendMet}
+                            onClick={() => {
+                              handleApplyPromo(selectedItem?.price, c.code);
+                              setShowCouponList(false);
+                            }}
+                            className={`px-2.5 py-1 rounded-lg ink-border text-[10px] font-black uppercase shrink-0 ${
+                              minSpendMet
+                                ? "bg-[#ffd731] text-black cursor-pointer"
+                                : "bg-gray-200 dark:bg-[#2a2a3a] text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                            }`}
+                          >
+                            {appliedPromo === c.code ? "Dipakai" : minSpendMet ? "Pakai" : "Kurang"}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -1349,6 +1528,97 @@ export default function ProductCustomizerClient({
             <div className="text-center text-[10px] font-bold text-gray-500 dark:text-gray-400">
               🔒 100% Guest-Direct • Enkripsi Gateway Otomatis
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Panduan Cara Cek ID Game */}
+      {isIdGuideOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Panduan Cek ID Akun"
+          onClick={() => setIsIdGuideOpen(false)}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white dark:bg-[#181824] ink-border-thick dark:border-[#38384a] rounded-3xl p-5 sm:p-6 shadow-[6px_6px_0px_#000000] space-y-4 animate-in zoom-in-95 duration-150"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-[#38384a]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-[#dceeff] dark:bg-[#20202e] ink-border flex items-center justify-center p-0.5 shrink-0">
+                  <img
+                    src="/brand/stiker/xyzi-stiker-cari.png"
+                    alt="XYZI Cari ID"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase text-[#5c4ade] dark:text-[#ffd731] tracking-wider block">
+                    Panduan Singkat
+                  </span>
+                  <h4 className="font-[var(--font-bricolage)] text-base font-black uppercase text-carbon dark:text-white">
+                    Cara Cek ID {product.name}
+                  </h4>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsIdGuideOpen(false)}
+                className="w-8 h-8 rounded-full bg-[#f3f4f6] dark:bg-[#252538] ink-border flex items-center justify-center text-carbon dark:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4 stroke-[2.5]" />
+              </button>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-[#fbfbfd] dark:bg-[#12121a] ink-border dark:border-[#38384a] text-xs font-semibold text-gray-700 dark:text-gray-200 leading-relaxed space-y-2">
+              {product.slug.includes("mobile-legends") || product.slug.includes("magic-chess") ? (
+                <>
+                  <p>1. Buka game <strong>{product.name}</strong> di perangkatmu.</p>
+                  <p>2. Ketuk <strong>foto profil</strong> di pojok kiri atas lobi utama.</p>
+                  <p>3. Lihat angka di bawah nama/samping kanan: formatnya <strong>User ID (Zone ID)</strong>, contoh: <code>123456789 (1234)</code>.</p>
+                  <p>4. Masukkan angka depan ke kolom User ID, dan 4–5 angka di dalam kurung ke kolom Zone ID.</p>
+                </>
+              ) : product.slug.includes("free-fire") ? (
+                <>
+                  <p>1. Buka game <strong>Free Fire</strong> dan masuk ke lobi.</p>
+                  <p>2. Ketuk <strong>banner profil</strong> di pojok kiri atas.</p>
+                  <p>3. Salin angka <strong>ID</strong> yang tertera tepat di bawah nickname kamu.</p>
+                </>
+              ) : product.slug.includes("pubg") ? (
+                <>
+                  <p>1. Buka game <strong>PUBG Mobile</strong>.</p>
+                  <p>2. Ketuk <strong>avatar profil</strong> di pojok kanan atas lobi.</p>
+                  <p>3. Lihat angka <strong>ID Karakter</strong> yang tertera di bawah nickname/foto profilmu.</p>
+                </>
+              ) : product.slug.includes("valorant") ? (
+                <>
+                  <p>1. Buka <strong>Riot Client</strong> atau game <strong>Valorant</strong>.</p>
+                  <p>2. Arahkan kursor ke ikon profil di pojok kanan atas.</p>
+                  <p>3. Masukkan lengkap dengan tag-nya, contoh: <code>Username#1234</code>.</p>
+                </>
+              ) : product.slug.includes("genshin") ? (
+                <>
+                  <p>1. Buka menu <strong>Paimon</strong> (ikon pojok kiri atas layar).</p>
+                  <p>2. Salin 9 digit <strong>UID</strong> yang muncul di bawah avatar, lalu pilih Server sesuai akunmu.</p>
+                </>
+              ) : (
+                <>
+                  <p>1. Buka game <strong>{product.name}</strong> dan masuk ke halaman <strong>Profil / Pengaturan Akun</strong>.</p>
+                  <p>2. Salin <strong>{product.targetInputLabel}</strong>{product.requiresServer ? " dan Server/Zone ID" : ""} sesuai yang tampil di layar game.</p>
+                  <p>3. Pastikan tidak ada spasi tambahan sebelum lanjut bayar.</p>
+                </>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsIdGuideOpen(false)}
+              className="w-full py-2.5 bg-carbon text-white dark:bg-[#ffd731] dark:text-black rounded-xl ink-border text-xs font-black uppercase tracking-wider cursor-pointer"
+            >
+              Oke, Mengerti
+            </button>
           </div>
         </div>
       )}

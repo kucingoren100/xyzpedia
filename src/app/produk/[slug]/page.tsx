@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import ProductCustomizerClient from "@/components/ProductCustomizerClient";
 import RelatedProductsSection from "@/components/RelatedProductsSection";
 import ProductReviewsSection from "@/components/ProductReviewsSection";
+import ShareProductButton from "@/components/ShareProductButton";
 import { ArrowLeft, Clock, ShieldCheck, Zap } from "lucide-react";
 import { GameCurrencyIcon, getGameCurrencyMeta } from "@/components/GameCurrencyIcon";
 import { getWebCondition } from "@/lib/webCondition";
@@ -205,18 +206,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
           __html: JSON.stringify(productJsonLd),
         }}
       />
-      {/* Back button */}
-      <div className="flex items-center gap-3">
-        <Link
-          href="/katalog"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white ink-border rounded-full text-xs font-black shadow-[2px_2px_0px_0px_#000000] hover:bg-gray-100 transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 stroke-[3]" />
-          <span>Kembali ke Katalog</span>
-        </Link>
-        <span className="text-xs font-bold text-gray-500">
-          Katalog / {product.category.name} / {product.name}
-        </span>
+      {/* Back button & Share */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/katalog"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white dark:bg-[#1f1f2e] text-carbon dark:text-white ink-border dark:border-[#38384a] rounded-full text-xs font-black shadow-[2px_2px_0px_0px_#000000] hover:bg-gray-100 dark:hover:bg-[#2a2a3c] transition-colors shrink-0"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 stroke-[3]" />
+            <span>Kembali ke Katalog</span>
+          </Link>
+          <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate hidden sm:inline">
+            Katalog / {product.category.name} / {product.name}
+          </span>
+        </div>
+        <ShareProductButton productName={product.name} />
       </div>
 
       {/* STITCH HEADER BAR (Exact from xyzpedia_game_top_up_direct_customizer_checkout) */}

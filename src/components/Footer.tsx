@@ -173,6 +173,12 @@ export default function Footer() {
             <Link href="/katalog" className="text-gray-300 hover:text-white transition-colors">
               Semua Katalog
             </Link>
+            <Link href="/daftar-harga" className="text-gray-300 hover:text-white transition-colors">
+              Daftar Harga
+            </Link>
+            <Link href="/kalkulator" className="text-gray-300 hover:text-white transition-colors">
+              Kalkulator MLBB
+            </Link>
             <Link href="/katalog?cat=pulsa-ewallet" className="text-gray-300 hover:text-white transition-colors">
               Pulsa & E-Wallet
             </Link>

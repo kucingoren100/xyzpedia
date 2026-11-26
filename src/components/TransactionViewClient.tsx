@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { checkPaymentStatus } from "@/app/actions/order";
+import { saveRecentInvoice } from "@/lib/recentInvoices";
 import { parseSupplierDelivery } from "@/lib/deliveryHelper";
 import {
   CheckCircle2,
@@ -113,6 +114,18 @@ export default function TransactionViewClient({ initialOrder }: { initialOrder: 
   };
 
   const [timeLeft, setTimeLeft] = useState(getRemainingSeconds);
+
+  // Save invoice locally in browser so user can easily revisit from /cek-transaksi
+  useEffect(() => {
+    if (order?.invoiceNumber) {
+      saveRecentInvoice({
+        invoiceNumber: order.invoiceNumber,
+        productName: order.product?.name,
+        itemName: order.productItem?.name,
+        totalAmount: order.totalAmount,
+      });
+    }
+  }, [order?.invoiceNumber]);
 
   // Auto-poll status when order is PENDING (waiting payment), PAID, or PROCESSING (waiting supplier fulfillment)
   useEffect(() => {

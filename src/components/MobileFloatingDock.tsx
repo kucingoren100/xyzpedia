@@ -114,6 +114,30 @@ export default function MobileFloatingDock() {
             </Link>
 
             <Link
+              href="/daftar-harga"
+              onClick={() => setIsMoreOpen(false)}
+              className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-[#ffd731]/40 active:scale-98 ink-border transition-all text-[11px] font-black text-carbon"
+            >
+              <div className="flex items-center gap-2">
+                <span>📋</span>
+                <span>Daftar Harga Real-Time</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            </Link>
+
+            <Link
+              href="/kalkulator"
+              onClick={() => setIsMoreOpen(false)}
+              className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-[#dceeff] active:scale-98 ink-border transition-all text-[11px] font-black text-carbon"
+            >
+              <div className="flex items-center gap-2">
+                <span>🧮</span>
+                <span>Kalkulator MLBB</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            </Link>
+
+            <Link
               href="/kebijakan"
               onClick={() => setIsMoreOpen(false)}
               className="flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-[#55db9c]/30 active:scale-98 ink-border transition-all text-[11px] font-black text-carbon"
