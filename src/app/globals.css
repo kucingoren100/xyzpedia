@@ -148,53 +148,51 @@ html.dark .border-carbon {
   border-color: #38384a;
 }
 
-/* Cards & Surfaces in Dark Mode */
-html.dark .bg-white {
-  background-color: #171722;
-  color: #f3f4f6;
-}
+@layer components {
+  /* Cards & Surfaces in Dark Mode (layered so explicit dark:/hover: utilities always win) */
+  html.dark .bg-white {
+    background-color: #171722;
+    color: #f3f4f6;
+  }
 
-html.dark .bg-\[\#fbfbfd\] {
-  background-color: #121218;
-}
+  html.dark .bg-\[\#fbfbfd\] {
+    background-color: #121218;
+  }
 
-html.dark .bg-\[\#f9f9f9\] {
-  background-color: #0e0e12;
-}
+  html.dark .bg-\[\#f9f9f9\] {
+    background-color: #0e0e12;
+  }
 
-html.dark .bg-\[\#f3f4f6\] {
-  background-color: #1f1f2a;
-  color: #f3f4f6;
-}
+  html.dark .bg-\[\#f3f4f6\] {
+    background-color: #1f1f2a;
+    color: #f3f4f6;
+  }
 
-html.dark .bg-\[\#e9e9e9\] {
-  background-color: #1a1a24;
-}
+  html.dark .bg-\[\#e9e9e9\] {
+    background-color: #1a1a24;
+  }
 
-html.dark .hover\:bg-gray-50:hover,
-html.dark .hover\:bg-gray-100:hover {
-  background-color: #262636;
-}
+  html.dark .hover\:bg-gray-50:hover,
+  html.dark .hover\:bg-gray-100:hover {
+    background-color: #262636;
+  }
 
-/* Text Contrast Rules in Dark Mode */
-html.dark .text-carbon {
-  color: #f3f4f6;
-}
+  /* Text Contrast Rules in Dark Mode */
+  html.dark .text-carbon {
+    color: #f3f4f6;
+  }
 
-html.dark .text-gray-700 {
-  color: #d1d5db;
-}
+  html.dark .text-gray-700 {
+    color: #d1d5db;
+  }
 
-html.dark .text-gray-600 {
-  color: #9ca3af;
-}
+  html.dark .text-gray-600 {
+    color: #9ca3af;
+  }
 
-html.dark .text-gray-500 {
-  color: #9ca3af;
-}
-
-html.dark .text-gray-400 {
-  color: #6b7280;
+  html.dark .text-gray-500 {
+    color: #9ca3af;
+  }
 }
 
 html.dark input,

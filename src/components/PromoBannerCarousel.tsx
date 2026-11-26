@@ -110,7 +110,7 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
             <button
               type="button"
               onClick={handlePrev}
-              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10 p-1"
+              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 dark:bg-white/95 hover:bg-[#ffd731] dark:hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10 p-1"
               aria-label="Banner Sebelumnya"
             >
               <ArrowLeft className="w-4 h-4 stroke-[3]" />
@@ -119,7 +119,7 @@ export default function PromoBannerCarousel({ banners }: { banners: Banner[] }) 
             <button
               type="button"
               onClick={handleNext}
-              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10 p-1"
+              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/95 dark:bg-white/95 hover:bg-[#ffd731] dark:hover:bg-[#ffd731] text-black ink-border shadow-[2px_2px_0px_#000] flex items-center justify-center opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 active:scale-95 cursor-pointer z-10 p-1"
               aria-label="Banner Selanjutnya"
             >
               <ArrowRight className="w-4 h-4 stroke-[3]" />

@@ -106,7 +106,7 @@ export default function Footer() {
                 <InstagramIcon className="w-3.5 h-3.5" />
               </div>
               <div className="flex flex-col text-left leading-tight">
-                <span className="text-[9.5px] text-gray-400 group-hover:text-white/80 font-normal">IG Top Up</span>
+                <span className="text-[9.5px] text-[#b4b4c6] group-hover:text-white font-medium transition-colors">IG Top Up</span>
                 <span className="text-xs font-black">@xyzpedia.topup</span>
               </div>
             </a>
@@ -123,7 +123,7 @@ export default function Footer() {
                 <InstagramIcon className="w-3.5 h-3.5" />
               </div>
               <div className="flex flex-col text-left leading-tight">
-                <span className="text-[9.5px] text-gray-400 group-hover:text-white/80 font-normal">IG Akun Premium</span>
+                <span className="text-[9.5px] text-[#b4b4c6] group-hover:text-white font-medium transition-colors">IG Akun Premium</span>
                 <span className="text-xs font-black">@xyzpedia.premium</span>
               </div>
             </a>
@@ -140,7 +140,7 @@ export default function Footer() {
                 <TikTokIcon className="w-3.5 h-3.5 text-[#25F4EE]" />
               </div>
               <div className="flex flex-col text-left leading-tight">
-                <span className="text-[9.5px] text-gray-400 group-hover:text-white/80 font-normal">TikTok</span>
+                <span className="text-[9.5px] text-[#b4b4c6] group-hover:text-white font-medium transition-colors">TikTok</span>
                 <span className="text-xs font-black">xyzpedia_</span>
               </div>
             </a>
@@ -157,7 +157,7 @@ export default function Footer() {
                 <GlobeIcon className="w-3.5 h-3.5" />
               </div>
               <div className="flex flex-col text-left leading-tight">
-                <span className="text-[9.5px] text-gray-400 group-hover:text-black/80 font-normal">Website</span>
+                <span className="text-[9.5px] text-[#b4b4c6] group-hover:text-black/80 font-medium transition-colors">Website</span>
                 <span className="text-xs font-black">xyzpedia.my.id</span>
               </div>
             </a>

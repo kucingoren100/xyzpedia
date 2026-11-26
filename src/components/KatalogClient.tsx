@@ -455,12 +455,12 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
         </div>
 
         {/* Category Filter Pills (Button-based, Clean URL without # hash) */}
-        <div className="mt-6 pt-5 border-t border-carbon dark:border-[#38384a] flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+        <div className="mt-6 pt-5 border-t border-carbon dark:border-[#38384a] flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
+          <div className="flex items-center gap-2 overflow-x-auto sm:overflow-visible sm:flex-wrap pb-2 sm:pb-0 scrollbar-none min-w-0">
             <button
               type="button"
               onClick={() => handleCategorySelect("all")}
-              className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider ink-border transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ink-border transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedCategory === "all"
                   ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_0px_#ffd731]"
                   : "bg-white text-carbon hover:bg-gray-100 dark:bg-[#222232] dark:text-white dark:hover:bg-[#2c2c40] shadow-[1px_1px_0px_0px_#000000]"
@@ -471,7 +471,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             <button
               type="button"
               onClick={() => handleCategorySelect("game-topup")}
-              className={`px-4 py-2 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedCategory === "game-topup"
                   ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_0px_#ffd731]"
                   : "bg-white text-carbon hover:bg-gray-100 dark:bg-[#222232] dark:text-white dark:hover:bg-[#2c2c40] shadow-[1px_1px_0px_0px_#000000]"
@@ -482,7 +482,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             <button
               type="button"
               onClick={() => handleCategorySelect("akun-premium")}
-              className={`px-4 py-2 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedCategory === "akun-premium"
                   ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_0px_#ffd731]"
                   : "bg-white text-carbon hover:bg-gray-100 dark:bg-[#222232] dark:text-white dark:hover:bg-[#2c2c40] shadow-[1px_1px_0px_0px_#000000]"
@@ -493,7 +493,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             <button
               type="button"
               onClick={() => handleCategorySelect("voucher-digital")}
-              className={`px-4 py-2 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedCategory === "voucher-digital"
                   ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_0px_#ffd731]"
                   : "bg-white text-carbon hover:bg-gray-100 dark:bg-[#222232] dark:text-white dark:hover:bg-[#2c2c40] shadow-[1px_1px_0px_0px_#000000]"
@@ -504,7 +504,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
             <button
               type="button"
               onClick={() => handleCategorySelect("pulsa-ewallet")}
-              className={`px-4 py-2 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold ink-border transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                 selectedCategory === "pulsa-ewallet"
                   ? "bg-carbon text-white dark:bg-[#ffd731] dark:text-black shadow-[2px_2px_0px_0px_#ffd731]"
                   : "bg-white text-carbon hover:bg-gray-100 dark:bg-[#222232] dark:text-white dark:hover:bg-[#2c2c40] shadow-[1px_1px_0px_0px_#000000]"
@@ -515,7 +515,7 @@ export default function KatalogClient({ categories, products }: KatalogClientPro
           </div>
 
           {/* Search Box */}
-          <div className="relative w-full md:w-72 shrink-0">
+          <div className="relative w-full lg:w-64 shrink-0">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
             <input
               type="text"

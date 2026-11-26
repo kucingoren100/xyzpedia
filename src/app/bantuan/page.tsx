@@ -252,7 +252,7 @@ export default function BantuanPage() {
       {/* 4. IN-PAGE ASSISTANCE STICKER BOX (Stitch Sunburst yellow footer card) */}
       <div className="bg-[#ffd731] ink-border rounded-3xl p-6 md:p-10 shadow-[4px_4px_0px_0px_#000000] flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-1 text-center md:text-left">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-white text-black ink-border rounded-full text-[10px] font-black uppercase">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-white dark:bg-white text-black ink-border rounded-full text-[10px] font-black uppercase">
             ⚡ Respon Cepat
           </div>
           <h3 className="font-[var(--font-bricolage)] text-2xl font-black text-black uppercase">

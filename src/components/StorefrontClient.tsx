@@ -136,10 +136,10 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             className="group bg-[#dceeff] rounded-2xl p-4 sm:p-5 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between min-h-[140px] sm:h-44 relative overflow-hidden text-left shadow-[3px_3px_0px_0px_#000000] cursor-pointer"
           >
             <div className="flex justify-between items-start">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[-6deg] transition-transform">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[-6deg] transition-transform">
                 <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               </div>
-              <span className="bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
+              <span className="bg-white dark:bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
                 Injeksi
               </span>
             </div>
@@ -164,10 +164,10 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             className="group bg-[#e9ccff] rounded-2xl p-4 sm:p-5 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between min-h-[140px] sm:h-44 relative overflow-hidden text-left shadow-[3px_3px_0px_0px_#000000] cursor-pointer"
           >
             <div className="flex justify-between items-start">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[6deg] transition-transform">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[6deg] transition-transform">
                 <Tv className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               </div>
-              <span className="bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
+              <span className="bg-white dark:bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
                 Garansi
               </span>
             </div>
@@ -192,10 +192,10 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             className="group bg-[#ffd731] rounded-2xl p-4 sm:p-5 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between min-h-[140px] sm:h-44 relative overflow-hidden text-left shadow-[3px_3px_0px_0px_#000000] cursor-pointer"
           >
             <div className="flex justify-between items-start">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[-6deg] transition-transform">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[-6deg] transition-transform">
                 <Ticket className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               </div>
-              <span className="bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
+              <span className="bg-white dark:bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
                 Kode Resmi
               </span>
             </div>
@@ -220,7 +220,7 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             className="group bg-[#ffdad6] rounded-2xl p-4 sm:p-5 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between min-h-[140px] sm:h-44 relative overflow-hidden text-left shadow-[3px_3px_0px_0px_#000000] cursor-pointer"
           >
             <div className="flex justify-between items-start">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[-6deg] transition-transform">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[-6deg] transition-transform">
                 <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               </div>
               <span className="bg-[#fb4903] text-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black">
@@ -248,10 +248,10 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             className="group bg-[#55db9c] rounded-2xl p-4 sm:p-5 ink-border hover:scale-[1.02] transition-transform flex flex-col justify-between min-h-[140px] sm:h-44 relative overflow-hidden text-left shadow-[3px_3px_0px_0px_#000000] col-span-2 sm:col-span-1 cursor-pointer"
           >
             <div className="flex justify-between items-start">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[6deg] transition-transform">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-white ink-border flex items-center justify-center text-black group-hover:rotate-[6deg] transition-transform">
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
               </div>
-              <span className="bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
+              <span className="bg-white dark:bg-white px-2 py-0.5 rounded-full ink-border text-[10px] font-black text-black">
                 Semua
               </span>
             </div>

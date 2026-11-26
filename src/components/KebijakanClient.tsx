@@ -548,7 +548,7 @@ export default function KebijakanClient() {
                 <p className="text-xs font-normal opacity-90 leading-relaxed">
                   Pelanggan cukup memasukkan Nomor Invoice pada halaman <em>Lacak Pesanan</em> atau menghubungi WhatsApp Support dengan melampirkan bukti transfer QRIS. Dana akan dikirimkan langsung kembali ke E-Wallet (GoPay, OVO, Dana) atau Rekening Bank asal dalam waktu 1x24 jam kerja.
                 </p>
-                <div className="inline-flex items-center gap-1.5 bg-white text-black px-3 py-1 rounded-full text-[10px] font-black uppercase ink-border mt-1">
+                <div className="inline-flex items-center gap-1.5 bg-white dark:bg-white text-black px-3 py-1 rounded-full text-[10px] font-black uppercase ink-border mt-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-green-700" />
                   <span>Biaya Transaksi QRIS Digratiskan (0% Penalty)</span>
                 </div>
