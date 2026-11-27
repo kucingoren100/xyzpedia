@@ -167,14 +167,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const minPrice = itemPrices.length > 0 ? Math.min(...itemPrices) : 1000;
   const maxPrice = itemPrices.length > 0 ? Math.max(...itemPrices) : 100000;
 
-  const productJsonLd = {
+  const reviewAgg = await prisma.review.aggregate({
+    where: { productId: product.id, isPublished: true },
+    _avg: { rating: true },
+    _count: { id: true },
+  });
+
+  const productJsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     image: product.thumbnailUrl,
     description:
       product.description ||
-      `Top up ${product.name} resmi instan 24 jam di XYZPEDIA. Harga termurah dengan QRIS otomatis dan garansi 100%.`,
+      `Top up ${product.name} resmi 24 jam di XYZPEDIA dengan pembayaran QRIS otomatis.`,
     brand: {
       "@type": "Brand",
       name: product.developer || "XYZPEDIA",
@@ -188,13 +194,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
       availability: "https://schema.org/InStock",
       url: `https://xyzpedia.my.id/produk/${product.slug}`,
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "85",
-      bestRating: "5",
-      worstRating: "1",
-    },
+    ...(reviewAgg._count.id > 0 && reviewAgg._avg.rating != null
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: reviewAgg._avg.rating.toFixed(1),
+            reviewCount: String(reviewAgg._count.id),
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
   };
 
   return (

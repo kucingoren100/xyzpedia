@@ -49,20 +49,24 @@ export async function startFulfillment(orderId: string) {
       sku.startsWith("MANUAL-"));
 
   if (isManual) {
-    // 1. Check if ready stock credentials exist in the admin's AccountStock vault
+    // 1. Atomically claim ready stock credentials from AccountStock vault (prevents double-claim race)
     try {
-      const readyStock = await prisma.accountStock.findFirst({
-        where: {
-          productItemId: order.productItemId,
-          isUsed: false,
-        },
-        orderBy: { createdAt: "asc" },
-      });
+      let claimedCredential: string | null = null;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = await prisma.accountStock.findFirst({
+          where: {
+            productItemId: order.productItemId,
+            isUsed: false,
+          },
+          orderBy: { createdAt: "asc" },
+        });
+        if (!candidate) break;
 
-      if (readyStock) {
-        // Mark stock item as used
-        await prisma.accountStock.update({
-          where: { id: readyStock.id },
+        const locked = await prisma.accountStock.updateMany({
+          where: {
+            id: candidate.id,
+            isUsed: false,
+          },
           data: {
             isUsed: true,
             orderId: order.id,
@@ -70,6 +74,13 @@ export async function startFulfillment(orderId: string) {
           },
         });
 
+        if (locked.count === 1) {
+          claimedCredential = candidate.credential;
+          break;
+        }
+      }
+
+      if (claimedCredential) {
         // Check remaining available stock; if 0, update variant status to OUT_OF_STOCK
         const remaining = await prisma.accountStock.count({
           where: {
@@ -90,7 +101,7 @@ export async function startFulfillment(orderId: string) {
           where: { id: order.id },
           data: {
             status: OrderStatus.SUCCESS,
-            sn: readyStock.credential,
+            sn: claimedCredential,
             supplierStatus: "BERHASIL",
             fulfilledAt: new Date(),
             notes: `Kredensial stok mandiri diserahkan otomatis dari brankas akun.`,
@@ -99,10 +110,10 @@ export async function startFulfillment(orderId: string) {
         });
 
         // Send buyer receipt email with credentials
-        await dispatchSuccess(updatedOrder, readyStock.credential, "STOK_MANDIRI");
+        await dispatchSuccess(updatedOrder, claimedCredential, "STOK_MANDIRI");
 
         console.log(`[startFulfillment] Instant manual stock fulfilled for invoice ${order.invoiceNumber}`);
-        return { success: true, instantStock: true, sn: readyStock.credential };
+        return { success: true, instantStock: true, sn: claimedCredential };
       }
     } catch (stockErr) {
       console.error("[startFulfillment] Error pulling manual stock:", stockErr);
@@ -323,13 +334,6 @@ async function dispatchFailed(order: any, reason: string) {
   } catch (e) {
     console.error("[dispatchFailed] notification error:", e);
   }
-}
-
-/**
- * Backward compatibility alias for existing callers
- */
-export async function fulfillOrderWithSupplier(order: { id: string }) {
-  return await startFulfillment(order.id);
 }
 
 /**

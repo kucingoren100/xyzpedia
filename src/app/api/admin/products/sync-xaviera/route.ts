@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate } from "@/lib/adminAuth";
 import { syncXavieraToDatabase } from "@/lib/xavieraSync";
 import { logAuditEvent } from "@/lib/audit";
 
@@ -12,6 +12,12 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. Sesi admin diperlukan." },
         { status: 401 }
+      );
+    }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json(
+        { success: false, message: "Akses ditolak (khusus ADMIN/OWNER)." },
+        { status: 403 }
       );
     }
 

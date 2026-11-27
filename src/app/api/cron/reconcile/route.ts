@@ -8,12 +8,12 @@ import { markOrderPaid } from "@/lib/orderStatus";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  // CRON_SECRET authorization check
+  // Strict fail-closed CRON_SECRET authorization check
   const authHeader = req.headers.get("authorization") || "";
   const token = authHeader.replace(/^bearer\s+/i, "").trim();
   const cronSecret = process.env.CRON_SECRET;
 
-  if (cronSecret && token !== cronSecret) {
+  if (!cronSecret || token !== cronSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -43,8 +43,13 @@ export async function GET(req: NextRequest) {
         const data = qpStatus?.raw || qpStatus;
         const status = String(data?.status || qpStatus?.status || "").toUpperCase();
         if (status === "PAID" || status === "SETTLED" || status === "SUCCESS") {
-          await markOrderPaid(order.invoiceNumber, "Cron Reconcile", order.totalAmount);
-          results.reconciledPending++;
+          const paidAmount = Number(
+            data?.total_amount ?? data?.totalAmount ?? data?.paid_amount ?? qpStatus?.totalAmount ?? 0
+          );
+          if (paidAmount > 0) {
+            const paidRes = await markOrderPaid(order.invoiceNumber, "Cron Reconcile", paidAmount);
+            if (paidRes.success) results.reconciledPending++;
+          }
         } else {
           await prisma.order.update({
             where: { id: order.id },

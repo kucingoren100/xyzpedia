@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate } from "@/lib/adminAuth";
 import { logAuditEvent } from "@/lib/audit";
 
 export async function PATCH(
@@ -11,6 +11,9 @@ export async function PATCH(
     const session = await getAdminSession();
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Akses ditolak (khusus ADMIN/OWNER)." }, { status: 403 });
     }
 
     const { itemId } = await params;
@@ -73,12 +76,28 @@ export async function DELETE(
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Akses ditolak (khusus ADMIN/OWNER)." }, { status: 403 });
+    }
 
     const { itemId } = await params;
     const existing = await prisma.productItem.findUnique({
       where: { id: itemId },
       select: { id: true, name: true, sku: true },
     });
+
+    const itemOrders = await prisma.order.count({ where: { productItemId: itemId } });
+    if (itemOrders > 0) {
+      await prisma.productItem.update({
+        where: { id: itemId },
+        data: { stockStatus: "OUT_OF_STOCK" },
+      });
+      return NextResponse.json({
+        success: true,
+        softDeleted: true,
+        message: `Varian memiliki ${itemOrders} riwayat transaksi sehingga dinonaktifkan (OUT_OF_STOCK) demi menjaga catatan keuangan.`,
+      });
+    }
 
     await prisma.productItem.delete({
       where: { id: itemId },

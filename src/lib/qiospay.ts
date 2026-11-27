@@ -85,6 +85,7 @@ export class QiosPayClient {
           "User-Agent": "XYZPEDIA-Engine/1.0",
         },
         body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(12_000),
       });
 
       const bodyText = await res.text();
@@ -148,6 +149,7 @@ export class QiosPayClient {
           "User-Agent": "XYZPEDIA-Engine/1.0",
         },
         cache: "no-store",
+        signal: AbortSignal.timeout(10_000),
       });
 
       const bodyText = await res.text();

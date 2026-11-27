@@ -8,7 +8,6 @@ interface RecentOrder {
   id: string;
   productName: string;
   variantName: string;
-  city: string;
   buyerName: string;
   timeAgo: string;
   thumbnailUrl: string;
@@ -98,8 +97,6 @@ export default function RecentOrdersTicker() {
         <div className="flex-1 min-w-0 pr-4">
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 dark:text-gray-400">
             <span>{current.buyerName}</span>
-            <span>•</span>
-            <span className="text-carbon dark:text-gray-200">{current.city}</span>
             <span>•</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{current.timeAgo}</span>
           </div>

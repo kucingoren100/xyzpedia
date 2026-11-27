@@ -27,8 +27,17 @@ export function canTransition(from: string, to: string): boolean {
   return allowed.includes(to);
 }
 
+import { after } from "next/server";
 import { prisma } from "./prisma";
 import { startFulfillment } from "./orderFulfillment";
+
+function scheduleAfterResponse(task: () => Promise<unknown>) {
+  try {
+    after(task);
+  } catch {
+    task().catch((err) => console.error("[scheduleAfterResponse] error:", err));
+  }
+}
 
 /**
  * Atomically marks an order as PAID.
@@ -53,13 +62,8 @@ export async function markOrderPaid(
     return { success: false, error: "Order not found" };
   }
 
-  // Strict exact amount comparison (supports both full total amount and base price)
-  const matchesTotal = paidAmount === order.totalAmount;
-  const matchesBase =
-    paidAmount === order.basePrice ||
-    paidAmount === order.totalAmount - order.uniqueCode;
-
-  if (!matchesTotal && !matchesBase) {
+  // Strict exact amount comparison against billed totalAmount
+  if (paidAmount !== order.totalAmount) {
     return {
       success: false,
       error: `Nominal tidak sesuai: dibayar Rp ${paidAmount}, tagihan Rp ${order.totalAmount}`,
@@ -93,9 +97,13 @@ export async function markOrderPaid(
     return { success: true, alreadyProcessed: true, order: reloaded };
   }
 
-  // Start asynchronous fulfillment
-  startFulfillment(order.id).catch((err) => {
-    console.error("[markOrderPaid] startFulfillment error:", err);
+  // Run fulfillment safely in Next.js post-response lifecycle (prevents serverless freeze)
+  scheduleAfterResponse(async () => {
+    try {
+      await startFulfillment(order.id);
+    } catch (err) {
+      console.error("[markOrderPaid] startFulfillment error:", err);
+    }
   });
 
   const updatedOrder = await prisma.order.findUniqueOrThrow({

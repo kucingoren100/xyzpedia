@@ -68,6 +68,7 @@ export async function sendWhatsAppMessage({
         message,
         countryCode: "62",
       }),
+      signal: AbortSignal.timeout(10_000),
     });
 
     const data = await res.json().catch(() => ({}));

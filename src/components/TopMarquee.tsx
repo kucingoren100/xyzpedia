@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function TopMarquee() {
   const [marquee, setMarquee] = useState<{ text: string; isActive: boolean }>({
-    text: "⚡ PROSES OTOMATIS INSTAN 24/7 ✦ 100% API RESMI PUBLISHER ✦ CHECKOUT LANGSUNG (TANPA PERLU LOGIN) ✦ QRIS 0% BIAYA ADMIN ✦ PENGIRIMAN KILAT DI BAWAH 5 DETIK",
+    text: "⚡ PROSES OTOMATIS 24/7 ✦ JALUR API RESMI PUBLISHER ✦ CHECKOUT LANGSUNG (TANPA PERLU LOGIN) ✦ QRIS 0% BIAYA ADMIN ✦ PENGIRIMAN OTOMATIS SETELAH PEMBAYARAN TERVERIFIKASI",
     isActive: true,
   });
 

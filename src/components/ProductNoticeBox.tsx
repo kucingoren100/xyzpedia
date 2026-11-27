@@ -307,11 +307,11 @@ export default function ProductNoticeBox({
     content = {
       importantItems: [
         {
-          text: "100% Legal & Resmi Publisher (Direct In-Game Delivery)",
+          text: "Jalur Legal & Resmi Publisher (Direct In-Game Delivery)",
           isPositive: true,
         },
         {
-          text: "Injeksi otomatis langsung masuk ke ID akun Anda secara instan",
+          text: "Pengiriman otomatis langsung masuk ke ID akun Anda",
           isPositive: true,
         },
         {
@@ -323,7 +323,7 @@ export default function ProductNoticeBox({
           isPositive: false,
         },
         {
-          text: "Aman dari resiko minus atau banned (100% terproteksi)",
+          text: "Melalui jalur distribusi resmi publisher",
           isPositive: true,
         },
         {
@@ -333,12 +333,12 @@ export default function ProductNoticeBox({
       ],
       warrantyTitle: "Syarat & Ketentuan",
       warrantyPoints: [
-        "Saldo diamond / item in-game dijamin 100% masuk atau saldo kembali.",
+        "Saldo diamond / item in-game bergaransi masuk atau saldo kembali.",
         "Klaim kendala lewat halaman pesanan atau struk dengan nomor invoice.",
       ],
       notesTitle: "Catatan",
       notesPoints: [
-        "Pesanan normal masuk dalam 1 - 60 detik.",
+        "Pesanan normal diproses otomatis segera setelah pembayaran terkonfirmasi.",
         "Jika ada event besar publisher / antrian server, estimasi 5 - 15 menit.",
         "Kendala? Hubungi admin CS dengan menyertakan kode transaksi.",
       ],
@@ -348,7 +348,7 @@ export default function ProductNoticeBox({
     content = {
       importantItems: [
         {
-          text: "Kode voucher 100% baru, original & belum pernah di-redeem",
+          text: "Kode voucher baru, original & belum pernah di-redeem",
           isPositive: true,
         },
         {
@@ -370,7 +370,7 @@ export default function ProductNoticeBox({
       ],
       warrantyTitle: "Syarat & Ketentuan",
       warrantyPoints: [
-        "Garansi kode valid 100% saat pertama kali di-redeem.",
+        "Garansi kode valid saat pertama kali di-redeem.",
         "Klaim kendala lewat halaman pesanan dengan nomor invoice resmi.",
       ],
       notesTitle: "Catatan",

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate, isOwnerRole } from "@/lib/adminAuth";
 import { logAuditEvent } from "@/lib/audit";
 
 export async function PATCH(
@@ -11,6 +11,9 @@ export async function PATCH(
     const session = await getAdminSession();
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Forbidden: Role tidak diizinkan mengubah produk." }, { status: 403 });
     }
 
     const { id } = await params;
@@ -95,6 +98,12 @@ export async function DELETE(
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
+    if (!isOwnerRole(session)) {
+      return NextResponse.json(
+        { success: false, message: "Hanya role OWNER yang dapat menghapus produk." },
+        { status: 403 }
+      );
+    }
 
     const { id } = await params;
     const existing = await prisma.product.findUnique({
@@ -106,9 +115,29 @@ export async function DELETE(
       return NextResponse.json({ success: false, message: "Produk tidak ditemukan." }, { status: 404 });
     }
 
-    // Clean transaction delete: remove associated orders & items first to prevent FK constraint failures
+    // Never delete financial order records: soft-delete product when orders exist
+    const orderCount = await prisma.order.count({ where: { productId: id } });
+    if (orderCount > 0) {
+      await prisma.product.update({
+        where: { id },
+        data: { isActive: false },
+      });
+
+      await logAuditEvent({
+        actor: session.username || "admin",
+        action: "SOFT_DELETE_PRODUCT",
+        target: existing.name,
+        summary: `Owner menonaktifkan (soft-delete) produk "${existing.name}" karena memiliki ${orderCount} riwayat transaksi.`,
+      });
+
+      return NextResponse.json({
+        success: true,
+        softDeleted: true,
+        message: `Produk "${existing.name}" memiliki ${orderCount} riwayat transaksi sehingga dinonaktifkan (soft-delete) demi menjaga catatan keuangan.`,
+      });
+    }
+
     await prisma.$transaction(async (tx) => {
-      await tx.order.deleteMany({ where: { productId: id } });
       await tx.productItem.deleteMany({ where: { productId: id } });
       await tx.product.delete({ where: { id } });
     });
@@ -117,12 +146,12 @@ export async function DELETE(
       actor: session.username || "admin",
       action: "DELETE_PRODUCT",
       target: existing.name,
-      summary: `Admin menghapus permanen produk "${existing.name}" (ID: ${id}) berserta seluruh varian dan relasinya.`,
+      summary: `Owner menghapus produk tanpa riwayat transaksi "${existing.name}" (ID: ${id}).`,
     });
 
     return NextResponse.json({
       success: true,
-      message: `Produk "${existing.name}" berhasil dihapus permanen dari sistem.`,
+      message: `Produk "${existing.name}" berhasil dihapus dari sistem.`,
     });
   } catch (error: any) {
     console.error("Product delete error:", error);

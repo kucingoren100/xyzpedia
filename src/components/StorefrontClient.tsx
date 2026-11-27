@@ -422,7 +422,7 @@ export default function StorefrontClient({ categories, products }: StorefrontCli
             </span>
             <h3 className="text-sm font-black text-carbon dark:text-white">Pesanan Masuk Otomatis</h3>
             <p className="text-xs text-gray-600 dark:text-gray-300 font-semibold leading-relaxed">
-              Dalam 1 - 3 detik setelah pembayaran berhasil, item langsung masuk ke akunmu!
+              Segera setelah pembayaran terverifikasi otomatis, item langsung dikirim ke akunmu!
             </p>
           </div>
         </div>

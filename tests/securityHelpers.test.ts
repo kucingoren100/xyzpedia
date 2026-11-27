@@ -1,107 +1,151 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+const mockCouponFindUnique = vi.fn();
+const mockOrderCount = vi.fn();
+
+vi.mock("../src/lib/prisma", () => ({
+  prisma: {
+    coupon: {
+      findUnique: (...args: unknown[]) => mockCouponFindUnique(...args),
+    },
+    order: {
+      count: (...args: unknown[]) => mockOrderCount(...args),
+    },
+  },
+}));
+
 import { validateCoupon } from "../src/lib/couponHelper";
 import { checkRateLimit } from "../src/lib/rateLimit";
+import { canAdminMutate, isOwnerRole } from "../src/lib/adminAuth";
 
-describe("Fase 4: Coupon Validation & Rate Limiter", () => {
-  it("should calculate legacy coupons with supplier price protection", async () => {
-    // XYZPEDIA: 30% up to 1500
-    const res1 = await validateCoupon("XYZPEDIA", 10000, 7000);
-    expect(res1.valid).toBe(true);
-    expect(res1.discountAmount).toBe(1500);
-
-    // Safeguard: supplierPrice is 9000, price is 10000 -> max discount is 1000
-    const resProtected = await validateCoupon("XYZPEDIA", 10000, 9500);
-    expect(resProtected.valid).toBe(true);
-    expect(resProtected.discountAmount).toBe(500);
-
-    // Invalid coupon
-    const resInvalid = await validateCoupon("UNKNOWNCOUPON", 10000, 5000);
-    expect(resInvalid.valid).toBe(false);
+describe("Security Helpers: Mocked Coupon Validation, Quotas, Rate Limit & RBAC", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockOrderCount.mockResolvedValue(0);
   });
 
-  it("should validate product-scoped coupons properly", async () => {
-    const { prisma } = await import("../src/lib/prisma");
-    const testCode = `TESTPROD_${Date.now()}`;
+  it("rejects removed hardcoded legacy coupon codes when absent from DB", async () => {
+    mockCouponFindUnique.mockResolvedValue(null);
 
-    // Create a coupon restricted to "spotify" only
-    await prisma.coupon.create({
-      data: {
-        code: testCode,
-        type: "fixed",
-        value: 3000,
-        applicableProducts: JSON.stringify(["spotify"]),
-        active: true,
-      },
+    const resLegacy = await validateCoupon("XYZPEDIA", 10000, 7000);
+    expect(resLegacy.valid).toBe(false);
+    expect(resLegacy.discountAmount).toBe(0);
+  });
+
+  it("enforces supplier price margin protection on DB coupons", async () => {
+    mockCouponFindUnique.mockResolvedValue({
+      code: "PROMO30",
+      type: "percent",
+      value: 30,
+      maxDiscount: 5000,
+      minSpend: null,
+      startsAt: null,
+      endsAt: null,
+      totalQuota: null,
+      perUserQuota: null,
+      applicableProducts: "ALL",
+      active: true,
     });
 
-    try {
-      // 1. Used on wrong product ("mobile-legends") -> should be rejected
-      const resWrong = await validateCoupon(testCode, 20000, 10000, "mobile-legends");
-      expect(resWrong.valid).toBe(false);
-      expect(resWrong.message).toContain("tidak berlaku untuk produk");
+    // Normal margin: 30% of 10.000 = 3.000 (allowed since supplierPrice 6.000 -> max 4.000)
+    const resNormal = await validateCoupon("PROMO30", 10000, 6000);
+    expect(resNormal.valid).toBe(true);
+    expect(resNormal.discountAmount).toBe(3000);
 
-      // 2. Used on matching product ("spotify") -> should be valid
-      const resRight = await validateCoupon(testCode, 20000, 10000, "spotify");
-      expect(resRight.valid).toBe(true);
-      expect(resRight.discountAmount).toBe(3000);
-    } finally {
-      await prisma.coupon.delete({ where: { code: testCode } }).catch(() => {});
-    }
+    // Tight margin: supplierPrice 9.500, itemPrice 10.000 -> maxAllowedDiscount capped at 500
+    const resCapped = await validateCoupon("PROMO30", 10000, 9500);
+    expect(resCapped.valid).toBe(true);
+    expect(resCapped.discountAmount).toBe(500);
   });
 
-  it("should validate variant-specific coupons (SKU scoped) properly", async () => {
-    const { prisma } = await import("../src/lib/prisma");
-    const testSkuCode = `TESTSKU_${Date.now()}`;
-    const targetSku = "XAV-NETFLIX-1U1P";
-
-    // Create a coupon restricted to variant targetSku only
-    await prisma.coupon.create({
-      data: {
-        code: testSkuCode,
-        type: "fixed",
-        value: 5000,
-        applicableProducts: JSON.stringify([`SKU:${targetSku}`]),
-        active: true,
-      },
+  it("enforces totalQuota and perUserQuota limits", async () => {
+    mockCouponFindUnique.mockResolvedValue({
+      code: "KUOTA10",
+      type: "fixed",
+      value: 2000,
+      maxDiscount: null,
+      minSpend: null,
+      startsAt: null,
+      endsAt: null,
+      totalQuota: 10,
+      perUserQuota: 1,
+      applicableProducts: "ALL",
+      active: true,
     });
 
-    try {
-      // 1. Used on same product ("netflix") but DIFFERENT variant SKU -> should be rejected
-      const resDiffVariant = await validateCoupon(
-        testSkuCode,
-        35000,
-        25000,
-        "netflix",
-        "XAV-NETFLIX-SEMIPRIVAT"
-      );
-      expect(resDiffVariant.valid).toBe(false);
-      expect(resDiffVariant.message).toContain("tidak berlaku untuk produk atau varian");
+    // 1. Exhausted totalQuota (10 used out of 10)
+    mockOrderCount.mockResolvedValueOnce(10);
+    const resTotalExhausted = await validateCoupon("KUOTA10", 20000, 15000, "netflix", undefined, "buyer@test.com");
+    expect(resTotalExhausted.valid).toBe(false);
+    expect(resTotalExhausted.message).toContain("Kuota pemakaian kupon ini telah habis");
 
-      // 2. Used on matching variant SKU -> should be valid
-      const resMatchVariant = await validateCoupon(
-        testSkuCode,
-        30000,
-        20000,
-        "netflix",
-        targetSku
-      );
-      expect(resMatchVariant.valid).toBe(true);
-      expect(resMatchVariant.discountAmount).toBe(5000);
-    } finally {
-      await prisma.coupon.delete({ where: { code: testSkuCode } }).catch(() => {});
-    }
+    // 2. Total quota available (4/10), but user already used 1x (perUserQuota = 1)
+    mockOrderCount.mockResolvedValueOnce(4).mockResolvedValueOnce(1);
+    const resUserExhausted = await validateCoupon("KUOTA10", 20000, 15000, "netflix", undefined, "buyer@test.com");
+    expect(resUserExhausted.valid).toBe(false);
+    expect(resUserExhausted.message).toContain("batas pemakaian kupon");
+
+    // 3. Both totalQuota (4/10) and perUserQuota (0/1) available -> valid
+    mockOrderCount.mockResolvedValueOnce(4).mockResolvedValueOnce(0);
+    const resOk = await validateCoupon("KUOTA10", 20000, 15000, "netflix", undefined, "fresh@test.com");
+    expect(resOk.valid).toBe(true);
+    expect(resOk.discountAmount).toBe(2000);
   });
 
-  it("should enforce rate limiting correctly", () => {
+  it("validates product-scoped and SKU-scoped coupons without touching real DB", async () => {
+    mockCouponFindUnique.mockResolvedValueOnce({
+      code: "SPOTIFYONLY",
+      type: "fixed",
+      value: 3000,
+      applicableProducts: JSON.stringify(["spotify"]),
+      active: true,
+    });
+    const wrongProd = await validateCoupon("SPOTIFYONLY", 20000, 10000, "mobile-legends");
+    expect(wrongProd.valid).toBe(false);
+
+    mockCouponFindUnique.mockResolvedValueOnce({
+      code: "SPOTIFYONLY",
+      type: "fixed",
+      value: 3000,
+      applicableProducts: JSON.stringify(["spotify"]),
+      active: true,
+    });
+    const rightProd = await validateCoupon("SPOTIFYONLY", 20000, 10000, "spotify");
+    expect(rightProd.valid).toBe(true);
+    expect(rightProd.discountAmount).toBe(3000);
+
+    // SKU-scoped
+    mockCouponFindUnique.mockResolvedValue({
+      code: "NETFLIX1U",
+      type: "fixed",
+      value: 5000,
+      applicableProducts: JSON.stringify(["SKU:XAV-NETFLIX-1U1P"]),
+      active: true,
+    });
+    const wrongSku = await validateCoupon("NETFLIX1U", 35000, 25000, "netflix", "XAV-NETFLIX-SHARING");
+    expect(wrongSku.valid).toBe(false);
+
+    const rightSku = await validateCoupon("NETFLIX1U", 30000, 20000, "netflix", "XAV-NETFLIX-1U1P");
+    expect(rightSku.valid).toBe(true);
+    expect(rightSku.discountAmount).toBe(5000);
+  });
+
+  it("enforces rate limiting correctly", () => {
     const testKey = `test-ip-${Date.now()}`;
-    const rl1 = checkRateLimit(testKey, { intervalMs: 10000, max: 2 });
-    expect(rl1.success).toBe(true);
+    expect(checkRateLimit(testKey, { intervalMs: 10000, max: 2 }).success).toBe(true);
+    expect(checkRateLimit(testKey, { intervalMs: 10000, max: 2 }).success).toBe(true);
+    const blocked = checkRateLimit(testKey, { intervalMs: 10000, max: 2 });
+    expect(blocked.success).toBe(false);
+    expect(blocked.remaining).toBe(0);
+  });
 
-    const rl2 = checkRateLimit(testKey, { intervalMs: 10000, max: 2 });
-    expect(rl2.success).toBe(true);
+  it("enforces Admin RBAC helper permissions", () => {
+    expect(canAdminMutate(null)).toBe(false);
+    expect(canAdminMutate({ role: "VIEWER" })).toBe(false);
+    expect(canAdminMutate({ role: "ADMIN" })).toBe(true);
+    expect(canAdminMutate({ role: "OWNER" })).toBe(true);
 
-    const rl3 = checkRateLimit(testKey, { intervalMs: 10000, max: 2 });
-    expect(rl3.success).toBe(false);
-    expect(rl3.remaining).toBe(0);
+    expect(isOwnerRole({ role: "ADMIN" })).toBe(false);
+    expect(isOwnerRole({ role: "OWNER" })).toBe(true);
   });
 });

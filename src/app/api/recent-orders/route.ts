@@ -3,39 +3,25 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-const CITIES = [
-  "Jakarta",
-  "Bandung",
-  "Surabaya",
-  "Medan",
-  "Semarang",
-  "Yogyakarta",
-  "Makassar",
-  "Tangerang",
-  "Bekasi",
-  "Depok",
-  "Palembang",
-  "Malang",
-  "Denpasar",
-];
-
 export async function GET() {
   try {
-    // Only fetch 100% genuine paid/successful orders from database
     const realOrders = await prisma.order.findMany({
       where: {
         status: { in: ["SUCCESS", "PAID"] },
       },
       orderBy: { createdAt: "desc" },
       take: 10,
-      include: {
+      select: {
+        id: true,
+        customerEmail: true,
+        customerPhone: true,
+        createdAt: true,
         product: { select: { name: true, slug: true, thumbnailUrl: true } },
         productItem: { select: { name: true } },
       },
     });
 
-    const items = realOrders.map((o, idx) => {
-      const city = CITIES[(o.invoiceNumber.charCodeAt(o.invoiceNumber.length - 1) + idx) % CITIES.length];
+    const items = realOrders.map((o) => {
       const buyerName = o.customerEmail
         ? `${o.customerEmail.slice(0, 3)}***`
         : o.customerPhone
@@ -57,7 +43,6 @@ export async function GET() {
         id: o.id,
         productName: o.product.name,
         variantName: o.productItem.name,
-        city,
         buyerName,
         timeAgo,
         thumbnailUrl: o.product.thumbnailUrl,

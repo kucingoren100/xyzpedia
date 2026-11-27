@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate } from "@/lib/adminAuth";
 import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
@@ -57,6 +57,9 @@ export async function PATCH(request: Request) {
     const session = await getAdminSession();
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Akses ditolak (khusus ADMIN/OWNER)." }, { status: 403 });
     }
 
     const body = await request.json();

@@ -3,9 +3,9 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { after } from "next/server";
 import { QiosPayClient } from "@/lib/qiospay";
 import { dispatchNotificationEvent } from "@/lib/notifications";
-import { fulfillOrderWithSupplier } from "@/lib/orderFulfillment";
 import { getWebCondition, checkIsCategoryUnderMaintenance } from "@/lib/webCondition";
 import { checkRateLimit, getClientIpFromHeaders } from "@/lib/rateLimit";
 import { z } from "zod";
@@ -161,7 +161,8 @@ export async function createOrder(data: CreateOrderInput) {
       item.price,
       item.supplierPrice || 0,
       product.slug,
-      item.sku
+      item.sku,
+      finalCustomerEmail
     );
     const discountAmount = couponRes.discountAmount || 0;
     const couponCode = couponRes.valid ? couponRes.code : null;
@@ -225,8 +226,8 @@ export async function createOrder(data: CreateOrderInput) {
       } as any,
     });
 
-    // Dispatch async notification for new pending order
-    (async () => {
+    // Dispatch post-response notification via Next.js after() so serverless doesn't freeze early
+    after(async () => {
       try {
         await dispatchNotificationEvent("notifyNewOrder", {
           invoice: order.invoiceNumber,
@@ -241,7 +242,7 @@ export async function createOrder(data: CreateOrderInput) {
       } catch (err) {
         console.error("Gagal dispatch notif new order:", err);
       }
-    })();
+    });
 
     return {
       success: true,
@@ -406,30 +407,32 @@ export async function checkPaymentStatus(invoiceNumber: string) {
       if (isPaid) {
         // Enforce markOrderPaid atomic flow (never transition directly to SUCCESS from here)
         const paidAmount = Number(
-          data?.total_amount ||
-          data?.totalAmount ||
-          data?.paid_amount ||
-          data?.amount ||
-          order.totalAmount
+          data?.total_amount ??
+          data?.totalAmount ??
+          data?.paid_amount ??
+          qpStatus?.totalAmount ??
+          0
         );
-        const { markOrderPaid } = await import("@/lib/orderStatus");
-        const paidRes = await markOrderPaid(invoiceNumber, "QiosPay checkStatus", paidAmount);
+        if (paidAmount > 0) {
+          const { markOrderPaid } = await import("@/lib/orderStatus");
+          const paidRes = await markOrderPaid(invoiceNumber, "QiosPay checkStatus", paidAmount);
 
-        revalidatePath(`/transaksi/${invoiceNumber}`);
-        revalidatePath("/cek-transaksi");
+          revalidatePath(`/transaksi/${invoiceNumber}`);
+          revalidatePath("/cek-transaksi");
 
-        if (paidRes.success && paidRes.order) {
-          return {
-            success: true,
-            isPaid: true,
-            order: {
-              ...safeOrder,
-              status: paidRes.order.status,
-              paidAt: paidRes.order.paidAt,
-              sn: paidRes.order.sn,
-              supplierStatus: paidRes.order.supplierStatus,
-            },
-          };
+          if (paidRes.success && paidRes.order) {
+            return {
+              success: true,
+              isPaid: true,
+              order: {
+                ...safeOrder,
+                status: paidRes.order.status,
+                paidAt: paidRes.order.paidAt,
+                sn: paidRes.order.sn,
+                supplierStatus: paidRes.order.supplierStatus,
+              },
+            };
+          }
         }
       }
     } catch (checkErr) {

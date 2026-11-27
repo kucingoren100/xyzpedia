@@ -56,18 +56,46 @@ export async function GET(req: Request) {
       });
     });
 
+    const codes = filtered.map((c) => c.code);
+    const usedGrouped =
+      codes.length > 0
+        ? await prisma.order.groupBy({
+            by: ["couponCode"],
+            where: {
+              couponCode: { in: codes },
+              status: { in: ["PENDING", "PAID", "PROCESSING", "SUCCESS"] },
+            },
+            _count: { _all: true },
+          })
+        : [];
+    const usedMap = new Map<string, number>();
+    for (const row of usedGrouped) {
+      if (row.couponCode) {
+        usedMap.set(row.couponCode.toUpperCase(), row._count._all);
+      }
+    }
+
+    const availableCoupons = filtered
+      .map((c) => {
+        const used = usedMap.get(c.code.toUpperCase()) || 0;
+        const remainingQuota =
+          typeof c.totalQuota === "number" ? Math.max(0, c.totalQuota - used) : null;
+        return {
+          id: c.id,
+          code: c.code,
+          type: c.type,
+          value: c.value,
+          maxDiscount: c.maxDiscount,
+          minSpend: c.minSpend,
+          totalQuota: remainingQuota,
+          endsAt: c.endsAt,
+        };
+      })
+      .filter((c) => c.totalQuota === null || c.totalQuota > 0);
+
     return NextResponse.json({
       success: true,
-      coupons: filtered.map((c) => ({
-        id: c.id,
-        code: c.code,
-        type: c.type,
-        value: c.value,
-        maxDiscount: c.maxDiscount,
-        minSpend: c.minSpend,
-        totalQuota: c.totalQuota,
-        endsAt: c.endsAt,
-      })),
+      coupons: availableCoupons,
     });
   } catch (error: any) {
     return NextResponse.json(

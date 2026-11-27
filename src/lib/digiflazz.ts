@@ -144,6 +144,7 @@ export async function getDigiflazzPriceList(
       username,
       sign,
     }),
+    signal: AbortSignal.timeout(12_000),
   });
 
   if (!res.ok) {
@@ -202,6 +203,7 @@ export async function createDigiflazzTransaction(
     method: "POST",
     headers: target.headers,
     body: JSON.stringify(requestBody),
+    signal: AbortSignal.timeout(15_000),
   });
 
   const json = await res.json();
@@ -268,6 +270,7 @@ export async function checkDigiflazzTransactionStatus(
     method: "POST",
     headers: target.headers,
     body: JSON.stringify(requestBody),
+    signal: AbortSignal.timeout(15_000),
   });
 
   const json = await res.json();

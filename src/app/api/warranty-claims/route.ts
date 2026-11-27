@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/rateLimit";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { z } from "zod";
+
+const warrantyClaimSchema = z.object({
+  invoiceNumber: z.string().trim().min(5, "Nomor Invoice wajib diisi.").max(100),
+  customerPhone: z.string().trim().min(8).max(30),
+  customerEmail: z.string().trim().email().max(120).optional().or(z.literal("")),
+  issueType: z.string().trim().max(50).optional(),
+  description: z
+    .string()
+    .trim()
+    .min(10, "Mohon jelaskan kendala Anda secara detail (minimal 10 karakter).")
+    .max(2000, "Deskripsi kendala terlalu panjang."),
+  proofImageUrl: z.string().trim().url().max(500).optional().or(z.literal("")),
+});
 
 export async function POST(request: Request) {
   try {
-    const clientIp =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+    const clientIp = getClientIp(request);
     const rl = checkRateLimit(`warranty-claim:${clientIp}`, {
       intervalMs: 60 * 1000,
       max: 5,
@@ -22,28 +35,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Data permintaan tidak valid." }, { status: 400 });
     }
 
-    const { invoiceNumber, customerPhone, customerEmail, issueType, description, proofImageUrl } =
-      body;
-
-    if (!invoiceNumber || typeof invoiceNumber !== "string") {
-      return NextResponse.json({ error: "Nomor Invoice wajib diisi." }, { status: 400 });
+    const parsed = warrantyClaimSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message || "Data klaim tidak valid." },
+        { status: 400 }
+      );
     }
 
-    const cleanPhone = String(customerPhone || "").trim();
-    if (!cleanPhone || cleanPhone.includes("*") || cleanPhone.replace(/\D/g, "").length < 8) {
+    const { invoiceNumber, customerPhone, customerEmail, issueType, description, proofImageUrl } =
+      parsed.data;
+
+    const cleanPhone = customerPhone.trim();
+    if (cleanPhone.includes("*") || cleanPhone.replace(/\D/g, "").length < 8) {
       return NextResponse.json(
         { error: "Nomor WhatsApp aktif wajib diisi lengkap (bukan nomor tersensor) untuk konfirmasi solusi." },
         { status: 400 }
       );
     }
 
-    const cleanDesc = String(description || "").trim();
-    if (!cleanDesc || cleanDesc.length < 10) {
-      return NextResponse.json(
-        { error: "Mohon jelaskan kendala Anda secara detail (minimal 10 karakter)." },
-        { status: 400 }
-      );
-    }
+    const cleanDesc = description.trim();
 
     // Check if order exists
     const order = await prisma.order.findUnique({
@@ -64,12 +75,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check for open existing tickets
+    // Check for open existing tickets (do NOT return raw claim PII in error response)
     const existingOpenClaim = await prisma.warrantyClaim.findFirst({
       where: {
         invoiceNumber: order.invoiceNumber,
         status: { in: ["PENDING", "IN_REVIEW"] },
       },
+      select: { id: true, status: true },
     });
 
     if (existingOpenClaim) {
@@ -77,7 +89,6 @@ export async function POST(request: Request) {
         {
           error:
             "Tiket klaim garansi untuk invoice ini sedang dalam proses pemeriksaan tim support kami.",
-          claim: existingOpenClaim,
         },
         { status: 400 }
       );

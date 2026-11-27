@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -16,11 +17,16 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const invoiceNumber = searchParams.get("invoiceNumber");
 
-    // Check specific review status by invoiceNumber
+    // Check specific review status by invoiceNumber (select public fields only)
     if (invoiceNumber) {
       const existing = await prisma.review.findUnique({
         where: { invoiceNumber },
-        include: {
+        select: {
+          id: true,
+          customerName: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
           product: { select: { name: true, slug: true } },
         },
       });
@@ -75,7 +81,10 @@ export async function GET(req: NextRequest) {
       success: true,
       reviews,
       stats: {
-        averageRating: Number(aggregate._avg.rating?.toFixed(1)) || 5.0,
+        averageRating:
+          aggregate._count.id > 0 && aggregate._avg.rating != null
+            ? Number(aggregate._avg.rating.toFixed(1))
+            : null,
         totalReviews: aggregate._count.id || 0,
       },
     });
@@ -86,6 +95,18 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const clientIp = getClientIp(req);
+    const rl = checkRateLimit(`submit-review:${clientIp}`, {
+      intervalMs: 60_000,
+      max: 10,
+    });
+    if (!rl.success) {
+      return NextResponse.json(
+        { success: false, error: "Terlalu banyak pengiriman ulasan. Silakan coba sesaat lagi." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const parsed = submitReviewSchema.safeParse(body);
     if (!parsed.success) {
@@ -129,7 +150,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const cleanName = customerName || (order.customerEmail ? order.customerEmail.split("@")[0] : "Kawan XYZ");
+    const emailPrefix = order.customerEmail ? order.customerEmail.split("@")[0] : "";
+    const maskedDefaultName =
+      emailPrefix.length >= 2 ? `${emailPrefix.slice(0, 2)}***` : "Kawan XYZ";
+    const cleanName = customerName?.trim() || maskedDefaultName;
 
     const review = await prisma.review.create({
       data: {

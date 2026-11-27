@@ -168,6 +168,14 @@ export async function revokeAdminSession() {
   }
 }
 
+export function canAdminMutate(session: Pick<AdminSessionPayload, "role"> | null | undefined): boolean {
+  return Boolean(session && (session.role === "OWNER" || session.role === "ADMIN"));
+}
+
+export function isOwnerRole(session: Pick<AdminSessionPayload, "role"> | null | undefined): boolean {
+  return Boolean(session && session.role === "OWNER");
+}
+
 /**
  * Verify admin credentials against environment variables or database.
  * Uses timing-safe comparison to prevent timing attacks on master password.
@@ -195,17 +203,19 @@ export async function verifyAdminCredentials(username: string, pass: string): Pr
       const { valid, needsUpgrade } = await verifyPassword(pass, dbAdmin.password);
       if (valid) {
         if (needsUpgrade) {
-          // Upgrade password hash to scrypt transparently
-          hashPasswordScrypt(pass).then((newHash) => {
-            prisma.admin.update({
+          try {
+            const newHash = await hashPasswordScrypt(pass);
+            await prisma.admin.update({
               where: { id: dbAdmin.id },
               data: { password: newHash },
-            }).catch(() => {});
-          });
+            });
+          } catch {
+            // Non-fatal if upgrade write fails
+          }
         }
         return {
           valid: true,
-          role: (dbAdmin as any).role || "ADMIN",
+          role: dbAdmin.role || "ADMIN",
           name: dbAdmin.name,
         };
       }

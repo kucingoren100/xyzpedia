@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate } from "@/lib/adminAuth";
 import { syncDigiflazzToDatabase } from "@/lib/digiflazzSync";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +11,12 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. Admin session required." },
         { status: 401 }
+      );
+    }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json(
+        { success: false, message: "Akses ditolak (khusus ADMIN/OWNER)." },
+        { status: 403 }
       );
     }
 

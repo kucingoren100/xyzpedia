@@ -2,17 +2,29 @@ import { NextResponse } from "next/server";
 import { signAdminToken, verifyAdminCredentials, AUTH_COOKIE_NAME } from "@/lib/adminAuth";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 import { logAuditEvent } from "@/lib/audit";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
     const clientIp = getClientIp(req);
-    // Rate limit: max 5 login attempts per 5 minutes per IP
+    // 1. Fast in-memory check + 2. Cross-instance DB check via AuditLog (serverless-safe)
     const rl = checkRateLimit(`admin-login:${clientIp}`, {
       intervalMs: 5 * 60_000,
       max: 5,
     });
 
-    if (!rl.success) {
+    const fiveMinsAgo = new Date(Date.now() - 5 * 60_000);
+    const recentFailures = await prisma.auditLog
+      .count({
+        where: {
+          action: "admin_login_failed",
+          target: clientIp,
+          timestamp: { gte: fiveMinsAgo },
+        },
+      })
+      .catch(() => 0);
+
+    if (!rl.success || recentFailures >= 5) {
       return NextResponse.json(
         {
           success: false,
@@ -35,6 +47,12 @@ export async function POST(req: Request) {
     const authResult = await verifyAdminCredentials(username.trim(), password);
 
     if (!authResult || !authResult.valid) {
+      await logAuditEvent({
+        actor: String(username).trim().slice(0, 50) || "unknown",
+        action: "admin_login_failed",
+        target: clientIp,
+        summary: `Failed admin login attempt from IP ${clientIp}`,
+      });
       return NextResponse.json(
         { success: false, message: "Username atau password admin salah." },
         { status: 401 }

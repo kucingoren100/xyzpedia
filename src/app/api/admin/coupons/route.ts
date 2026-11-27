@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate, isOwnerRole } from "@/lib/adminAuth";
 import { logAuditEvent } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
@@ -93,6 +93,9 @@ export async function POST(req: Request) {
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+    }
 
     const body = await req.json();
     const {
@@ -164,6 +167,9 @@ export async function PATCH(req: Request) {
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+    }
 
     const body = await req.json();
     const { code, active, startsAt, endsAt } = body;
@@ -201,6 +207,9 @@ export async function DELETE(req: Request) {
     const session = await getAdminSession();
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    if (!isOwnerRole(session)) {
+      return NextResponse.json({ success: false, message: "Hanya OWNER yang dapat menghapus kupon." }, { status: 403 });
     }
 
     const url = new URL(req.url);

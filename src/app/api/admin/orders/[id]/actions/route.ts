@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate, isOwnerRole } from "@/lib/adminAuth";
 import { startFulfillment } from "@/lib/orderFulfillment";
 import { logAuditEvent } from "@/lib/audit";
 import { dispatchNotificationEvent } from "@/lib/notifications";
@@ -13,6 +13,9 @@ export async function POST(
     const session = await getAdminSession();
     if (!session) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    if (!canAdminMutate(session)) {
+      return NextResponse.json({ success: false, message: "Forbidden: Role tidak memiliki akses aksi order." }, { status: 403 });
     }
 
     const { id } = await params;
@@ -64,6 +67,12 @@ export async function POST(
 
     // 2. ACTION: COMPLETE MANUAL
     if (action === "complete_manual") {
+      if (!isOwnerRole(session) && order.status === "PENDING") {
+        return NextResponse.json(
+          { success: false, message: "Hanya OWNER yang dapat menyelesaikan manual pesanan yang belum terbayar." },
+          { status: 403 }
+        );
+      }
       const serialNumber = sn?.trim() || `MANUAL-${Date.now()}`;
       const updated = await prisma.order.update({
         where: { id: order.id },

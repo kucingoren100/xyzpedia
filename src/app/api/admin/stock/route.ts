@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate } from "@/lib/adminAuth";
 import { checkDigiflazzBalance, getDigiflazzPriceList, createDigiflazzTransaction } from "@/lib/digiflazz";
 import { getXavieraBalanceCached } from "@/lib/xaviera";
 import { syncXavieraToDatabase } from "@/lib/xavieraSync";
@@ -145,6 +145,9 @@ export async function POST(req: Request) {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  if (!canAdminMutate(session)) {
+    return NextResponse.json({ error: "Akses ditolak (khusus ADMIN/OWNER)." }, { status: 403 });
+  }
 
   try {
     const body = await req.json().catch(() => ({}));
@@ -196,10 +199,12 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fetch all items from DB
-    const allItems = await prisma.productItem.findMany();
-    let updatedToOutOfStock = 0;
-    let updatedToAvailable = 0;
+    // Fetch all items from DB and batch status transitions into 2 updateMany calls
+    const allItems = await prisma.productItem.findMany({
+      select: { id: true, sku: true, stockStatus: true },
+    });
+    const toOutOfStockIds: string[] = [];
+    const toAvailableIds: string[] = [];
 
     for (const it of allItems) {
       const skuKey = String(it.sku || "").toLowerCase();
@@ -208,19 +213,27 @@ export async function POST(req: Request) {
       const isServerAvailable = digiMap.get(skuKey)!;
 
       if (!isServerAvailable && it.stockStatus === "AVAILABLE") {
-        await prisma.productItem.update({
-          where: { id: it.id },
-          data: { stockStatus: "OUT_OF_STOCK" },
-        });
-        updatedToOutOfStock++;
+        toOutOfStockIds.push(it.id);
       } else if (isServerAvailable && it.stockStatus === "OUT_OF_STOCK") {
-        await prisma.productItem.update({
-          where: { id: it.id },
-          data: { stockStatus: "AVAILABLE" },
-        });
-        updatedToAvailable++;
+        toAvailableIds.push(it.id);
       }
     }
+
+    if (toOutOfStockIds.length > 0) {
+      await prisma.productItem.updateMany({
+        where: { id: { in: toOutOfStockIds } },
+        data: { stockStatus: "OUT_OF_STOCK" },
+      });
+    }
+    if (toAvailableIds.length > 0) {
+      await prisma.productItem.updateMany({
+        where: { id: { in: toAvailableIds } },
+        data: { stockStatus: "AVAILABLE" },
+      });
+    }
+
+    let updatedToOutOfStock = toOutOfStockIds.length;
+    let updatedToAvailable = toAvailableIds.length;
 
     // Also sync Xaviera stock status (preserving selling prices)
     let xavResult: any = null;

@@ -306,6 +306,7 @@ export async function sendTelegramMessage(
       const resPhoto = await fetch(photoUrl, {
         method: "POST",
         body: formData,
+        signal: AbortSignal.timeout(12_000),
       });
 
       const photoData = await resPhoto.json();
@@ -343,6 +344,7 @@ export async function sendTelegramMessage(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(12_000),
     });
 
     const data = await res.json();
@@ -670,6 +672,7 @@ export async function sendEmailMessage(
           html: htmlContent,
           text: plainText,
         }),
+        signal: AbortSignal.timeout(12_000),
       });
 
       const data = await res.json().catch(() => ({}));

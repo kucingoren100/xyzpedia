@@ -119,6 +119,7 @@ export async function syncXavieraToDatabase(
   let updatedToAvailable = 0;
   let skippedManualCount = 0;
   const updatedProductsSet = new Set<string>();
+  const pendingUpdates: Array<ReturnType<typeof prisma.productItem.update>> = [];
 
   for (const it of dbItems) {
     // Skip purely manual items with vault / custom inventory
@@ -164,14 +165,22 @@ export async function syncXavieraToDatabase(
         }
       }
 
-      await prisma.productItem.update({
-        where: { id: it.id },
-        data: updateData,
-      });
+      pendingUpdates.push(
+        prisma.productItem.update({
+          where: { id: it.id },
+          data: updateData,
+        })
+      );
 
       syncedCount++;
       updatedProductsSet.add(it.product.name);
     }
+  }
+
+  // Execute updates in batches of 25 to avoid N+1 round-trips over serverless DB connections
+  const BATCH_SIZE = 25;
+  for (let i = 0; i < pendingUpdates.length; i += BATCH_SIZE) {
+    await prisma.$transaction(pendingUpdates.slice(i, i + BATCH_SIZE));
   }
 
   return {

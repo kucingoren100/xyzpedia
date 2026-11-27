@@ -16,7 +16,7 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
           </span>
         </div>
         <p className="text-[11px] text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-          XYZPEDIA <strong>tidak pernah meminta password atau kode OTP</strong>. Pembayaran hanya sah via QRIS resmi di website ini. Garansi 100% uang kembali jika pesanan gagal.
+          XYZPEDIA <strong>tidak pernah meminta password atau kode OTP</strong>. Pembayaran hanya sah via QRIS resmi di website ini. Garansi uang kembali penuh jika pesanan gagal terkirim.
         </p>
       </div>
     );
@@ -68,10 +68,10 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
             <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
           </div>
           <h4 className="font-[var(--font-bricolage)] font-black text-sm uppercase text-carbon dark:text-white">
-            Garansi Penuh 100%
+            Garansi Penggantian & Refund
           </h4>
           <p className="text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
-            Jika pesanan gagal terkirim karena server publisher gangguan, kami memberikan jaminan <strong>penggantian instan atau refund saldo penuh</strong> tanpa potongan.
+            Jika pesanan gagal terkirim karena server publisher gangguan, kami memberikan jaminan <strong>penggantian atau refund saldo penuh</strong> tanpa potongan.
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function SecurityTrustBanner({ compact = false }: { compact?: boo
             Jalur API Resmi & Otomatis
           </h4>
           <p className="text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
-            Injeksi diamond dan voucher terhubung langsung ke API resmi publisher. Sistem bekerja <strong>24 jam nonstop</strong> dengan rata-rata proses 1 hingga 5 detik.
+            Injeksi diamond dan voucher terhubung langsung ke API resmi publisher. Sistem bekerja <strong>24 jam nonstop</strong> dan memproses pesanan otomatis segera setelah pembayaran terkonfirmasi.
           </p>
         </div>
 

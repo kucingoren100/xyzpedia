@@ -181,6 +181,7 @@ export class XavieraClient {
             Accept: "application/json",
             "User-Agent": "XYZPEDIA-Engine/1.0",
           },
+          signal: AbortSignal.timeout(12_000),
         });
         if (prodRes.ok) {
           const cat = await prodRes.json();
@@ -225,6 +226,7 @@ export class XavieraClient {
           "User-Agent": "XYZPEDIA-Engine/1.0",
         },
         body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(15_000),
       });
 
       const bodyText = await res.text();

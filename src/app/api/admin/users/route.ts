@@ -17,6 +17,7 @@ export async function GET() {
         id: true,
         username: true,
         name: true,
+        role: true,
         createdAt: true,
       },
     });
@@ -25,7 +26,7 @@ export async function GET() {
       success: true,
       users: admins.map((a) => ({
         ...a,
-        role: a.username === process.env.ADMIN_USERNAME ? "OWNER" : "ADMIN",
+        role: a.username === process.env.ADMIN_USERNAME ? "OWNER" : (a.role || "ADMIN"),
       })),
       currentUsername: session.username,
       currentRole: session.role,
@@ -73,11 +74,15 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hashPasswordScrypt(password);
 
+    const normalizedRole =
+      role === "OWNER" || role === "VIEWER" ? role : "ADMIN";
+
     const newAdmin = await prisma.admin.create({
       data: {
         username: cleanUsername,
         name: name.trim(),
         password: hashedPassword,
+        role: normalizedRole,
       },
     });
 
@@ -85,7 +90,7 @@ export async function POST(req: Request) {
       actor: session.username,
       action: "create_admin_user",
       target: cleanUsername,
-      summary: `Owner created admin user ${cleanUsername} (${name.trim()})`,
+      summary: `Owner created admin user ${cleanUsername} (${name.trim()}, role: ${normalizedRole})`,
     });
 
     return NextResponse.json({
@@ -95,7 +100,7 @@ export async function POST(req: Request) {
         id: newAdmin.id,
         username: newAdmin.username,
         name: newAdmin.name,
-        role: role || "ADMIN",
+        role: newAdmin.role,
       },
     });
   } catch (error: any) {

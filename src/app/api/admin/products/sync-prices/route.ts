@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getAdminSession } from "@/lib/adminAuth";
+import { getAdminSession, canAdminMutate } from "@/lib/adminAuth";
 import { syncDigiflazzToDatabase } from "@/lib/digiflazzSync";
 import { syncXavieraToDatabase } from "@/lib/xavieraSync";
 import { logAuditEvent } from "@/lib/audit";
@@ -72,6 +72,9 @@ export async function POST(req?: Request) {
   const session = await getAdminSession();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!canAdminMutate(session)) {
+    return NextResponse.json({ error: "Akses ditolak (khusus ADMIN/OWNER)." }, { status: 403 });
   }
 
   try {

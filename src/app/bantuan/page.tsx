@@ -42,7 +42,7 @@ export default function BantuanPage() {
       items: [
         {
           q: "Berapa lama diamond atau item game masuk ke akun saya?",
-          a: "Dalam kondisi normal, server otomatis kami menginjeksi item ke akun tujuan dalam rentang 1 - 3 detik setelah pembayaran terverifikasi. Anda tidak perlu login atau mengantri konfirmasi manual.",
+          a: "Dalam kondisi normal, server otomatis kami memproses pengiriman item ke akun tujuan segera setelah pembayaran terverifikasi oleh sistem. Anda tidak perlu login atau mengantri konfirmasi manual.",
         },
         {
           q: "Bagaimana jika salah memasukkan User ID atau Server ID?",
@@ -50,7 +50,7 @@ export default function BantuanPage() {
         },
         {
           q: "Apakah akun game saya aman dari ban?",
-          a: "100% AMAN. Semua pengisian diamond dan game currency dilakukan melalui jalur resmi publisher API (Moonton, Garena, Riot Games, Hoyoverse). Bukan hasil cheat, carding, atau saldo ilegal.",
+          a: "Resmi & Terverifikasi. Semua pengisian diamond dan game currency dilakukan melalui jalur resmi publisher API (Moonton, Garena, Riot Games, Hoyoverse). Bukan hasil cheat, carding, atau saldo ilegal.",
         },
       ],
     },
